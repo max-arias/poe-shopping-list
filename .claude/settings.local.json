@@ -46,7 +46,14 @@
       "Bash(pnpm *)",
       "Bash(vp pm *)",
       "Bash(vp --version)",
-      "Bash(vpx pnpm *)"
+      "Bash(vpx pnpm *)",
+      "Bash(wrangler d1 *)",
+      "Bash(wrangler secret *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git *)",
+      "Bash(xargs -I {} sh -c 'echo \"=== {} ===\" && cat {}')"
     ]
   }
 }
