@@ -40,7 +40,13 @@
       "Bash(powershell -Command \"Move-Item 'D:\\\\dev\\\\ideas\\\\poe-shopping-list' 'D:\\\\dev\\\\poe-shopping-list'\")",
       "Bash(powershell -Command \"Copy-Item 'D:\\\\dev\\\\ideas\\\\poe-shopping-list' 'D:\\\\dev\\\\poe-shopping-list' -Recurse\")",
       "Bash(rtk ls *)",
-      "WebFetch(domain:viteplus.dev)"
+      "WebFetch(domain:viteplus.dev)",
+      "Bash(bun run *)",
+      "Bash(grep *)",
+      "Bash(pnpm *)",
+      "Bash(vp pm *)",
+      "Bash(vp --version)",
+      "Bash(vpx pnpm *)"
     ]
   }
 }
