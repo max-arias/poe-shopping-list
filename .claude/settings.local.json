@@ -39,7 +39,8 @@
       "WebFetch(domain:docs.astro.build)",
       "Bash(powershell -Command \"Move-Item 'D:\\\\dev\\\\ideas\\\\poe-shopping-list' 'D:\\\\dev\\\\poe-shopping-list'\")",
       "Bash(powershell -Command \"Copy-Item 'D:\\\\dev\\\\ideas\\\\poe-shopping-list' 'D:\\\\dev\\\\poe-shopping-list' -Recurse\")",
-      "Bash(rtk ls *)"
+      "Bash(rtk ls *)",
+      "WebFetch(domain:viteplus.dev)"
     ]
   }
 }
