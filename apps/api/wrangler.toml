@@ -7,11 +7,11 @@ compatibility_flags = ["nodejs_compat"]
 binding = "DB"
 database_name = "poe-shopping-list"
 # Run `wrangler d1 create poe-shopping-list` to get your database_id and replace the placeholder below
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "a895a678-21ec-4a71-a9da-d2fed88a93c1"
 migrations_dir = "migrations"
 
 [vars]
-WEBSITE_URL = "http://localhost:4321"
+WEBSITE_URL = "https://poe-shopping-list-website.max-c82.workers.dev"
 
 # Production secrets — set via `wrangler secret put <NAME>`:
 #   JWT_SECRET
