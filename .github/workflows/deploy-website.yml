@@ -12,22 +12,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: voidzero-dev/setup-vp@v1
         with:
           node-version: "22"
           cache: true
 
-      - name: Install dependencies
-        run: vp install
+      - run: vp install
 
-      - name: Build
-        run: vp build
-        working-directory: apps/website
+      - run: vp run --filter @poe-sl/website build
 
-      - name: Deploy
-        run: bunx wrangler deploy
-        working-directory: apps/website
+      - run: vp run --filter @poe-sl/website deploy:only
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
