@@ -1,0 +1,27 @@
+{
+  "name": "@poe-sl/extension",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "check": "vp check"
+  },
+  "dependencies": {
+    "@poe-sl/schema": "workspace:*",
+    "@poe-sl/tokens": "workspace:*",
+    "@poe-sl/trade-dom": "workspace:*",
+    "pinia": "^2.2.6",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.3",
+    "@wxt-dev/module-vue": "^1.0.3",
+    "tailwindcss": "^4.1.3",
+    "typescript": "^5.7.2",
+    "wxt": "^0.20.0"
+  }
+}

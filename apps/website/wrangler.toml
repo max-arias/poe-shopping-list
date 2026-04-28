@@ -1,0 +1,7 @@
+name = "poe-shopping-list-website"
+compatibility_date = "2026-04-27"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "404-page"

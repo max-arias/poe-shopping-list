@@ -1,0 +1,355 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>PoE Shopping List — Sidebar v2</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #efece6;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        color: #2a2520;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      :root,
+      [data-theme="light"] {
+        --wf-bg: #fdfaf3;
+        --wf-frame: #1a1610;
+        --wf-chrome: #eee7d8;
+        --wf-footer-bg: #f2ecdd;
+        --wf-section-bg: #f2ecdd;
+        --wf-tab-bg: #f5efe0;
+        --wf-ink: #231e16;
+        --wf-muted: #7a6f5c;
+        --wf-stroke: #3a3226;
+        --wf-stroke-soft: #d9cfb6;
+        --wf-line: #bfb49a;
+        --wf-block: #e8e0c9;
+        --wf-pill-bg: #e8e0c9;
+        --wf-gold: #b07e28;
+        --wf-gold-edge: #7a561a;
+        --wf-gold-ink: #1a1208;
+        --wf-gold-ink-strong: #7a561a;
+        --wf-gold-soft: #ecd9a6;
+        --wf-warn-bg: #f5dfb0;
+        --wf-warn-ink: #7a4a0f;
+        --wf-warn-edge: #c18a38;
+        --wf-good-bg: #d9e7c5;
+        --wf-good-ink: #3d5a1c;
+        --wf-good-edge: #7a9a4a;
+      }
+
+      [data-theme="dark"] {
+        --wf-bg: #15110b;
+        --wf-frame: #0a0804;
+        --wf-chrome: #1f1a12;
+        --wf-footer-bg: #1a160f;
+        --wf-section-bg: #1c1810;
+        --wf-tab-bg: #1a160f;
+        --wf-ink: #e8dcbe;
+        --wf-muted: #8a7e66;
+        --wf-stroke: #3a3226;
+        --wf-stroke-soft: #2a2418;
+        --wf-line: #4a4030;
+        --wf-block: #231e14;
+        --wf-pill-bg: #231e14;
+        --wf-gold: #c28a2a;
+        --wf-gold-edge: #5a3f10;
+        --wf-gold-ink: #140e04;
+        --wf-gold-ink-strong: #e0b15a;
+        --wf-gold-soft: #3a2a10;
+        --wf-warn-bg: #3a2810;
+        --wf-warn-ink: #e0a850;
+        --wf-warn-edge: #7a5a20;
+        --wf-good-bg: #1f2a14;
+        --wf-good-ink: #a8c87a;
+        --wf-good-edge: #4a6a2a;
+      }
+
+      .tweaks {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        background: #fffdf6;
+        border: 1px solid #1a1610;
+        border-radius: 4px;
+        padding: 12px 14px;
+        font-size: 12px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        z-index: 100;
+        min-width: 200px;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+      }
+      .tweaks h4 {
+        margin: 0 0 10px;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #7a6f5c;
+        font-weight: 600;
+      }
+      .tweaks .row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 6px 0;
+      }
+      .tweaks label {
+        font-size: 11px;
+        color: #7a6f5c;
+      }
+      .tweaks .seg {
+        display: inline-flex;
+        border: 1px solid #3a3226;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .tweaks .seg button {
+        border: 0;
+        background: transparent;
+        padding: 4px 10px;
+        font-size: 11px;
+        cursor: pointer;
+        color: #2a2520;
+        font-family: inherit;
+      }
+      .tweaks .seg button.on {
+        background: #b07e28;
+        color: #140e04;
+        font-weight: 600;
+      }
+
+      .topbar {
+        padding: 28px 60px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .topbar h1 {
+        font-size: 26px;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.4px;
+      }
+      .topbar .sub {
+        font-size: 13px;
+        color: #7a6f5c;
+        margin-top: 4px;
+        max-width: 720px;
+        line-height: 1.5;
+      }
+
+      .canvas-host {
+        height: calc(100vh - 116px);
+        width: 100vw;
+        overflow: hidden;
+      }
+    </style>
+
+    <script
+      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="topbar">
+      <h1>PoE Shopping List · Side Panel (v2)</h1>
+      <div class="sub">
+        Tabbed IA — <b>Mine · Following · Trending</b>. Publish is an inline action per list (kebab
+        + footer button on the active draft), not a tab. Capture is modal-first with <b>Save</b>/<b
+          >Cancel</b
+        >
+        only. Pan &amp; zoom the canvas to walk through the flow.
+      </div>
+    </div>
+
+    <div id="tweaks-root"></div>
+    <div id="root" class="canvas-host" data-theme="light" data-density="roomy"></div>
+
+    <script type="text/babel" src="design-canvas.jsx"></script>
+    <script type="text/babel" src="primitives.jsx"></script>
+    <script type="text/babel" src="variations-v2.jsx"></script>
+
+    <script type="text/babel">
+      const { DesignCanvas, DCSection, DCArtboard, DCPostIt, PanelV2 } = window;
+
+      function Tweaks({ theme, setTheme, density, setDensity }) {
+        return (
+          <div className="tweaks">
+            <h4>Tweaks</h4>
+            <div className="row">
+              <label>Theme</label>
+              <div style={{ flex: 1 }} />
+              <div className="seg">
+                <button className={theme === "light" ? "on" : ""} onClick={() => setTheme("light")}>
+                  Light
+                </button>
+                <button className={theme === "dark" ? "on" : ""} onClick={() => setTheme("dark")}>
+                  Dark
+                </button>
+              </div>
+            </div>
+            <div className="row">
+              <label>Density</label>
+              <div style={{ flex: 1 }} />
+              <div className="seg">
+                <button
+                  className={density === "roomy" ? "on" : ""}
+                  onClick={() => setDensity("roomy")}
+                >
+                  Roomy
+                </button>
+                <button
+                  className={density === "compact" ? "on" : ""}
+                  onClick={() => setDensity("compact")}
+                >
+                  Compact
+                </button>
+              </div>
+            </div>
+            <div
+              style={{
+                marginTop: 10,
+                paddingTop: 10,
+                borderTop: "1px solid #e8e0c9",
+                fontSize: 10,
+                color: "#7a6f5c",
+                lineHeight: 1.5,
+              }}
+            >
+              <b>Pan:</b> drag bg · <b>Zoom:</b> pinch / ⌘-scroll
+            </div>
+          </div>
+        );
+      }
+
+      function App() {
+        const [theme, setTheme] = React.useState(
+          () => localStorage.getItem("wf-theme-v2") || "light",
+        );
+        const [density, setDensity] = React.useState(
+          () => localStorage.getItem("wf-density-v2") || "roomy",
+        );
+
+        React.useEffect(() => {
+          const r = document.getElementById("root");
+          r.setAttribute("data-theme", theme);
+          r.setAttribute("data-density", density);
+          localStorage.setItem("wf-theme-v2", theme);
+          localStorage.setItem("wf-density-v2", density);
+        }, [theme, density]);
+
+        const sections = [
+          {
+            title: "Capture flow — the core loop",
+            subtitle:
+              "What a user sees when saving a search. The modal is the centrepiece; price stats are visible before commit; Save and Cancel only.",
+            states: [
+              ["Mine · active draft", { state: "draft" }],
+              ["Save Search modal", { state: "save-modal" }],
+              ["… after save (price captured)", { state: "draft" }],
+            ],
+            note: "Modal sits over the list with a visible stack — users never lose their place. Auto-filled name, save-to-list selector, 3-stat price preview with sample count. Save-only CTA removes 'Name only' ambiguity.",
+          },
+          {
+            title: "Mine tab — lifecycle",
+            subtitle:
+              "Empty → active draft → per-list menu (Publish lives here) → publish sheet → confirmation.",
+            states: [
+              ["First-run empty", { state: "empty" }],
+              ["Active draft", { state: "draft" }],
+              ["Per-list ⋯ menu", { state: "kebab" }],
+              ["Publish sheet", { state: "publish-sheet" }],
+              ["Published ✓", { state: "publish-done" }],
+            ],
+            note: "No Publish tab — publishing is contextual to a list. Kebab menu exposes it; footer 'Publish ▸' button gives a visible path when viewing a populated draft.",
+          },
+          {
+            title: "Following tab",
+            subtitle: "Lists the user has followed. Empty state nudges to Trending.",
+            states: [
+              ["Empty state", { state: "following-empty" }],
+              ["With follows", { state: "following" }],
+            ],
+            note: "Clean list of attached guides. Freshness shown inline so followers know which prices are stale at league resets.",
+          },
+          {
+            title: "Trending tab",
+            subtitle:
+              "Active community lists — replaces the Publish tab. League + time window + topic filters; one-tap Follow per card.",
+            states: [["Trending · 24h", { state: "trending" }]],
+            note: "Discovery surface. Rank badge + follow-delta pill = what's hot right now. League switcher is primary because builds are league-specific. Follow button is the main action (not 'view').",
+          },
+          {
+            title: "Global settings",
+            subtitle:
+              "Gear icon in the header opens a settings popover. League lives here — it used to clutter every tab.",
+            states: [["Settings open (Mine)", { state: "settings" }]],
+            note: "Single place to set league, game (PoE1/PoE2), and preferences. Active league shown as a pill in the header so it's always visible without taking up tab space.",
+          },
+          {
+            title: "Edge cases",
+            subtitle:
+              "F15 capture-unavailable banner — when DOM selectors fail, the sidebar still works for name-only saves.",
+            states: [["Capture unavailable", { state: "capture-unavailable" }]],
+            note: "Banner is non-blocking. The 'Save This Search' button still works — it just won't have price stats. Prevents the silent-break failure mode the competitor ships.",
+          },
+        ];
+
+        return (
+          <>
+            <Tweaks theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
+            <DesignCanvas minScale={0.2} maxScale={2.5}>
+              {sections.map((s, si) => (
+                <DCSection key={si} title={s.title} subtitle={s.subtitle}>
+                  {s.states.map(([label, props], i) => (
+                    <DCArtboard
+                      key={i}
+                      label={label}
+                      width={380}
+                      height={640}
+                      style={{
+                        background: "transparent",
+                        boxShadow: "none",
+                        borderRadius: 0,
+                        overflow: "visible",
+                      }}
+                    >
+                      <PanelV2 density={density} {...props} />
+                    </DCArtboard>
+                  ))}
+                  <div style={{ position: "relative", width: 260, flexShrink: 0 }}>
+                    <DCPostIt top={40} left={20} width={220} rotate={-1.5}>
+                      {s.note}
+                    </DCPostIt>
+                  </div>
+                </DCSection>
+              ))}
+            </DesignCanvas>
+          </>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("tweaks-root")).render(<App />);
+    </script>
+  </body>
+</html>

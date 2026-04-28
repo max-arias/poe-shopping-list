@@ -1,0 +1,141 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import InstallCTA from '../../components/InstallCTA.astro';
+import { BUILDS } from '../../data/builds';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths = (async () => {
+  // Pre-generate pages for all lists in fixture data.
+  // In production, fetch all slugs from the API here.
+  const paths: { params: { slug: string } }[] = [];
+  for (const build of BUILDS) {
+    for (const list of build.lists) {
+      if (list.slug) {
+        paths.push({ params: { slug: list.slug } });
+      }
+    }
+  }
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { slug } = Astro.params;
+
+// Find the list in fixture data.
+let found: { build: (typeof BUILDS)[0]; list: (typeof BUILDS)[0]['lists'][0] } | null = null;
+for (const build of BUILDS) {
+  for (const list of build.lists) {
+    if (list.slug === slug) {
+      found = { build, list };
+      break;
+    }
+  }
+  if (found) break;
+}
+---
+<Base
+  title={found ? found.list.name : 'List not found'}
+  description={found ? `${found.list.name} — ${found.build.name} shopping list by ${found.list.author}` : ''}
+>
+  <div class="min-h-screen flex flex-col bg-bg">
+    <Nav activeTab="builds" />
+
+    {!found ? (
+      <div class="flex-1 flex flex-col items-center justify-center gap-4 py-20 text-center px-6">
+        <p class="text-[22px] font-bold text-ink">List not found</p>
+        <p class="text-[14px] text-ink-muted">This list may have been deleted or never existed.</p>
+        <a href="/" class="text-[13px] text-ink-muted border border-stroke-soft rounded-sm px-3 py-1.5 no-underline hover:text-ink hover:border-stroke">
+          ← Back to builds
+        </a>
+      </div>
+    ) : (
+      <div class="flex-1">
+        <!-- List header -->
+        <div class="bg-section border-b border-stroke-soft px-12 py-10">
+          <div class="max-w-[1200px] mx-auto">
+            <a href="/" class="text-[12px] text-ink-muted no-underline hover:text-ink mb-3 inline-block">
+              ← All builds
+            </a>
+            <div class="flex items-start gap-6">
+              <div class="flex-1 min-w-0">
+                <p class="text-[11px] font-bold tracking-[1.2px] text-gold-ink-str uppercase mb-2">
+                  {found.build.name} · {found.build.ascendancy}
+                </p>
+                <h1 class="text-[28px] font-bold tracking-[-0.4px] text-ink mb-2">{found.list.name}</h1>
+                <div class="flex items-center gap-2.5 text-[13px] text-ink-muted flex-wrap">
+                  <span>by <strong class="text-ink">{found.list.author}</strong></span>
+                  <span>·</span>
+                  <span>{found.build.league}</span>
+                  <span>·</span>
+                  <span class="font-semibold text-gold-ink-str">~{found.list.cost} total est.</span>
+                  <span>·</span>
+                  <span>♥ {found.list.follows.toLocaleString()} follows</span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 items-end shrink-0">
+                <div class="flex gap-2">
+                  <InstallCTA browser="Chrome" size="sm" />
+                </div>
+                <p class="text-[11px] text-ink-muted">Install to follow this list & track prices</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Items table -->
+        <div class="max-w-[1200px] mx-auto px-12 py-8">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-[16px] font-bold text-ink">Shopping list</h2>
+            <div class="flex items-center gap-2 text-[12px] text-ink-muted">
+              <span class="px-2 py-1 bg-gold-soft border border-gold-edge rounded-sm text-gold-ink-str font-semibold text-[11px]">
+                PREVIEW — install the extension to track prices
+              </span>
+            </div>
+          </div>
+
+          <!-- Header -->
+          <div class="grid grid-cols-[40px_1fr_120px_80px] gap-0 px-3.5 py-2 text-[10px] font-bold tracking-[0.6px] uppercase text-ink-muted bg-section border border-stroke-soft border-b-0 rounded-t-sm">
+            <div>#</div>
+            <div>Item</div>
+            <div class="text-right">Est. price</div>
+            <div class="text-right">Trade</div>
+          </div>
+
+          <!-- Placeholder rows (fixture has no per-item data — real API returns items) -->
+          {Array.from({ length: 8 }, (_, i) => (
+            <div class="grid grid-cols-[40px_1fr_120px_80px] items-center gap-0 px-3.5 py-3 border border-stroke-soft border-t-0">
+              <span class="text-[12px] text-ink-muted font-mono">{i + 1}</span>
+              <div class="flex flex-col gap-0.5">
+                <div class="h-4 bg-surface rounded-sm" style={`width: ${70 + Math.random() * 20}%`}></div>
+                <div class="h-3 bg-surface rounded-sm w-[40%]"></div>
+              </div>
+              <div class="text-right">
+                <div class="h-4 bg-surface rounded-sm w-16 ml-auto"></div>
+              </div>
+              <div class="flex justify-end">
+                <div class="h-6 w-14 bg-surface rounded-sm"></div>
+              </div>
+            </div>
+          ))}
+
+          <!-- Install CTA overlay note -->
+          <div class="mt-4 p-4 bg-gold-soft border border-gold-edge rounded-sm flex items-center gap-4">
+            <div class="flex-1">
+              <p class="text-[14px] font-semibold text-gold-ink-str mb-0.5">
+                Install the extension to see live prices
+              </p>
+              <p class="text-[12px] text-ink-muted">
+                The extension reads item prices from pathofexile.com/trade as you shop.
+                Follow this list and prices update automatically.
+              </p>
+            </div>
+            <InstallCTA browser="Chrome" size="sm" />
+          </div>
+        </div>
+      </div>
+    )}
+
+    <Footer />
+  </div>
+</Base>

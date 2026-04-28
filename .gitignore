@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+.output/
+.wxt/
+out/
+build/
+
+# Astro
+.astro/
+
+# WXT / extension artifacts
+*.zip
+*.crx
+web-ext-artifacts/
+
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Cache
+.cache/
+.turbo/
+.vp-cache/
+*.tsbuildinfo
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

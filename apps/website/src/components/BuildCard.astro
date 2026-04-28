@@ -1,0 +1,79 @@
+---
+import type { Build } from '../data/builds';
+import { initials } from '../data/builds';
+
+interface Props {
+  build: Build;
+}
+const { build } = Astro.props;
+const { name, ascendancy, author, guide, game, lists, trending } = build;
+const maxLists = lists.slice(0, 3);
+---
+<div class="relative bg-section border border-stroke-soft rounded-sm p-3.5 flex flex-col gap-2.5">
+  {trending && (
+    <div class="absolute -top-2 right-2.5 text-[9px] font-bold tracking-[0.5px] uppercase bg-gold text-gold-ink border border-gold-edge px-1.5 py-[2px] rounded-sm">
+      ↑ Trending
+    </div>
+  )}
+
+  <!-- Header row -->
+  <div class="flex items-start gap-2.5">
+    <div class="w-11 h-11 shrink-0 bg-surface border border-stroke rounded-sm flex items-center justify-center text-[11px] font-bold text-ink-muted font-mono">
+      {initials(ascendancy)}
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="text-[14px] font-bold text-ink leading-tight">{name}</div>
+      <div class="text-[11px] text-ink-muted mt-0.5">
+        {ascendancy} · by <span class="text-ink">{author}</span>
+      </div>
+    </div>
+    <div class="text-[9px] font-bold tracking-[0.3px] px-[5px] py-[2px] border border-stroke-soft text-ink-muted rounded-sm shrink-0">
+      {game}
+    </div>
+  </div>
+
+  <!-- Guide link -->
+  {guide && (
+    <a
+      href={`https://${guide}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="self-start inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-[5px] bg-bg border border-stroke-soft rounded-sm no-underline text-ink hover:border-gold-edge hover:text-gold-ink-str transition-colors"
+    >
+      <span class="opacity-60">⇗</span>
+      <span>Build guide</span>
+      <span class="text-ink-muted text-[10px] font-mono">{guide}</span>
+    </a>
+  )}
+
+  <!-- Shopping lists -->
+  <div class="border-t border-dashed border-stroke-soft pt-2.5 mt-0.5">
+    <div class="text-[9px] font-bold tracking-[0.8px] text-ink-muted uppercase mb-1.5">
+      {lists.length} shopping list{lists.length === 1 ? '' : 's'}
+    </div>
+
+    {lists.length === 0 ? (
+      <div class="text-[11px] text-ink-muted italic leading-relaxed p-2 bg-bg border border-dashed border-stroke-soft rounded-sm">
+        No shopping lists yet — build guide indexed but no one has published a tracked list.
+      </div>
+    ) : (
+      <div class="flex flex-col gap-1">
+        {maxLists.map(list => (
+          <a
+            href={list.slug ? `/lists/${list.slug}` : '#'}
+            class="flex items-center gap-2 px-2 py-1.5 bg-bg border border-stroke-soft rounded-sm no-underline text-ink hover:border-gold-edge hover:bg-gold-soft transition-colors group"
+          >
+            <span class="text-ink-muted text-[10px] shrink-0">⇗</span>
+            <span class="text-[11px] font-medium flex-1 min-w-0 truncate">{list.name}</span>
+            <span class="text-[10px] text-ink-muted">by {list.author}</span>
+            <span class="text-[11px] font-semibold text-gold-ink-str font-mono">{list.cost}</span>
+            <span class="text-[9px] text-ink-muted min-w-[28px] text-right">♥ {list.follows}</span>
+          </a>
+        ))}
+        {lists.length > 3 && (
+          <div class="text-[10px] text-ink-muted px-1.5 pt-0.5">+ {lists.length - 3} more</div>
+        )}
+      </div>
+    )}
+  </div>
+</div>

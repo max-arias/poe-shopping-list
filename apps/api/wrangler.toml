@@ -1,0 +1,20 @@
+name = "poe-shopping-list-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "poe-shopping-list"
+# Run `wrangler d1 create poe-shopping-list` to get your database_id and replace the placeholder below
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[vars]
+WEBSITE_URL = "http://localhost:4321"
+
+# Production secrets — set via `wrangler secret put <NAME>`:
+#   JWT_SECRET
+#   ADMIN_JWT_SECRET
+#   POE_CLIENT_ID
+#   POE_CLIENT_SECRET

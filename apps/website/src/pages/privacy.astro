@@ -1,0 +1,190 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base title="Privacy" description="We run a shopping list, not a surveillance business. Plain-English privacy policy for PoE Shopping List.">
+  <div class="min-h-screen flex flex-col bg-bg">
+    <Nav activeTab="privacy" showLeague={false} />
+
+    <!-- Page title -->
+    <div class="bg-section border-b border-stroke-soft px-12 py-14">
+      <div class="max-w-[1200px] mx-auto">
+        <p class="text-[11px] font-bold tracking-[1.2px] text-gold-ink-str uppercase mb-2.5">Privacy</p>
+        <h1 class="text-[34px] font-bold tracking-[-0.5px] leading-[1.15] mb-3 text-ink">
+          We run a shopping list, not a surveillance business.
+        </h1>
+        <p class="text-[14px] text-ink-muted leading-[1.55] max-w-[640px]">
+          This page is the plain-English version. It's accurate; we don't have a different, scarier legal version hiding somewhere.
+        </p>
+      </div>
+    </div>
+
+    <!-- Body: TOC + content -->
+    <div class="max-w-[1200px] mx-auto w-full flex-1">
+      <div class="grid grid-cols-[180px_1fr]">
+
+        <!-- TOC -->
+        <aside class="border-r border-stroke-soft py-6">
+          <nav class="sticky top-6 text-[12px]">
+            <p class="text-[10px] font-bold tracking-[1.2px] text-ink-muted uppercase mb-2.5 px-3.5">On this page</p>
+            {[
+              { href: '#tldr',        label: 'TL;DR' },
+              { href: '#collect',     label: 'What we collect' },
+              { href: '#not-collect', label: "What we don't" },
+              { href: '#flow',        label: 'Data flow' },
+              { href: '#rights',      label: 'Your rights' },
+            ].map(item => (
+              <a
+                href={item.href}
+                class="block py-1.5 px-3.5 text-ink-muted hover:text-ink no-underline border-l-2 border-stroke-soft hover:border-gold"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+
+        <div>
+
+          <!-- TL;DR -->
+          <section id="tldr" class="px-12 py-10 border-b border-stroke-soft scroll-mt-[72px]">
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">TL;DR</h2>
+            <div class="flex flex-col gap-2.5 max-w-[680px]">
+              {[
+                'Your trade searches, item queries, and scroll history stay in your browser. We never see them.',
+                'When you publish a list, we store the list and your PoE account name (from OAuth). That\'s it.',
+                'No analytics, no ad networks, no third-party scripts. The site loads from one server and nothing else.',
+                'We do not sell data. There is no data to sell.',
+                'We do not track you across sessions. Clear cookies and you\'re anonymous again.',
+              ].map(text => (
+                <div class="flex gap-3 px-3.5 py-2.5 bg-good-bg border border-good-edge border-l-4 rounded-sm">
+                  <span class="text-[16px] font-bold text-good-ink shrink-0">✓</span>
+                  <p class="text-[13px] leading-[1.55] text-ink">{text}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <!-- What we collect -->
+          <section id="collect" class="px-12 py-10 border-b border-stroke-soft bg-section scroll-mt-[72px]">
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">What we collect</h2>
+            <div class="max-w-[720px]">
+              <table class="w-full border-collapse text-[13px] mb-5">
+                <thead>
+                  <tr class="border-b-2 border-stroke-soft">
+                    <th class="text-left px-3 py-2.5 text-[10px] tracking-[1px] uppercase text-ink-muted font-bold">Field</th>
+                    <th class="text-left px-3 py-2.5 text-[10px] tracking-[1px] uppercase text-ink-muted font-bold">Why</th>
+                    <th class="text-left px-3 py-2.5 text-[10px] tracking-[1px] uppercase text-ink-muted font-bold w-[90px]">When</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ['PoE account name', 'Attribution on published lists. Shown publicly.', 'You publish'],
+                    ['Shopping list contents', 'So others can follow, so you can edit from another device.', 'You publish'],
+                    ['Follow count', 'Popularity ranking. Aggregated, not per-user.', 'Others follow'],
+                    ['OAuth token (short-lived)', 'To verify you own the account name you\'re publishing under.', 'You sign in'],
+                    ['Error reports', 'If a request fails. Strips URLs, item names, and tokens.', 'Something breaks'],
+                  ].map(([f, w, when]) => (
+                    <tr class="border-b border-stroke-soft">
+                      <td class="px-3 py-3 font-semibold text-ink align-top">{f}</td>
+                      <td class="px-3 py-3 text-ink-muted leading-relaxed align-top">{w}</td>
+                      <td class="px-3 py-3 align-top">
+                        <span class="text-[10px] px-2 py-[3px] bg-gold-soft border border-gold-edge text-gold-ink-str rounded-sm font-semibold tracking-[0.3px] uppercase whitespace-nowrap">
+                          {when}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p class="text-[12px] text-ink-muted leading-relaxed">
+                All of the above is deletable by you, from the extension settings or by emailing us.
+                Deletion is immediate, not a 30-day soft-delete.
+              </p>
+            </div>
+          </section>
+
+          <!-- What we don't collect -->
+          <section id="not-collect" class="px-12 py-10 border-b border-stroke-soft scroll-mt-[72px]">
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">What we don't collect</h2>
+            <div class="grid grid-cols-2 gap-3 max-w-[720px]">
+              {[
+                ['Your trade searches', 'Filters, stat weights, stash locations — all local.'],
+                ['Your items', 'We never read your stash or inventory.'],
+                ['Browsing history', 'The extension sees the tabs you opted into (PoE trade + guide sites). Nothing else.'],
+                ['IP address', 'Not stored. Our server logs are rotated hourly.'],
+                ['Device fingerprints', 'No canvas fingerprinting, no font enumeration, no nonsense.'],
+                ['Purchase or wealth data', 'The extension doesn\'t know what you bought.'],
+              ].map(([t, b]) => (
+                <div class="p-3.5 bg-section border border-stroke-soft rounded-sm">
+                  <p class="text-[13px] font-bold text-ink mb-1">
+                    <span class="text-good-ink mr-1.5">✗</span>
+                    {t}
+                  </p>
+                  <p class="text-[12px] text-ink-muted leading-relaxed pl-[18px]">{b}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <!-- Data flow -->
+          <section id="flow" class="px-12 py-10 border-b border-stroke-soft bg-section scroll-mt-[72px]">
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">Where data goes</h2>
+            <div class="bg-section border border-stroke-soft rounded-sm p-5 mb-4 max-w-[720px]">
+              <p class="text-[11px] font-bold tracking-[1px] uppercase text-ink-muted mb-3.5">Data flow</p>
+              <div class="grid grid-cols-3 gap-3">
+                {[
+                  { title: 'Your browser', body: 'Saves item filters, list memberships, scroll/price history.', note: 'Stays local.', green: true },
+                  { title: 'Our server', body: 'Only holds lists you publish + your PoE account name.', note: 'OAuth-verified.', green: false },
+                  { title: 'Third parties', body: 'None. No analytics, no ads, no CDN fingerprinting.', note: 'Zero.', green: true },
+                ].map(card => (
+                  <div class:list={['bg-bg border rounded-sm p-3.5', card.green ? 'border-good-edge' : 'border-gold-edge']}>
+                    <p class="text-[12px] font-bold text-ink mb-1.5">{card.title}</p>
+                    <p class="text-[12px] text-ink-muted leading-relaxed mb-2.5">{card.body}</p>
+                    <span class:list={[
+                      'inline-block text-[10px] font-bold tracking-[0.6px] uppercase px-2 py-[3px] border rounded-sm',
+                      card.green ? 'bg-good-bg text-good-ink border-good-edge' : 'bg-gold-soft text-gold-ink-str border-gold-edge',
+                    ]}>
+                      {card.note}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p class="text-[12px] text-ink-muted leading-relaxed max-w-[720px]">
+              Our server is a single Hetzner box in Germany. No CDN in front of it, no serverless platform
+              inspecting requests, no analytics. We pay for it out of pocket.
+            </p>
+          </section>
+
+          <!-- Your rights -->
+          <section id="rights" class="px-12 py-10 border-b border-stroke-soft scroll-mt-[72px]">
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">Your rights</h2>
+            <div class="grid grid-cols-2 gap-3.5 max-w-[720px]">
+              {[
+                ['Export', 'Download every list you\'ve published as JSON. One click, in extension settings.', 'Self-serve'],
+                ['Delete', 'Purge your account, lists, and OAuth mapping. Instantly. No dark-pattern retention.', 'Self-serve'],
+                ['Correct', 'Edit any list at any time. History is public but editable.', 'Self-serve'],
+                ['Access', 'Email us and we\'ll send you everything we have tied to your account name.', '48 hours'],
+              ].map(([t, b, w]) => (
+                <div class="p-3.5 bg-bg border border-stroke-soft border-l-[3px] border-l-gold rounded-sm">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <p class="text-[14px] font-bold text-ink flex-1">{t}</p>
+                    <span class="text-[9px] px-1.5 py-[2px] bg-good-bg text-good-ink border border-good-edge rounded-sm font-bold tracking-[0.4px] uppercase">
+                      {w}
+                    </span>
+                  </div>
+                  <p class="text-[12px] text-ink-muted leading-relaxed">{b}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <Footer />
+  </div>
+</Base>

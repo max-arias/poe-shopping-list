@@ -1,0 +1,1145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>PoE Shopping List — Surfaces (Chrome + Firefox)</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #efece6;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        color: #2a2520;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      :root,
+      [data-theme="light"] {
+        --wf-bg: #fdfaf3;
+        --wf-frame: #1a1610;
+        --wf-chrome: #eee7d8;
+        --wf-footer-bg: #f2ecdd;
+        --wf-section-bg: #f2ecdd;
+        --wf-tab-bg: #f5efe0;
+        --wf-ink: #231e16;
+        --wf-muted: #7a6f5c;
+        --wf-stroke: #3a3226;
+        --wf-stroke-soft: #d9cfb6;
+        --wf-line: #bfb49a;
+        --wf-block: #e8e0c9;
+        --wf-pill-bg: #e8e0c9;
+        --wf-gold: #b07e28;
+        --wf-gold-edge: #7a561a;
+        --wf-gold-ink: #1a1208;
+        --wf-gold-ink-strong: #7a561a;
+        --wf-gold-soft: #ecd9a6;
+        --wf-warn-bg: #f5dfb0;
+        --wf-warn-ink: #7a4a0f;
+        --wf-warn-edge: #c18a38;
+        --wf-good-bg: #d9e7c5;
+        --wf-good-ink: #3d5a1c;
+        --wf-good-edge: #7a9a4a;
+      }
+      [data-theme="dark"] {
+        --wf-bg: #15110b;
+        --wf-frame: #0a0804;
+        --wf-chrome: #1f1a12;
+        --wf-footer-bg: #1a160f;
+        --wf-section-bg: #1c1810;
+        --wf-tab-bg: #1a160f;
+        --wf-ink: #e8dcbe;
+        --wf-muted: #8a7e66;
+        --wf-stroke: #3a3226;
+        --wf-stroke-soft: #2a2418;
+        --wf-line: #4a4030;
+        --wf-block: #231e14;
+        --wf-pill-bg: #231e14;
+        --wf-gold: #c28a2a;
+        --wf-gold-edge: #5a3f10;
+        --wf-gold-ink: #140e04;
+        --wf-gold-ink-strong: #e0b15a;
+        --wf-gold-soft: #3a2a10;
+        --wf-warn-bg: #3a2810;
+        --wf-warn-ink: #e0a850;
+        --wf-warn-edge: #7a5a20;
+        --wf-good-bg: #1f2a14;
+        --wf-good-ink: #a8c87a;
+        --wf-good-edge: #4a6a2a;
+      }
+
+      .tweaks {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        background: #fffdf6;
+        border: 1px solid #1a1610;
+        border-radius: 4px;
+        padding: 12px 14px;
+        font-size: 12px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        z-index: 100;
+        min-width: 200px;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+      }
+      .tweaks h4 {
+        margin: 0 0 10px;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #7a6f5c;
+        font-weight: 600;
+      }
+      .tweaks .row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 6px 0;
+      }
+      .tweaks label {
+        font-size: 11px;
+        color: #7a6f5c;
+      }
+      .tweaks .seg {
+        display: inline-flex;
+        border: 1px solid #3a3226;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .tweaks .seg button {
+        border: 0;
+        background: transparent;
+        padding: 4px 10px;
+        font-size: 11px;
+        cursor: pointer;
+        color: #2a2520;
+        font-family: inherit;
+      }
+      .tweaks .seg button.on {
+        background: #b07e28;
+        color: #140e04;
+        font-weight: 600;
+      }
+
+      .topbar {
+        padding: 28px 60px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .topbar h1 {
+        font-size: 26px;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.4px;
+      }
+      .topbar .sub {
+        font-size: 13px;
+        color: #7a6f5c;
+        margin-top: 4px;
+        max-width: 820px;
+        line-height: 1.5;
+      }
+
+      .canvas-host {
+        height: calc(100vh - 116px);
+        width: 100vw;
+        overflow: hidden;
+      }
+    </style>
+
+    <script
+      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="topbar">
+      <h1>Surfaces · Chrome + Firefox Mounting Strategies</h1>
+      <div class="sub">
+        Firefox doesn't support Chrome's <code>sidePanel</code> API. Here are six ways to mount the
+        same panel UI across both browsers. The inner sidebar is the <b>same React component</b> —
+        only the surrounding browser chrome changes. Compare tradeoffs below.
+      </div>
+    </div>
+
+    <div id="tweaks-root"></div>
+    <div id="root" class="canvas-host" data-theme="light" data-density="compact"></div>
+
+    <script type="text/babel" src="design-canvas.jsx"></script>
+    <script type="text/babel" src="primitives.jsx"></script>
+    <script type="text/babel" src="variations-v2.jsx"></script>
+
+    <script type="text/babel">
+      const { DesignCanvas, DCSection, DCArtboard, DCPostIt, PanelV2 } = window;
+
+      // ── Browser-chrome primitives ───────────────────────────────
+      const tabRowStyle = {
+        height: 34,
+        background: "#d8d2c5",
+        display: "flex",
+        alignItems: "flex-end",
+        gap: 2,
+        padding: "0 8px",
+        borderBottom: "1px solid #a8a294",
+      };
+      const tab = (title, active) => (
+        <div
+          style={{
+            padding: "6px 12px",
+            fontSize: 11,
+            background: active ? "#f6f3ec" : "transparent",
+            border: active ? "1px solid #a8a294" : "1px solid transparent",
+            borderBottom: "none",
+            borderRadius: "4px 4px 0 0",
+            color: "#2a2520",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            maxWidth: 180,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <div
+            style={{ width: 10, height: 10, background: "#c9a227", borderRadius: 2, flexShrink: 0 }}
+          />
+          <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{title}</span>
+        </div>
+      );
+      const urlBar = (url, starred) => (
+        <div
+          style={{
+            height: 28,
+            background: "#fff",
+            border: "1px solid #c4bea9",
+            borderRadius: 14,
+            margin: "4px 8px",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "0 10px",
+            fontSize: 11,
+            color: "#5a5040",
+            fontFamily: "ui-monospace, monospace",
+          }}
+        >
+          <span style={{ color: "#7a9a4a" }}>🔒</span>
+          <span
+            style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+          >
+            {url}
+          </span>
+          {starred && <span style={{ color: "#b07e28" }}>★</span>}
+          <span
+            style={{
+              width: 16,
+              height: 16,
+              background: "#b07e28",
+              borderRadius: 2,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 9,
+              color: "#140e04",
+              fontWeight: 700,
+            }}
+          >
+            P
+          </span>
+        </div>
+      );
+
+      // Frame the trade page content behind whatever chrome
+      const TradePageBg = ({ w, h }) => (
+        <div
+          style={{
+            width: w,
+            height: h,
+            background: "#2a241a",
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 3px)",
+            padding: 16,
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            color: "#ccc5b0",
+            fontSize: 10,
+          }}
+        >
+          <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ width: 80, height: 20, background: "#3a3226", borderRadius: 2 }} />
+            <div style={{ width: 120, height: 20, background: "#3a3226", borderRadius: 2 }} />
+            <div style={{ flex: 1 }} />
+            <div style={{ width: 50, height: 20, background: "#3a3226", borderRadius: 2 }} />
+          </div>
+          <div style={{ fontFamily: "ui-monospace, monospace", opacity: 0.7, fontSize: 10 }}>
+            pathofexile.com/trade/search/Phrecia/...
+          </div>
+          <div
+            style={{
+              background: "#1a140c",
+              padding: 10,
+              borderRadius: 2,
+              display: "flex",
+              flexDirection: "column",
+              gap: 4,
+            }}
+          >
+            {[...Array(3)].map((_, i) => (
+              <div key={i} style={{ height: 18, background: "#231c10", borderRadius: 1 }} />
+            ))}
+          </div>
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              style={{
+                height: 32,
+                background: "#1f1a10",
+                borderRadius: 2,
+                padding: "6px 8px",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <div style={{ width: 20, height: 20, background: "#3a3226", borderRadius: 2 }} />
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+                <div style={{ height: 5, width: "60%", background: "#3a3226", borderRadius: 1 }} />
+                <div style={{ height: 4, width: "40%", background: "#2a241a", borderRadius: 1 }} />
+              </div>
+              <div style={{ width: 40, height: 14, background: "#7a561a", borderRadius: 1 }} />
+            </div>
+          ))}
+        </div>
+      );
+
+      // ─── S1. Chrome side panel (native) ─────────────────────────
+      function ChromeSidePanel({ density }) {
+        const panelW = 380,
+          pageW = 820,
+          h = 560;
+        return (
+          <div
+            style={{
+              width: panelW + pageW,
+              height: h + 64,
+              background: "#e8e4d7",
+              borderRadius: 6,
+              overflow: "hidden",
+              border: "1px solid #9e9684",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {/* Title bar */}
+            <div
+              style={{
+                height: 30,
+                background: "#d8d2c5",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "0 10px",
+                fontSize: 11,
+                color: "#5a5040",
+              }}
+            >
+              <div style={{ display: "flex", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e06b5e" }} />
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e8b840" }} />
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#6ca86a" }} />
+              </div>
+              <div style={{ flex: 1 }} />
+              <span>Chrome</span>
+            </div>
+            <div style={tabRowStyle}>
+              {tab("Trade — Path of Exile", true)}
+              {tab("Penance Brand Build Guide", false)}
+              <div style={{ flex: 1 }} />
+            </div>
+            {urlBar("www.pathofexile.com/trade/search/Phrecia/abc123")}
+            <div style={{ display: "flex", flex: 1, borderTop: "1px solid #c4bea9" }}>
+              <TradePageBg w={pageW} h={h - 32} />
+              {/* Native side panel docked right */}
+              <div
+                style={{
+                  width: panelW,
+                  background: "#fdfaf3",
+                  borderLeft: "2px solid #1a1610",
+                  position: "relative",
+                  display: "flex",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -14,
+                    right: 8,
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "#7a561a",
+                    background: "#ecd9a6",
+                    border: "1px solid #7a561a",
+                    padding: "2px 6px",
+                    borderRadius: 2,
+                    letterSpacing: 0.4,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  chrome.sidePanel
+                </div>
+                <PanelV2 density={density} state="draft" />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ─── S2. Firefox sidebarAction (native Firefox sidebar) ─────
+      function FirefoxSidebar({ density }) {
+        const sideW = 360,
+          pageW = 820,
+          h = 560;
+        return (
+          <div
+            style={{
+              width: sideW + pageW,
+              height: h + 64,
+              background: "#f0e8d8",
+              borderRadius: 6,
+              overflow: "hidden",
+              border: "1px solid #9e9684",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                height: 30,
+                background: "#e8dfc9",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "0 10px",
+                fontSize: 11,
+                color: "#5a5040",
+              }}
+            >
+              <span style={{ color: "#c9572a" }}>🦊</span>
+              <span style={{ fontWeight: 600 }}>Firefox</span>
+              <div style={{ flex: 1 }} />
+              <div style={{ display: "flex", gap: 4 }}>
+                <span>_</span>
+                <span>□</span>
+                <span>✕</span>
+              </div>
+            </div>
+            <div style={tabRowStyle}>
+              {tab("Trade — Path of Exile", true)}
+              <div style={{ flex: 1 }} />
+            </div>
+            {urlBar("www.pathofexile.com/trade/search/Phrecia/abc123")}
+            <div style={{ display: "flex", flex: 1, borderTop: "1px solid #c4bea9" }}>
+              {/* Firefox docks its sidebar LEFT */}
+              <div
+                style={{
+                  width: sideW,
+                  background: "#fdfaf3",
+                  borderRight: "2px solid #1a1610",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -14,
+                    left: 8,
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "#7a561a",
+                    background: "#ecd9a6",
+                    border: "1px solid #7a561a",
+                    padding: "2px 6px",
+                    borderRadius: 2,
+                    letterSpacing: 0.4,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  browser.sidebarAction
+                </div>
+                {/* Firefox sidebar has its own title strip */}
+                <div
+                  style={{
+                    height: 22,
+                    background: "#d8d2c5",
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "0 8px",
+                    fontSize: 10,
+                    color: "#5a5040",
+                    borderBottom: "1px solid #9e9684",
+                    gap: 6,
+                  }}
+                >
+                  <span>PoE Shopping List</span>
+                  <div style={{ flex: 1 }} />
+                  <span style={{ opacity: 0.5 }}>⌄</span>
+                  <span style={{ opacity: 0.5 }}>✕</span>
+                </div>
+                <div style={{ flex: 1, display: "flex" }}>
+                  <PanelV2 density={density} state="draft" />
+                </div>
+              </div>
+              <TradePageBg w={pageW} h={h - 32} />
+            </div>
+          </div>
+        );
+      }
+
+      // ─── S3. Toolbar popup (both browsers) ──────────────────────
+      function ToolbarPopup({ density }) {
+        const pageW = 1140,
+          h = 560,
+          popupW = 400,
+          popupH = 520;
+        return (
+          <div
+            style={{
+              width: pageW,
+              height: h + 64,
+              background: "#e8e4d7",
+              borderRadius: 6,
+              overflow: "hidden",
+              border: "1px solid #9e9684",
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                height: 30,
+                background: "#d8d2c5",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "0 10px",
+                fontSize: 11,
+                color: "#5a5040",
+              }}
+            >
+              <div style={{ display: "flex", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e06b5e" }} />
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e8b840" }} />
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#6ca86a" }} />
+              </div>
+            </div>
+            <div style={tabRowStyle}>
+              {tab("Trade — Path of Exile", true)}
+              <div style={{ flex: 1 }} />
+            </div>
+            {urlBar("www.pathofexile.com/trade/search/Phrecia/abc123", true)}
+            <div style={{ flex: 1, position: "relative" }}>
+              <TradePageBg w={pageW} h={h - 32} />
+              {/* Popup floating from the toolbar P icon */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: -60,
+                  right: 18,
+                  width: popupW,
+                  height: popupH,
+                  background: "#fdfaf3",
+                  border: "1px solid #1a1610",
+                  borderRadius: 4,
+                  boxShadow: "0 12px 32px rgba(0,0,0,0.25)",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                {/* triangle pointer */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -6,
+                    right: 30,
+                    width: 12,
+                    height: 12,
+                    background: "#fdfaf3",
+                    borderTop: "1px solid #1a1610",
+                    borderLeft: "1px solid #1a1610",
+                    transform: "rotate(45deg)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -14,
+                    left: 8,
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "#7a561a",
+                    background: "#ecd9a6",
+                    border: "1px solid #7a561a",
+                    padding: "2px 6px",
+                    borderRadius: 2,
+                    letterSpacing: 0.4,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  action popup
+                </div>
+                <PanelV2 density={density} state="draft" />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ─── S4. Injected in-page panel (content script) ────────────
+      function InjectedPanel({ density }) {
+        const pageW = 1200,
+          h = 560,
+          panelW = 360;
+        return (
+          <div
+            style={{
+              width: pageW,
+              height: h + 64,
+              background: "#e8e4d7",
+              borderRadius: 6,
+              overflow: "hidden",
+              border: "1px solid #9e9684",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                height: 30,
+                background: "#d8d2c5",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "0 10px",
+                fontSize: 11,
+                color: "#5a5040",
+              }}
+            >
+              <div style={{ display: "flex", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e06b5e" }} />
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e8b840" }} />
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#6ca86a" }} />
+              </div>
+            </div>
+            <div style={tabRowStyle}>
+              {tab("Trade — Path of Exile", true)}
+              <div style={{ flex: 1 }} />
+            </div>
+            {urlBar("www.pathofexile.com/trade/search/Phrecia/abc123")}
+            <div style={{ flex: 1, position: "relative" }}>
+              <TradePageBg w={pageW} h={h - 32} />
+              {/* Content-script-injected panel: floats on top of the trade page */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  bottom: 12,
+                  width: panelW,
+                  background: "#fdfaf3",
+                  border: "1px solid #1a1610",
+                  borderRadius: 4,
+                  boxShadow: "0 6px 22px rgba(0,0,0,0.4)",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -14,
+                    left: 8,
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "#7a561a",
+                    background: "#ecd9a6",
+                    border: "1px solid #7a561a",
+                    padding: "2px 6px",
+                    borderRadius: 2,
+                    letterSpacing: 0.4,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  content script · dom inject
+                </div>
+                {/* draggable grip */}
+                <div
+                  style={{
+                    height: 18,
+                    background: "#eee7d8",
+                    borderBottom: "1px solid #9e9684",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 3,
+                    cursor: "grab",
+                  }}
+                >
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      style={{ width: 14, height: 2, background: "#7a6f5c", borderRadius: 1 }}
+                    />
+                  ))}
+                </div>
+                <PanelV2 density={density} state="draft" />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ─── S5. Detached window (windows.create) ───────────────────
+      function DetachedWindow({ density }) {
+        // A mini browser window floating over the OS (Chrome-style "app window")
+        const w = 400,
+          h = 600;
+        return (
+          <div
+            style={{
+              width: w + 60,
+              height: h + 80,
+              background: "repeating-linear-gradient(45deg, #d9cfb6 0 12px, #cec2a2 12px 24px)",
+              borderRadius: 6,
+              padding: 30,
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                width: w,
+                height: h,
+                background: "#fdfaf3",
+                border: "1px solid #1a1610",
+                borderRadius: 4,
+                boxShadow: "0 8px 28px rgba(0,0,0,0.35)",
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+              }}
+            >
+              {/* OS window chrome */}
+              <div
+                style={{
+                  height: 26,
+                  background: "#d8d2c5",
+                  borderBottom: "1px solid #9e9684",
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "0 8px",
+                  gap: 6,
+                  fontSize: 10,
+                  color: "#5a5040",
+                }}
+              >
+                <div style={{ display: "flex", gap: 5 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e06b5e" }} />
+                  <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e8b840" }} />
+                  <div style={{ width: 10, height: 10, borderRadius: 5, background: "#6ca86a" }} />
+                </div>
+                <div style={{ flex: 1, textAlign: "center", fontWeight: 600, color: "#2a2520" }}>
+                  PoE Shopping List
+                </div>
+                <span style={{ opacity: 0.5 }}>📌</span>
+              </div>
+              <div style={{ flex: 1, display: "flex" }}>
+                <PanelV2 density={density} state="draft" />
+              </div>
+              <div
+                style={{
+                  position: "absolute",
+                  top: 14,
+                  right: 14,
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "#7a561a",
+                  background: "#ecd9a6",
+                  border: "1px solid #7a561a",
+                  padding: "2px 6px",
+                  borderRadius: 2,
+                  letterSpacing: 0.4,
+                  textTransform: "uppercase",
+                }}
+              >
+                windows.create
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ─── S6. Pinned tab ─────────────────────────────────────────
+      function PinnedTab({ density }) {
+        const pageW = 1100,
+          h = 600;
+        return (
+          <div
+            style={{
+              width: pageW,
+              height: h + 64,
+              background: "#e8e4d7",
+              borderRadius: 6,
+              overflow: "hidden",
+              border: "1px solid #9e9684",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                height: 30,
+                background: "#d8d2c5",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "0 10px",
+                fontSize: 11,
+                color: "#5a5040",
+              }}
+            >
+              <div style={{ display: "flex", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e06b5e" }} />
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#e8b840" }} />
+                <div style={{ width: 10, height: 10, borderRadius: 5, background: "#6ca86a" }} />
+              </div>
+            </div>
+            <div style={{ ...tabRowStyle, alignItems: "flex-end" }}>
+              {/* pinned icon-only tab */}
+              <div
+                style={{
+                  width: 30,
+                  height: 26,
+                  background: "#f6f3ec",
+                  border: "1px solid #a8a294",
+                  borderBottom: "none",
+                  borderRadius: "4px 4px 0 0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: 14,
+                    height: 14,
+                    background: "#b07e28",
+                    borderRadius: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: "#140e04",
+                  }}
+                >
+                  P
+                </div>
+              </div>
+              {tab("Trade — Path of Exile", false)}
+              <div style={{ flex: 1 }} />
+            </div>
+            {urlBar("chrome-extension://...poe-shopping-list/panel.html")}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                background: "#efece6",
+                padding: 20,
+                justifyContent: "center",
+              }}
+            >
+              {/* Full-width page-as-panel but centered like a document */}
+              <div
+                style={{
+                  width: 480,
+                  background: "#fdfaf3",
+                  border: "1px solid #1a1610",
+                  display: "flex",
+                  flexDirection: "column",
+                  boxShadow: "0 2px 14px rgba(0,0,0,0.08)",
+                }}
+              >
+                <PanelV2 density={density} state="draft" />
+              </div>
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 12,
+                  right: 20,
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "#7a561a",
+                  background: "#ecd9a6",
+                  border: "1px solid #7a561a",
+                  padding: "2px 6px",
+                  borderRadius: 2,
+                  letterSpacing: 0.4,
+                  textTransform: "uppercase",
+                }}
+              >
+                pinned tab (chrome-extension://)
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ─── Tweaks ─────────────────────────────────────────────────
+      function Tweaks({ theme, setTheme, density, setDensity }) {
+        return (
+          <div className="tweaks">
+            <h4>Tweaks</h4>
+            <div className="row">
+              <label>Theme</label>
+              <div style={{ flex: 1 }} />
+              <div className="seg">
+                <button className={theme === "light" ? "on" : ""} onClick={() => setTheme("light")}>
+                  Light
+                </button>
+                <button className={theme === "dark" ? "on" : ""} onClick={() => setTheme("dark")}>
+                  Dark
+                </button>
+              </div>
+            </div>
+            <div className="row">
+              <label>Density</label>
+              <div style={{ flex: 1 }} />
+              <div className="seg">
+                <button
+                  className={density === "roomy" ? "on" : ""}
+                  onClick={() => setDensity("roomy")}
+                >
+                  Roomy
+                </button>
+                <button
+                  className={density === "compact" ? "on" : ""}
+                  onClick={() => setDensity("compact")}
+                >
+                  Compact
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function App() {
+        const [theme, setTheme] = React.useState(
+          () => localStorage.getItem("wf-theme-sf") || "light",
+        );
+        const [density, setDensity] = React.useState(
+          () => localStorage.getItem("wf-density-sf") || "compact",
+        );
+
+        React.useEffect(() => {
+          const r = document.getElementById("root");
+          r.setAttribute("data-theme", theme);
+          r.setAttribute("data-density", density);
+          localStorage.setItem("wf-theme-sf", theme);
+          localStorage.setItem("wf-density-sf", density);
+        }, [theme, density]);
+
+        const sections = [
+          {
+            title: "S1 · Chrome side panel (native, the current plan)",
+            subtitle:
+              "chrome.sidePanel API. Docked right, browser-managed, persists across tabs. Chromium only.",
+            Cmp: ChromeSidePanel,
+            note: "✔ Persistent · survives tab switches · docked by the browser\n✘ Chrome/Edge only — no Firefox support\n\nBase case. We need a Firefox strategy that pairs with this.",
+          },
+          {
+            title: "S2 · Firefox sidebarAction (native Firefox sidebar)",
+            subtitle:
+              "browser.sidebarAction in MV2. Docked left, toggleable from View menu or keyboard. Firefox-native equivalent of Chrome side panel.",
+            Cmp: FirefoxSidebar,
+            note: "✔ Real sidebar UX · persists across tabs · keyboard toggle\n✘ Firefox only · left-docked (can't force right) · MV2 (Firefox MV3 still partial)\n\n*** This is the natural Firefox pair for S1. ***",
+          },
+          {
+            title: "S3 · Toolbar popup (works everywhere)",
+            subtitle:
+              "Standard extension action button → popup. Max ~800×600. Closes when user clicks elsewhere.",
+            Cmp: ToolbarPopup,
+            note: "✔ Works in every browser · zero API branching · fastest to ship\n✘ Closes on outside click (breaks capture flow — user clicks trade page → popup vanishes!)\n✘ Feels like a menu, not a workspace\n\nNot viable as primary. Fine as a secondary entry point.",
+          },
+          {
+            title: "S4 · Injected in-page panel (content script)",
+            subtitle:
+              "Sidebar injected into the trade page DOM. Lives inside the page, scrolls with it or floats over it. Worked for Better Trading for years.",
+            Cmp: InjectedPanel,
+            note: "✔ Works in every browser · visually lives next to the search results · easy to port\n✘ Only works on trade pages — user has no panel elsewhere\n✘ Fragile to trade-site DOM changes (F15 risk territory)\n✘ Can conflict with site layout\n\nReasonable Firefox fallback, or a universal answer.",
+          },
+          {
+            title: "S5 · Detached window (windows.create popup)",
+            subtitle:
+              "Opens a small chromeless window that floats over any app. User resizes / positions once and forgets.",
+            Cmp: DetachedWindow,
+            note: "✔ Works in every browser · can be always-on-top on many OSes · works even when PoE client is focused\n✘ Opening a window feels heavy · user has to manage it · gets lost behind browser on alt-tab\n\nGood power-user option — not the default.",
+          },
+          {
+            title: "S6 · Pinned tab (chrome-extension:// page)",
+            subtitle:
+              "Extension ships a full panel.html and opens it as a pinned tab. Tiny icon-only tab the user ignores.",
+            Cmp: PinnedTab,
+            note: "✔ Works everywhere · cross-tab-state via storage · gets full viewport height\n✘ Takes up a tab slot · no natural 'click to show/hide'\n✘ Feels like a webpage, not an extension\n\nClosest to 'just use our website' — probably skip.",
+          },
+        ];
+
+        return (
+          <>
+            <Tweaks theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
+            <DesignCanvas minScale={0.15} maxScale={2}>
+              {sections.map((s, si) => (
+                <DCSection key={si} title={s.title} subtitle={s.subtitle}>
+                  <DCArtboard
+                    label={null}
+                    width={undefined}
+                    height={undefined}
+                    style={{
+                      background: "transparent",
+                      boxShadow: "none",
+                      borderRadius: 0,
+                      overflow: "visible",
+                    }}
+                  >
+                    <s.Cmp density={density} />
+                  </DCArtboard>
+                  <div style={{ position: "relative", width: 280, flexShrink: 0 }}>
+                    <DCPostIt top={20} left={20} width={240} rotate={-1.5}>
+                      <div style={{ whiteSpace: "pre-wrap" }}>{s.note}</div>
+                    </DCPostIt>
+                  </div>
+                </DCSection>
+              ))}
+
+              {/* Recommendation section */}
+              <DCSection
+                title="Recommended pairing"
+                subtitle="S1 + S2 — same UI, different mount point. WXT can build both from one codebase."
+              >
+                <div
+                  style={{
+                    width: 900,
+                    background: "#fffdf6",
+                    border: "1px solid #1a1610",
+                    borderRadius: 4,
+                    padding: 24,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 14,
+                    boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+                  }}
+                >
+                  <div style={{ fontSize: 18, fontWeight: 600 }}>
+                    Hybrid: native on each browser
+                  </div>
+                  <div style={{ fontSize: 13, color: "#5a5040", lineHeight: 1.5 }}>
+                    Chrome build mounts the panel via <code>chrome.sidePanel.open()</code>. Firefox
+                    build mounts the exact same Vue root via <code>browser.sidebarAction</code> + a
+                    sidebar_action manifest entry. Same React tree, same storage, same messaging —
+                    the only fork is the manifest and the open-panel button handler.
+                  </div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 16,
+                      marginTop: 8,
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: 14,
+                        background: "#f2ecdd",
+                        border: "1px solid #d9cfb6",
+                        borderRadius: 2,
+                      }}
+                    >
+                      <div style={{ fontWeight: 600, marginBottom: 6 }}>Chrome / Edge</div>
+                      <ul
+                        style={{
+                          margin: 0,
+                          paddingLeft: 18,
+                          fontSize: 12,
+                          lineHeight: 1.6,
+                          color: "#5a5040",
+                        }}
+                      >
+                        <li>
+                          MV3 · <code>sidePanel</code> permission
+                        </li>
+                        <li>Click extension icon → panel toggles open</li>
+                        <li>Docked right</li>
+                      </ul>
+                    </div>
+                    <div
+                      style={{
+                        padding: 14,
+                        background: "#f2ecdd",
+                        border: "1px solid #d9cfb6",
+                        borderRadius: 2,
+                      }}
+                    >
+                      <div style={{ fontWeight: 600, marginBottom: 6 }}>Firefox</div>
+                      <ul
+                        style={{
+                          margin: 0,
+                          paddingLeft: 18,
+                          fontSize: 12,
+                          lineHeight: 1.6,
+                          color: "#5a5040",
+                        }}
+                      >
+                        <li>
+                          MV2 · <code>sidebar_action</code> manifest
+                        </li>
+                        <li>Click extension icon → toggles the Firefox sidebar</li>
+                        <li>Docked left (Firefox convention)</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#7a561a", fontWeight: 600, marginTop: 4 }}>
+                    Fallback for edge cases (popout / detached): ship S5 behind a "Pop out" button
+                    in the header — solves the "I want it while the PoE client is focused" case.
+                  </div>
+                </div>
+              </DCSection>
+            </DesignCanvas>
+          </>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("tweaks-root")).render(<App />);
+    </script>
+  </body>
+</html>

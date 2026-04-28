@@ -1,0 +1,355 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import InstallCTA from '../components/InstallCTA.astro';
+---
+<Base title="How It Works" description="How the PoE Shopping List extension works: guide detection, saving trade searches, price tracking, and publishing lists.">
+  <div class="min-h-screen flex flex-col bg-bg">
+    <Nav activeTab="how" showLeague={false} />
+
+    <!-- Page title -->
+    <div class="bg-section border-b border-stroke-soft px-12 py-14">
+      <div class="max-w-[1200px] mx-auto">
+        <p class="text-[11px] font-bold tracking-[1.2px] text-gold-ink-str uppercase mb-2.5">How it works</p>
+        <h1 class="text-[34px] font-bold tracking-[-0.5px] leading-[1.15] mb-3 text-ink">
+          From build guide to shopping list in three clicks.
+        </h1>
+        <p class="text-[14px] text-ink-muted leading-[1.55] max-w-[640px]">
+          The extension does one job: watch the pages you already visit (pobb.in, pathofexile.com/trade,
+          poewiki, YouTube descriptions) and turn their trade links into organized, trackable shopping lists.
+        </p>
+      </div>
+    </div>
+
+    <!-- Body: TOC + content -->
+    <div class="max-w-[1200px] mx-auto w-full flex-1">
+      <div class="grid grid-cols-[180px_1fr]">
+
+        <!-- TOC sidebar -->
+        <aside class="border-r border-stroke-soft py-6">
+          <nav class="sticky top-6 text-[12px]">
+            <p class="text-[10px] font-bold tracking-[1.2px] text-ink-muted uppercase mb-2.5 px-3.5">On this page</p>
+            {[
+              { href: '#detect',  label: '1 · Guide detection' },
+              { href: '#save',    label: '2 · Save searches' },
+              { href: '#prices',  label: '3 · Prices refresh' },
+              { href: '#publish', label: '4 · Publish & follow' },
+              { href: '#why-ext', label: 'Why an extension' },
+              { href: '#faq',     label: 'FAQ' },
+            ].map(item => (
+              <a
+                href={item.href}
+                class="block py-1.5 px-3.5 text-ink-muted hover:text-ink no-underline border-l-2 border-stroke-soft hover:border-gold"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+
+        <!-- Main content -->
+        <div>
+
+          <!-- Step 1 -->
+          <section id="detect" class="px-12 py-10 border-b border-stroke-soft scroll-mt-[72px]">
+            <p class="text-[10px] font-bold tracking-[1.2px] text-gold-ink-str uppercase mb-2">Step 1</p>
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">You open a build guide — we notice.</h2>
+            <div class="grid grid-cols-[1fr_420px] gap-10 items-start">
+              <div>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  When you visit a page with a Path of Building export link (pobb.in, pastebin, the official forums,
+                  a YouTube description) the extension recognizes it and checks whether anyone has already published
+                  shopping lists for that build.
+                </p>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  A small toast appears with the build name and the lists attached to it. One click opens the list
+                  on pathofexile.com/trade — all filters pre-applied.
+                </p>
+                <div class="bg-gold-soft border border-gold-edge border-l-4 rounded-sm p-3.5 max-w-[680px]">
+                  <p class="text-[12px] font-bold tracking-[0.4px] uppercase text-gold-ink-str mb-1">Fully passive</p>
+                  <p class="text-[13px] leading-[1.55] text-ink">
+                    If no one has published a list for this guide yet, the guide is still indexed so others searching
+                    for it can find your list later.
+                  </p>
+                </div>
+              </div>
+              <!-- Diagram: guide detection -->
+              <div class="relative w-full bg-section border border-stroke-soft rounded-sm p-3.5 overflow-hidden" style="height: 260px">
+                <div class="bg-[#1f1912] rounded-sm h-full p-2.5 flex flex-col gap-1.5 relative">
+                  <div class="flex items-center gap-1.5">
+                    <div class="h-2.5 w-[90px] bg-[#c29a54] rounded-[1px]"></div>
+                    <div class="flex-1"></div>
+                    <div class="h-2 w-[50px] bg-[#3a3226] rounded-[1px]"></div>
+                  </div>
+                  <div class="h-1.5 w-3/4 bg-[#3a3226] rounded-[1px]"></div>
+                  <div class="h-1.5 w-[55%] bg-[#3a3226] rounded-[1px]"></div>
+                  <div class="flex-1 bg-[#15110b] rounded-[1px] p-1.5 flex flex-col gap-1">
+                    <div class="h-1 w-[90%] bg-[#2a2218] rounded-[1px]"></div>
+                    <div class="h-1 w-[80%] bg-[#2a2218] rounded-[1px]"></div>
+                    <div class="h-1 w-[70%] bg-[#2a2218] rounded-[1px]"></div>
+                    <div class="h-1 w-[60%] bg-[#2a2218] rounded-[1px]"></div>
+                  </div>
+                </div>
+                <!-- Toast -->
+                <div class="absolute top-5 right-5 bg-bg border border-gold-edge border-l-[3px] border-l-gold rounded-sm p-2 text-[10px] w-[180px] shadow-lg">
+                  <p class="font-bold text-ink mb-0.5">⚑ Guide detected</p>
+                  <p class="text-ink-muted leading-snug text-[9px]">Boneshatter Slayer by Pohx — 3 lists available</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Step 2 -->
+          <section id="save" class="px-12 py-10 border-b border-stroke-soft bg-section scroll-mt-[72px]">
+            <p class="text-[10px] font-bold tracking-[1.2px] text-gold-ink-str uppercase mb-2">Step 2</p>
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">Save searches without leaving the trade page.</h2>
+            <div class="grid grid-cols-[1fr_420px] gap-10 items-start">
+              <div>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  The extension docks a sidebar onto pathofexile.com/trade. Every time you craft a search you want
+                  to keep, one click adds it to a named list — "Leveling kit", "Endgame bossing", "Budget version".
+                </p>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  Lists remember filters exactly as you saved them, including stat weights, sockets, and affix ranges.
+                  Open the list later and the search page reloads with the same parameters against live listings.
+                </p>
+                <div class="bg-good-bg border border-good-edge border-l-4 rounded-sm p-3.5 max-w-[680px]">
+                  <p class="text-[12px] font-bold tracking-[0.4px] uppercase text-good-ink mb-1">Keyboard-first</p>
+                  <p class="text-[13px] leading-[1.55] text-ink">
+                    <code>Ctrl+S</code> saves the current search. <code>Ctrl+Shift+L</code> cycles lists.
+                    Nothing you had to click before is further away now.
+                  </p>
+                </div>
+              </div>
+              <!-- Trade sidebar diagram -->
+              <div class="w-full border border-stroke-soft rounded-sm overflow-hidden flex bg-[#1f1912]" style="height: 260px">
+                <div class="flex-1 p-2.5 flex flex-col gap-1.5">
+                  <div class="flex gap-1">
+                    <div class="h-3 w-[60px] bg-[#2a2218] rounded-[1px]"></div>
+                    <div class="h-3 w-[80px] bg-[#2a2218] rounded-[1px]"></div>
+                    <div class="flex-1"></div>
+                    <div class="h-3 w-10 bg-[#7a561a] rounded-[1px]"></div>
+                  </div>
+                  <div class="bg-[#15110b] p-1.5 rounded-[1px] flex flex-col gap-0.5">
+                    <div class="h-1 bg-[#231c10] rounded-[1px]"></div>
+                    <div class="h-1 bg-[#231c10] rounded-[1px]"></div>
+                    <div class="h-1 bg-[#231c10] rounded-[1px]"></div>
+                  </div>
+                  {[1,2,3,4].map(_ => (
+                    <div class="bg-[#15110b] p-1.5 rounded-[1px] flex items-center gap-1.5 border border-[#2a2218]">
+                      <div class="w-3.5 h-3.5 bg-[#3a3226] rounded-[1px] shrink-0"></div>
+                      <div class="flex-1 flex flex-col gap-0.5">
+                        <div class="h-1 w-3/4 bg-[#c29a54] rounded-[1px]"></div>
+                        <div class="h-1 w-[45%] bg-[#3a3226] rounded-[1px]"></div>
+                      </div>
+                      <div class="w-9 h-2.5 bg-[#7a561a] rounded-[1px]"></div>
+                    </div>
+                  ))}
+                </div>
+                <div class="w-[140px] bg-bg border-l-2 border-[#1a1610] flex flex-col shrink-0">
+                  <div class="h-5 bg-chrome border-b border-stroke flex items-center px-1.5 gap-1 shrink-0">
+                    <div class="w-2 h-2 bg-gold border border-gold-edge rounded-[1px]"></div>
+                    <span class="text-[8px] font-bold text-ink">Shopping List</span>
+                  </div>
+                  <div class="px-1.5 py-1 text-[8px] text-ink-muted uppercase font-bold tracking-[0.3px]">Boneshatter · 6</div>
+                  {[
+                    ['Vaal Molten Shell', '14ex', true],
+                    ['Cyclopean Coil', '45ex', true],
+                    ['Abyssus', '12ex', false],
+                    ["Watcher's Eye", '80ex', false],
+                    ['Blessed Orb', '2c', true],
+                  ].map(([n, p, c]) => (
+                    <div class="flex items-center gap-1 px-1.5 py-[3px] border-b border-stroke-soft">
+                      <div class:list={['w-[7px] h-[7px] border border-stroke rounded-[1px] shrink-0', c ? 'bg-gold border-gold-edge' : '']}></div>
+                      <span class="flex-1 min-w-0 text-[8px] truncate text-ink">{n}</span>
+                      <span class="text-[8px] font-semibold text-gold-ink-str font-mono">{p}</span>
+                    </div>
+                  ))}
+                  <div class="flex-1"></div>
+                  <div class="p-1.5 border-t border-stroke bg-section">
+                    <div class="h-4 bg-gold border border-gold-edge rounded-[1px] flex items-center justify-center text-[8px] font-bold text-gold-ink uppercase tracking-[0.3px]">
+                      + Save search
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Step 3 -->
+          <section id="prices" class="px-12 py-10 border-b border-stroke-soft scroll-mt-[72px]">
+            <p class="text-[10px] font-bold tracking-[1.2px] text-gold-ink-str uppercase mb-2">Step 3</p>
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">Prices quietly refresh as you shop.</h2>
+            <div class="grid grid-cols-[1fr_1fr] gap-6 max-w-[980px]">
+              <div>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  Every time you open a saved search, the live results from pathofexile.com/trade load anyway — that's
+                  how the page works. We read them as they arrive and update the list's rolling median in the background.
+                  No polling, no crawling, no extra requests.
+                </p>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  Prices on your list are always shown with a <code>~</code> prefix — they're estimates from recent
+                  listings, not quotes. A build's total is the sum of estimates.
+                </p>
+                <div class="bg-gold-soft border border-gold-edge border-l-4 rounded-sm p-3.5">
+                  <p class="text-[12px] font-bold tracking-[0.4px] uppercase text-gold-ink-str mb-1">No staleness alarms</p>
+                  <p class="text-[13px] leading-[1.55] text-ink">
+                    Prices swing wildly during the first week of a league. We don't guess which is which — no "stale"
+                    warnings, no auto-refresh. The estimate you see is from the last time you looked.
+                  </p>
+                </div>
+              </div>
+              <div class="border border-stroke-soft rounded-sm p-4 bg-section flex flex-col gap-3">
+                <p class="text-[11px] font-bold tracking-[0.6px] uppercase text-ink-muted">How a refresh happens</p>
+                {[
+                  ['You tap', '"Crown of Eyes" in your list'],
+                  ['Trade loads', 'pathofexile.com/trade runs the saved query'],
+                  ['Extension reads', 'median of the first N listings, client-side'],
+                  ['List updates', '~1.8 div → ~2.1 div, silently'],
+                ].map(([k, v], i) => (
+                  <div class="flex gap-3 items-start">
+                    <span class="text-[10px] font-mono text-ink-muted w-3.5 shrink-0 leading-relaxed">0{i + 1}</span>
+                    <div>
+                      <p class="text-[12px] font-semibold text-ink">{k}</p>
+                      <p class="text-[12px] text-ink-muted mt-0.5">{v}</p>
+                    </div>
+                  </div>
+                ))}
+                <p class="text-[11px] text-ink-muted leading-relaxed mt-1 pt-2.5 border-t border-stroke-soft">
+                  The extension never queries trade on its own. Nothing happens in the background.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Step 4 -->
+          <section id="publish" class="px-12 py-10 border-b border-stroke-soft bg-section scroll-mt-[72px]">
+            <p class="text-[10px] font-bold tracking-[1.2px] text-gold-ink-str uppercase mb-2">Step 4</p>
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">Publish your list. Others follow.</h2>
+            <div class="grid grid-cols-[1fr_420px] gap-10 items-start">
+              <div>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  When a list is ready, "Publish" generates a short link
+                  (<code>poe-sl.com/lists/boneshatter-jug</code>) you can drop into your guide, Discord, or stream overlay.
+                </p>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  Anyone who opens the link — with or without the extension — sees the same list of saved searches,
+                  each one-click-ready to run against live trade.
+                </p>
+                <div class="bg-warn border border-warn-edge border-l-4 rounded-sm p-3.5 max-w-[680px]">
+                  <p class="text-[12px] font-bold tracking-[0.4px] uppercase text-warn-ink mb-1">OAuth required</p>
+                  <p class="text-[13px] leading-[1.55] text-ink">
+                    Publishing requires signing in with your Path of Exile account (standard OAuth — we never see
+                    your password). Browsing and following are always public, no login needed.
+                  </p>
+                </div>
+              </div>
+              <!-- Publish share diagram -->
+              <div class="bg-section border border-stroke-soft rounded-sm p-4 flex flex-col gap-2.5 items-center justify-center" style="height: 260px">
+                <div class="flex items-center gap-3 justify-center">
+                  {[
+                    { label: 'Your list',    title: 'Boneshatter EG', body: true },
+                    { label: 'Publish',      title: 'poe-sl.com/\nlists/boneshatter', gold: true },
+                    { label: 'Others follow', title: '♥ 1,204', follow: true },
+                  ].map((card, i) => (
+                    <>
+                      <div class:list={['w-[110px] border rounded-sm p-2', card.gold ? 'bg-gold-soft border-gold-edge' : 'bg-bg border-stroke-soft']}>
+                        <p class:list={['text-[8px] font-bold tracking-[0.4px] uppercase mb-1', card.gold ? 'text-gold-ink-str' : 'text-ink-muted']}>{card.label}</p>
+                        {card.body && (
+                          <div class="flex flex-col gap-0.5 mt-1">
+                            {[1,2,3,4].map(_ => <div class="h-[3px] bg-stroke-soft rounded-[1px]"></div>)}
+                          </div>
+                        )}
+                        {card.gold && (
+                          <p class="text-[9px] text-gold-ink-str font-mono leading-snug">{card.title}</p>
+                        )}
+                        {card.follow && (
+                          <>
+                            <div class="flex items-center gap-1 mb-1">
+                              {[1,2,3].map(_ => <div class="w-2.5 h-2.5 rounded-full bg-surface"></div>)}
+                              <span class="text-[8px] text-ink-muted">+847</span>
+                            </div>
+                            <p class="text-[9px] font-bold text-gold-ink-str font-mono">{card.title}</p>
+                          </>
+                        )}
+                      </div>
+                      {i < 2 && <span class="text-[16px] text-gold-ink-str">→</span>}
+                    </>
+                  ))}
+                </div>
+                <p class="text-[10px] text-ink-muted text-center leading-snug mt-1">
+                  Followers get price updates when items on their list change.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Why an extension -->
+          <section id="why-ext" class="px-12 py-10 border-b border-stroke-soft scroll-mt-[72px]">
+            <p class="text-[10px] font-bold tracking-[1.2px] text-gold-ink-str uppercase mb-2">Design decision</p>
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">Why an extension, not just a website?</h2>
+            <div class="grid grid-cols-[1fr_1fr] gap-6">
+              <div>
+                <p class="text-[14px] leading-[1.65] text-ink mb-3">
+                  The moment you leave pathofexile.com/trade, you're out of context. A list on a website means
+                  copy-pasting item queries, losing stat weights, and trying to remember which mod roll you cared about.
+                </p>
+                <p class="text-[14px] leading-[1.65] text-ink">
+                  The extension lives <em>inside</em> the trade page. It reads and writes the same URL you're already
+                  looking at, so a saved search is literally the page state. Nothing is re-interpreted.
+                </p>
+              </div>
+              <div>
+                <div class="bg-gold-soft border border-gold-edge border-l-4 rounded-sm p-3.5 mb-3">
+                  <p class="text-[12px] font-bold tracking-[0.4px] uppercase text-gold-ink-str mb-1">The shorter version</p>
+                  <p class="text-[13px] leading-[1.55] text-ink">
+                    GGG already built the best item search engine. We don't replace it — we just bookmark it, beautifully.
+                  </p>
+                </div>
+                <p class="text-[12px] text-ink-muted leading-relaxed">
+                  The website you're on now exists so that people who don't have the extension can browse what exists,
+                  discover builds, and hit "install". Every published list is viewable here, but the experience is
+                  intentionally worse — it's a preview, not the product.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- FAQ -->
+          <section id="faq" class="px-12 py-10 border-b border-stroke-soft scroll-mt-[72px]">
+            <h2 class="text-[22px] font-bold tracking-[-0.3px] mb-4 text-ink">Frequently asked</h2>
+            <div class="flex flex-col gap-3.5 max-w-[720px]">
+              {[
+                ['Does this work on PoE1 and PoE2?', 'Yes. The extension detects which trade page you\'re on and scopes lists accordingly. You can keep PoE1 and PoE2 lists side-by-side; they never mix.'],
+                ['Do prices auto-update?', 'Kind of — but only as a side effect of you using the list. When you tap a saved search, pathofexile.com/trade runs it live; the extension reads the results and updates the rolling median. Opening a list is how prices refresh. We never crawl trade, never poll in the background.'],
+                ['Will I get banned for using this?', 'No. The extension only reads pages you loaded yourself and stays within GGG\'s published rate limits. We don\'t do trade automation, price scraping, or any form of bot-adjacent behavior.'],
+                ['Can I edit a list I published?', 'Anytime. Edits propagate to followers immediately; a small change-log shows what moved so nobody is surprised by silent edits.'],
+                ['What happens at league end?', 'Lists scoped to a dying league are archived (still readable, no longer followable). Authors are notified when the new league drops so they can re-publish updated versions.'],
+                ['Is there a mobile version?', 'No, and probably never. pathofexile.com/trade isn\'t usable on mobile; we stay where you are.'],
+              ].map(([q, a]) => (
+                <div class="bg-section border border-stroke-soft rounded-sm px-4 py-3.5">
+                  <p class="text-[14px] font-bold text-ink mb-1.5">{q}</p>
+                  <p class="text-[13px] text-ink-muted leading-relaxed">{a}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <!-- Footer CTA -->
+          <div class="px-12 py-12 text-center bg-section">
+            <p class="text-[22px] font-bold tracking-[-0.3px] text-ink mb-2.5">Ready to stop copy-pasting trade links?</p>
+            <p class="text-[13px] text-ink-muted mb-5">Free, open source, no account needed until you publish.</p>
+            <div class="flex gap-2.5 justify-center flex-wrap">
+              <InstallCTA browser="Chrome" />
+              <InstallCTA browser="Firefox" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <Footer />
+  </div>
+</Base>

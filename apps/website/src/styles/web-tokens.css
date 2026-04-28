@@ -1,0 +1,32 @@
+/* Website-specific palette extensions */
+
+:root,
+[data-theme="light"] {
+  --poe-section-bg: #f2ecdd;
+  --poe-footer-bg: #ede7d4;
+  --poe-chrome: #eee7d8;
+  --poe-good: #3d5a1c;
+  --poe-good-bg: #d9e7c5;
+  --poe-good-edge: #7a9a4a;
+  --poe-good-ink: #2a4010;
+}
+
+[data-theme="dark"] {
+  --poe-section-bg: #1c1810;
+  --poe-footer-bg: #191510;
+  --poe-chrome: #1f1a12;
+  --poe-good: #a8c87a;
+  --poe-good-bg: #1f2a14;
+  --poe-good-edge: #4a6a2a;
+  --poe-good-ink: #c8e89a;
+}
+
+@theme inline {
+  --color-section: var(--poe-section-bg);
+  --color-footer: var(--poe-footer-bg);
+  --color-chrome: var(--poe-chrome);
+  --color-good: var(--poe-good);
+  --color-good-bg: var(--poe-good-bg);
+  --color-good-edge: var(--poe-good-edge);
+  --color-good-ink: var(--poe-good-ink);
+}

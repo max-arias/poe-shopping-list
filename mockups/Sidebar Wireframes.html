@@ -1,0 +1,388 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>PoE Shopping List — Sidebar Wireframes</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #efece6;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        color: #2a2520;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Wireframe tokens — values are swapped by [data-theme] + [data-density] attrs on #root */
+      :root,
+      [data-theme="light"] {
+        /* PoE-brand-adjacent palette (originals, not lifted): dark umber, oxidised gold, parchment ink */
+        --wf-bg: #fdfaf3;
+        --wf-frame: #1a1610;
+        --wf-chrome: #eee7d8;
+        --wf-footer-bg: #f2ecdd;
+        --wf-section-bg: #f2ecdd;
+        --wf-tab-bg: #f5efe0;
+
+        --wf-ink: #231e16;
+        --wf-muted: #7a6f5c;
+
+        --wf-stroke: #3a3226;
+        --wf-stroke-soft: #d9cfb6;
+        --wf-line: #bfb49a;
+        --wf-block: #e8e0c9;
+        --wf-pill-bg: #e8e0c9;
+
+        --wf-gold: #b07e28;
+        --wf-gold-edge: #7a561a;
+        --wf-gold-ink: #1a1208;
+        --wf-gold-ink-strong: #7a561a;
+        --wf-gold-soft: #ecd9a6;
+
+        --wf-warn-bg: #f5dfb0;
+        --wf-warn-ink: #7a4a0f;
+        --wf-warn-edge: #c18a38;
+
+        --wf-good-bg: #d9e7c5;
+        --wf-good-ink: #3d5a1c;
+        --wf-good-edge: #7a9a4a;
+      }
+
+      [data-theme="dark"] {
+        /* Dark PoE trader vibe — oiled umber bg, aged parchment ink, oxidised gold */
+        --wf-bg: #15110b;
+        --wf-frame: #0a0804;
+        --wf-chrome: #1f1a12;
+        --wf-footer-bg: #1a160f;
+        --wf-section-bg: #1c1810;
+        --wf-tab-bg: #1a160f;
+
+        --wf-ink: #e8dcbe;
+        --wf-muted: #8a7e66;
+
+        --wf-stroke: #3a3226;
+        --wf-stroke-soft: #2a2418;
+        --wf-line: #4a4030;
+        --wf-block: #231e14;
+        --wf-pill-bg: #231e14;
+
+        --wf-gold: #c28a2a;
+        --wf-gold-edge: #5a3f10;
+        --wf-gold-ink: #140e04;
+        --wf-gold-ink-strong: #e0b15a;
+        --wf-gold-soft: #3a2a10;
+
+        --wf-warn-bg: #3a2810;
+        --wf-warn-ink: #e0a850;
+        --wf-warn-edge: #7a5a20;
+
+        --wf-good-bg: #1f2a14;
+        --wf-good-ink: #a8c87a;
+        --wf-good-edge: #4a6a2a;
+      }
+
+      /* Tweaks panel */
+      .tweaks {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        background: #fffdf6;
+        border: 1px solid #1a1610;
+        border-radius: 4px;
+        padding: 12px 14px;
+        font-size: 12px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        z-index: 100;
+        min-width: 200px;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+      }
+      .tweaks h4 {
+        margin: 0 0 10px;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #7a6f5c;
+        font-weight: 600;
+      }
+      .tweaks .row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 6px 0;
+      }
+      .tweaks label {
+        font-size: 11px;
+        color: #7a6f5c;
+      }
+      .tweaks .seg {
+        display: inline-flex;
+        border: 1px solid #3a3226;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .tweaks .seg button {
+        border: 0;
+        background: transparent;
+        padding: 4px 10px;
+        font-size: 11px;
+        cursor: pointer;
+        color: #2a2520;
+        font-family: inherit;
+      }
+      .tweaks .seg button.on {
+        background: #b07e28;
+        color: #140e04;
+        font-weight: 600;
+      }
+
+      /* Top header bar */
+      .topbar {
+        padding: 28px 60px 10px;
+        display: flex;
+        align-items: flex-end;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .topbar h1 {
+        font-size: 26px;
+        font-weight: 600;
+        margin: 0 0 2px;
+        letter-spacing: -0.4px;
+      }
+      .topbar .sub {
+        font-size: 13px;
+        color: #7a6f5c;
+        margin-top: 4px;
+        max-width: 640px;
+        line-height: 1.5;
+      }
+
+      /* Canvas sits under the topbar — clip panels' shadows gracefully */
+      .canvas-host {
+        height: calc(100vh - 116px);
+        width: 100vw;
+        overflow: hidden;
+      }
+    </style>
+
+    <script
+      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="topbar">
+      <div>
+        <h1>PoE Shopping List · Side Panel Wireframes</h1>
+        <div class="sub">
+          Five lo-fi directions for the Chrome side panel. Each variation shows its key states
+          stacked vertically (empty → active draft → following → modal/publish). Pan &amp; zoom the
+          canvas. Toggle density and theme from the tweaks panel. Brand cues — umber/gold/parchment
+          — are tonally inspired by PoE but the UI is original.
+        </div>
+      </div>
+    </div>
+
+    <div id="tweaks-root"></div>
+    <div id="root" class="canvas-host" data-theme="light" data-density="roomy"></div>
+
+    <script type="text/babel" src="design-canvas.jsx"></script>
+    <script type="text/babel" src="primitives.jsx"></script>
+    <script type="text/babel" src="variations.jsx"></script>
+
+    <script type="text/babel">
+      const { DesignCanvas, DCSection, DCArtboard, DCPostIt, V1, V2, V3, V4, V5 } = window;
+
+      function Tweaks({ theme, setTheme, density, setDensity }) {
+        return (
+          <div className="tweaks">
+            <h4>Tweaks</h4>
+            <div className="row">
+              <label>Theme</label>
+              <div style={{ flex: 1 }} />
+              <div className="seg">
+                <button className={theme === "light" ? "on" : ""} onClick={() => setTheme("light")}>
+                  Light
+                </button>
+                <button className={theme === "dark" ? "on" : ""} onClick={() => setTheme("dark")}>
+                  Dark
+                </button>
+              </div>
+            </div>
+            <div className="row">
+              <label>Density</label>
+              <div style={{ flex: 1 }} />
+              <div className="seg">
+                <button
+                  className={density === "roomy" ? "on" : ""}
+                  onClick={() => setDensity("roomy")}
+                >
+                  Roomy
+                </button>
+                <button
+                  className={density === "compact" ? "on" : ""}
+                  onClick={() => setDensity("compact")}
+                >
+                  Compact
+                </button>
+              </div>
+            </div>
+            <div
+              style={{
+                marginTop: 10,
+                paddingTop: 10,
+                borderTop: "1px solid #e8e0c9",
+                fontSize: 10,
+                color: "#7a6f5c",
+                lineHeight: 1.5,
+              }}
+            >
+              <b>Pan:</b> drag bg · <b>Zoom:</b> pinch / ⌘-scroll
+            </div>
+          </div>
+        );
+      }
+
+      function App() {
+        const [theme, setTheme] = React.useState(() => localStorage.getItem("wf-theme") || "light");
+        const [density, setDensity] = React.useState(
+          () => localStorage.getItem("wf-density") || "roomy",
+        );
+
+        React.useEffect(() => {
+          const r = document.getElementById("root");
+          r.setAttribute("data-theme", theme);
+          r.setAttribute("data-density", density);
+          localStorage.setItem("wf-theme", theme);
+          localStorage.setItem("wf-density", density);
+        }, [theme, density]);
+
+        // Each variation is a DCSection with its states as artboards in a row.
+        const variations = [
+          {
+            key: "v1",
+            title: "V1 · Classic stacked",
+            subtitle:
+              "Draft on top, Following below, single scroll. No tabs. Gold CTA pinned to footer.",
+            states: [
+              ["Empty / first-run", { state: "empty" }],
+              ["Draft with items", { state: "draft" }],
+              ["Following attached", { state: "following" }],
+              ["Capture unavailable (F15)", { state: "capture-unavailable" }],
+            ],
+            Cmp: V1,
+            note: "Safest IA. Everything visible in one scroll — good for returning users, but the first-time user still has to scroll to discover Following.",
+            noteOffset: { top: 80, right: -210 },
+          },
+          {
+            key: "v2",
+            title: "V2 · Tabbed",
+            subtitle: "Three tabs: Mine / Following / Publish. One focused surface at a time.",
+            states: [
+              ["Mine · empty", { state: "empty" }],
+              ["Mine · active", { state: "draft" }],
+              ["Following tab", { state: "following" }],
+              ["Publish tab", { state: "publish" }],
+            ],
+            Cmp: V2,
+            note: "Clearest mental model. Cost: follows are one tap away, not always visible. Publish gets its own dedicated space.",
+            noteOffset: { top: 80, right: -210 },
+          },
+          {
+            key: "v3",
+            title: "V3 · Folder tree",
+            subtitle:
+              "All lists (draft + followed) as collapsible folders. Draft is pinned at top with a gold DRAFT pill.",
+            states: [
+              ["All collapsed · empty draft", { state: "empty" }],
+              ["Draft open", { state: "draft" }],
+              ["Following folder open", { state: "following" }],
+            ],
+            Cmp: V3,
+            note: "Echoes the Better-Trading folder model people already know. Scales to many followed lists. Risk: hierarchy adds cognitive weight for first-time users.",
+            noteOffset: { top: 80, right: -210 },
+          },
+          {
+            key: "v4",
+            title: "V4 · Modal-first capture",
+            subtitle:
+              'Bottom-sheet "Save Search" modal with rich price stats preview before commit. Emphasises the capture moment.',
+            states: [
+              ["Active draft", { state: "draft" }],
+              ["Save-Search modal open", { state: "modal" }],
+            ],
+            Cmp: V4,
+            note: "Turns capture into a confident moment — user sees min/median/avg + sample size before saving. Splits 'name only' vs 'save with price' so F5 outages fall back gracefully.",
+            noteOffset: { top: 80, right: -210 },
+          },
+          {
+            key: "v5",
+            title: "V5 · Dashboard",
+            subtitle:
+              "Summary stats (total / priced / freshest) above items, progress bar for completeness, Following as a collapsed bottom drawer.",
+            states: [
+              ["Empty draft · zeroed stats", { state: "empty" }],
+              ["Active draft", { state: "draft" }],
+            ],
+            Cmp: V5,
+            note: "Publisher-oriented. Progress bar and freshness badge make the 'is this list shippable?' question answerable at a glance. Following drawer keeps the fold clean.",
+            noteOffset: { top: 80, right: -210 },
+          },
+        ];
+
+        return (
+          <>
+            <Tweaks theme={theme} setTheme={setTheme} density={density} setDensity={setDensity} />
+            <DesignCanvas minScale={0.2} maxScale={2.5}>
+              {variations.map((v) => (
+                <DCSection key={v.key} title={v.title} subtitle={v.subtitle}>
+                  {v.states.map(([label, props], i) => (
+                    <DCArtboard
+                      key={i}
+                      label={label}
+                      width={380}
+                      height={640}
+                      style={{
+                        background: "transparent",
+                        boxShadow: "none",
+                        borderRadius: 0,
+                        overflow: "visible",
+                      }}
+                    >
+                      <v.Cmp density={density} {...props} />
+                    </DCArtboard>
+                  ))}
+                  {/* Trailing post-it with the direction's rationale */}
+                  <div style={{ position: "relative", width: 260, flexShrink: 0 }}>
+                    <DCPostIt top={40} left={20} width={220} rotate={-1.5}>
+                      {v.note}
+                    </DCPostIt>
+                  </div>
+                </DCSection>
+              ))}
+            </DesignCanvas>
+          </>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("tweaks-root")).render(<App />);
+    </script>
+  </body>
+</html>

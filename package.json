@@ -1,0 +1,37 @@
+{
+  "name": "poe-shopping-list",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "ext": "vp run --filter @poe-sl/extension dev",
+    "ext:build": "vp run --filter @poe-sl/extension build",
+    "ext:firefox": "vp run --filter @poe-sl/extension build:firefox",
+    "ext:zip": "vp run --filter @poe-sl/extension zip",
+    "ext:zip:firefox": "vp run --filter @poe-sl/extension zip:firefox",
+    "ext:check": "vp run --filter @poe-sl/extension check",
+    "web": "vp run --filter @poe-sl/website dev",
+    "web:build": "vp run --filter @poe-sl/website build",
+    "web:check": "vp run --filter @poe-sl/website check",
+    "web:deploy": "vp run --filter @poe-sl/website deploy",
+    "api": "vp run --filter @poe-sl/api dev",
+    "api:deploy": "vp run --filter @poe-sl/api deploy",
+    "api:check": "vp run --filter @poe-sl/api typecheck",
+    "api:migrate": "vp run --filter @poe-sl/api db:migrate:local",
+    "api:migrate:remote": "vp run --filter @poe-sl/api db:migrate:remote",
+    "test": "vp run --filter @poe-sl/trade-dom test",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --build"
+  },
+  "dependencies": {
+    "@webext-core/messaging": "^2.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "bun@1.3.13"
+}
