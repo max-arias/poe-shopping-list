@@ -65,6 +65,13 @@ export default defineContentScript({
       return capture;
     });
 
+    onMessage("autoCaptureRead", () => {
+      console.log("[poe-sl] content: autoCaptureRead called");
+      const capture = buildCapture(document, window.location.href);
+      console.log("[poe-sl] content: autoCaptureRead result", capture);
+      return capture;
+    });
+
     onMessage("searchBarGet", () => {
       const text = getSearchBarText(document);
       console.log("[poe-sl] content: searchBarGet =", JSON.stringify(text));
