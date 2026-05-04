@@ -7,7 +7,7 @@ import {
   POE2_LEAGUES,
   DEFAULT_POE1_LEAGUE,
   DEFAULT_POE2_LEAGUE,
-} from "@poe-sl/schema";
+} from "@/types";
 
 const ui = useUiStore();
 const { settings, updateSettings } = useSettings();
@@ -132,27 +132,7 @@ function setGame(g: "poe1" | "poe2") {
           </button>
         </div>
 
-        <!-- Recent purchases -->
-        <div class="px-3 py-3 flex items-center justify-between gap-3">
-          <div>
-            <p class="text-[12px] text-ink">Track recent purchases</p>
-            <p class="text-[10px] text-ink-muted">Log items when clicking Travel to Hideout</p>
-          </div>
-          <button
-            @click="updateSettings({ enableRecentPurchases: !settings.enableRecentPurchases })"
-            class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
-            :class="
-              settings.enableRecentPurchases
-                ? 'bg-gold border-gold-edge'
-                : 'bg-surface border-stroke'
-            "
-          >
-            <div
-              class="w-3.5 h-3.5 rounded-full bg-white shadow transition-transform"
-              :class="settings.enableRecentPurchases ? 'translate-x-4' : 'translate-x-0'"
-            />
-          </button>
-        </div>
+
       </div>
     </div>
   </div>

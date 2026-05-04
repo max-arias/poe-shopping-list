@@ -73,7 +73,7 @@ async function handleCreate() {
   );
   creating.value = false;
   closeNewForm();
-  ui.openDetail("mine", d.id);
+  ui.openDetail(d.id);
 }
 
 async function confirmDelete() {
@@ -190,6 +190,13 @@ async function confirmDelete() {
         </div>
 
         <BtnGold v-else label="+ New List" size="md" @click="openNewForm" />
+        <BtnGhost
+          v-if="!showNewForm"
+          label="📥 Import"
+          size="md"
+          class="ml-2"
+          @click="ui.importSheetOpen = true"
+        />
       </div>
     </template>
   </div>

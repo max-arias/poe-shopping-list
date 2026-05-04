@@ -182,6 +182,6 @@ function closeForm() {
 
     <BtnGold v-else label="+ Create List" size="md" :full="false" data-testid="create-list-btn" @click="openForm" />
 
-    <p class="text-[10px] text-ink-muted mt-1">Or explore the Trending tab for inspiration.</p>
+    <p class="text-[10px] text-ink-muted mt-1">Create your first shopping list to get started.</p>
   </div>
 </template>

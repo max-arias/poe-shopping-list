@@ -1,4 +1,4 @@
-import type { Draft } from "@poe-sl/schema";
+import type { Draft } from "@/types";
 
 export function injectFab(drafts: Draft[], url: string) {
   if (sessionStorage.getItem("poe-sl-fab-dismissed")) {

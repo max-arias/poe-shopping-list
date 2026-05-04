@@ -1,6 +1,6 @@
 import { storage } from "wxt/utils/storage";
 import { ref, onMounted, onUnmounted } from "vue";
-import { type Settings, DEFAULT_SETTINGS } from "@poe-sl/schema";
+import { type Settings, DEFAULT_SETTINGS } from "@/types";
 
 const settingsItem = storage.defineItem<Settings>("local:settings:v1", {
   fallback: DEFAULT_SETTINGS,

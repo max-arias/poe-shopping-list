@@ -1,22 +1,20 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export type TabId = "mine" | "following" | "trending" | "purchases";
-export type PanelView =
-  | { type: "tabs" }
-  | { type: "detail"; source: "mine"; draftId: string }
-  | { type: "detail"; source: "following"; listSlug?: string };
+export type TabId = "mine";
+export type PanelView = { type: "tabs" } | { type: "detail"; draftId: string };
 
 export const useUiStore = defineStore("ui", () => {
   const activeTab = ref<TabId>("mine");
   const currentView = ref<PanelView>({ type: "tabs" });
   const settingsOpen = ref(false);
   const saveModalOpen = ref(false);
-  const publishSheetOpen = ref(false);
   const captureUnavailable = ref(false);
   const kebabOpenItemId = ref<string | null>(null);
   const pendingSaveName = ref("");
   const editSheetItemId = ref<string | null>(null);
+  const exportSheetOpen = ref(false);
+  const importSheetOpen = ref(false);
 
   function setTab(tab: TabId) {
     activeTab.value = tab;
@@ -24,14 +22,8 @@ export const useUiStore = defineStore("ui", () => {
     kebabOpenItemId.value = null;
   }
 
-  function openDetail(source: "mine", draftId: string): void;
-  function openDetail(source: "following", listSlug?: string): void;
-  function openDetail(source: "mine" | "following", slugOrId?: string) {
-    if (source === "mine") {
-      currentView.value = { type: "detail", source: "mine", draftId: slugOrId! };
-    } else {
-      currentView.value = { type: "detail", source: "following", listSlug: slugOrId };
-    }
+  function openDetail(draftId: string): void {
+    currentView.value = { type: "detail", draftId };
   }
 
   function closeDetail() {
@@ -74,7 +66,6 @@ export const useUiStore = defineStore("ui", () => {
     currentView,
     settingsOpen,
     saveModalOpen,
-    publishSheetOpen,
     captureUnavailable,
     kebabOpenItemId,
     pendingSaveName,
@@ -89,5 +80,7 @@ export const useUiStore = defineStore("ui", () => {
     closeEditSheet,
     toggleKebab,
     closeKebab,
+    exportSheetOpen,
+    importSheetOpen,
   };
 });

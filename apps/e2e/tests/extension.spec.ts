@@ -14,10 +14,8 @@ test.describe("Extension E2E", () => {
     await expect(page.getByTestId("chrome-bar-title")).toBeVisible();
     await expect(page.getByTestId("chrome-bar-title")).toHaveText("PoE Shopping List");
 
-    // Tab buttons
+    // Tab header (single tab — "My Lists")
     await expect(page.getByTestId("tab-mine")).toBeVisible();
-    await expect(page.getByTestId("tab-following")).toBeVisible();
-    await expect(page.getByTestId("tab-trending")).toBeVisible();
 
     // Empty-state content in Mine tab
     await expect(page.getByTestId("empty-mine")).toBeVisible();

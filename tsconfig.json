@@ -1,9 +1,6 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/schema" },
-    { "path": "packages/trade-dom" },
-    { "path": "apps/extension" },
-    { "path": "apps/api" }
+    { "path": "apps/extension" }
   ]
 }

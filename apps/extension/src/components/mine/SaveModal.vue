@@ -14,7 +14,7 @@ const { settings } = useSettings();
 
 const itemName = ref("");
 const saving = ref(false);
-const capture = ref<import("@poe-sl/schema").TradeCapture | null>(null);
+const capture = ref<import("@/types").TradeCapture | null>(null);
 const loadingCapture = ref(false);
 
 async function getActiveTabId(): Promise<number | undefined> {

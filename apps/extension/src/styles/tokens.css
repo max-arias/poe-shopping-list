@@ -1,0 +1,97 @@
+/* ─────────────────────────────────────────────────────────────────
+   PoE Shopping List — design token layer for Tailwind v4
+   Import AFTER `@import "tailwindcss"` in each app entry CSS.
+   ──────────────────────────────────────────────────────────────── */
+
+/* ── Raw palette: light (default) ─────────────────────────────── */
+:root,
+[data-theme="light"] {
+  --poe-bg: #fdfaf3;
+  --poe-frame: #1a1610;
+  --poe-chrome: #eee7d8;
+  --poe-surface: #f2ecdd;
+  --poe-surface-tab: #f5efe0;
+  --poe-ink: #231e16;
+  --poe-ink-muted: #7a6f5c;
+  --poe-stroke: #3a3226;
+  --poe-stroke-soft: #d9cfb6;
+  --poe-line: #bfb49a;
+  --poe-block: #e8e0c9;
+  --poe-gold: #b07e28;
+  --poe-gold-edge: #7a561a;
+  --poe-gold-ink: #1a1208;
+  --poe-gold-ink-str: #7a561a;
+  --poe-gold-soft: #ecd9a6;
+  --poe-warn: #f5dfb0;
+  --poe-warn-ink: #7a4a0f;
+  --poe-warn-edge: #c18a38;
+  --poe-good: #d9e7c5;
+  --poe-good-ink: #3d5a1c;
+  --poe-good-edge: #7a9a4a;
+}
+
+/* ── Raw palette: dark ─────────────────────────────────────────── */
+[data-theme="dark"] {
+  --poe-bg: #15110b;
+  --poe-frame: #0a0804;
+  --poe-chrome: #1f1a12;
+  --poe-surface: #1c1810;
+  --poe-surface-tab: #1a160f;
+  --poe-ink: #e8dcbe;
+  --poe-ink-muted: #8a7e66;
+  --poe-stroke: #3a3226;
+  --poe-stroke-soft: #2a2418;
+  --poe-line: #4a4030;
+  --poe-block: #231e14;
+  --poe-gold: #c28a2a;
+  --poe-gold-edge: #5a3f10;
+  --poe-gold-ink: #140e04;
+  --poe-gold-ink-str: #e0b15a;
+  --poe-gold-soft: #3a2a10;
+  --poe-warn: #3a2810;
+  --poe-warn-ink: #e0a850;
+  --poe-warn-edge: #7a5a20;
+  --poe-good: #1f2a14;
+  --poe-good-ink: #a8c87a;
+  --poe-good-edge: #4a6a2a;
+}
+
+/* ── Tailwind v4 theme mapping ─────────────────────────────────── */
+@theme inline {
+  /* colors */
+  --color-bg: var(--poe-bg);
+  --color-frame: var(--poe-frame);
+  --color-chrome: var(--poe-chrome);
+  --color-surface: var(--poe-surface);
+  --color-surface-tab: var(--poe-surface-tab);
+  --color-ink: var(--poe-ink);
+  --color-ink-muted: var(--poe-ink-muted);
+  --color-stroke: var(--poe-stroke);
+  --color-stroke-soft: var(--poe-stroke-soft);
+  --color-line: var(--poe-line);
+  --color-block: var(--poe-block);
+  --color-gold: var(--poe-gold);
+  --color-gold-edge: var(--poe-gold-edge);
+  --color-gold-ink: var(--poe-gold-ink);
+  --color-gold-ink-str: var(--poe-gold-ink-str);
+  --color-gold-soft: var(--poe-gold-soft);
+  --color-warn: var(--poe-warn);
+  --color-warn-ink: var(--poe-warn-ink);
+  --color-warn-edge: var(--poe-warn-edge);
+  --color-good: var(--poe-good);
+  --color-good-ink: var(--poe-good-ink);
+  --color-good-edge: var(--poe-good-edge);
+
+  /* typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* radii — mockup uses very sharp corners throughout */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-full: 9999px;
+}
+
+/* ── Dark-mode variant (selector-based, not prefers-color-scheme) ─ */
+@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

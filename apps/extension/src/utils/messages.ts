@@ -1,5 +1,5 @@
 import { defineExtensionMessaging } from "@webext-core/messaging";
-import type { TradeCapture } from "@poe-sl/trade-dom";
+import type { TradeCapture } from "@/trade-dom";
 
 interface ProtocolMap {
   captureRead: () => TradeCapture | null;

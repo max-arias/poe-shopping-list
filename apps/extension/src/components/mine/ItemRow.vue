@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DraftItem } from "@poe-sl/schema";
+import type { DraftItem } from "@/types";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";

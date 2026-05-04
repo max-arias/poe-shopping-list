@@ -1,6 +1,6 @@
 import { storage } from "wxt/utils/storage";
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import { type Draft, type DraftItem, type TradeCapture, type ItemKind } from "@poe-sl/schema";
+import { type Draft, type DraftItem, type TradeCapture, type ItemKind } from "@/types";
 import { useUiStore } from "../stores/ui";
 
 const draftsItem = storage.defineItem<Draft[]>("local:drafts", {
@@ -19,7 +19,7 @@ export function useDraftList() {
 
   const draft = computed<Draft | null>(() => {
     const v = ui.currentView;
-    if (v.type !== "detail" || v.source !== "mine") return null;
+    if (v.type !== "detail") return null;
     return drafts.value.find((d) => d.id === v.draftId) ?? null;
   });
 

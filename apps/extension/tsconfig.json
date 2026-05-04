@@ -9,8 +9,7 @@
     "jsx": "preserve",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "paths": {
-      "@poe-sl/schema": ["../../packages/schema/src/index.ts"],
-      "@poe-sl/trade-dom": ["../../packages/trade-dom/src/index.ts"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.vue", ".wxt/wxt.d.ts"]

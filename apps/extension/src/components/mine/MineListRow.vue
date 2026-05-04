@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { Draft } from "@poe-sl/schema";
+import type { Draft } from "@/types";
 import { useDivineRate } from "../../composables/useDivineRate";
 import { useUiStore } from "../../stores/ui";
 
@@ -42,7 +42,7 @@ const divineEquivalent = computed(() => {
   >
     <div
       class="flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer"
-      @click="ui.openDetail('mine', draft.id)"
+      @click="ui.openDetail(draft.id)"
     >
       <div class="w-2 h-2 rounded-full bg-gold shrink-0" />
       <div class="flex-1 min-w-0">

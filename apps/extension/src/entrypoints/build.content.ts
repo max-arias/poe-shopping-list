@@ -1,5 +1,5 @@
 import { storage } from "wxt/utils/storage";
-import type { Draft } from "@poe-sl/schema";
+import type { Draft } from "@/types";
 import { injectFab } from "../utils/fab";
 
 export default defineContentScript({

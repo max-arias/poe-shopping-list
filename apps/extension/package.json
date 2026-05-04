@@ -11,11 +11,10 @@
     "check": "vp check"
   },
   "dependencies": {
-    "@poe-sl/schema": "workspace:*",
-    "@poe-sl/tokens": "workspace:*",
-    "@poe-sl/trade-dom": "workspace:*",
+    "lz-string": "^1.5.0",
     "pinia": "^2.2.6",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.3",
