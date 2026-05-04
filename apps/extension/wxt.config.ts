@@ -21,7 +21,7 @@ export default defineConfig({
     description:
       "Save trade searches, share build shopping lists, and follow curated lists from build guides.",
     version: "0.1.0",
-    permissions: ["storage", "sidePanel", "tabs"],
+    permissions: ["storage", "sidePanel", "tabs", "webRequest"],
     host_permissions: [
       "https://www.pathofexile.com/*",
       "https://pathofexile.com/*",

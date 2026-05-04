@@ -83,7 +83,7 @@ function closeForm() {
 </script>
 
 <template>
-  <div class="flex-1 flex flex-col items-center text-center px-5 py-8 gap-4 overflow-auto">
+  <div class="flex-1 flex flex-col items-center text-center px-5 py-8 gap-4 overflow-auto" data-testid="empty-mine">
     <div
       class="w-14 h-14 rounded-full border-2 border-dashed border-stroke flex items-center justify-center text-2xl"
     >
@@ -180,7 +180,7 @@ function closeForm() {
       </div>
     </div>
 
-    <BtnGold v-else label="+ Create List" size="md" :full="false" @click="openForm" />
+    <BtnGold v-else label="+ Create List" size="md" :full="false" data-testid="create-list-btn" @click="openForm" />
 
     <p class="text-[10px] text-ink-muted mt-1">Or explore the Trending tab for inspiration.</p>
   </div>

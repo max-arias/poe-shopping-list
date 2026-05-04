@@ -39,6 +39,46 @@ export default defineBackground(() => {
       return true; // keep message channel open for async response
     }
   });
+
+  // Must be registered inside defineBackground so it runs only in the real extension
+  // context, not during WXT's build-time pre-rendering (fake-browser doesn't implement it)
+  chrome.webRequest.onHeadersReceived.addListener(
+    (details) => {
+      const h = (name: string) =>
+        details.responseHeaders?.find((r) => r.name.toLowerCase() === name)?.value;
+
+      const retryAfter = h("retry-after");
+      if (retryAfter) {
+        retryAfterDeadline = Date.now() + parseInt(retryAfter) * 1000;
+        console.log(`[bg] Rate limited — retry after ${retryAfter}s`);
+      }
+
+      const rules = h("x-rate-limit-rules")?.split(",").map((r) => r.trim()) ?? ["ip"];
+      for (const rule of rules) {
+        const limitHeader = h(`x-rate-limit-${rule}`);
+        const stateHeader = h(`x-rate-limit-${rule}-state`);
+        if (!limitHeader || !stateHeader) continue;
+
+        const limitWindows = limitHeader.split(",");
+        const stateWindows = stateHeader.split(",");
+
+        tradeRateLimit[rule] = limitWindows.map((lw, i) => {
+          const [maxHits, windowSecs, restrictSecs] = lw.split(":").map(Number);
+          const sw = stateWindows[i] ?? "0:0:0";
+          const [currentHits, , activeRestrictSecs] = sw.split(":").map(Number);
+          return {
+            maxHits,
+            windowMs: windowSecs * 1000,
+            restrictMs: restrictSecs * 1000,
+            currentHits,
+            activeRestrictMs: activeRestrictSecs * 1000,
+          };
+        });
+      }
+    },
+    { urls: ["https://www.pathofexile.com/api/trade/*"] },
+    ["responseHeaders"],
+  );
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -64,14 +104,71 @@ async function setSidePanelEnabled(tabId: number, enabled: boolean): Promise<voi
   } catch {}
 }
 
+// ── Rate-limit tracker ────────────────────────────────────────────────────────
+//
+// PoE API uses dynamic rate limiting communicated via response headers:
+//   X-Rate-Limit-Rules: ip,account          (comma-delimited rule names)
+//   X-Rate-Limit-ip: 150:60:60,300:120:120  (one or more windows: maxHits:windowSecs:restrictSecs)
+//   X-Rate-Limit-ip-State: 45:60:0,90:120:0 (mirrors limit — currentHits:windowSecs:activeRestrictSecs)
+//   Retry-After: 30                          (seconds to wait; present on 429 responses)
+//
+// Limits are dynamic and can change. Exceeding limits or excessive 4xx responses
+// risks access revocation. We must parse every window of every rule.
+
+interface RateLimitWindow {
+  maxHits: number;
+  windowMs: number;
+  restrictMs: number;
+  currentHits: number;
+  activeRestrictMs: number;
+}
+
+// rule name → all windows for that rule
+const tradeRateLimit: Record<string, RateLimitWindow[]> = {};
+let retryAfterDeadline = 0; // absolute ms timestamp; 0 = no active restriction
+
+async function waitForRateLimit(): Promise<void> {
+  // Hard restriction from Retry-After header (429 response)
+  if (retryAfterDeadline > Date.now()) {
+    const wait = retryAfterDeadline - Date.now() + 500;
+    console.log(`[bg] Rate limit cooldown — waiting ${Math.ceil(wait / 1000)}s`);
+    await delay(wait);
+    retryAfterDeadline = 0;
+    return;
+  }
+
+  // Soft throttle: check every window of every rule
+  // If usage >75% on any window, space requests at (window / maxHits) × 1.2
+  let maxDelayMs = 0;
+  for (const [rule, windows] of Object.entries(tradeRateLimit)) {
+    for (const w of windows) {
+      if (w.maxHits <= 0) continue;
+      const usage = w.currentHits / w.maxHits;
+      if (usage > 0.75) {
+        const needed = Math.ceil((w.windowMs / w.maxHits) * 1.2);
+        console.log(
+          `[bg] ${rule} window ${w.windowMs / 1000}s at ${Math.round(usage * 100)}% — need ${needed}ms gap`,
+        );
+        maxDelayMs = Math.max(maxDelayMs, needed);
+      }
+    }
+  }
+  if (maxDelayMs > 0) await delay(maxDelayMs);
+}
+
 // ── POC helpers ────────────────────────────────────────────────────────────────
 
 async function pocOpenTradeTab(url: string): Promise<{ capture: unknown; tabUrl: string }> {
+  await waitForRateLimit();
+
   const tab = await browser.tabs.create({ url, active: false });
   const tabId = tab.id!;
 
   await waitForTabComplete(tabId);
-  await new Promise((r) => setTimeout(r, 1000)); // wait for trade XHR results
+  await delay(1500); // let trade XHR results settle
+
+  // If we got rate-limited during page load, wait it out before capturing
+  if (retryAfterDeadline > Date.now()) await waitForRateLimit();
 
   let capture: unknown = null;
   try {
@@ -87,6 +184,10 @@ async function pocOpenTradeTab(url: string): Promise<{ capture: unknown; tabUrl:
 
   console.log("[bg] pocOpenTradeTab done:", { tabUrl, capture });
   return { capture, tabUrl };
+}
+
+function delay(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
 }
 
 function waitForTabComplete(tabId: number, timeoutMs = 30_000): Promise<void> {

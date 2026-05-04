@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mock Trade Page — PoE Shopping List E2E</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #0f0f0f;
+        color: #e0e0e0;
+        padding: 2rem;
+      }
+      .search-bar {
+        margin-bottom: 1.5rem;
+      }
+      .search-filter-text {
+        width: 100%;
+        max-width: 600px;
+        padding: 0.5rem;
+        font-size: 1rem;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #e0e0e0;
+      }
+      .resultset {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 4px;
+      }
+      .itemName {
+        font-weight: 600;
+        flex: 1;
+      }
+      [data-field="price"] {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .currency-text img {
+        width: 18px;
+        height: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="search-bar">
+      <input
+        class="search-filter-text"
+        type="text"
+        value="Crown of Eyes · +1 phys spell"
+        readonly
+      />
+    </div>
+
+    <div class="resultset">
+      <div class="row" data-id="mock-listing-1">
+        <div class="itemName"><span class="lc">Crown of Eyes Hubris Circlet</span></div>
+        <div data-field="price">
+          <span>14</span>
+          <span class="currency-text"><img alt="chaos" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /></span>
+        </div>
+      </div>
+
+      <div class="row" data-id="mock-listing-2">
+        <div class="itemName"><span class="lc">The Grey Wind Spectral Axe</span></div>
+        <div data-field="price">
+          <span>2.5</span>
+          <span class="currency-text"><img alt="divine" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /></span>
+        </div>
+      </div>
+
+      <div class="row" data-id="mock-listing-3">
+        <div class="itemName"><span class="lc">Rathpith Globe Titanium Spirit Shield</span></div>
+        <div data-field="price">
+          <span>8</span>
+          <span class="currency-text"><img alt="chaos" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

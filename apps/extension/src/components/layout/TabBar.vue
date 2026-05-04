@@ -24,6 +24,7 @@ const tabs = computed(() => {
     <button
       v-for="tab in tabs"
       :key="tab.key"
+      :data-testid="`tab-${tab.key}`"
       @click="emit('change', tab.key)"
       class="flex-1 flex items-center justify-center gap-1.5 py-[11px] cursor-pointer bg-transparent border-0 border-b-2 transition-none"
       :class="
