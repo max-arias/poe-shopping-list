@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const RawListingSchema = z.object({
   listingId: z.string(),
   priceValue: z.number(),

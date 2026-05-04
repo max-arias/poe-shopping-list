@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { GameSchema, DEFAULT_POE1_LEAGUE } from "./game";
 
 export const SettingsSchema = z.object({

@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { GameSchema } from "./game";
 import { ItemKindSchema } from "./item";
 import { TradeCaptureSchema } from "./trade";
