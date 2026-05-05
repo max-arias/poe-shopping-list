@@ -2,12 +2,7 @@
 import { computed } from "vue";
 import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
-import {
-  POE1_LEAGUES,
-  POE2_LEAGUES,
-  DEFAULT_POE1_LEAGUE,
-  DEFAULT_POE2_LEAGUE,
-} from "@/types";
+import { POE1_LEAGUES, POE2_LEAGUES, DEFAULT_POE1_LEAGUE, DEFAULT_POE2_LEAGUE } from "@/types";
 
 const ui = useUiStore();
 const { settings, updateSettings } = useSettings();
@@ -132,7 +127,27 @@ function setGame(g: "poe1" | "poe2") {
           </button>
         </div>
 
-
+        <!-- Track purchase history -->
+        <div class="px-3 py-3 flex items-center justify-between gap-3">
+          <div>
+            <p class="text-[12px] text-ink">Track purchase history</p>
+            <p class="text-[10px] text-ink-muted">Log "Travel to Hideout" clicks</p>
+          </div>
+          <button
+            @click="updateSettings({ trackPurchaseHistory: !settings.trackPurchaseHistory })"
+            class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
+            :class="
+              settings.trackPurchaseHistory
+                ? 'bg-gold border-gold-edge'
+                : 'bg-surface border-stroke'
+            "
+          >
+            <div
+              class="w-3.5 h-3.5 rounded-full bg-white shadow transition-transform"
+              :class="settings.trackPurchaseHistory ? 'translate-x-4' : 'translate-x-0'"
+            />
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -11,7 +11,8 @@ export default defineConfig({
 
   manifest: {
     name: "PoE Shopping List",
-    description: "Create and manage shopping lists for Path of Exile trade searches. Local-only — no account needed.",
+    description:
+      "Create and manage shopping lists for Path of Exile trade searches. Local-only — no account needed.",
     version: "0.1.0",
     permissions: ["storage", "sidePanel", "tabs"],
     host_permissions: [

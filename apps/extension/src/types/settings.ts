@@ -7,6 +7,7 @@ export const SettingsSchema = z.object({
   autoCapturePrice: z.boolean().default(true),
   showCaptureUnavailableBanner: z.boolean().default(true),
   openItemsInNewTab: z.boolean().default(false),
+  trackPurchaseHistory: z.boolean().default(true),
   theme: z.enum(["light", "dark", "system"]).default("system"),
 });
 export type Settings = z.infer<typeof SettingsSchema>;

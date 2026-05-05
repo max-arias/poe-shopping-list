@@ -97,7 +97,9 @@ async function saveLinkBuild() {
       >
         ←
       </button>
-      <p class="text-[13px] font-semibold text-ink flex-1 truncate">{{ draft?.name ?? "My List" }}</p>
+      <p class="text-[13px] font-semibold text-ink flex-1 truncate">
+        {{ draft?.name ?? "My List" }}
+      </p>
     </div>
 
     <!-- Items -->
@@ -233,9 +235,7 @@ async function saveLinkBuild() {
 
         <!-- Associated / secondary URLs -->
         <div class="flex flex-col gap-1.5">
-          <label class="text-[10px] text-ink-muted uppercase tracking-wide"
-            >Additional URLs</label
-          >
+          <label class="text-[10px] text-ink-muted uppercase tracking-wide">Additional URLs</label>
           <div v-for="(_, i) in linkAssociatedUrls" :key="i" class="flex gap-1.5 items-center">
             <input
               v-model="linkAssociatedUrls[i]"

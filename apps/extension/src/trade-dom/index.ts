@@ -24,6 +24,14 @@ export interface TradeCapture {
   capturedAt: number;
 }
 
+export interface RowData {
+  listingId: string;
+  name: string;
+  base: string;
+  priceValue: number;
+  priceCurrency: string;
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
@@ -196,4 +204,47 @@ function tieBreak(a: string, b: string): boolean {
   const pb = CURRENCY_PRIORITY[b] ?? 99;
   if (pa !== pb) return pa < pb;
   return a < b;
+}
+
+/**
+ * Extracts item data from a single trade result row element.
+ * Returns null if the row cannot be parsed (missing id, name, or price).
+ */
+export function extractRowData(row: Element): RowData | null {
+  const listingId = (row as HTMLElement).dataset.id;
+  if (!listingId) return null;
+
+  // Item name: first .itemName .lc inside the row
+  const nameEl = row.querySelector(SELECTORS.itemName);
+  const name = nameEl?.textContent?.trim() ?? "";
+  if (!name) return null;
+
+  // Base type: .itemName.typeLine .lc
+  const baseEl = row.querySelector(SELECTORS.itemBase);
+  const base = baseEl?.textContent?.trim() ?? "";
+
+  // Price extraction (same logic as extractSamples for a single row)
+  const priceWrapper = row.querySelector(SELECTORS.priceWrapper);
+  if (!priceWrapper) return null;
+
+  let priceValue: number | null = null;
+  for (const span of priceWrapper.querySelectorAll("span")) {
+    const text = span.textContent?.trim() ?? "";
+    if (SELECTORS.priceAmountRe.test(text)) {
+      priceValue = Number.parseFloat(text);
+      break;
+    }
+  }
+  if (priceValue === null) {
+    const directSpan = priceWrapper.querySelector("br + span");
+    const t = directSpan?.textContent?.trim() ?? "";
+    if (SELECTORS.priceAmountRe.test(t)) priceValue = Number.parseFloat(t);
+  }
+  if (priceValue === null) return null;
+
+  const img = priceWrapper.querySelector(SELECTORS.currencyImg);
+  const currencySpanEl = priceWrapper.querySelector(SELECTORS.currencySpan);
+  const priceCurrency = img?.getAttribute("alt") ?? currencySpanEl?.textContent?.trim() ?? "chaos";
+
+  return { listingId, name, base, priceValue, priceCurrency };
 }

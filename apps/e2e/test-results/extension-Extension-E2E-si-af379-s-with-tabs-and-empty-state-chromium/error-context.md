@@ -31,28 +31,28 @@ Call log:
   1  | import { test, expect } from "./fixtures.js";
   2  | import path from "node:path";
   3  | import { fileURLToPath } from "node:url";
-  4  | 
+  4  |
   5  | const __filename = fileURLToPath(import.meta.url);
   6  | const __dirname = path.dirname(__filename);
   7  | const mockTradePagePath = path.resolve(__dirname, "mocks/trade-page.html");
-  8  | 
+  8  |
   9  | test.describe("Extension E2E", () => {
   10 |   test("sidepanel renders with tabs and empty state", async ({ page, extensionId }) => {
   11 |     await page.goto(`chrome-extension://${extensionId}/sidepanel.html`);
-  12 | 
+  12 |
   13 |     // Chrome bar title
 > 14 |     await expect(page.getByTestId("chrome-bar-title")).toBeVisible();
      |                                                        ^ Error: expect(locator).toBeVisible() failed
   15 |     await expect(page.getByTestId("chrome-bar-title")).toHaveText("PoE Shopping List");
-  16 | 
+  16 |
   17 |     // Tab header (single tab — "My Lists")
   18 |     await expect(page.getByTestId("tab-mine")).toBeVisible();
-  19 | 
+  19 |
   20 |     // Empty-state content in Mine tab
   21 |     await expect(page.getByTestId("empty-mine")).toBeVisible();
   22 |     await expect(page.getByTestId("create-list-btn")).toBeVisible();
   23 |   });
-  24 | 
+  24 |
   25 |   test("content script injects FAB on mocked trade page", async ({ page, extensionId }) => {
   26 |     // Intercept requests to the trade site and serve our mock HTML
   27 |     await page.route("https://www.pathofexile.com/trade/**", async (route) => {
@@ -62,17 +62,17 @@ Call log:
   31 |         path: mockTradePagePath,
   32 |       });
   33 |     });
-  34 | 
+  34 |
   35 |     await page.goto("https://www.pathofexile.com/trade/search/Mirage/test-search-id");
-  36 | 
+  36 |
   37 |     // The FAB host is injected at fixed position top-right with a data-testid.
   38 |     const fabHost = page.getByTestId("poe-sl-fab-host");
   39 |     await expect(fabHost).toBeVisible({ timeout: 10_000 });
-  40 | 
+  40 |
   41 |     // The FAB button lives inside the shadow DOM; Playwright pierces it automatically.
   42 |     const fabButton = page.getByTestId("poe-sl-fab-btn");
   43 |     await expect(fabButton).toBeVisible();
   44 |   });
   45 | });
-  46 | 
+  46 |
 ```

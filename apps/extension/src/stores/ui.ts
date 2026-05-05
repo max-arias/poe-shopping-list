@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export type TabId = "mine";
+export type TabId = "mine" | "history";
 export type PanelView = { type: "tabs" } | { type: "detail"; draftId: string };
 
 export const useUiStore = defineStore("ui", () => {

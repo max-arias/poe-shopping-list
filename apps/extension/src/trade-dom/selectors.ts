@@ -22,4 +22,10 @@ export const SELECTORS = {
   ],
   /** Clear button in the search panel controls area. */
   clearBtn: ".search-panel .clear-btn",
+  /** "Travel to Hideout" button inside a result row. */
+  travelBtn: ".direct-btn",
+  /** Item name element inside a row's popup. */
+  itemName: ".itemName .lc",
+  /** Item base type element inside a row's popup. */
+  itemBase: ".itemName.typeLine .lc",
 } as const;

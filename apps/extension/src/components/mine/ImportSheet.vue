@@ -34,10 +34,7 @@ async function handleImport() {
 
 <template>
   <!-- Backdrop -->
-  <div
-    class="absolute inset-0 bg-black/50 flex items-end z-20"
-    @click.self="ui.closeDetail()"
-  >
+  <div class="absolute inset-0 bg-black/50 flex items-end z-20" @click.self="ui.closeDetail()">
     <!-- Sheet -->
     <div
       class="w-full bg-bg border-t-2 border-gold flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"

@@ -6,6 +6,7 @@ import { useDraftList } from "../composables/useDraftList";
 import { storage } from "wxt/utils/storage";
 import ChromeBar from "./layout/ChromeBar.vue";
 import MineTab from "./mine/MineTab.vue";
+import HistoryTab from "./history/HistoryTab.vue";
 import DetailPanel from "./detail/DetailPanel.vue";
 import SaveModal from "./mine/SaveModal.vue";
 import EditItemSheet from "./mine/EditItemSheet.vue";
@@ -85,6 +86,32 @@ watchEffect(() => {
     <!-- Top chrome -->
     <ChromeBar @open-settings="ui.toggleSettings()" />
 
+    <!-- Tab bar -->
+    <div v-if="ui.currentView.type === 'tabs'" class="flex border-b border-stroke shrink-0">
+      <button
+        @click="ui.setTab('mine')"
+        class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
+        :class="
+          ui.activeTab === 'mine'
+            ? 'text-gold-ink-str border-b-2 border-gold'
+            : 'text-ink-muted hover:text-ink'
+        "
+      >
+        My Lists
+      </button>
+      <button
+        @click="ui.setTab('history')"
+        class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
+        :class="
+          ui.activeTab === 'history'
+            ? 'text-gold-ink-str border-b-2 border-gold'
+            : 'text-ink-muted hover:text-ink'
+        "
+      >
+        History
+      </button>
+    </div>
+
     <!-- Capture unavailable banner -->
     <CaptureUnavailableBanner v-if="ui.captureUnavailable" />
 
@@ -92,7 +119,10 @@ watchEffect(() => {
     <DetailPanel v-if="ui.currentView.type === 'detail'" />
 
     <!-- Tabs view -->
-    <MineTab v-else />
+    <template v-else>
+      <MineTab v-if="ui.activeTab === 'mine'" />
+      <HistoryTab v-else />
+    </template>
 
     <!-- Overlays -->
     <SaveModal v-if="ui.saveModalOpen" />

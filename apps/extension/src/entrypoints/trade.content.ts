@@ -3,7 +3,8 @@ export default defineContentScript({
   runAt: "document_idle",
 
   async main() {
-    const { buildCapture, isCaptureable, getSearchBarText, SELECTORS } = await import("@/trade-dom");
+    const { buildCapture, isCaptureable, getSearchBarText, extractRowData, SELECTORS } =
+      await import("@/trade-dom");
     const { onMessage, sendMessage } = await import("../utils/messages");
     const { storage } = await import("wxt/utils/storage");
     const { injectFab } = await import("../utils/fab");
@@ -13,6 +14,7 @@ export default defineContentScript({
 
     injectSaveSearchButton();
     reportStatus();
+    listenForTravelToHideout();
 
     const container = document.querySelector("#main-content, .resultset, body");
     if (container) {
@@ -86,6 +88,42 @@ export default defineContentScript({
       });
 
       clearBtn.before(btn);
+    }
+
+    /** Listen for clicks on "Travel to Hideout" buttons and send purchase history data. */
+    function listenForTravelToHideout() {
+      document.addEventListener("click", async (e) => {
+        const target = e.target as HTMLElement;
+        // Check if the click is on or inside a .direct-btn (Travel to Hideout)
+        const travelBtn = target.closest(SELECTORS.travelBtn) as HTMLElement | null;
+        if (!travelBtn) return;
+
+        // Check if tracking is enabled
+        const settings = await storage.getItem<{ trackPurchaseHistory?: boolean }>(
+          "local:settings:v1",
+        );
+        if (settings?.trackPurchaseHistory === false) return;
+
+        // Walk up to the parent .row[data-id]
+        const row = travelBtn.closest(SELECTORS.allRows) as HTMLElement | null;
+        if (!row) return;
+
+        const data = extractRowData(row);
+        if (!data) return;
+
+        const item: import("@/types").PurchaseHistoryItem = {
+          id: crypto.randomUUID(),
+          listingId: data.listingId,
+          name: data.name,
+          ...(data.base ? { base: data.base } : {}),
+          priceValue: data.priceValue,
+          priceCurrency: data.priceCurrency,
+          searchUrl: window.location.href,
+          addedAt: Date.now(),
+        };
+
+        sendMessage("purchaseHistoryAdd", item).catch(() => {});
+      });
     }
   },
 });

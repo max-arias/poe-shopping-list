@@ -16,30 +16,30 @@ A browser extension for Path of Exile that lets players create, manage, and shar
 
 ## Features
 
-| Feature | Description |
-|---------|-------------|
-| Draft lists | Create, rename, delete lists locally |
-| Save search | Auto-fill item name from trade search bar, capture price data |
-| Mark complete | Check off items as you acquire them |
-| Edit items | Rename, change URL, refresh price |
-| Export/Import | Share lists via lz-string compressed strings |
-| Build-site FAB | Injected button on pobb.in and maxroll.gg |
-| Theme | Light, dark, or system-following |
-| Game/league | Switch between PoE1 and PoE2 leagues |
+| Feature        | Description                                                   |
+| -------------- | ------------------------------------------------------------- |
+| Draft lists    | Create, rename, delete lists locally                          |
+| Save search    | Auto-fill item name from trade search bar, capture price data |
+| Mark complete  | Check off items as you acquire them                           |
+| Edit items     | Rename, change URL, refresh price                             |
+| Export/Import  | Share lists via lz-string compressed strings                  |
+| Build-site FAB | Injected button on pobb.in and maxroll.gg                     |
+| Theme          | Light, dark, or system-following                              |
+| Game/league    | Switch between PoE1 and PoE2 leagues                          |
 
 ---
 
 ## Tech Stack
 
-| Concern | Choice |
-|---------|--------|
-| Extension framework | [WXT](https://wxt.dev) (Chrome MV3 + Firefox) |
-| UI | [Vue 3](https://vuejs.org) Composition API |
-| State | Pinia + `browser.storage.local` |
-| Compression | [lz-string](https://github.com/pieroxy/lz-string/) |
-| Validation | [Zod](https://zod.dev) |
-| Styling | Tailwind v4 with PoE-themed design tokens |
-| Toolchain | [VitePlus (`vp`)](https://viteplus.dev) |
+| Concern             | Choice                                             |
+| ------------------- | -------------------------------------------------- |
+| Extension framework | [WXT](https://wxt.dev) (Chrome MV3 + Firefox)      |
+| UI                  | [Vue 3](https://vuejs.org) Composition API         |
+| State               | Pinia + `browser.storage.local`                    |
+| Compression         | [lz-string](https://github.com/pieroxy/lz-string/) |
+| Validation          | [Zod](https://zod.dev)                             |
+| Styling             | Tailwind v4 with PoE-themed design tokens          |
+| Toolchain           | [VitePlus (`vp`)](https://viteplus.dev)            |
 
 ---
 

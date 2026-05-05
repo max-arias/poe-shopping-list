@@ -86,7 +86,10 @@ function closeForm() {
 </script>
 
 <template>
-  <div class="flex-1 flex flex-col items-center text-center px-5 py-8 gap-4 overflow-auto" data-testid="empty-mine">
+  <div
+    class="flex-1 flex flex-col items-center text-center px-5 py-8 gap-4 overflow-auto"
+    data-testid="empty-mine"
+  >
     <div
       class="w-14 h-14 rounded-full border-2 border-dashed border-stroke flex items-center justify-center text-2xl"
     >
@@ -122,7 +125,9 @@ function closeForm() {
 
       <!-- Primary URL (optional) -->
       <div>
-        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Build / Guide URL <span class="normal-case text-ink-muted opacity-60">(optional)</span></p>
+        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">
+          Build / Guide URL <span class="normal-case text-ink-muted opacity-60">(optional)</span>
+        </p>
         <input
           v-model="primaryUrl"
           placeholder="https://pobb.in/…"
@@ -183,7 +188,14 @@ function closeForm() {
       </div>
     </div>
 
-    <BtnGold v-else label="+ Create List" size="md" :full="false" data-testid="create-list-btn" @click="openForm" />
+    <BtnGold
+      v-else
+      label="+ Create List"
+      size="md"
+      :full="false"
+      data-testid="create-list-btn"
+      @click="openForm"
+    />
 
     <p class="text-[10px] text-ink-muted mt-1">Create your first shopping list to get started.</p>
   </div>
