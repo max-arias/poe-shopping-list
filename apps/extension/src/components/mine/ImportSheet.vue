@@ -4,7 +4,7 @@ import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { importDraft } from "../../composables/useImportExport";
 import BtnGhost from "../shared/BtnGhost.vue";
-import BtnGold from "../shared/BtnGold.vue";
+import BtnAccent from "../shared/BtnAccent.vue";
 
 const ui = useUiStore();
 const { createDraft, saveDraft } = useDraftList();
@@ -37,7 +37,7 @@ async function handleImport() {
   <div class="absolute inset-0 bg-black/50 flex items-end z-20" @click.self="ui.closeDetail()">
     <!-- Sheet -->
     <div
-      class="w-full bg-bg border-t-2 border-gold flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
       style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
     >
       <div class="flex items-center shrink-0">
@@ -66,7 +66,7 @@ async function handleImport() {
 
       <div class="flex gap-2">
         <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeDetail()" />
-        <BtnGold
+        <BtnAccent
           label="Import"
           :full="true"
           :disabled="!input.trim() || importing"

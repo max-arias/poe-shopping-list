@@ -18,7 +18,7 @@ const emit = defineEmits<{ click: [] }>();
   <button
     :disabled="disabled"
     @click="!disabled && emit('click')"
-    class="flex items-center justify-center px-3.5 uppercase tracking-[0.4px] font-semibold rounded-sm border border-gold-edge bg-gold text-gold-ink cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+    class="flex items-center justify-center px-3.5 uppercase tracking-[0.4px] font-semibold rounded-sm border border-accent-edge bg-accent text-accent-ink cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
     :class="{
       'w-full': full,
       'h-7 text-[11px]': size === 'sm',

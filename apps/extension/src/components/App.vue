@@ -96,7 +96,7 @@ watchEffect(() => {
         class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
         :class="
           ui.activeTab === 'mine'
-            ? 'text-gold-ink-str border-b-2 border-gold'
+            ? 'text-accent-ink-str border-b-2 border-accent'
             : 'text-ink-muted hover:text-ink'
         "
       >
@@ -107,7 +107,7 @@ watchEffect(() => {
         class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
         :class="
           ui.activeTab === 'history'
-            ? 'text-gold-ink-str border-b-2 border-gold'
+            ? 'text-accent-ink-str border-b-2 border-accent'
             : 'text-ink-muted hover:text-ink'
         "
       >

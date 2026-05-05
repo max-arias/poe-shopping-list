@@ -31,9 +31,11 @@ async function openTrade(url: string) {
     <button
       @click="setComplete(item.id, !item.completed)"
       class="w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
-      :class="item.completed ? 'bg-gold border-gold-edge' : ''"
+      :class="item.completed ? 'bg-accent border-accent-edge' : ''"
     >
-      <span v-if="item.completed" class="text-gold-ink text-[10px] font-bold leading-none">✓</span>
+      <span v-if="item.completed" class="text-accent-ink text-[10px] font-bold leading-none"
+        >✓</span
+      >
     </button>
 
     <!-- Name -->
@@ -56,7 +58,7 @@ async function openTrade(url: string) {
     </div>
 
     <!-- Price -->
-    <span v-if="item.capture" class="font-mono text-xs font-semibold text-gold-ink-str shrink-0">
+    <span v-if="item.capture" class="font-mono text-xs font-semibold text-accent-ink-str shrink-0">
       ~{{ formatPrice(item.capture.aggregates.median) }}
       <span class="opacity-70 text-[10px]">{{ item.capture.aggregates.currency }}</span>
     </span>

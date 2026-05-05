@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
-import BtnGold from "../shared/BtnGold.vue";
+import BtnAccent from "../shared/BtnAccent.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 
 const { createDraft } = useDraftList();
@@ -100,7 +100,7 @@ function closeForm() {
     <div class="w-full max-w-[260px] flex flex-col gap-2.5 text-left">
       <div v-for="(step, i) in steps" :key="i" class="flex items-center gap-2.5">
         <div
-          class="w-[22px] h-[22px] rounded-full bg-gold-soft text-gold-ink-str text-[11px] font-bold flex items-center justify-center shrink-0"
+          class="w-[22px] h-[22px] rounded-full bg-accent-soft text-accent-ink-str text-[11px] font-bold flex items-center justify-center shrink-0"
         >
           {{ i + 1 }}
         </div>
@@ -118,7 +118,7 @@ function closeForm() {
           placeholder='e.g. "RF Jugg"'
           maxlength="80"
           @keydown.escape="closeForm"
-          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
           autofocus
         />
       </div>
@@ -132,7 +132,7 @@ function closeForm() {
           v-model="primaryUrl"
           placeholder="https://pobb.in/…"
           @keydown.escape="closeForm"
-          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
         />
       </div>
 
@@ -142,7 +142,7 @@ function closeForm() {
           v-model="extraUrls[i]"
           :placeholder="i === 0 ? 'https://maxroll.gg/…' : 'https://…'"
           @keydown.escape="closeForm"
-          class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+          class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
         />
         <button
           @click="removeExtraUrl(i)"
@@ -155,7 +155,7 @@ function closeForm() {
 
       <button
         @click="addExtraUrl"
-        class="self-start text-[10px] text-gold-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+        class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
       >
         + Add another URL
       </button>
@@ -171,14 +171,14 @@ function closeForm() {
           maxlength="80"
           @keydown.enter="handleCreate"
           @keydown.escape="closeForm"
-          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
         />
       </div>
 
       <!-- Actions -->
       <div class="flex gap-2 mt-0.5">
         <BtnGhost label="Cancel" :full="true" size="sm" @click="closeForm" />
-        <BtnGold
+        <BtnAccent
           label="Create"
           size="sm"
           :full="true"
@@ -188,7 +188,7 @@ function closeForm() {
       </div>
     </div>
 
-    <BtnGold
+    <BtnAccent
       v-else
       label="+ Create List"
       size="md"

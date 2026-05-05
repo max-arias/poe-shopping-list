@@ -17,7 +17,7 @@ A browser extension for Path of Exile that lets players create, manage, and shar
 ## Brand Personality
 
 - **Direct and unadorned** — no marketing language, no onboarding carousels, no celebration animations
-- **Parchment and gold** — the visual language of Path of Exile's trade site: warm cream backgrounds, dark ink, gold accents for actions and prices
+- **Void black and Unique amber** — the visual language of Path of Exile: dark foundations, warm neutrals, a single amber accent drawn from the Unique item rarity color for actions and prices
 - **Compact and dense** — the sidebar is narrow (380px). Every pixel earns its place. Information density is a feature, not a bug
 - **Trustworthy tool** — this sits alongside the official trade site. It must feel native, not bolted on. No flashy UI that distracts from the trade workflow
 
@@ -25,25 +25,25 @@ A browser extension for Path of Exile that lets players create, manage, and shar
 
 - **SaaS landing pages** — no hero sections, no gradient CTAs, no "get started" carousels
 - **Generic AI tool marketing** — no purple gradients, no glassmorphism, no neon accents
-- **Dark mode with neon accents** — the dark theme is warm and muted, not cyberpunk
+- **Light-first design** — the primary theme is dark (matching the trade site); light is a secondary option
 - **Mobile-first design** — this is a desktop browser extension; mobile patterns (bottom sheets, swipe gestures) don't apply
 - **Overly playful or gamified UI** — no confetti, no achievement badges, no progress bars with animations
 
 ## Key Features
 
-| Feature | Description |
-|---|---|
-| Draft lists | Create, rename, delete lists locally |
-| Save search | Auto-fill item name from trade search bar, capture price data (min, median, avg) |
-| Mark complete | Check off items as you acquire them |
-| Edit items | Rename, change URL, refresh price |
-| Export/Import | Share lists via lz-string compressed strings |
-| Build-site FAB | Injected button on pobb.in and maxroll.gg |
-| Theme | Light, dark, or system-following |
-| Game/league | Switch between PoE1 and PoE2 leagues |
-| Capture unavailable banner | Shows when DOM selectors fail, guides user to check for updates |
-| Bulk unmark all | Clear all completion flags and price captures in one action |
-| Divine rate display | Fetched from poe.ninja for currency conversion context |
+| Feature                    | Description                                                                      |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| Draft lists                | Create, rename, delete lists locally                                             |
+| Save search                | Auto-fill item name from trade search bar, capture price data (min, median, avg) |
+| Mark complete              | Check off items as you acquire them                                              |
+| Edit items                 | Rename, change URL, refresh price                                                |
+| Export/Import              | Share lists via lz-string compressed strings                                     |
+| Build-site FAB             | Injected button on pobb.in and maxroll.gg                                        |
+| Theme                      | Light, dark, or system-following                                                 |
+| Game/league                | Switch between PoE1 and PoE2 leagues                                             |
+| Capture unavailable banner | Shows when DOM selectors fail, guides user to check for updates                  |
+| Bulk unmark all            | Clear all completion flags and price captures in one action                      |
+| Divine rate display        | Fetched from poe.ninja for currency conversion context                           |
 
 ## Tone
 

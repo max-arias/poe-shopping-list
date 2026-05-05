@@ -4,7 +4,7 @@ import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { sendMessage } from "../../utils/messages";
 import BtnGhost from "../shared/BtnGhost.vue";
-import BtnGold from "../shared/BtnGold.vue";
+import BtnAccent from "../shared/BtnAccent.vue";
 
 const ui = useUiStore();
 const { draft, updateItem, updateCapture, removeItem } = useDraftList();
@@ -64,7 +64,7 @@ async function handleDelete() {
 <template>
   <div class="absolute inset-0 bg-black/50 flex items-end z-20" @click.self="ui.closeEditSheet()">
     <div
-      class="w-full bg-bg border-t-2 border-gold flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
       style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
     >
       <!-- Header -->
@@ -87,7 +87,7 @@ async function handleDelete() {
           maxlength="120"
           @keydown.enter="handleSave"
           placeholder="Item name…"
-          class="w-full h-9 px-2.5 text-[13px] border border-gold-edge rounded-sm text-ink bg-bg"
+          class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink bg-bg"
           autofocus
         />
       </div>
@@ -110,7 +110,7 @@ async function handleDelete() {
           <button
             @click="handleRefresh"
             :disabled="refreshing"
-            class="text-[10px] text-gold-ink-str cursor-pointer bg-transparent border-0 disabled:opacity-40"
+            class="text-[10px] text-accent-ink-str cursor-pointer bg-transparent border-0 disabled:opacity-40"
           >
             {{ refreshing ? "Reading…" : "↻ Refresh from active tab" }}
           </button>
@@ -130,7 +130,7 @@ async function handleDelete() {
           >
             <p class="text-[10px] text-ink-muted">{{ label }}</p>
             <div class="flex items-baseline gap-1">
-              <span class="font-mono text-base font-semibold text-gold-ink-str">{{
+              <span class="font-mono text-base font-semibold text-accent-ink-str">{{
                 fmt(val as number)
               }}</span>
               <span class="text-[10px] text-ink-muted">{{ capture.aggregates.currency }}</span>
@@ -150,7 +150,7 @@ async function handleDelete() {
       <!-- Save -->
       <div class="flex gap-2">
         <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeEditSheet()" />
-        <BtnGold label="Save" :disabled="!name.trim() || saving" @click="handleSave" />
+        <BtnAccent label="Save" :disabled="!name.trim() || saving" @click="handleSave" />
       </div>
 
       <!-- Delete section -->

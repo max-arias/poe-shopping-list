@@ -46,7 +46,7 @@ function setGame(g: "poe1" | "poe2") {
               class="text-[11px] px-2.5 py-1 rounded-sm border cursor-pointer"
               :class="
                 settings.game === g
-                  ? 'bg-gold-soft border-gold-edge text-gold-ink-str font-semibold'
+                  ? 'bg-accent-soft border-accent-edge text-accent-ink-str font-semibold'
                   : 'bg-transparent border-stroke text-ink-muted'
               "
             >
@@ -78,7 +78,7 @@ function setGame(g: "poe1" | "poe2") {
               class="text-[11px] px-2.5 py-1 rounded-sm border cursor-pointer capitalize"
               :class="
                 settings.theme === t
-                  ? 'bg-gold-soft border-gold-edge text-gold-ink-str font-semibold'
+                  ? 'bg-accent-soft border-accent-edge text-accent-ink-str font-semibold'
                   : 'bg-transparent border-stroke text-ink-muted'
               "
             >
@@ -97,7 +97,9 @@ function setGame(g: "poe1" | "poe2") {
             @click="updateSettings({ autoCapturePrice: !settings.autoCapturePrice })"
             class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
             :class="
-              settings.autoCapturePrice ? 'bg-gold border-gold-edge' : 'bg-surface border-stroke'
+              settings.autoCapturePrice
+                ? 'bg-accent border-accent-edge'
+                : 'bg-surface border-stroke'
             "
           >
             <div
@@ -117,7 +119,9 @@ function setGame(g: "poe1" | "poe2") {
             @click="updateSettings({ openItemsInNewTab: !settings.openItemsInNewTab })"
             class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
             :class="
-              settings.openItemsInNewTab ? 'bg-gold border-gold-edge' : 'bg-surface border-stroke'
+              settings.openItemsInNewTab
+                ? 'bg-accent border-accent-edge'
+                : 'bg-surface border-stroke'
             "
           >
             <div
@@ -138,7 +142,7 @@ function setGame(g: "poe1" | "poe2") {
             class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
             :class="
               settings.trackPurchaseHistory
-                ? 'bg-gold border-gold-edge'
+                ? 'bg-accent border-accent-edge'
                 : 'bg-surface border-stroke'
             "
           >

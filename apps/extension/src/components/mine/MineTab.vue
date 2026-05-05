@@ -6,7 +6,7 @@ import { useUiStore } from "../../stores/ui";
 import EmptyMine from "./EmptyMine.vue";
 import MineListRow from "./MineListRow.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
-import BtnGold from "../shared/BtnGold.vue";
+import BtnAccent from "../shared/BtnAccent.vue";
 
 const { drafts, isLoaded, createDraft, deleteDraftById } = useDraftList();
 const { settings } = useSettings();
@@ -133,7 +133,7 @@ async function confirmDelete() {
             placeholder='e.g. "RF Jugg"'
             maxlength="80"
             @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
             autofocus
           />
 
@@ -142,7 +142,7 @@ async function confirmDelete() {
             v-model="newPrimaryUrl"
             placeholder="Build / Guide URL (optional)"
             @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
           />
 
           <!-- Extra URLs -->
@@ -151,7 +151,7 @@ async function confirmDelete() {
               v-model="newExtraUrls[i]"
               placeholder="Additional URL…"
               @keydown.escape="closeNewForm"
-              class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+              class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
             />
             <button
               @click="removeExtraUrl(i)"
@@ -164,7 +164,7 @@ async function confirmDelete() {
 
           <button
             @click="addExtraUrl"
-            class="self-start text-[10px] text-gold-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+            class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
           >
             + Add another URL
           </button>
@@ -176,13 +176,13 @@ async function confirmDelete() {
             maxlength="80"
             @keydown.enter="handleCreate"
             @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
           />
 
           <!-- Actions -->
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="sm" @click="closeNewForm" />
-            <BtnGold
+            <BtnAccent
               label="Create"
               size="sm"
               :full="true"
@@ -192,7 +192,7 @@ async function confirmDelete() {
           </div>
         </div>
 
-        <BtnGold v-else label="+ New List" size="md" @click="openNewForm" />
+        <BtnAccent v-else label="+ New List" size="md" @click="openNewForm" />
         <BtnGhost
           v-if="!showNewForm"
           label="📥 Import"

@@ -4,7 +4,7 @@ import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
 import BtnGhost from "../shared/BtnGhost.vue";
-import BtnGold from "../shared/BtnGold.vue";
+import BtnAccent from "../shared/BtnAccent.vue";
 
 const ui = useUiStore();
 const { drafts, createDraft } = useDraftList();
@@ -44,7 +44,7 @@ function closeForm() {
   >
     <!-- Sheet -->
     <div
-      class="w-full bg-bg border-t-2 border-gold flex flex-col gap-3 p-3.5 pb-3"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3"
       style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
     >
       <!-- Header -->
@@ -66,9 +66,9 @@ function closeForm() {
           v-for="d in drafts"
           :key="d.id"
           @click="selectDraft(d.id)"
-          class="flex items-center gap-2 h-9 px-2.5 border border-stroke rounded-sm text-[13px] text-ink bg-transparent cursor-pointer hover:bg-gold-soft transition-colors text-left"
+          class="flex items-center gap-2 h-9 px-2.5 border border-stroke rounded-sm text-[13px] text-ink bg-transparent cursor-pointer hover:bg-accent-soft transition-colors text-left"
         >
-          <div class="w-2 h-2 rounded-full bg-gold shrink-0" />
+          <div class="w-2 h-2 rounded-full bg-accent shrink-0" />
           <span class="flex-1 truncate">{{ d.name }}</span>
           <span class="text-[10px] text-ink-muted">
             {{ d.items.length }} item{{ d.items.length !== 1 ? "s" : "" }}
@@ -89,12 +89,12 @@ function closeForm() {
             maxlength="80"
             @keydown.enter="handleCreate"
             @keydown.escape="closeForm"
-            class="w-full h-9 px-2.5 text-[13px] border border-gold-edge rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+            class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
             autofocus
           />
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="md" @click="closeForm" />
-            <BtnGold
+            <BtnAccent
               label="Create & Save"
               :disabled="!newName.trim() || creating"
               @click="handleCreate"
@@ -105,7 +105,7 @@ function closeForm() {
         <BtnGhost
           v-else
           label="+ New List"
-          :gold="true"
+          :accent="true"
           :full="true"
           size="md"
           @click="showCreateForm = true"

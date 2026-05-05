@@ -44,7 +44,7 @@ const divineEquivalent = computed(() => {
       class="flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer"
       @click="ui.openDetail(draft.id)"
     >
-      <div class="w-2 h-2 rounded-full bg-gold shrink-0" />
+      <div class="w-2 h-2 rounded-full bg-accent shrink-0" />
       <div class="flex-1 min-w-0">
         <p class="text-[13px] font-semibold text-ink truncate">{{ draft.name }}</p>
         <p class="text-[10px] text-ink-muted mt-0.5">

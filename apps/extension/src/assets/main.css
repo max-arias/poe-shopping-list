@@ -40,7 +40,7 @@
   input:focus,
   textarea:focus {
     outline: none;
-    border-color: var(--poe-gold) !important;
+    border-color: var(--poe-accent) !important;
   }
 
   @keyframes blink {

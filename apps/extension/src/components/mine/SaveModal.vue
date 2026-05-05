@@ -6,7 +6,7 @@ import { useSettings } from "../../composables/useSettings";
 import { sendMessage } from "../../utils/messages";
 import Pill from "../shared/Pill.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
-import BtnGold from "../shared/BtnGold.vue";
+import BtnAccent from "../shared/BtnAccent.vue";
 
 const ui = useUiStore();
 const { draft, addItem } = useDraftList();
@@ -69,7 +69,7 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
   <div class="absolute inset-0 bg-black/50 flex items-end z-20" @click.self="ui.closeSaveModal()">
     <!-- Sheet -->
     <div
-      class="w-full bg-bg border-t-2 border-gold flex flex-col gap-3 p-3.5 pb-3"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3"
       style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
     >
       <!-- Header -->
@@ -92,7 +92,7 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
           maxlength="120"
           @keydown.enter="handleSave"
           placeholder="Item name…"
-          class="w-full h-9 px-2.5 text-[13px] border border-gold-edge rounded-sm text-ink"
+          class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink"
           autofocus
         />
         <p class="text-[10px] text-ink-muted mt-1">
@@ -106,9 +106,9 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
         <div
           class="flex items-center gap-1.5 h-9 px-2.5 border border-stroke rounded-sm text-[13px] text-ink"
         >
-          <div class="w-2 h-2 rounded-full bg-gold shrink-0" />
+          <div class="w-2 h-2 rounded-full bg-accent shrink-0" />
           <span class="flex-1 truncate">{{ draft?.name ?? "No active list" }}</span>
-          <Pill tone="gold">ACTIVE</Pill>
+          <Pill tone="accent">ACTIVE</Pill>
         </div>
       </div>
 
@@ -131,7 +131,7 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
         >
           <p class="text-[10px] text-ink-muted">{{ label }}</p>
           <div class="flex items-baseline gap-1">
-            <span class="font-mono text-base font-semibold text-gold-ink-str">{{
+            <span class="font-mono text-base font-semibold text-accent-ink-str">{{
               fmt(val as number)
             }}</span>
             <span class="text-[10px] text-ink-muted">{{ capture.aggregates.currency }}</span>
@@ -152,7 +152,7 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
       <!-- Actions -->
       <div class="flex gap-2 mt-1">
         <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeSaveModal()" />
-        <BtnGold
+        <BtnAccent
           label="Save"
           :disabled="!itemName.trim() || !draft || saving"
           @click="handleSave"

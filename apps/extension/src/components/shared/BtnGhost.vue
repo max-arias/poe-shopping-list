@@ -3,13 +3,13 @@ const {
   label,
   size = "sm",
   full = false,
-  gold = false,
+  accent = false,
   disabled = false,
 } = defineProps<{
   label?: string;
   size?: "sm" | "md";
   full?: boolean;
-  gold?: boolean;
+  accent?: boolean;
   disabled?: boolean;
 }>();
 
@@ -25,8 +25,8 @@ const emit = defineEmits<{ click: [] }>();
       'w-full': full,
       'h-[26px] text-[11px]': size === 'sm',
       'h-8 text-xs': size === 'md',
-      'border border-dashed border-stroke text-ink': !gold,
-      'border border-solid border-gold-edge text-gold-ink-str font-semibold': gold,
+      'border border-dashed border-stroke text-ink': !accent,
+      'border border-solid border-accent-edge text-accent-ink-str font-semibold': accent,
       'opacity-50 cursor-not-allowed': disabled,
     }"
   >

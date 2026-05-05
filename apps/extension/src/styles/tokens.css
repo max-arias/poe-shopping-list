@@ -1,64 +1,104 @@
 /* ─────────────────────────────────────────────────────────────────
    PoE Shopping List — design token layer for Tailwind v4
    Import AFTER `@import "tailwindcss"` in each app entry CSS.
+
+   Palette: Path of Exile — Foundations + Loot Rarity + Atmosphere
    ──────────────────────────────────────────────────────────────── */
 
-/* ── Raw palette: light (default) ─────────────────────────────── */
+/* ── Raw palette: light ──────────────────────────────────────── */
 :root,
 [data-theme="light"] {
-  --poe-bg: #fdfaf3;
-  --poe-frame: #1a1610;
-  --poe-chrome: #eee7d8;
-  --poe-surface: #f2ecdd;
-  --poe-surface-tab: #f5efe0;
-  --poe-ink: #231e16;
-  --poe-ink-muted: #7a6f5c;
-  --poe-stroke: #3a3226;
-  --poe-stroke-soft: #d9cfb6;
-  --poe-line: #bfb49a;
-  --poe-block: #e8e0c9;
-  --poe-gold: #b07e28;
-  --poe-gold-edge: #7a561a;
-  --poe-gold-ink: #1a1208;
-  --poe-gold-ink-str: #7a561a;
-  --poe-gold-soft: #ecd9a6;
-  --poe-warn: #f5dfb0;
-  --poe-warn-ink: #7a4a0f;
-  --poe-warn-edge: #c18a38;
-  --poe-good: #d9e7c5;
-  --poe-good-ink: #3d5a1c;
-  --poe-good-edge: #7a9a4a;
+  /* Foundations — Linen white palette */
+  --poe-bg: #f5f2ee;
+  --poe-frame: #4a4038;
+  --poe-chrome: #e2dace;
+  --poe-surface: #e8e0d5;
+  --poe-surface-tab: #ede8e0;
+  --poe-ink: #4a4038;
+  --poe-ink-muted: #9e8e7a;
+  --poe-stroke: #cfc4b4;
+  --poe-stroke-soft: #d8d0c4;
+  --poe-line: #cfc4b4;
+  --poe-block: #e8e0d5;
+
+  /* Accent — Unique (dusty amber) */
+  --poe-accent: #af6025;
+  --poe-accent-edge: #7a3f15;
+  --poe-accent-ink: #ffffff;
+  --poe-accent-ink-str: #7a3f15;
+  --poe-accent-soft: #f0ddd0;
+
+  /* Semantic — Atmosphere mapping: Molten→warn, Skill gem→good, Blood→error, Cold→info */
+  --poe-warn: #fde8df;
+  --poe-warn-ink: #b84820;
+  --poe-warn-edge: #e89070;
+  --poe-good: #e0f0ee;
+  --poe-good-ink: #1a7a74;
+  --poe-good-edge: #6ec4be;
+  --poe-error: #fde8e8;
+  --poe-error-ink: #7a1212;
+  --poe-error-edge: #e8a0a0;
+  --poe-info: #e4f0f8;
+  --poe-info-ink: #2a6a8a;
+  --poe-info-edge: #90c4df;
+
+  /* Rarity — PoE item rarity colors (light variants) */
+  --poe-rarity-normal: #dcdcdc;
+  --poe-rarity-magic: #b8b4f0;
+  --poe-rarity-rare: #f0e88a;
+  --poe-rarity-unique: #d4956a;
+  --poe-rarity-skill: #6ec4be;
+  --poe-rarity-currency: #c8bfa0;
 }
 
 /* ── Raw palette: dark ─────────────────────────────────────────── */
 [data-theme="dark"] {
-  --poe-bg: #15110b;
-  --poe-frame: #0a0804;
-  --poe-chrome: #1f1a12;
-  --poe-surface: #1c1810;
-  --poe-surface-tab: #1a160f;
-  --poe-ink: #e8dcbe;
-  --poe-ink-muted: #8a7e66;
-  --poe-stroke: #3a3226;
-  --poe-stroke-soft: #2a2418;
-  --poe-line: #4a4030;
-  --poe-block: #231e14;
-  --poe-gold: #c28a2a;
-  --poe-gold-edge: #5a3f10;
-  --poe-gold-ink: #140e04;
-  --poe-gold-ink-str: #e0b15a;
-  --poe-gold-soft: #3a2a10;
-  --poe-warn: #3a2810;
-  --poe-warn-ink: #e0a850;
-  --poe-warn-edge: #7a5a20;
-  --poe-good: #1f2a14;
-  --poe-good-ink: #a8c87a;
-  --poe-good-edge: #4a6a2a;
+  /* Foundations — Void black palette */
+  --poe-bg: #0d0b0e;
+  --poe-frame: #080608;
+  --poe-chrome: #2a2520;
+  --poe-surface: #1a1714;
+  --poe-surface-tab: #181510;
+  --poe-ink: #c4b8a8;
+  --poe-ink-muted: #8c7b6a;
+  --poe-stroke: #504840;
+  --poe-stroke-soft: #3a3430;
+  --poe-line: #504840;
+  --poe-block: #2a2520;
+
+  /* Accent — Unique (amber) */
+  --poe-accent: #af6025;
+  --poe-accent-edge: #7a3f15;
+  --poe-accent-ink: #f5f2ee;
+  --poe-accent-ink-str: #d4956a;
+  --poe-accent-soft: #3a2010;
+
+  /* Semantic — Atmosphere mapping */
+  --poe-warn: #3a2010;
+  --poe-warn-ink: #e89070;
+  --poe-warn-edge: #7a4a20;
+  --poe-good: #1a2a24;
+  --poe-good-ink: #6ec4be;
+  --poe-good-edge: #3a6a5a;
+  --poe-error: #2a1010;
+  --poe-error-ink: #e8a0a0;
+  --poe-error-edge: #7a3030;
+  --poe-info: #102030;
+  --poe-info-ink: #90c4df;
+  --poe-info-edge: #3a5a7a;
+
+  /* Rarity — PoE item rarity colors (dark variants) */
+  --poe-rarity-normal: #c8c8c8;
+  --poe-rarity-magic: #8888ff;
+  --poe-rarity-rare: #ffff77;
+  --poe-rarity-unique: #af6025;
+  --poe-rarity-skill: #1ba29b;
+  --poe-rarity-currency: #aa9e82;
 }
 
 /* ── Tailwind v4 theme mapping ─────────────────────────────────── */
 @theme inline {
-  /* colors */
+  /* Foundations */
   --color-bg: var(--poe-bg);
   --color-frame: var(--poe-frame);
   --color-chrome: var(--poe-chrome);
@@ -70,23 +110,41 @@
   --color-stroke-soft: var(--poe-stroke-soft);
   --color-line: var(--poe-line);
   --color-block: var(--poe-block);
-  --color-gold: var(--poe-gold);
-  --color-gold-edge: var(--poe-gold-edge);
-  --color-gold-ink: var(--poe-gold-ink);
-  --color-gold-ink-str: var(--poe-gold-ink-str);
-  --color-gold-soft: var(--poe-gold-soft);
+
+  /* Accent (was gold — renamed to reflect Unique rarity color) */
+  --color-accent: var(--poe-accent);
+  --color-accent-edge: var(--poe-accent-edge);
+  --color-accent-ink: var(--poe-accent-ink);
+  --color-accent-ink-str: var(--poe-accent-ink-str);
+  --color-accent-soft: var(--poe-accent-soft);
+
+  /* Semantic */
   --color-warn: var(--poe-warn);
   --color-warn-ink: var(--poe-warn-ink);
   --color-warn-edge: var(--poe-warn-edge);
   --color-good: var(--poe-good);
   --color-good-ink: var(--poe-good-ink);
   --color-good-edge: var(--poe-good-edge);
+  --color-error: var(--poe-error);
+  --color-error-ink: var(--poe-error-ink);
+  --color-error-edge: var(--poe-error-edge);
+  --color-info: var(--poe-info);
+  --color-info-ink: var(--poe-info-ink);
+  --color-info-edge: var(--poe-info-edge);
+
+  /* Rarity */
+  --color-rarity-normal: var(--poe-rarity-normal);
+  --color-rarity-magic: var(--poe-rarity-magic);
+  --color-rarity-rare: var(--poe-rarity-rare);
+  --color-rarity-unique: var(--poe-rarity-unique);
+  --color-rarity-skill: var(--poe-rarity-skill);
+  --color-rarity-currency: var(--poe-rarity-currency);
 
   /* typography */
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* radii — mockup uses very sharp corners throughout */
+  /* radii — sharp corners throughout */
   --radius-sm: 2px;
   --radius-md: 3px;
   --radius-lg: 4px;

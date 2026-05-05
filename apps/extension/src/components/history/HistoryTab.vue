@@ -95,7 +95,7 @@ async function confirmChangePrice() {
           type="checkbox"
           :checked="allSelected"
           @change="toggleAll"
-          class="w-3.5 h-3.5 shrink-0 accent-gold cursor-pointer"
+          class="w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
         />
         <span class="text-[11px] text-ink-muted flex-1">
           {{ selectedIds.size > 0 ? `${selectedIds.size} selected` : `${items.length} items` }}
@@ -137,14 +137,14 @@ async function confirmChangePrice() {
           v-model="renameValue"
           @keydown.enter="confirmRename"
           @keydown.escape="renamingItemId = null"
-          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-gold"
+          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
           autofocus
         />
         <div class="flex gap-2">
           <BtnGhost label="Cancel" :full="true" size="sm" @click="renamingItemId = null" />
           <button
             @click="confirmRename"
-            class="flex-1 h-8 text-xs font-semibold bg-gold text-gold-ink border-0 rounded-sm cursor-pointer"
+            class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
           >
             Save
           </button>
@@ -170,14 +170,14 @@ async function confirmChangePrice() {
             step="0.1"
             @keydown.enter="confirmChangePrice"
             @keydown.escape="changingPriceItemId = null"
-            class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-gold"
+            class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
             autofocus
           />
           <input
             v-model="priceCurrency"
             @keydown.enter="confirmChangePrice"
             @keydown.escape="changingPriceItemId = null"
-            class="w-20 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-gold"
+            class="w-20 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
             placeholder="chaos"
           />
         </div>
@@ -185,7 +185,7 @@ async function confirmChangePrice() {
           <BtnGhost label="Cancel" :full="true" size="sm" @click="changingPriceItemId = null" />
           <button
             @click="confirmChangePrice"
-            class="flex-1 h-8 text-xs font-semibold bg-gold text-gold-ink border-0 rounded-sm cursor-pointer"
+            class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
           >
             Save
           </button>

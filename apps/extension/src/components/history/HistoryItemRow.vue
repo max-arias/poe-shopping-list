@@ -28,7 +28,7 @@ async function openSearch(url: string) {
     <!-- Checkbox for mass selection -->
     <input
       type="checkbox"
-      class="w-3.5 h-3.5 shrink-0 accent-gold cursor-pointer"
+      class="w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
       @change="emit('toggle-select', item.id)"
     />
 
@@ -46,7 +46,7 @@ async function openSearch(url: string) {
     </div>
 
     <!-- Price -->
-    <span class="font-mono text-xs font-semibold text-gold-ink-str shrink-0">
+    <span class="font-mono text-xs font-semibold text-accent-ink-str shrink-0">
       {{ formatPrice(item.priceValue) }}
       <span class="opacity-70 text-[10px]">{{ item.priceCurrency }}</span>
     </span>

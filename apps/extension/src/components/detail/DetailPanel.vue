@@ -5,7 +5,7 @@ import { useDraftList } from "../../composables/useDraftList";
 import { onMessage, sendMessage } from "../../utils/messages";
 import ItemRow from "../mine/ItemRow.vue";
 import KebabMenu from "../mine/KebabMenu.vue";
-import BtnGold from "../shared/BtnGold.vue";
+import BtnAccent from "../shared/BtnAccent.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 
 const ui = useUiStore();
@@ -120,7 +120,7 @@ async function saveLinkBuild() {
 
     <!-- Footer -->
     <div class="shrink-0 px-3 py-2.5 border-t border-stroke bg-surface flex flex-col gap-2">
-      <BtnGold label="Save This Search" :disabled="!isTradeSearchPage" @click="openSaveModal" />
+      <BtnAccent label="Save This Search" :disabled="!isTradeSearchPage" @click="openSaveModal" />
       <div class="flex gap-2">
         <BtnGhost label="⋯ More" :full="true" @click="showUnmarkConfirm = true" />
       </div>
@@ -227,7 +227,7 @@ async function saveLinkBuild() {
             v-model="linkBuildUrl"
             type="url"
             placeholder="pobb.in/… or maxroll.gg/…"
-            class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-gold w-full"
+            class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent w-full"
           />
         </div>
 
@@ -239,7 +239,7 @@ async function saveLinkBuild() {
               v-model="linkAssociatedUrls[i]"
               type="url"
               placeholder="https://…"
-              class="flex-1 h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-gold"
+              class="flex-1 h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent"
             />
             <button
               @click="linkAssociatedUrls.splice(i, 1)"
@@ -250,7 +250,7 @@ async function saveLinkBuild() {
           </div>
           <button
             @click="linkAssociatedUrls.push('')"
-            class="self-start text-[10px] text-gold-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+            class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
           >
             + Add another URL
           </button>
@@ -262,7 +262,7 @@ async function saveLinkBuild() {
             v-model="linkBuildCreator"
             type="text"
             placeholder="@creator"
-            class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-gold w-full"
+            class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent w-full"
           />
         </div>
         <div class="flex gap-2">
@@ -279,7 +279,7 @@ async function saveLinkBuild() {
           />
           <button
             @click="saveLinkBuild"
-            class="flex-1 h-8 text-xs font-semibold bg-gold text-gold-ink border-0 rounded-sm cursor-pointer"
+            class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
           >
             Save
           </button>

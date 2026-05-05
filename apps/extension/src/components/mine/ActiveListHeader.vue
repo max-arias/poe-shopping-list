@@ -41,7 +41,7 @@ const divineEquivalent = computed(() => {
     v-if="draft"
     class="flex items-center gap-2.5 px-3.5 py-3 border-b border-stroke-soft bg-surface shrink-0"
   >
-    <div class="w-2 h-2 rounded-full bg-gold shrink-0" />
+    <div class="w-2 h-2 rounded-full bg-accent shrink-0" />
     <div class="flex-1 min-w-0">
       <p class="text-[13px] font-semibold text-ink truncate">{{ draft.name }}</p>
       <p class="text-[10px] text-ink-muted mt-0.5">

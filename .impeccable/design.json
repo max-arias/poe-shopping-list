@@ -1,64 +1,189 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-05-05T17:40:00Z",
+  "generatedAt": "2026-05-05T18:30:00Z",
   "title": "Design System: PoE Shopping List",
   "extensions": {
     "colorMeta": {
-      "parchment-cream": {
+      "void-black": {
         "role": "neutral",
-        "displayName": "Parchment Cream",
-        "canonical": "oklch(96.5% 0.015 85)",
-        "tonalRamp": ["oklch(15% 0.02 85)", "oklch(25% 0.02 85)", "oklch(35% 0.02 85)", "oklch(50% 0.015 85)", "oklch(65% 0.015 85)", "oklch(80% 0.015 85)", "oklch(90% 0.015 85)", "oklch(96.5% 0.015 85)"]
+        "displayName": "Void Black",
+        "canonical": "oklch(8% 0.008 300)",
+        "tonalRamp": [
+          "oklch(3% 0.008 300)",
+          "oklch(5% 0.008 300)",
+          "oklch(8% 0.008 300)",
+          "oklch(15% 0.01 300)",
+          "oklch(25% 0.012 300)",
+          "oklch(40% 0.015 300)",
+          "oklch(60% 0.012 300)",
+          "oklch(80% 0.008 300)"
+        ]
       },
-      "warm-ink": {
-        "role": "primary",
-        "displayName": "Warm Ink",
-        "canonical": "oklch(22% 0.03 60)",
-        "tonalRamp": ["oklch(10% 0.03 60)", "oklch(15% 0.03 60)", "oklch(22% 0.03 60)", "oklch(35% 0.03 60)", "oklch(50% 0.03 60)", "oklch(65% 0.03 60)", "oklch(80% 0.03 60)", "oklch(92% 0.03 60)"]
+      "dungeon-stone": {
+        "role": "neutral",
+        "displayName": "Dungeon Stone",
+        "canonical": "oklch(24% 0.015 70)",
+        "tonalRamp": [
+          "oklch(8% 0.01 70)",
+          "oklch(14% 0.012 70)",
+          "oklch(24% 0.015 70)",
+          "oklch(35% 0.015 70)",
+          "oklch(50% 0.015 70)",
+          "oklch(65% 0.015 70)",
+          "oklch(80% 0.012 70)",
+          "oklch(92% 0.008 70)"
+        ]
       },
-      "trade-gold": {
+      "pale-fog": {
+        "role": "neutral",
+        "displayName": "Pale Fog",
+        "canonical": "oklch(78% 0.015 70)",
+        "tonalRamp": [
+          "oklch(15% 0.01 70)",
+          "oklch(30% 0.012 70)",
+          "oklch(45% 0.015 70)",
+          "oklch(58% 0.015 70)",
+          "oklch(68% 0.015 70)",
+          "oklch(78% 0.015 70)",
+          "oklch(88% 0.01 70)",
+          "oklch(95% 0.006 70)"
+        ]
+      },
+      "accent": {
         "role": "accent",
-        "displayName": "Trade Gold",
-        "canonical": "oklch(58% 0.12 75)",
-        "tonalRamp": ["oklch(20% 0.06 75)", "oklch(30% 0.08 75)", "oklch(40% 0.10 75)", "oklch(50% 0.11 75)", "oklch(58% 0.12 75)", "oklch(70% 0.11 75)", "oklch(82% 0.09 75)", "oklch(92% 0.06 75)"]
+        "displayName": "Unique Amber",
+        "canonical": "oklch(50% 0.14 55)",
+        "tonalRamp": [
+          "oklch(15% 0.06 55)",
+          "oklch(25% 0.09 55)",
+          "oklch(35% 0.11 55)",
+          "oklch(42% 0.13 55)",
+          "oklch(50% 0.14 55)",
+          "oklch(60% 0.12 55)",
+          "oklch(72% 0.10 55)",
+          "oklch(85% 0.07 55)"
+        ]
       },
-      "surface-warm": {
-        "role": "neutral",
-        "displayName": "Surface Warm",
-        "canonical": "oklch(92% 0.015 80)",
-        "tonalRamp": ["oklch(15% 0.02 80)", "oklch(25% 0.02 80)", "oklch(40% 0.015 80)", "oklch(55% 0.015 80)", "oklch(70% 0.015 80)", "oklch(82% 0.015 80)", "oklch(88% 0.015 80)", "oklch(92% 0.015 80)"]
-      },
-      "warn-amber": {
+      "warn-ink": {
         "role": "semantic",
-        "displayName": "Warn Amber",
-        "canonical": "oklch(85% 0.08 80)",
-        "tonalRamp": ["oklch(20% 0.06 80)", "oklch(35% 0.07 80)", "oklch(50% 0.08 80)", "oklch(65% 0.08 80)", "oklch(75% 0.08 80)", "oklch(85% 0.08 80)", "oklch(92% 0.06 80)", "oklch(96% 0.03 80)"]
+        "displayName": "Molten Terracotta",
+        "canonical": "oklch(65% 0.15 35)",
+        "tonalRamp": [
+          "oklch(20% 0.06 35)",
+          "oklch(35% 0.10 35)",
+          "oklch(50% 0.13 35)",
+          "oklch(58% 0.14 35)",
+          "oklch(65% 0.15 35)",
+          "oklch(75% 0.13 35)",
+          "oklch(85% 0.09 35)",
+          "oklch(93% 0.05 35)"
+        ]
       },
-      "good-sage": {
+      "good-ink": {
         "role": "semantic",
-        "displayName": "Good Sage",
-        "canonical": "oklch(85% 0.06 130)",
-        "tonalRamp": ["oklch(15% 0.04 130)", "oklch(30% 0.05 130)", "oklch(45% 0.06 130)", "oklch(60% 0.06 130)", "oklch(72% 0.06 130)", "oklch(80% 0.06 130)", "oklch(85% 0.06 130)", "oklch(92% 0.04 130)"]
+        "displayName": "Skill Gem Teal",
+        "canonical": "oklch(65% 0.10 185)",
+        "tonalRamp": [
+          "oklch(15% 0.04 185)",
+          "oklch(30% 0.06 185)",
+          "oklch(45% 0.08 185)",
+          "oklch(55% 0.09 185)",
+          "oklch(65% 0.10 185)",
+          "oklch(75% 0.09 185)",
+          "oklch(85% 0.07 185)",
+          "oklch(93% 0.04 185)"
+        ]
+      },
+      "error-ink": {
+        "role": "semantic",
+        "displayName": "Blood Rose",
+        "canonical": "oklch(60% 0.12 15)",
+        "tonalRamp": [
+          "oklch(15% 0.05 15)",
+          "oklch(30% 0.08 15)",
+          "oklch(45% 0.10 15)",
+          "oklch(52% 0.11 15)",
+          "oklch(60% 0.12 15)",
+          "oklch(72% 0.10 15)",
+          "oklch(82% 0.07 15)",
+          "oklch(92% 0.04 15)"
+        ]
+      },
+      "info-ink": {
+        "role": "semantic",
+        "displayName": "Cold Sky Blue",
+        "canonical": "oklch(70% 0.08 230)",
+        "tonalRamp": [
+          "oklch(15% 0.03 230)",
+          "oklch(30% 0.05 230)",
+          "oklch(45% 0.06 230)",
+          "oklch(55% 0.07 230)",
+          "oklch(65% 0.08 230)",
+          "oklch(75% 0.07 230)",
+          "oklch(85% 0.05 230)",
+          "oklch(93% 0.03 230)"
+        ]
       }
     },
     "typographyMeta": {
-      "body": { "displayName": "Body", "purpose": "Default text for item names, descriptions, form fields." },
-      "mono": { "displayName": "Mono/Price", "purpose": "Price values, currency labels, slugs, and any numeric data compared across rows." },
-      "label": { "displayName": "Label", "purpose": "Section headers, field labels, pills, and metadata. Always uppercase." },
-      "section": { "displayName": "Section Header", "purpose": "Section dividers like DRAFT, FOLLOWING, NAME, LEAGUE." },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default text for item names, descriptions, form fields."
+      },
+      "mono": {
+        "displayName": "Mono/Price",
+        "purpose": "Price values, currency labels, slugs, and any numeric data compared across rows."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Section headers, field labels, pills, and metadata. Always uppercase."
+      },
+      "section": {
+        "displayName": "Section Header",
+        "purpose": "Section dividers like DRAFT, FOLLOWING, NAME, LEAGUE."
+      },
       "chrome-title": { "displayName": "Chrome Title", "purpose": "Extension name in the top bar." }
     },
     "shadows": [
-      { "name": "panel-ambient", "value": "0 2px 8px rgba(0,0,0,0.08)", "purpose": "The only shadow. Applied to the panel container to anchor it as a physical surface." },
-      { "name": "popover", "value": "0 8px 28px rgba(0,0,0,0.22)", "purpose": "Settings popover and dropdown menus." }
+      {
+        "name": "panel-ambient-light",
+        "value": "0 2px 8px rgba(0,0,0,0.08)",
+        "purpose": "Panel container shadow in light mode."
+      },
+      {
+        "name": "panel-ambient-dark",
+        "value": "0 2px 8px rgba(0,0,0,0.25)",
+        "purpose": "Panel container shadow in dark mode."
+      },
+      {
+        "name": "popover",
+        "value": "0 8px 28px rgba(0,0,0,0.22)",
+        "purpose": "Settings popover and dropdown menus."
+      }
     ],
     "motion": [
-      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default easing for state transitions (hover, focus, tab switch)." },
-      { "name": "duration-fast", "value": "120ms", "purpose": "Hover and focus state transitions." },
-      { "name": "duration-normal", "value": "200ms", "purpose": "Tab switches, modal entrances, sheet slides." }
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default easing for state transitions (hover, focus, tab switch)."
+      },
+      {
+        "name": "duration-fast",
+        "value": "120ms",
+        "purpose": "Hover and focus state transitions."
+      },
+      {
+        "name": "duration-normal",
+        "value": "200ms",
+        "purpose": "Tab switches, modal entrances, sheet slides."
+      }
     ],
     "breakpoints": [
-      { "name": "panel", "value": "380px", "purpose": "Fixed sidebar width. All layouts are designed for this single width." }
+      {
+        "name": "panel",
+        "value": "380px",
+        "purpose": "Fixed sidebar width. All layouts are designed for this single width."
+      }
     ]
   },
   "components": [
@@ -66,9 +191,9 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The main action button. Gold background, dark text, uppercase. Used for Save This Search, Publish, Create List.",
+      "description": "The main action button. Unique amber background, white text, uppercase. Used for Save This Search, Publish, Create List.",
       "html": "<button class=\"ds-btn-primary\">SAVE THIS SEARCH</button>",
-      "css": ".ds-btn-primary { background: #b07e28; color: #1a1208; border: 1px solid #7a561a; border-radius: 2px; padding: 0 14px; height: 36px; font-size: 12px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 1px 0 rgba(0,0,0,0.3); transition: background 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #7a561a; } .ds-btn-primary:focus-visible { outline: none; border-color: #b07e28; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+      "css": ".ds-btn-primary { background: #AF6025; color: #FFFFFF; border: 1px solid #7A3F15; border-radius: 2px; padding: 0 14px; height: 36px; font-size: 12px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 1px 0 rgba(0,0,0,0.3); transition: background 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #7A3F15; } .ds-btn-primary:focus-visible { outline: none; border-color: #AF6025; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
     },
     {
       "name": "Ghost Button",
@@ -76,23 +201,23 @@
       "refersTo": "button-ghost",
       "description": "Secondary action button. Dashed border, transparent background. Used for Cancel, New List, Open trade site.",
       "html": "<button class=\"ds-btn-ghost\">Cancel</button>",
-      "css": ".ds-btn-ghost { background: transparent; color: #231e16; border: 1px dashed #d9cfb6; border-radius: 2px; padding: 0 10px; height: 26px; font-size: 11px; cursor: pointer; transition: border-color 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-ghost:hover { border-style: solid; border-color: #3a3226; } .ds-btn-ghost:focus-visible { outline: none; border-color: #b07e28; }"
+      "css": ".ds-btn-ghost { background: transparent; color: #4A4038; border: 1px dashed #CFC4B4; border-radius: 2px; padding: 0 10px; height: 26px; font-size: 11px; cursor: pointer; transition: border-color 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-ghost:hover { border-style: solid; border-color: #504840; } .ds-btn-ghost:focus-visible { outline: none; border-color: #AF6025; }"
     },
     {
-      "name": "Gold Ghost Button",
+      "name": "Accent Ghost Button",
       "kind": "button",
-      "refersTo": "button-ghost-gold",
-      "description": "Gold-accented ghost button. Solid gold-edge border, gold-ink-strong text. Used for Publish, Follow CTAs.",
-      "html": "<button class=\"ds-btn-ghost-gold\">Publish ▸</button>",
-      "css": ".ds-btn-ghost-gold { background: transparent; color: #7a561a; border: 1px solid #7a561a; border-radius: 2px; padding: 0 10px; height: 26px; font-size: 11px; font-weight: 600; cursor: pointer; transition: background 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-ghost-gold:hover { background: #ecd9a6; } .ds-btn-ghost-gold:focus-visible { outline: none; border-color: #b07e28; }"
+      "refersTo": "button-ghost-accent",
+      "description": "Accent-ghosted button. Solid accent-edge border, accent-ink-strong text. Used for Publish, Follow CTAs.",
+      "html": "<button class=\"ds-btn-ghost-accent\">Publish ▸</button>",
+      "css": ".ds-btn-ghost-accent { background: transparent; color: #7A3F15; border: 1px solid #7A3F15; border-radius: 2px; padding: 0 10px; height: 26px; font-size: 11px; font-weight: 600; cursor: pointer; transition: background 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-ghost-accent:hover { background: #F0DDD0; } .ds-btn-ghost-accent:focus-visible { outline: none; border-color: #AF6025; }"
     },
     {
-      "name": "Gold Pill",
+      "name": "Accent Pill",
       "kind": "chip",
-      "refersTo": "pill-gold",
-      "description": "Gold accent pill for DRAFT, ACTIVE, and league badges.",
-      "html": "<span class=\"ds-pill-gold\">DRAFT</span>",
-      "css": ".ds-pill-gold { display: inline-flex; align-items: center; padding: 2px 6px; font-size: 10px; font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase; background: #ecd9a6; color: #7a561a; border: 1px solid #7a561a; border-radius: 2px; white-space: nowrap; }"
+      "refersTo": "pill-accent",
+      "description": "Accent pill for DRAFT, ACTIVE, and league badges.",
+      "html": "<span class=\"ds-pill-accent\">DRAFT</span>",
+      "css": ".ds-pill-accent { display: inline-flex; align-items: center; padding: 2px 6px; font-size: 10px; font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase; background: #3A2010; color: #D4956A; border: 1px solid #7A3F15; border-radius: 2px; white-space: nowrap; }"
     },
     {
       "name": "Neutral Pill",
@@ -100,7 +225,7 @@
       "refersTo": "pill-neutral",
       "description": "Neutral pill for item counts, league tags, and metadata badges.",
       "html": "<span class=\"ds-pill-neutral\">Phrecia SC</span>",
-      "css": ".ds-pill-neutral { display: inline-flex; align-items: center; padding: 2px 6px; font-size: 10px; font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase; background: #e8e0c9; color: #7a6f5c; border: 1px solid #3a3226; border-radius: 2px; white-space: nowrap; }"
+      "css": ".ds-pill-neutral { display: inline-flex; align-items: center; padding: 2px 6px; font-size: 10px; font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase; background: #2A2520; color: #8C7B6A; border: 1px solid #504840; border-radius: 2px; white-space: nowrap; }"
     },
     {
       "name": "Item Row",
@@ -108,70 +233,93 @@
       "refersTo": null,
       "description": "The canonical list item. Checkbox + name + price + kebab. Flat, bottom-border only.",
       "html": "<div class=\"ds-item-row\">\n  <button class=\"ds-item-check ds-item-check--checked\">✓</button>\n  <span class=\"ds-item-name\">Crown of Eyes (Hubris Circlet)</span>\n  <span class=\"ds-item-price\">1.8 <span class=\"ds-item-currency\">div</span></span>\n  <button class=\"ds-item-kebab\">⋯</button>\n</div>",
-      "css": ".ds-item-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #d9cfb6; } .ds-item-check { width: 14px; height: 14px; border: 1px solid #3a3226; border-radius: 2px; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #1a1208; cursor: pointer; flex-shrink: 0; } .ds-item-check--checked { background: #b07e28; border-color: #7a561a; } .ds-item-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 500; color: #231e16; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-item-price { font-family: ui-monospace, SF Mono, Menlo, monospace; font-size: 12px; font-weight: 600; color: #7a561a; flex-shrink: 0; } .ds-item-currency { font-size: 10px; opacity: 0.7; margin-left: 2px; } .ds-item-kebab { color: #7a6f5c; font-size: 14px; cursor: pointer; background: transparent; border: 0; padding: 0 2px; flex-shrink: 0; }"
+      "css": ".ds-item-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #3A3430; } .ds-item-check { width: 14px; height: 14px; border: 1px solid #504840; border-radius: 2px; background: transparent; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #F5F2EE; cursor: pointer; flex-shrink: 0; } .ds-item-check--checked { background: #AF6025; border-color: #7A3F15; } .ds-item-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 500; color: #C4B8A8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-item-price { font-family: ui-monospace, SF Mono, Menlo, monospace; font-size: 12px; font-weight: 600; color: #D4956A; flex-shrink: 0; } .ds-item-currency { font-size: 10px; opacity: 0.7; margin-left: 2px; } .ds-item-kebab { color: #8C7B6A; font-size: 14px; cursor: pointer; background: transparent; border: 0; padding: 0 2px; flex-shrink: 0; }"
     },
     {
       "name": "Input Field",
       "kind": "input",
       "refersTo": "input-field",
-      "description": "Text input with gold focus border. Used for list names, search names, build URLs.",
+      "description": "Text input with accent focus border. Used for list names, search names, build URLs.",
       "html": "<div class=\"ds-input-wrap\">\n  <label class=\"ds-input-label\">NAME</label>\n  <input class=\"ds-input\" type=\"text\" value=\"Crown of Eyes · +1 phys spell\" />\n</div>",
-      "css": ".ds-input-wrap { display: flex; flex-direction: column; gap: 4px; } .ds-input-label { font-size: 10px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: #7a6f5c; } .ds-input { border: 1px solid #d9cfb6; border-radius: 2px; padding: 8px 10px; font-size: 13px; background: #fdfaf3; color: #231e16; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; } .ds-input:focus { outline: none; border-color: #b07e28; }"
+      "css": ".ds-input-wrap { display: flex; flex-direction: column; gap: 4px; } .ds-input-label { font-size: 10px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: #8C7B6A; } .ds-input { border: 1px solid #3A3430; border-radius: 2px; padding: 8px 10px; font-size: 13px; background: #0D0B0E; color: #C4B8A8; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; } .ds-input:focus { outline: none; border-color: #AF6025; }"
     },
     {
       "name": "Tab Bar",
       "kind": "nav",
       "refersTo": null,
-      "description": "Horizontal tab navigation. Active tab has gold underline and gold-ink-strong text.",
+      "description": "Horizontal tab navigation. Active tab has accent underline and accent-ink-strong text.",
       "html": "<nav class=\"ds-tabs\">\n  <button class=\"ds-tab ds-tab--active\">My Lists</button>\n  <button class=\"ds-tab\">History</button>\n</nav>",
-      "css": ".ds-tabs { display: flex; border-bottom: 1px solid #3a3226; background: #f5efe0; } .ds-tab { flex: 1; padding: 11px 0; font-size: 11px; font-weight: 400; color: #7a6f5c; text-transform: uppercase; letter-spacing: 0.5px; border: 0; border-bottom: 2px solid transparent; background: transparent; cursor: pointer; text-align: center; transition: color 120ms cubic-bezier(0.4,0,0.2,1), border-color 120ms cubic-bezier(0.4,0,0.2,1); } .ds-tab:hover { color: #231e16; } .ds-tab--active { font-weight: 600; color: #7a561a; border-bottom-color: #b07e28; }"
+      "css": ".ds-tabs { display: flex; border-bottom: 1px solid #504840; background: #181510; } .ds-tab { flex: 1; padding: 11px 0; font-size: 11px; font-weight: 400; color: #8C7B6A; text-transform: uppercase; letter-spacing: 0.5px; border: 0; border-bottom: 2px solid transparent; background: transparent; cursor: pointer; text-align: center; transition: color 120ms cubic-bezier(0.4,0,0.2,1), border-color 120ms cubic-bezier(0.4,0,0.2,1); } .ds-tab:hover { color: #C4B8A8; } .ds-tab--active { font-weight: 600; color: #D4956A; border-bottom-color: #AF6025; }"
     },
     {
       "name": "Chrome Bar",
       "kind": "nav",
       "refersTo": null,
       "description": "Top bar with extension identity, league pill, and settings gear.",
-      "html": "<header class=\"ds-chrome\">\n  <div class=\"ds-chrome-icon\"></div>\n  <span class=\"ds-chrome-title\">PoE Shopping List</span>\n  <span class=\"ds-pill-gold\" style=\"margin-left: auto; margin-right: 8px;\">Phrecia SC</span>\n  <button class=\"ds-chrome-gear\">⚙</button>\n</header>",
-      "css": ".ds-chrome { height: 32px; background: #eee7d8; border-bottom: 1px solid #1a1610; display: flex; align-items: center; padding: 0 8px; gap: 8px; flex-shrink: 0; } .ds-chrome-icon { width: 14px; height: 14px; border-radius: 2px; background: #b07e28; border: 1px solid #7a561a; flex-shrink: 0; } .ds-chrome-title { font-size: 12px; font-weight: 600; letter-spacing: 0.2px; color: #231e16; } .ds-chrome-gear { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; color: #7a6f5c; font-size: 14px; cursor: pointer; background: transparent; border: 0; border-radius: 2px; } .ds-chrome-gear:hover { background: #e8e0c9; }"
+      "html": "<header class=\"ds-chrome\">\n  <div class=\"ds-chrome-icon\"></div>\n  <span class=\"ds-chrome-title\">PoE Shopping List</span>\n  <span class=\"ds-pill-accent\" style=\"margin-left: auto; margin-right: 8px;\">Phrecia SC</span>\n  <button class=\"ds-chrome-gear\">⚙</button>\n</header>",
+      "css": ".ds-chrome { height: 32px; background: #2A2520; border-bottom: 1px solid #080608; display: flex; align-items: center; padding: 0 8px; gap: 8px; flex-shrink: 0; } .ds-chrome-icon { width: 14px; height: 14px; border-radius: 2px; background: #AF6025; border: 1px solid #7A3F15; flex-shrink: 0; } .ds-chrome-title { font-size: 12px; font-weight: 600; letter-spacing: 0.2px; color: #C4B8A8; } .ds-chrome-gear { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; color: #8C7B6A; font-size: 14px; cursor: pointer; background: transparent; border: 0; border-radius: 2px; } .ds-chrome-gear:hover { background: #2A2520; }"
     },
     {
       "name": "Section Header",
       "kind": "custom",
       "refersTo": null,
       "description": "Collapsible section divider with label, count, and action link.",
-      "html": "<div class=\"ds-section-hdr\">\n  <span class=\"ds-section-hdr-toggle\">▾</span>\n  <span class=\"ds-section-hdr-label\">Draft</span>\n  <span class=\"ds-section-hdr-count\">• Penance Brand</span>\n  <span class=\"ds-section-hdr-action\">⋯</span>\n</div>",
-      "css": ".ds-section-hdr { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #f2ecdd; border-bottom: 1px solid #d9cfb6; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: #7a6f5c; } .ds-section-hdr-toggle { opacity: 0.7; } .ds-section-hdr-label { } .ds-section-hdr-count { opacity: 0.6; font-weight: 400; } .ds-section-hdr-action { margin-left: auto; font-size: 10px; color: #7a561a; cursor: pointer; }"
+      "html": "<div class=\"ds-section-hdr\">\n  <span class=\"ds-section-hdr-toggle\">▾</span>\n  <span class=\"ds-section-hdr-label\">Draft</span>\n  <span class=\"ds-section-hdr-count\">· Penance Brand</span>\n  <span class=\"ds-section-hdr-action\">⋯</span>\n</div>",
+      "css": ".ds-section-hdr { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #1A1714; border-bottom: 1px solid #3A3430; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: #8C7B6A; } .ds-section-hdr-toggle { opacity: 0.7; } .ds-section-hdr-label { } .ds-section-hdr-count { opacity: 0.6; font-weight: 400; } .ds-section-hdr-action { margin-left: auto; font-size: 10px; color: #D4956A; cursor: pointer; }"
     }
   ],
   "narrative": {
     "northStar": "The Trade Bench",
-    "overview": "A workbench where every tool has its place. Functional, compact, no decoration beyond what earns its keep. The PoE Shopping List sidebar sits alongside the official trade site, and it must feel like it belongs there, not like a third-party overlay fighting for attention. The palette draws from Path of Exile's own visual language: warm parchment backgrounds, dark ink for data, and a muted gold accent reserved for actions and prices. The gold is functional, not decorative. It marks the things you click and the numbers you care about. Everything else recedes. The system is flat by default. Depth comes from tonal layering (surface vs. background, surface-tab vs. surface), not from shadows. The only shadow in the entire interface is a subtle ambient one on the panel container itself. Buttons feel pressed into the surface rather than raised above it. States are unambiguous but never loud.",
+    "overview": "A workbench where every tool has its place. Functional, compact, no decoration beyond what earns its keep. The PoE Shopping List sidebar sits alongside the official trade site, and it must feel like it belongs there, not like a third-party overlay fighting for attention. The palette is drawn directly from Path of Exile's own visual language: Void black and Dungeon stone for dark foundations, Unique amber as the single accent color, Pale fog for text. The accent marks interactive elements and price data; everything else recedes. The system is flat by default. Depth comes from tonal layering (surface vs. background, surface-tab vs. surface), not from shadows. The only shadow in the entire interface is a subtle ambient one on the panel container itself. Buttons feel pressed into the surface rather than raised above it. States are unambiguous but never loud.",
     "keyCharacteristics": [
-      "Warm parchment tones, not cool grays or clinical whites",
-      "Trade gold accent used sparingly for actions and price data",
+      "PoE-authentic palette: Void black, Dungeon stone, Unique amber, Pale fog text",
+      "Single accent color (Unique amber) used sparingly for actions and price data",
       "Flat surfaces with tonal layering for depth",
       "Compact density at 380px sidebar width",
       "Monospace for prices and data, system sans for everything else",
       "Sharp corners (2-3px radius), no rounded-pill shapes",
       "Uppercase labels with wide letter-spacing for section headers and pills",
-      "Quiet components that recede until needed"
+      "Quiet components that recede until needed",
+      "PoE rarity colors available for semantic states (Skill gem teal for success, Molten terracotta for warnings, Blood rose for errors, Cold sky blue for info)"
     ],
     "rules": [
-      { "name": "The One Accent Rule", "body": "Trade Gold is the only saturated color on the surface. It marks actions (buttons, active tabs) and data (prices, league pills). If something is gold, it's either clickable or it's a number the user needs. Everything else is ink or muted ink on parchment. No second accent color.", "section": "colors" },
-      { "name": "The Warm Neutral Rule", "body": "Every neutral is tinted toward amber. There are no cool grays, no blue-grays, no pure whites. Parchment Cream is the lightest surface; Warm Ink is the darkest text. The palette lives in the warm spectrum end to end.", "section": "colors" },
-      { "name": "The Monospace-for-Data Rule", "body": "Any number that the user compares across rows (prices, counts, totals) uses the mono font. Prose text (names, descriptions, labels) uses the system sans. Never mix them within a single text element.", "section": "typography" },
-      { "name": "The Flat-by-Default Rule", "body": "Surfaces are flat at rest. No card shadows, no floating panels, no drop shadows on list items. The only shadow is the panel container itself. If a component needs to feel elevated, use a tonal step (surface-warm vs bg), not a shadow.", "section": "elevation" }
+      {
+        "name": "The One Accent Rule",
+        "body": "Unique amber is the only saturated color on the surface. It marks actions (buttons, active tabs) and data (prices, league pills). If something is amber, it's either clickable or it's a number the user needs. Everything else is ink or muted ink on parchment. No second accent color.",
+        "section": "colors"
+      },
+      {
+        "name": "The Warm Neutral Rule",
+        "body": "Every neutral is tinted toward amber. There are no cool grays, no blue-grays, no pure whites. Void Black is warm black, not neutral black. Pale Fog is warm cream, not white. The palette lives in the warm spectrum end to end.",
+        "section": "colors"
+      },
+      {
+        "name": "The Rarity-as-Semantic Rule",
+        "body": "PoE rarity colors double as semantic UI states: Skill Gem teal for success, Molten terracotta for warnings, Blood rose for errors, Cold sky blue for info. They're never used decoratively; they carry meaning.",
+        "section": "colors"
+      },
+      {
+        "name": "The Monospace-for-Data Rule",
+        "body": "Any number that the user compares across rows (prices, counts, totals) uses the mono font. Prose text (names, descriptions, labels) uses the system sans. Never mix them within a single text element.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-by-Default Rule",
+        "body": "Surfaces are flat at rest. No card shadows, no floating panels, no drop shadows on list items. The only shadow is the panel container itself. If a component needs to feel elevated, use a tonal step (surface vs bg), not a shadow.",
+        "section": "elevation"
+      }
     ],
     "dos": [
-      "Use Trade Gold exclusively for interactive elements and price data",
-      "Use tonal layering (surface-warm vs. parchment-cream) to create depth without shadows",
+      "Use Unique amber exclusively for interactive elements and price data",
+      "Use tonal layering (surface vs. void-black) to create depth without shadows",
       "Use monospace for all numeric data that users compare across rows",
       "Keep the sidebar at 380px width. Density is a feature",
       "Use uppercase labels with wide letter-spacing (0.6px) for section headers, field labels, and pills",
-      "Use the warm neutral palette end to end",
-      "Make the gold accent functional, not decorative",
+      "Use the PoE-authentic palette end to end. Void black, Dungeon stone, Pale fog, Unique amber",
+      "Make the accent functional, not decorative",
       "Use 2-3px border radius everywhere. Sharp corners, not rounded",
-      "Let components recede until the user needs them"
+      "Let components recede until the user needs them",
+      "Use Skill Gem teal for success states, Molten terracotta for warnings, Blood rose for errors, Cold sky blue for info"
     ],
     "donts": [
       "Don't use border-left or border-right greater than 1px as a colored accent stripe on cards or list items",
@@ -180,9 +328,10 @@
       "Don't create hero-metric templates (big number, small label, gradient accent)",
       "Don't use identical card grids. Item rows are flat list items with a bottom border",
       "Don't use modals as the first response. Bottom sheets and inline states are preferred",
-      "Don't use cool grays, blue-grays, or pure whites/blacks",
+      "Don't use cool grays, blue-grays, or pure whites/blacks. Every neutral is warm-tinted",
       "Don't add rounded-pill shapes (radius > 4px)",
-      "Don't use celebration animations, confetti, or achievement badges"
+      "Don't use celebration animations, confetti, or achievement badges",
+      "Don't use PoE rarity colors decoratively. They carry semantic meaning only"
     ]
   }
 }
