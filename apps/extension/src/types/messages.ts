@@ -7,5 +7,6 @@ export type ExtMsg =
   | { type: "searchBarGet" }
   | { type: "captureStatus"; available: boolean }
   | { type: "open-sidepanel" }
+  | { type: "save-search" }
   | { type: "settings:get" }
   | { type: "settings:set"; settings: Partial<Settings> };

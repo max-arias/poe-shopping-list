@@ -24,7 +24,10 @@ const steps = [
 async function getCurrentTabUrl(): Promise<string> {
   try {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    return tab?.url ?? "";
+    const url = tab?.url ?? "";
+    // Trade site URLs aren't build guides — don't auto-fill them
+    if (/pathofexile\.com\/trade/.test(url)) return "";
+    return url;
   } catch {}
   return "";
 }
@@ -46,13 +49,13 @@ const allUrls = computed(() => {
   return [primaryUrl.value, ...extraUrls.value].filter((u) => u.trim() !== "");
 });
 
-const mainUrl = computed(() => allUrls.value[0] ?? undefined);
+const mainUrl = computed(() => allUrls.value[0] || undefined);
 const secondaryUrls = computed(() =>
   allUrls.value.length > 1 ? allUrls.value.slice(1) : undefined,
 );
 
 async function handleCreate() {
-  if (!draftName.value.trim() || !primaryUrl.value.trim() || creating.value) return;
+  if (!draftName.value.trim() || creating.value) return;
   creating.value = true;
   await createDraft(
     draftName.value,
@@ -117,9 +120,9 @@ function closeForm() {
         />
       </div>
 
-      <!-- Primary URL (required) -->
+      <!-- Primary URL (optional) -->
       <div>
-        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Build / Guide URL</p>
+        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Build / Guide URL <span class="normal-case text-ink-muted opacity-60">(optional)</span></p>
         <input
           v-model="primaryUrl"
           placeholder="https://pobb.in/…"
@@ -174,7 +177,7 @@ function closeForm() {
           label="Create"
           size="sm"
           :full="true"
-          :disabled="!draftName.trim() || !primaryUrl.trim() || creating"
+          :disabled="!draftName.trim() || creating"
           @click="handleCreate"
         />
       </div>

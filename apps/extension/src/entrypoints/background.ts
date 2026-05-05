@@ -25,11 +25,19 @@ export default defineBackground(() => {
     }
   });
 
-  // Open sidepanel on request from content script ribbon (synchronous — preserves user gesture)
+  // Handle messages from content scripts
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "open-sidepanel" && sender.tab?.id) {
       // @ts-expect-error
       chrome.sidePanel?.open({ tabId: sender.tab.id });
+      return;
+    }
+
+    if (msg.type === "save-search" && sender.tab?.id) {
+      // @ts-expect-error
+      chrome.sidePanel?.open({ tabId: sender.tab.id });
+      // Signal the sidepanel to open the save flow
+      chrome.storage.local.set({ triggerSaveSearch: Date.now() });
       return;
     }
   });

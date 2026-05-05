@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, watchEffect, watch } from "vue";
+import { computed, watchEffect, watch, ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../stores/ui";
 import { useSettings } from "../composables/useSettings";
 import { useDraftList } from "../composables/useDraftList";
+import { storage } from "wxt/utils/storage";
 import ChromeBar from "./layout/ChromeBar.vue";
 import MineTab from "./mine/MineTab.vue";
 import DetailPanel from "./detail/DetailPanel.vue";
@@ -16,6 +17,37 @@ import CaptureUnavailableBanner from "./shared/CaptureUnavailableBanner.vue";
 const ui = useUiStore();
 const { settings } = useSettings();
 const { drafts, isLoaded } = useDraftList();
+
+const triggerSaveSearch = storage.defineItem<number>("local:triggerSaveSearch", {
+  fallback: 0,
+});
+const pendingTrigger = ref(0);
+
+watch([isLoaded, pendingTrigger], ([loaded, trigger]) => {
+  if (!loaded || !trigger) return;
+  pendingTrigger.value = 0;
+  triggerSaveSearch.setValue(0); // clear the storage trigger
+
+  if (drafts.value.length > 0) {
+    // Open the most recent draft's detail and the save modal
+    ui.openDetail(drafts.value[0].id);
+    ui.openSaveModal();
+  } else {
+    // No lists yet — prompt the user to create one
+    ui.autoCreateList = true;
+  }
+});
+
+onMounted(async () => {
+  // Pick up a trigger that was set before the sidepanel mounted
+  const current = await triggerSaveSearch.getValue();
+  if (current) pendingTrigger.value = current;
+
+  const unwatch = triggerSaveSearch.watch((val) => {
+    if (val) pendingTrigger.value = val;
+  });
+  onBeforeUnmount(unwatch);
+});
 
 watch(
   isLoaded,

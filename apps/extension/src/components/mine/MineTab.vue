@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
@@ -26,6 +26,14 @@ const allNewUrls = computed(() =>
   [newPrimaryUrl.value, ...newExtraUrls.value].filter((u) => u.trim() !== ""),
 );
 
+// Auto-open the new-list form when triggered from the "Save search" button
+watch(
+  () => ui.autoCreateList,
+  (val) => {
+    if (val) showNewForm.value = true;
+  },
+);
+
 function addExtraUrl() {
   newExtraUrls.value.push("");
 }
@@ -37,7 +45,10 @@ function removeExtraUrl(i: number) {
 async function getCurrentTabUrl(): Promise<string> {
   try {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    return tab?.url ?? "";
+    const url = tab?.url ?? "";
+    // Trade site URLs aren't build guides — don't auto-fill them
+    if (/pathofexile\.com\/trade/.test(url)) return "";
+    return url;
   } catch {}
   return "";
 }
@@ -59,10 +70,10 @@ function closeNewForm() {
 }
 
 async function handleCreate() {
-  if (!newName.value.trim() || !newPrimaryUrl.value.trim() || creating.value) return;
+  if (!newName.value.trim() || creating.value) return;
   creating.value = true;
   const urls = allNewUrls.value;
-  const mainUrl = urls[0] ?? undefined;
+  const mainUrl = urls[0] || undefined;
   const secondaryUrls = urls.length > 1 ? urls.slice(1) : undefined;
   const d = await createDraft(
     newName.value,
@@ -74,6 +85,12 @@ async function handleCreate() {
   creating.value = false;
   closeNewForm();
   ui.openDetail(d.id);
+
+  // If triggered from "Save search" button, open the save modal after creating the list
+  if (ui.autoCreateList) {
+    ui.autoCreateList = false;
+    ui.openSaveModal();
+  }
 }
 
 async function confirmDelete() {
@@ -134,10 +151,10 @@ async function confirmDelete() {
             autofocus
           />
 
-          <!-- Primary URL (required) -->
+          <!-- Primary URL (optional) -->
           <input
             v-model="newPrimaryUrl"
-            placeholder="Build / Guide URL"
+            placeholder="Build / Guide URL (optional)"
             @keydown.escape="closeNewForm"
             class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
           />
@@ -183,7 +200,7 @@ async function confirmDelete() {
               label="Create"
               size="sm"
               :full="true"
-              :disabled="!newName.trim() || !newPrimaryUrl.trim() || creating"
+              :disabled="!newName.trim() || creating"
               @click="handleCreate"
             />
           </div>

@@ -20,4 +20,6 @@ export const SELECTORS = {
     ".search-bar-input",
     "input.search-filter-text",
   ],
+  /** Clear button in the search panel controls area. */
+  clearBtn: ".search-panel .clear-btn",
 } as const;
