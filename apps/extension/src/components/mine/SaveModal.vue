@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
@@ -7,6 +7,7 @@ import { sendMessage } from "../../utils/messages";
 import Pill from "../shared/Pill.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 
 const ui = useUiStore();
 const { draft, addItem } = useDraftList();
@@ -16,6 +17,11 @@ const itemName = ref("");
 const saving = ref(false);
 const capture = ref<import("@/types").TradeCapture | null>(null);
 const loadingCapture = ref(false);
+
+const dialogRef = ref<HTMLElement | null>(null);
+const { activate, deactivate } = useFocusTrap(dialogRef);
+onMounted(activate);
+onBeforeUnmount(deactivate);
 
 onMounted(async () => {
   itemName.value = ui.pendingSaveName;
@@ -66,12 +72,16 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
 
 <template>
   <!-- Backdrop -->
-  <div class="absolute inset-0 bg-black/50 flex items-end z-20" @click.self="ui.closeSaveModal()">
+  <div
+    ref="dialogRef"
+    class="absolute inset-0 bg-black/50 flex items-end z-20"
+    role="dialog"
+    aria-modal="true"
+    @keydown.escape="ui.closeSaveModal()"
+    @click.self="ui.closeSaveModal()"
+  >
     <!-- Sheet -->
-    <div
-      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3"
-      style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
-    >
+    <div class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 shadow-panel">
       <!-- Header -->
       <div class="flex items-center">
         <p class="text-[13px] font-semibold text-ink">Save Search</p>
@@ -92,6 +102,7 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
           maxlength="120"
           @keydown.enter="handleSave"
           placeholder="Item name…"
+          aria-label="Item name"
           class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink"
           autofocus
         />

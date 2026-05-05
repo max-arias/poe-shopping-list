@@ -18,29 +18,28 @@ export default defineContentScript({
 
     const container = document.querySelector("#main-content, .resultset, body");
     if (container) {
+      let observerTimer: ReturnType<typeof setTimeout>;
       new MutationObserver(() => {
-        reportStatus();
-        injectSaveSearchButton();
+        clearTimeout(observerTimer);
+        observerTimer = setTimeout(() => {
+          reportStatus();
+          injectSaveSearchButton();
+        }, 200);
       }).observe(container, { childList: true, subtree: true });
     }
 
     onMessage("csCaptureRead", () => {
-      console.log("[poe-sl] content: csCaptureRead called");
       const capture = buildCapture(document, window.location.href);
-      console.log("[poe-sl] content: csCaptureRead result", capture);
       return capture;
     });
 
     onMessage("csAutoCaptureRead", () => {
-      console.log("[poe-sl] content: csAutoCaptureRead called");
       const capture = buildCapture(document, window.location.href);
-      console.log("[poe-sl] content: csAutoCaptureRead result", capture);
       return capture;
     });
 
     onMessage("csSearchBarGet", () => {
       const text = getSearchBarText(document);
-      console.log("[poe-sl] content: csSearchBarGet =", JSON.stringify(text));
       return { text };
     });
 
@@ -124,31 +123,24 @@ export default defineContentScript({
         const travelBtn = target.closest(SELECTORS.travelBtn) as HTMLElement | null;
         if (!travelBtn) return;
 
-        console.log("[poe-sl] Travel to Hideout button clicked");
-
         // Check if tracking is enabled
         const settings = await storage.getItem<{ trackPurchaseHistory?: boolean }>(
           "local:settings:v1",
         );
         if (settings?.trackPurchaseHistory === false) {
-          console.log("[poe-sl] Purchase history tracking disabled, skipping");
           return;
         }
 
         // Walk up to the parent .row[data-id]
         const row = travelBtn.closest(SELECTORS.allRows) as HTMLElement | null;
         if (!row) {
-          console.log("[poe-sl] Could not find parent row for travel button");
           return;
         }
 
         const data = extractRowData(row);
         if (!data) {
-          console.log("[poe-sl] Could not extract row data");
           return;
         }
-
-        console.log("[poe-sl] Extracted row data:", data);
 
         const item: import("@/types").PurchaseHistoryItem = {
           id: crypto.randomUUID(),
@@ -161,7 +153,6 @@ export default defineContentScript({
           addedAt: Date.now(),
         };
 
-        console.log("[poe-sl] Sending csPurchaseHistoryAdd message:", item);
         sendMessage("csPurchaseHistoryAdd", item).catch(() => {});
       });
     }

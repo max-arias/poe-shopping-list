@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch, nextTick, onBeforeUnmount } from "vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 import { usePurchaseHistory } from "../../composables/usePurchaseHistory";
 import { useUiStore } from "../../stores/ui";
 import HistoryItemRow from "./HistoryItemRow.vue";
@@ -73,6 +74,29 @@ async function confirmChangePrice() {
   await changePrice(changingPriceItemId.value, val, priceCurrency.value.trim() || "chaos");
   changingPriceItemId.value = null;
 }
+
+const renameDialogRef = ref<HTMLElement | null>(null);
+const priceDialogRef = ref<HTMLElement | null>(null);
+const renameFocusTrap = useFocusTrap(renameDialogRef);
+const priceFocusTrap = useFocusTrap(priceDialogRef);
+
+watch(renamingItemId, async (val) => {
+  if (val) {
+    await nextTick();
+    renameFocusTrap.activate();
+  } else {
+    renameFocusTrap.deactivate();
+  }
+});
+
+watch(changingPriceItemId, async (val) => {
+  if (val) {
+    await nextTick();
+    priceFocusTrap.activate();
+  } else {
+    priceFocusTrap.deactivate();
+  }
+});
 </script>
 
 <template>
@@ -95,6 +119,7 @@ async function confirmChangePrice() {
           type="checkbox"
           :checked="allSelected"
           @change="toggleAll"
+          aria-label="Select all items"
           class="w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
         />
         <span class="text-[11px] text-ink-muted flex-1">
@@ -103,7 +128,7 @@ async function confirmChangePrice() {
         <button
           v-if="selectedIds.size > 0"
           @click="deleteSelected"
-          class="text-[11px] text-[#a8432a] hover:underline cursor-pointer bg-transparent border-0 px-0 py-0 font-medium"
+          class="text-[11px] text-destructive hover:underline cursor-pointer bg-transparent border-0 px-0 py-0 font-medium"
         >
           Delete selected
         </button>
@@ -126,7 +151,11 @@ async function confirmChangePrice() {
     <!-- Rename overlay -->
     <div
       v-if="renamingItemId"
+      ref="renameDialogRef"
       class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="renamingItemId = null"
       @click.self="renamingItemId = null"
     >
       <div
@@ -135,6 +164,7 @@ async function confirmChangePrice() {
         <p class="text-[13px] font-semibold text-ink">Rename item</p>
         <input
           v-model="renameValue"
+          aria-label="New name"
           @keydown.enter="confirmRename"
           @keydown.escape="renamingItemId = null"
           class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
@@ -155,7 +185,11 @@ async function confirmChangePrice() {
     <!-- Change price overlay -->
     <div
       v-if="changingPriceItemId"
+      ref="priceDialogRef"
       class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="changingPriceItemId = null"
       @click.self="changingPriceItemId = null"
     >
       <div
@@ -168,6 +202,7 @@ async function confirmChangePrice() {
             type="number"
             min="0"
             step="0.1"
+            aria-label="Price value"
             @keydown.enter="confirmChangePrice"
             @keydown.escape="changingPriceItemId = null"
             class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
@@ -175,6 +210,7 @@ async function confirmChangePrice() {
           />
           <input
             v-model="priceCurrency"
+            aria-label="Currency"
             @keydown.enter="confirmChangePrice"
             @keydown.escape="changingPriceItemId = null"
             class="w-20 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"

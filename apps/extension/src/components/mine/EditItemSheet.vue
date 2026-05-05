@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { sendMessage } from "../../utils/messages";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 
 const ui = useUiStore();
 const { draft, updateItem, updateCapture, removeItem } = useDraftList();
@@ -29,6 +30,11 @@ watch(
 const refreshing = ref(false);
 const saving = ref(false);
 const confirmingDelete = ref(false);
+
+const dialogRef = ref<HTMLElement | null>(null);
+const { activate, deactivate } = useFocusTrap(dialogRef);
+onMounted(activate);
+onBeforeUnmount(deactivate);
 
 const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
 
@@ -62,7 +68,14 @@ async function handleDelete() {
 </script>
 
 <template>
-  <div class="absolute inset-0 bg-black/50 flex items-end z-20" @click.self="ui.closeEditSheet()">
+  <div
+    ref="dialogRef"
+    class="absolute inset-0 bg-black/50 flex items-end z-20"
+    role="dialog"
+    aria-modal="true"
+    @keydown.escape="ui.closeEditSheet()"
+    @click.self="ui.closeEditSheet()"
+  >
     <div
       class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
       style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
@@ -87,6 +100,7 @@ async function handleDelete() {
           maxlength="120"
           @keydown.enter="handleSave"
           placeholder="Item name…"
+          aria-label="Item name"
           class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink bg-bg"
           autofocus
         />
@@ -99,6 +113,7 @@ async function handleDelete() {
           v-model="tradeUrl"
           @keydown.enter="handleSave"
           placeholder="https://pathofexile.com/trade/…"
+          aria-label="Trade URL"
           class="w-full h-9 px-2.5 text-[13px] border border-stroke rounded-sm text-ink bg-bg"
         />
       </div>
@@ -158,9 +173,9 @@ async function handleDelete() {
       <div v-if="!confirmingDelete">
         <button
           @click="confirmingDelete = true"
-          class="w-full h-8 text-xs font-medium text-[#a8432a] bg-transparent border border-[#a8432a]/40 rounded-sm cursor-pointer hover:bg-[#a8432a]/10"
+          class="w-full h-8 text-xs font-medium text-destructive bg-transparent border border-destructive-edge rounded-sm cursor-pointer hover:bg-destructive-soft"
         >
-          🗑 Delete item
+          ✕ Delete item
         </button>
       </div>
       <div v-else class="flex flex-col gap-2">
@@ -171,7 +186,7 @@ async function handleDelete() {
           <BtnGhost label="Cancel" :full="true" size="md" @click="confirmingDelete = false" />
           <button
             @click="handleDelete"
-            class="flex-1 h-8 text-xs font-semibold bg-[#a8432a] text-white border-0 rounded-sm cursor-pointer"
+            class="flex-1 h-8 text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
           >
             Delete
           </button>

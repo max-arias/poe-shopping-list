@@ -30,6 +30,9 @@ async function openTrade(url: string) {
     <!-- Checkbox -->
     <button
       @click="setComplete(item.id, !item.completed)"
+      role="checkbox"
+      :aria-checked="item.completed"
+      aria-label="Mark as acquired"
       class="w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
       :class="item.completed ? 'bg-accent border-accent-edge' : ''"
     >
@@ -43,6 +46,7 @@ async function openTrade(url: string) {
       <button
         v-if="item.tradeUrl"
         @click.stop="openTrade(item.tradeUrl!)"
+        :aria-label="item.name"
         class="text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full"
         :class="item.completed ? 'line-through' : ''"
       >
@@ -66,6 +70,7 @@ async function openTrade(url: string) {
     <!-- Kebab -->
     <button
       @click.stop="ui.toggleKebab(item.id)"
+      aria-label="Item actions"
       class="text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
     >
       ⋯

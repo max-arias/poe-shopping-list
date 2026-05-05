@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
@@ -7,6 +7,7 @@ import EmptyMine from "./EmptyMine.vue";
 import MineListRow from "./MineListRow.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 
 const { drafts, isLoaded, createDraft, deleteDraftById } = useDraftList();
 const { settings } = useSettings();
@@ -19,6 +20,16 @@ const newExtraUrls = ref<string[]>([]);
 const newCreator = ref("");
 const creating = ref(false);
 const deletingId = ref<string | null>(null);
+
+const deleteDialogRef = ref<HTMLElement | null>(null);
+const { activate, deactivate } = useFocusTrap(deleteDialogRef);
+watch(deletingId, (val) => {
+  if (val) {
+    nextTick(activate);
+  } else {
+    deactivate();
+  }
+});
 
 const deletingDraft = computed(() => drafts.value.find((d) => d.id === deletingId.value) ?? null);
 
@@ -98,6 +109,9 @@ async function confirmDelete() {
       <!-- Delete confirm overlay -->
       <div
         v-if="deletingId"
+        ref="deleteDialogRef"
+        role="dialog"
+        aria-modal="true"
         class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
         @click.self="deletingId = null"
       >
@@ -115,7 +129,8 @@ async function confirmDelete() {
             <BtnGhost label="Cancel" :full="true" size="md" @click="deletingId = null" />
             <button
               @click="confirmDelete"
-              class="flex-1 h-8 text-xs font-semibold bg-[#a8432a] text-white border-0 rounded-sm cursor-pointer"
+              aria-label="Delete list"
+              class="flex-1 h-8 text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
             >
               Delete
             </button>
@@ -132,6 +147,7 @@ async function confirmDelete() {
             v-model="newName"
             placeholder='e.g. "RF Jugg"'
             maxlength="80"
+            aria-label="List name"
             @keydown.escape="closeNewForm"
             class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
             autofocus
@@ -141,6 +157,7 @@ async function confirmDelete() {
           <input
             v-model="newPrimaryUrl"
             placeholder="Build / Guide URL (optional)"
+            aria-label="Build or guide URL"
             @keydown.escape="closeNewForm"
             class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
           />
@@ -150,6 +167,7 @@ async function confirmDelete() {
             <input
               v-model="newExtraUrls[i]"
               placeholder="Additional URL…"
+              aria-label="Additional URL"
               @keydown.escape="closeNewForm"
               class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
             />
@@ -174,6 +192,7 @@ async function confirmDelete() {
             v-model="newCreator"
             placeholder="Creator name…"
             maxlength="80"
+            aria-label="Creator name"
             @keydown.enter="handleCreate"
             @keydown.escape="closeNewForm"
             class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
@@ -195,7 +214,7 @@ async function confirmDelete() {
         <BtnAccent v-else label="+ New List" size="md" @click="openNewForm" />
         <BtnGhost
           v-if="!showNewForm"
-          label="📥 Import"
+          label="↓ Import"
           size="md"
           class="ml-2"
           @click="ui.importSheetOpen = true"

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 
 const ui = useUiStore();
 const { drafts, createDraft } = useDraftList();
@@ -13,6 +14,11 @@ const { settings } = useSettings();
 const showCreateForm = ref(false);
 const newName = ref("");
 const creating = ref(false);
+
+const dialogRef = ref<HTMLElement | null>(null);
+const { activate, deactivate } = useFocusTrap(dialogRef);
+onMounted(activate);
+onBeforeUnmount(deactivate);
 
 function selectDraft(draftId: string) {
   ui.openDetail(draftId);
@@ -39,14 +45,15 @@ function closeForm() {
 <template>
   <!-- Backdrop -->
   <div
+    ref="dialogRef"
     class="absolute inset-0 bg-black/50 flex items-end z-30"
+    role="dialog"
+    aria-modal="true"
+    @keydown.escape="ui.closeChooseListModal()"
     @click.self="ui.closeChooseListModal()"
   >
     <!-- Sheet -->
-    <div
-      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3"
-      style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
-    >
+    <div class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 shadow-panel">
       <!-- Header -->
       <div class="flex items-center">
         <p class="text-[13px] font-semibold text-ink">Save to List</p>
@@ -87,6 +94,7 @@ function closeForm() {
             v-model="newName"
             placeholder='e.g. "RF Jugg"'
             maxlength="80"
+            aria-label="List name"
             @keydown.enter="handleCreate"
             @keydown.escape="closeForm"
             class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"

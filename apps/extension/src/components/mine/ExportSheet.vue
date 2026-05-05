@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { exportDraft } from "../../composables/useImportExport";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 
 const ui = useUiStore();
 const { draft } = useDraftList();
 
 const encoded = computed(() => (draft.value ? exportDraft(draft.value) : ""));
 const copied = ref(false);
+
+const dialogRef = ref<HTMLElement | null>(null);
+const { activate, deactivate } = useFocusTrap(dialogRef);
+onMounted(activate);
+onBeforeUnmount(deactivate);
 
 async function copyToClipboard() {
   if (!encoded.value) return;
@@ -30,11 +36,17 @@ async function copyToClipboard() {
 
 <template>
   <!-- Backdrop -->
-  <div class="absolute inset-0 bg-black/50 flex items-end z-20" @click.self="ui.closeDetail()">
+  <div
+    ref="dialogRef"
+    class="absolute inset-0 bg-black/50 flex items-end z-20"
+    role="dialog"
+    aria-modal="true"
+    @keydown.escape="ui.closeDetail()"
+    @click.self="ui.closeDetail()"
+  >
     <!-- Sheet -->
     <div
-      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
-      style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto shadow-panel"
     >
       <div class="flex items-center shrink-0">
         <p class="text-[13px] font-semibold text-ink">Export list</p>
@@ -55,6 +67,7 @@ async function copyToClipboard() {
         data-export-textarea
         readonly
         :value="encoded"
+        aria-label="Exported list string"
         class="w-full h-24 px-2.5 py-2 text-[11px] font-mono border border-stroke rounded-sm text-ink bg-surface resize-none"
         @click="($event.target as HTMLTextAreaElement).select()"
       />

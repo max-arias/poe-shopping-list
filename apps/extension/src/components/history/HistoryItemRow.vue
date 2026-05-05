@@ -29,6 +29,7 @@ async function openSearch(url: string) {
     <input
       type="checkbox"
       class="w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
+      aria-label="Toggle select item"
       @change="emit('toggle-select', item.id)"
     />
 

@@ -90,9 +90,15 @@ watchEffect(() => {
     <ChromeBar @open-settings="ui.toggleSettings()" />
 
     <!-- Tab bar -->
-    <div v-if="ui.currentView.type === 'tabs'" class="flex border-b border-stroke shrink-0">
+    <div
+      v-if="ui.currentView.type === 'tabs'"
+      role="tablist"
+      class="flex border-b border-stroke shrink-0"
+    >
       <button
         @click="ui.setTab('mine')"
+        role="tab"
+        :aria-selected="ui.activeTab === 'mine'"
         class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
         :class="
           ui.activeTab === 'mine'
@@ -104,6 +110,8 @@ watchEffect(() => {
       </button>
       <button
         @click="ui.setTab('history')"
+        role="tab"
+        :aria-selected="ui.activeTab === 'history'"
         class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
         :class="
           ui.activeTab === 'history'
@@ -122,10 +130,10 @@ watchEffect(() => {
     <DetailPanel v-if="ui.currentView.type === 'detail'" />
 
     <!-- Tabs view -->
-    <template v-else>
+    <div v-else role="tabpanel">
       <MineTab v-if="ui.activeTab === 'mine'" />
       <HistoryTab v-else />
-    </template>
+    </div>
 
     <!-- Overlays -->
     <SaveModal v-if="ui.saveModalOpen" />

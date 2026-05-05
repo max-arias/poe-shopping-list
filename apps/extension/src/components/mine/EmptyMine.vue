@@ -92,8 +92,9 @@ function closeForm() {
   >
     <div
       class="w-14 h-14 rounded-full border-2 border-dashed border-stroke flex items-center justify-center text-2xl"
+      aria-label="Shopping list"
     >
-      🛍
+      ☰
     </div>
     <p class="text-[13px] font-semibold text-ink">Start your first list</p>
 
@@ -117,6 +118,7 @@ function closeForm() {
           v-model="draftName"
           placeholder='e.g. "RF Jugg"'
           maxlength="80"
+          aria-label="List name"
           @keydown.escape="closeForm"
           class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
           autofocus
@@ -131,6 +133,7 @@ function closeForm() {
         <input
           v-model="primaryUrl"
           placeholder="https://pobb.in/…"
+          aria-label="Build or guide URL"
           @keydown.escape="closeForm"
           class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
         />
@@ -141,6 +144,7 @@ function closeForm() {
         <input
           v-model="extraUrls[i]"
           :placeholder="i === 0 ? 'https://maxroll.gg/…' : 'https://…'"
+          aria-label="Additional URL"
           @keydown.escape="closeForm"
           class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
         />
@@ -169,6 +173,7 @@ function closeForm() {
           v-model="creator"
           placeholder="Creator name…"
           maxlength="80"
+          aria-label="Creator name"
           @keydown.enter="handleCreate"
           @keydown.escape="closeForm"
           class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"

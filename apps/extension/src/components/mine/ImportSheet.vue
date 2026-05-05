@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { importDraft } from "../../composables/useImportExport";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 
 const ui = useUiStore();
 const { createDraft, saveDraft } = useDraftList();
@@ -12,6 +13,11 @@ const { createDraft, saveDraft } = useDraftList();
 const input = ref("");
 const error = ref("");
 const importing = ref(false);
+
+const dialogRef = ref<HTMLElement | null>(null);
+const { activate, deactivate } = useFocusTrap(dialogRef);
+onMounted(activate);
+onBeforeUnmount(deactivate);
 
 async function handleImport() {
   if (!input.value.trim() || importing.value) return;
@@ -34,11 +40,17 @@ async function handleImport() {
 
 <template>
   <!-- Backdrop -->
-  <div class="absolute inset-0 bg-black/50 flex items-end z-20" @click.self="ui.closeDetail()">
+  <div
+    ref="dialogRef"
+    class="absolute inset-0 bg-black/50 flex items-end z-20"
+    role="dialog"
+    aria-modal="true"
+    @keydown.escape="ui.closeDetail()"
+    @click.self="ui.closeDetail()"
+  >
     <!-- Sheet -->
     <div
-      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
-      style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto shadow-panel"
     >
       <div class="flex items-center shrink-0">
         <p class="text-[13px] font-semibold text-ink">Import list</p>
@@ -58,11 +70,12 @@ async function handleImport() {
       <textarea
         v-model="input"
         placeholder="Paste exported list string here…"
+        aria-label="Import list string"
         class="w-full h-24 px-2.5 py-2 text-[11px] font-mono border border-stroke rounded-sm text-ink bg-bg resize-none placeholder:text-ink-muted"
         @keydown.enter.ctrl="handleImport"
       />
 
-      <p v-if="error" class="text-[11px] text-[#a8432a]">{{ error }}</p>
+      <p v-if="error" class="text-[11px] text-destructive">{{ error }}</p>
 
       <div class="flex gap-2">
         <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeDetail()" />

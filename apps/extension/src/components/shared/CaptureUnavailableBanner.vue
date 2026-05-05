@@ -1,5 +1,8 @@
 <template>
-  <div class="flex gap-2 px-3 py-2 bg-warn border-b border-warn-edge items-start shrink-0">
+  <div
+    role="alert"
+    class="flex gap-2 px-3 py-2 bg-warn border-b border-warn-edge items-start shrink-0"
+  >
     <div
       class="w-3.5 h-3.5 rounded-full bg-warn-ink text-bg text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
     >
@@ -13,6 +16,7 @@
     </div>
     <button
       class="text-[11px] font-semibold text-warn-ink bg-transparent border-0 cursor-pointer shrink-0 whitespace-nowrap"
+      aria-label="Check for updates"
     >
       Check updates
     </button>

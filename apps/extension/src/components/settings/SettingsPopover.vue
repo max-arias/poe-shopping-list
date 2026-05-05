@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
 import { POE1_LEAGUES, POE2_LEAGUES, DEFAULT_POE1_LEAGUE, DEFAULT_POE2_LEAGUE } from "@/types";
 
 const ui = useUiStore();
 const { settings, updateSettings } = useSettings();
+
+const dialogRef = ref<HTMLElement | null>(null);
+const { activate: activateFocusTrap } = useFocusTrap(dialogRef);
+
+onMounted(() => {
+  activateFocusTrap();
+});
 
 const leagueOptions = computed(() =>
   settings.value.game === "poe1" ? POE1_LEAGUES : POE2_LEAGUES,
@@ -20,8 +28,12 @@ function setGame(g: "poe1" | "poe2") {
 <template>
   <div class="absolute inset-0 bg-black/50 flex flex-col z-30" @click.self="ui.toggleSettings()">
     <div
-      class="w-full bg-bg border-b border-stroke flex flex-col max-h-[90%] overflow-auto"
-      style="box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2)"
+      ref="dialogRef"
+      class="w-full bg-bg border-b border-stroke flex flex-col max-h-[90%] overflow-auto shadow-popover"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Settings"
+      @keydown.escape="ui.toggleSettings()"
     >
       <!-- Header -->
       <div class="flex items-center px-3 py-2.5 border-b border-stroke shrink-0">
@@ -61,6 +73,7 @@ function setGame(g: "poe1" | "poe2") {
           <select
             :value="settings.league"
             @change="updateSettings({ league: ($event.target as HTMLSelectElement).value })"
+            aria-label="Current league"
             class="w-full h-9 px-2.5 text-[13px] border border-stroke rounded-sm text-ink bg-bg cursor-pointer"
           >
             <option v-for="l in leagueOptions" :key="l" :value="l">{{ l }}</option>
@@ -95,6 +108,9 @@ function setGame(g: "poe1" | "poe2") {
           </div>
           <button
             @click="updateSettings({ autoCapturePrice: !settings.autoCapturePrice })"
+            role="switch"
+            :aria-checked="settings.autoCapturePrice"
+            aria-label="Auto-capture price"
             class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
             :class="
               settings.autoCapturePrice
@@ -103,7 +119,7 @@ function setGame(g: "poe1" | "poe2") {
             "
           >
             <div
-              class="w-3.5 h-3.5 rounded-full bg-white shadow transition-transform"
+              class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm transition-transform"
               :class="settings.autoCapturePrice ? 'translate-x-4' : 'translate-x-0'"
             />
           </button>
@@ -117,6 +133,9 @@ function setGame(g: "poe1" | "poe2") {
           </div>
           <button
             @click="updateSettings({ openItemsInNewTab: !settings.openItemsInNewTab })"
+            role="switch"
+            :aria-checked="settings.openItemsInNewTab"
+            aria-label="Open items in new tab"
             class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
             :class="
               settings.openItemsInNewTab
@@ -125,7 +144,7 @@ function setGame(g: "poe1" | "poe2") {
             "
           >
             <div
-              class="w-3.5 h-3.5 rounded-full bg-white shadow transition-transform"
+              class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm transition-transform"
               :class="settings.openItemsInNewTab ? 'translate-x-4' : 'translate-x-0'"
             />
           </button>
@@ -139,6 +158,9 @@ function setGame(g: "poe1" | "poe2") {
           </div>
           <button
             @click="updateSettings({ trackPurchaseHistory: !settings.trackPurchaseHistory })"
+            role="switch"
+            :aria-checked="settings.trackPurchaseHistory"
+            aria-label="Track purchase history"
             class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
             :class="
               settings.trackPurchaseHistory
@@ -147,7 +169,7 @@ function setGame(g: "poe1" | "poe2") {
             "
           >
             <div
-              class="w-3.5 h-3.5 rounded-full bg-white shadow transition-transform"
+              class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm transition-transform"
               :class="settings.trackPurchaseHistory ? 'translate-x-4' : 'translate-x-0'"
             />
           </button>

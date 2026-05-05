@@ -14,12 +14,14 @@
   --poe-chrome: #e2dace;
   --poe-surface: #e8e0d5;
   --poe-surface-tab: #ede8e0;
+  --poe-surface-hover: #ddd5c8;
   --poe-ink: #4a4038;
-  --poe-ink-muted: #9e8e7a;
+  --poe-ink-muted: #7d6e5c;
   --poe-stroke: #cfc4b4;
   --poe-stroke-soft: #d8d0c4;
   --poe-line: #cfc4b4;
   --poe-block: #e8e0d5;
+  --poe-knob: #ffffff;
 
   /* Accent — Unique (dusty amber) */
   --poe-accent: #af6025;
@@ -27,6 +29,12 @@
   --poe-accent-ink: #ffffff;
   --poe-accent-ink-str: #7a3f15;
   --poe-accent-soft: #f0ddd0;
+
+  /* Destructive — Blood rose for delete/danger actions */
+  --poe-destructive: #a8432a;
+  --poe-destructive-ink: #ffffff;
+  --poe-destructive-soft: #f4e0dc;
+  --poe-destructive-edge: #a8432a40;
 
   /* Semantic — Atmosphere mapping: Molten→warn, Skill gem→good, Blood→error, Cold→info */
   --poe-warn: #fde8df;
@@ -41,6 +49,11 @@
   --poe-info: #e4f0f8;
   --poe-info-ink: #2a6a8a;
   --poe-info-edge: #90c4df;
+
+  /* Shadows */
+  --poe-shadow-panel: 0 -6px 20px rgba(0, 0, 0, 0.12);
+  --poe-shadow-popover: 0 6px 20px rgba(0, 0, 0, 0.12);
+  --poe-shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 0 rgba(0, 0, 0, 0.15);
 
   /* Rarity — PoE item rarity colors (light variants) */
   --poe-rarity-normal: #dcdcdc;
@@ -59,12 +72,14 @@
   --poe-chrome: #2a2520;
   --poe-surface: #1a1714;
   --poe-surface-tab: #181510;
+  --poe-surface-hover: #221e1a;
   --poe-ink: #c4b8a8;
   --poe-ink-muted: #8c7b6a;
   --poe-stroke: #504840;
   --poe-stroke-soft: #3a3430;
   --poe-line: #504840;
   --poe-block: #2a2520;
+  --poe-knob: #f5f2ee;
 
   /* Accent — Unique (amber) */
   --poe-accent: #af6025;
@@ -72,6 +87,12 @@
   --poe-accent-ink: #f5f2ee;
   --poe-accent-ink-str: #d4956a;
   --poe-accent-soft: #3a2010;
+
+  /* Destructive — Blood rose for delete/danger actions */
+  --poe-destructive: #a8432a;
+  --poe-destructive-ink: #ffffff;
+  --poe-destructive-soft: #2a1510;
+  --poe-destructive-edge: #a8432a40;
 
   /* Semantic — Atmosphere mapping */
   --poe-warn: #3a2010;
@@ -86,6 +107,11 @@
   --poe-info: #102030;
   --poe-info-ink: #90c4df;
   --poe-info-edge: #3a5a7a;
+
+  /* Shadows */
+  --poe-shadow-panel: 0 -6px 20px rgba(0, 0, 0, 0.25);
+  --poe-shadow-popover: 0 6px 20px rgba(0, 0, 0, 0.18);
+  --poe-shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 0 rgba(0, 0, 0, 0.3);
 
   /* Rarity — PoE item rarity colors (dark variants) */
   --poe-rarity-normal: #c8c8c8;
@@ -110,6 +136,8 @@
   --color-stroke-soft: var(--poe-stroke-soft);
   --color-line: var(--poe-line);
   --color-block: var(--poe-block);
+  --color-surface-hover: var(--poe-surface-hover);
+  --color-knob: var(--poe-knob);
 
   /* Accent (was gold — renamed to reflect Unique rarity color) */
   --color-accent: var(--poe-accent);
@@ -117,6 +145,12 @@
   --color-accent-ink: var(--poe-accent-ink);
   --color-accent-ink-str: var(--poe-accent-ink-str);
   --color-accent-soft: var(--poe-accent-soft);
+
+  /* Destructive */
+  --color-destructive: var(--poe-destructive);
+  --color-destructive-ink: var(--poe-destructive-ink);
+  --color-destructive-soft: var(--poe-destructive-soft);
+  --color-destructive-edge: var(--poe-destructive-edge);
 
   /* Semantic */
   --color-warn: var(--poe-warn);
@@ -139,6 +173,11 @@
   --color-rarity-unique: var(--poe-rarity-unique);
   --color-rarity-skill: var(--poe-rarity-skill);
   --color-rarity-currency: var(--poe-rarity-currency);
+
+  /* Shadows */
+  --shadow-panel: var(--poe-shadow-panel);
+  --shadow-popover: var(--poe-shadow-popover);
+  --shadow-btn: var(--poe-shadow-btn);
 
   /* typography */
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;

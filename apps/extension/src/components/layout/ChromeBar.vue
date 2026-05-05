@@ -14,6 +14,7 @@ const emit = defineEmits<{ openSettings: [] }>();
     <div class="flex-1" />
     <span
       class="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.3px] bg-accent-soft text-accent-ink-str border border-accent-edge rounded-sm"
+      aria-label="Current league"
     >
       {{ settings.league || "No league" }}
     </span>
@@ -21,6 +22,7 @@ const emit = defineEmits<{ openSettings: [] }>();
       @click="emit('openSettings')"
       class="w-[22px] h-[22px] flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border-0 rounded-sm hover:bg-block"
       title="Settings"
+      aria-label="Settings"
     >
       ⚙
     </button>

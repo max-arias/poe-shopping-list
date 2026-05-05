@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { onMessage, sendMessage } from "../../utils/messages";
@@ -19,10 +20,44 @@ const linkBuildCreator = ref("");
 const linkAssociatedUrls = ref<string[]>([]);
 const isTradeSearchPage = ref(false);
 
+const unmarkDialogRef = ref<HTMLElement | null>(null);
+const deleteDialogRef = ref<HTMLElement | null>(null);
+const linkDialogRef = ref<HTMLElement | null>(null);
+const unmarkFocusTrap = useFocusTrap(unmarkDialogRef);
+const deleteFocusTrap = useFocusTrap(deleteDialogRef);
+const linkFocusTrap = useFocusTrap(linkDialogRef);
+
 let removeCaptureListener: (() => void) | null = null;
 
 onBeforeUnmount(() => {
   removeCaptureListener?.();
+});
+
+watch(showUnmarkConfirm, async (val) => {
+  if (val) {
+    await nextTick();
+    unmarkFocusTrap.activate();
+  } else {
+    unmarkFocusTrap.deactivate();
+  }
+});
+
+watch(showDeleteConfirm, async (val) => {
+  if (val) {
+    await nextTick();
+    deleteFocusTrap.activate();
+  } else {
+    deleteFocusTrap.deactivate();
+  }
+});
+
+watch(showLinkBuild, async (val) => {
+  if (val) {
+    await nextTick();
+    linkFocusTrap.activate();
+  } else {
+    linkFocusTrap.deactivate();
+  }
 });
 
 async function checkTradeSearchPage() {
@@ -92,6 +127,7 @@ async function saveLinkBuild() {
       <button
         @click="ui.closeDetail()"
         class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none px-0.5"
+        aria-label="Back"
       >
         ←
       </button>
@@ -122,14 +158,23 @@ async function saveLinkBuild() {
     <div class="shrink-0 px-3 py-2.5 border-t border-stroke bg-surface flex flex-col gap-2">
       <BtnAccent label="Save This Search" :disabled="!isTradeSearchPage" @click="openSaveModal" />
       <div class="flex gap-2">
-        <BtnGhost label="⋯ More" :full="true" @click="showUnmarkConfirm = true" />
+        <BtnGhost
+          label="⋯ More"
+          :full="true"
+          aria-label="More options"
+          @click="showUnmarkConfirm = true"
+        />
       </div>
     </div>
 
     <!-- Unmark confirm -->
     <div
       v-if="showUnmarkConfirm"
+      ref="unmarkDialogRef"
       class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="showUnmarkConfirm = false"
       @click.self="showUnmarkConfirm = false"
     >
       <div
@@ -146,7 +191,7 @@ async function saveLinkBuild() {
           "
         />
         <BtnGhost
-          label="🔗 Link build URL"
+          label="↗ Link build URL"
           :full="true"
           size="md"
           @click="
@@ -155,16 +200,17 @@ async function saveLinkBuild() {
           "
         />
         <BtnGhost
-          label="🗑 Delete this list"
+          label="✕ Delete this list"
           :full="true"
           size="md"
+          class="text-destructive"
           @click="
             showUnmarkConfirm = false;
             showDeleteConfirm = true;
           "
         />
         <BtnGhost
-          label="📤 Export list"
+          label="↑ Export list"
           :full="true"
           size="md"
           @click="
@@ -173,7 +219,7 @@ async function saveLinkBuild() {
           "
         />
         <BtnGhost
-          label="📥 Import list"
+          label="↓ Import list"
           :full="true"
           size="md"
           @click="
@@ -188,7 +234,11 @@ async function saveLinkBuild() {
     <!-- Delete confirm -->
     <div
       v-if="showDeleteConfirm"
+      ref="deleteDialogRef"
       class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="showDeleteConfirm = false"
       @click.self="showDeleteConfirm = false"
     >
       <div
@@ -203,7 +253,7 @@ async function saveLinkBuild() {
           <BtnGhost label="Cancel" :full="true" size="md" @click="showDeleteConfirm = false" />
           <button
             @click="confirmDelete"
-            class="flex-1 h-8 text-xs font-semibold bg-[#a8432a] text-white border-0 rounded-sm cursor-pointer"
+            class="flex-1 h-8 text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
           >
             Delete
           </button>
@@ -214,7 +264,11 @@ async function saveLinkBuild() {
     <!-- Link build overlay -->
     <div
       v-if="showLinkBuild"
+      ref="linkDialogRef"
       class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="showLinkBuild = false"
       @click.self="showLinkBuild = false"
     >
       <div
@@ -227,6 +281,7 @@ async function saveLinkBuild() {
             v-model="linkBuildUrl"
             type="url"
             placeholder="pobb.in/… or maxroll.gg/…"
+            aria-label="Build URL"
             class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent w-full"
           />
         </div>
@@ -239,6 +294,7 @@ async function saveLinkBuild() {
               v-model="linkAssociatedUrls[i]"
               type="url"
               placeholder="https://…"
+              aria-label="Additional URL"
               class="flex-1 h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent"
             />
             <button
@@ -262,6 +318,7 @@ async function saveLinkBuild() {
             v-model="linkBuildCreator"
             type="text"
             placeholder="@creator"
+            aria-label="Creator name"
             class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent w-full"
           />
         </div>
