@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 const mockTradePagePath = path.resolve(__dirname, "mocks/trade-page.html");
 
 test.describe("Extension E2E", () => {
-  test("sidepanel renders with tabs and empty state", async ({ page, context, extensionId }) => {
+  test("sidepanel renders with tabs and empty state", async ({ page, context }) => {
     // Navigate to a trade page so we can open the sidepanel via the FAB button
     await page.route("https://www.pathofexile.com/trade/**", async (route) => {
       await route.fulfill({
@@ -19,7 +19,7 @@ test.describe("Extension E2E", () => {
     await page.goto("https://www.pathofexile.com/trade/search/Mirage/test-search-id");
 
     // Open sidepanel via the FAB button (realistic flow)
-    const sp = await openSidepanel(page, context, extensionId);
+    const sp = await openSidepanel(page, context);
 
     // Chrome bar title
     await expect(sp.getByTestId("chrome-bar-title")).toBeVisible();
@@ -30,7 +30,7 @@ test.describe("Extension E2E", () => {
     await expect(sp.getByTestId("create-list-btn")).toBeVisible();
   });
 
-  test("content script injects FAB on mocked trade page", async ({ page, extensionId }) => {
+  test("content script injects FAB on mocked trade page", async ({ page }) => {
     // Intercept requests to the trade site and serve our mock HTML
     await page.route("https://www.pathofexile.com/trade/**", async (route) => {
       await route.fulfill({

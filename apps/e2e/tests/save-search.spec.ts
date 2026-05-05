@@ -23,14 +23,16 @@ const EMPTY_RESULTS_HTML = `<!DOCTYPE html>
 </html>`;
 
 /** Create a draft object matching the Draft type for use in storage. */
-function makeDraft(overrides: Partial<{
-  id: string;
-  name: string;
-  game: string;
-  league: string;
-  createdAt: number;
-  items: Array<Record<string, unknown>>;
-}> = {}) {
+function makeDraft(
+  overrides: Partial<{
+    id: string;
+    name: string;
+    game: string;
+    league: string;
+    createdAt: number;
+    items: Array<Record<string, unknown>>;
+  }> = {},
+) {
   return {
     id: "test-draft-1",
     name: "My Build",
@@ -83,12 +85,12 @@ test.describe("Save Search flow", () => {
     await expect(saveBtn).toBeEnabled();
   });
 
-  test("Clicking Save search with no lists opens Choose List modal", async ({ page, context, extensionId }) => {
+  test("Clicking Save search with no lists opens Choose List modal", async ({ page, context }) => {
     await routeTradeWithResults(page);
     await page.goto(TRADE_URL);
 
     // Open sidepanel via the FAB button (realistic flow)
-    const sp = await openSidepanel(page, context, extensionId);
+    const sp = await openSidepanel(page, context);
     await expect(sp.getByTestId("chrome-bar-title")).toBeVisible();
 
     // Click Save search button on the trade page
@@ -102,12 +104,12 @@ test.describe("Save Search flow", () => {
     await expect(sp.getByText("Create a new list")).toBeVisible();
   });
 
-  test("Choose List modal shows existing lists when drafts exist", async ({ page, context, extensionId }) => {
+  test("Choose List modal shows existing lists when drafts exist", async ({ page, context }) => {
     await routeTradeWithResults(page);
     await page.goto(TRADE_URL);
 
     // Open sidepanel via the FAB button
-    const sp = await openSidepanel(page, context, extensionId);
+    const sp = await openSidepanel(page, context);
     await expect(sp.getByTestId("chrome-bar-title")).toBeVisible();
 
     // Create a draft in storage via the service worker
@@ -126,12 +128,12 @@ test.describe("Save Search flow", () => {
     await expect(sp.getByRole("button", { name: "My Build" })).toBeVisible({ timeout: 10_000 });
   });
 
-  test("Choosing a list from Choose List modal opens Save modal", async ({ page, context, extensionId }) => {
+  test("Choosing a list from Choose List modal opens Save modal", async ({ page, context }) => {
     await routeTradeWithResults(page);
     await page.goto(TRADE_URL);
 
     // Open sidepanel via the FAB button
-    const sp = await openSidepanel(page, context, extensionId);
+    const sp = await openSidepanel(page, context);
     await expect(sp.getByTestId("chrome-bar-title")).toBeVisible();
 
     // Create a draft in storage via the service worker
@@ -157,12 +159,12 @@ test.describe("Save Search flow", () => {
     await expect(sp.getByPlaceholder("Item name…")).toBeVisible();
   });
 
-  test("Creating a new list from Choose List modal opens Save modal", async ({ page, context, extensionId }) => {
+  test("Creating a new list from Choose List modal opens Save modal", async ({ page, context }) => {
     await routeTradeWithResults(page);
     await page.goto(TRADE_URL);
 
     // Open sidepanel (no drafts exist)
-    const sp = await openSidepanel(page, context, extensionId);
+    const sp = await openSidepanel(page, context);
     await expect(sp.getByTestId("chrome-bar-title")).toBeVisible();
 
     // Click Save search button on the trade page
@@ -193,12 +195,15 @@ test.describe("Save Search flow", () => {
     await expect(sp.getByPlaceholder("Item name…")).toBeVisible();
   });
 
-  test("Save search button click with active draft opens Save modal directly", async ({ page, context, extensionId }) => {
+  test("Save search button click with active draft opens Save modal directly", async ({
+    page,
+    context,
+  }) => {
     await routeTradeWithResults(page);
     await page.goto(TRADE_URL);
 
     // Open sidepanel via the FAB button
-    const sp = await openSidepanel(page, context, extensionId);
+    const sp = await openSidepanel(page, context);
     await expect(sp.getByTestId("chrome-bar-title")).toBeVisible();
 
     // Create a draft in storage via the service worker
@@ -211,7 +216,9 @@ test.describe("Save Search flow", () => {
     await sp.getByText("My Build").click();
 
     // Wait for the detail panel to show the "Save This Search" button
-    await expect(sp.getByRole("button", { name: "Save This Search" })).toBeVisible({ timeout: 5_000 });
+    await expect(sp.getByRole("button", { name: "Save This Search" })).toBeVisible({
+      timeout: 5_000,
+    });
 
     // Click Save search button on the trade page
     const saveBtn = page.locator("[data-poe-sl='save-search']");

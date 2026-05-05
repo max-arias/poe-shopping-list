@@ -1,3 +1,9 @@
+// Must be set before Playwright launches Chromium.
+// Enables Playwright to attach to pages created by chrome.sidePanel.open(),
+// making the sidepanel accessible via context.pages().
+// See: https://github.com/microsoft/playwright/issues/26693
+process.env.PW_CHROMIUM_ATTACH_TO_OTHER = "1";
+
 import { test as base, chromium, type BrowserContext, type Page } from "@playwright/test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -69,36 +75,35 @@ export async function setStorage(
  * Open the sidepanel by clicking the FAB button on the trade page.
  * This triggers the real csOpenSidepanel → service worker → chrome.sidePanel.open() flow.
  *
- * If chrome.sidePanel.open() doesn't work in the test environment (it may not
- * be supported in Playwright's Chromium), we fall back to opening the sidepanel
- * URL in a new tab. This still exercises the extension's sidepanel code but
- * bypasses the sidepanel API.
+ * Requires PW_CHROMIUM_ATTACH_TO_OTHER=1 (set at the top of this file) so that
+ * Playwright attaches to the sidepanel page created by chrome.sidePanel.open().
  */
-export async function openSidepanel(
-  page: Page,
-  context: BrowserContext,
-  extensionId: string,
-): Promise<Page> {
-  // Check if a sidepanel page is already open
-  const existing = context.pages().find((p) => p.url().includes("sidepanel.html"));
-  if (existing) return existing;
+export async function openSidepanel(page: Page, context: BrowserContext): Promise<Page> {
+  // Record pages that already exist so we can detect the new one
+  const pagesBefore = new Set(context.pages());
 
-  // Try clicking the FAB button to trigger csOpenSidepanel → chrome.sidePanel.open()
+  // Click the FAB button to trigger csOpenSidepanel → chrome.sidePanel.open()
   const fabBtn = page.getByTestId("poe-sl-fab-btn");
   await fabBtn.waitFor({ state: "visible", timeout: 10_000 });
   await fabBtn.click();
 
-  // Wait for the sidepanel page to appear (chrome.sidePanel.open may create a new page)
-  const deadline = Date.now() + 3_000;
+  // Wait for the sidepanel page to appear in context.pages().
+  // PW_CHROMIUM_ATTACH_TO_OTHER=1 (set at top of file) makes sidepanel
+  // pages created by chrome.sidePanel.open() visible to Playwright.
+  const deadline = Date.now() + 10_000;
   while (Date.now() < deadline) {
-    const sp = context.pages().find((p) => p.url().includes("sidepanel.html"));
-    if (sp) return sp;
+    const newPages = context.pages().filter((p) => !pagesBefore.has(p));
+    if (newPages.length > 0) {
+      const sp = newPages[0];
+      // Wait for the sidepanel to finish initial navigation
+      await sp.waitForLoadState("domcontentloaded");
+      return sp;
+    }
     await page.waitForTimeout(200);
   }
 
-  // Fallback: chrome.sidePanel.open() didn't work — open sidepanel in a new tab.
-  // This still tests the extension's sidepanel code, just not the sidepanel API itself.
-  const sp = await context.newPage();
-  await sp.goto(`chrome-extension://${extensionId}/sidepanel.html`);
-  return sp;
+  throw new Error(
+    "Sidepanel page did not appear after clicking the FAB button. " +
+      "Ensure PW_CHROMIUM_ATTACH_TO_OTHER=1 is set and chrome.sidePanel.open() is working.",
+  );
 }
