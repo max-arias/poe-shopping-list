@@ -37,14 +37,12 @@ async function checkTradeSearchPage() {
 
 onMounted(async () => {
   await checkTradeSearchPage();
-  removeCaptureListener = onMessage("captureStatus", async (available, sender) => {
+  removeCaptureListener = onMessage("captureStatusChanged", async (message) => {
+    const { tabUrl, available } = message.data;
     if (!available || !draft.value) return;
-    const tabId = sender.tab?.id;
-    const tabUrl = sender.tab?.url;
-    if (!tabId || !tabUrl) return;
     const match = draft.value.items.find((i) => i.tradeUrl === tabUrl);
     if (!match) return;
-    const capture = await sendMessage("captureRead", undefined, tabId);
+    const capture = await sendMessage("spCaptureRead");
     if (capture) await updateCapture(match.id, capture);
   });
 });
@@ -52,7 +50,7 @@ onMounted(async () => {
 async function openSaveModal() {
   let name = "";
   try {
-    const res = await browser.runtime.sendMessage({ type: "search-bar:get" });
+    const res = await sendMessage("spSearchBarGet");
     name = res?.text ?? "";
   } catch {}
   ui.openSaveModal(name);

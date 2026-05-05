@@ -1,12 +1,8 @@
-import type { TradeCapture } from "./trade";
-import type { Settings } from "./settings";
+/**
+ * @deprecated Use the typed protocol in `../utils/messages.ts` instead.
+ * The messaging system now uses `@webext-core/messaging` with a typed ProtocolMap.
+ * This file is kept only for historical reference.
+ */
 
-export type ExtMsg =
-  | { type: "captureRead" }
-  | { type: "autoCaptureRead" }
-  | { type: "searchBarGet" }
-  | { type: "captureStatus"; available: boolean }
-  | { type: "open-sidepanel" }
-  | { type: "save-search" }
-  | { type: "settings:get" }
-  | { type: "settings:set"; settings: Partial<Settings> };
+// All message types are now defined in the ProtocolMap in utils/messages.ts
+export type DeprecatedExtMsg = never;

@@ -47,7 +47,10 @@ onMounted(async () => {
   const unwatch = triggerSaveSearch.watch((val) => {
     if (val) pendingTrigger.value = val;
   });
-  onBeforeUnmount(unwatch);
+
+  onBeforeUnmount(() => {
+    unwatch();
+  });
 });
 
 watch(

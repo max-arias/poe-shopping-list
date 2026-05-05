@@ -44,9 +44,7 @@ async function handleRefresh() {
   if (!item.value || refreshing.value) return;
   refreshing.value = true;
   try {
-    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id) return;
-    const cap = await sendMessage("captureRead", undefined, tab.id);
+    const cap = await sendMessage("spCaptureRead");
     if (cap) {
       capture.value = cap;
       await updateCapture(item.value.id, cap);

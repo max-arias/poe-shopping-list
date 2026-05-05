@@ -12,4 +12,4 @@ export { DraftItemSchema, DraftSchema, type DraftItem, type Draft } from "./draf
 export { SettingsSchema, type Settings, DEFAULT_SETTINGS } from "./settings";
 export { PurchaseHistoryItemSchema, type PurchaseHistoryItem } from "./purchaseHistory";
 export { STORAGE } from "./storage";
-export type { ExtMsg } from "./messages";
+// ExtMsg is deprecated — use the typed ProtocolMap in utils/messages.ts

@@ -17,35 +17,27 @@ const saving = ref(false);
 const capture = ref<import("@/types").TradeCapture | null>(null);
 const loadingCapture = ref(false);
 
-async function getActiveTabId(): Promise<number | undefined> {
-  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-  return tab?.id;
-}
-
 onMounted(async () => {
   itemName.value = ui.pendingSaveName;
 
-  const tabId = await getActiveTabId();
-  console.log("[poe-sl] modal: active tabId =", tabId);
-
   if (!itemName.value) {
     try {
-      const res = await sendMessage("searchBarGet", undefined, tabId);
-      console.log("[poe-sl] modal: searchBarGet =", res);
+      const res = await sendMessage("spSearchBarGet");
+      console.log("[poe-sl] modal: spSearchBarGet =", res);
       itemName.value = res?.text ?? "";
     } catch (e) {
-      console.error("[poe-sl] modal: searchBarGet error:", e);
+      console.error("[poe-sl] modal: spSearchBarGet error:", e);
     }
   }
 
   if (settings.value.autoCapturePrice) {
     loadingCapture.value = true;
     try {
-      const cap = await sendMessage("captureRead", undefined, tabId);
-      console.log("[poe-sl] modal: captureRead =", cap);
+      const cap = await sendMessage("spCaptureRead");
+      console.log("[poe-sl] modal: spCaptureRead =", cap);
       capture.value = cap ?? null;
     } catch (e) {
-      console.error("[poe-sl] modal: captureRead error:", e);
+      console.error("[poe-sl] modal: spCaptureRead error:", e);
       capture.value = null;
     } finally {
       loadingCapture.value = false;

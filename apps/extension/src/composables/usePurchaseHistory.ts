@@ -1,7 +1,6 @@
 import { storage } from "wxt/utils/storage";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { type PurchaseHistoryItem } from "@/types";
-import { onMessage } from "../utils/messages";
 
 const purchaseHistoryItem = storage.defineItem<PurchaseHistoryItem[]>("local:purchaseHistory", {
   fallback: [],
@@ -12,62 +11,71 @@ function normalizeItem(item: PurchaseHistoryItem): PurchaseHistoryItem {
   return { ...item };
 }
 
+/**
+ * Convert a stored value that might be an object-with-numeric-keys
+ * (from a Vue reactive proxy serialization bug) back into a proper array.
+ */
+function toArray(val: unknown): PurchaseHistoryItem[] {
+  if (Array.isArray(val)) return val.map(normalizeItem);
+  if (val && typeof val === "object") {
+    // Handle object-with-numeric-keys (e.g. {"0": {...}})
+    const obj = val as Record<string, unknown>;
+    const keys = Object.keys(obj).sort((a, b) => Number(a) - Number(b));
+    if (keys.length > 0 && keys.every((k) => /^\d+$/.test(k))) {
+      return keys.map((k) => normalizeItem(obj[k] as PurchaseHistoryItem));
+    }
+  }
+  return [];
+}
+
+/** Strip Vue reactivity before writing to storage. */
+function toPlain<T>(val: T[]): T[] {
+  return JSON.parse(JSON.stringify(val));
+}
+
 export function usePurchaseHistory() {
   const items = ref<PurchaseHistoryItem[]>([]);
   const isLoaded = ref(false);
 
   onMounted(async () => {
     const stored = await purchaseHistoryItem.getValue();
-    items.value = stored.map(normalizeItem);
+    items.value = toArray(stored);
     isLoaded.value = true;
 
+    // If storage had corrupted data, fix it now
+    if (!Array.isArray(stored) && stored != null) {
+      await purchaseHistoryItem.setValue(toPlain(items.value));
+    }
+
     const unwatch = purchaseHistoryItem.watch((val) => {
-      items.value = (val ?? []).map(normalizeItem);
+      items.value = toArray(val);
     });
 
-    // Listen for real-time purchase history additions from content script
-    const removeListener = onMessage("purchaseHistoryAdd", (msg) => {
-      const normalized = normalizeItem(msg.data as PurchaseHistoryItem);
-      // Dedup by listingId: update existing or prepend
-      const idx = items.value.findIndex((i) => i.listingId === normalized.listingId);
-      if (idx >= 0) {
-        items.value[idx] = normalized;
-        items.value = [...items.value];
-      } else {
-        items.value = [normalized, ...items.value];
-      }
-      // Persist to storage
-      purchaseHistoryItem.setValue(items.value);
-    });
-
-    onBeforeUnmount(() => {
-      unwatch();
-      removeListener();
-    });
+    onBeforeUnmount(unwatch);
   });
 
   async function removeItem(id: string) {
     const updated = items.value.filter((i) => i.id !== id);
-    await purchaseHistoryItem.setValue(updated);
+    await purchaseHistoryItem.setValue(toPlain(updated));
     items.value = updated;
   }
 
   async function removeItems(ids: string[]) {
     const idSet = new Set(ids);
     const updated = items.value.filter((i) => !idSet.has(i.id));
-    await purchaseHistoryItem.setValue(updated);
+    await purchaseHistoryItem.setValue(toPlain(updated));
     items.value = updated;
   }
 
   async function renameItem(id: string, name: string) {
     const updated = items.value.map((i) => (i.id === id ? { ...i, name: name.trim() } : i));
-    await purchaseHistoryItem.setValue(updated);
+    await purchaseHistoryItem.setValue(toPlain(updated));
     items.value = updated;
   }
 
   async function changePrice(id: string, priceValue: number, priceCurrency: string) {
     const updated = items.value.map((i) => (i.id === id ? { ...i, priceValue, priceCurrency } : i));
-    await purchaseHistoryItem.setValue(updated);
+    await purchaseHistoryItem.setValue(toPlain(updated));
     items.value = updated;
   }
 

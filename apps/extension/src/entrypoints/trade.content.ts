@@ -24,29 +24,29 @@ export default defineContentScript({
       }).observe(container, { childList: true, subtree: true });
     }
 
-    onMessage("captureRead", () => {
-      console.log("[poe-sl] content: captureRead called");
+    onMessage("csCaptureRead", () => {
+      console.log("[poe-sl] content: csCaptureRead called");
       const capture = buildCapture(document, window.location.href);
-      console.log("[poe-sl] content: capture result", capture);
+      console.log("[poe-sl] content: csCaptureRead result", capture);
       return capture;
     });
 
-    onMessage("autoCaptureRead", () => {
-      console.log("[poe-sl] content: autoCaptureRead called");
+    onMessage("csAutoCaptureRead", () => {
+      console.log("[poe-sl] content: csAutoCaptureRead called");
       const capture = buildCapture(document, window.location.href);
-      console.log("[poe-sl] content: autoCaptureRead result", capture);
+      console.log("[poe-sl] content: csAutoCaptureRead result", capture);
       return capture;
     });
 
-    onMessage("searchBarGet", () => {
+    onMessage("csSearchBarGet", () => {
       const text = getSearchBarText(document);
-      console.log("[poe-sl] content: searchBarGet =", JSON.stringify(text));
+      console.log("[poe-sl] content: csSearchBarGet =", JSON.stringify(text));
       return { text };
     });
 
     function reportStatus() {
       const available = isCaptureable(document);
-      sendMessage("captureStatus", available).catch(() => {});
+      sendMessage("csCaptureStatus", available).catch(() => {});
     }
 
     /** Inject a "Save search" button before the trade site's Clear button. */
@@ -84,7 +84,7 @@ export default defineContentScript({
       });
 
       btn.addEventListener("click", () => {
-        chrome.runtime.sendMessage({ type: "save-search" });
+        sendMessage("csSaveSearch");
       });
 
       clearBtn.before(btn);
@@ -98,18 +98,31 @@ export default defineContentScript({
         const travelBtn = target.closest(SELECTORS.travelBtn) as HTMLElement | null;
         if (!travelBtn) return;
 
+        console.log("[poe-sl] Travel to Hideout button clicked");
+
         // Check if tracking is enabled
         const settings = await storage.getItem<{ trackPurchaseHistory?: boolean }>(
           "local:settings:v1",
         );
-        if (settings?.trackPurchaseHistory === false) return;
+        if (settings?.trackPurchaseHistory === false) {
+          console.log("[poe-sl] Purchase history tracking disabled, skipping");
+          return;
+        }
 
         // Walk up to the parent .row[data-id]
         const row = travelBtn.closest(SELECTORS.allRows) as HTMLElement | null;
-        if (!row) return;
+        if (!row) {
+          console.log("[poe-sl] Could not find parent row for travel button");
+          return;
+        }
 
         const data = extractRowData(row);
-        if (!data) return;
+        if (!data) {
+          console.log("[poe-sl] Could not extract row data");
+          return;
+        }
+
+        console.log("[poe-sl] Extracted row data:", data);
 
         const item: import("@/types").PurchaseHistoryItem = {
           id: crypto.randomUUID(),
@@ -122,7 +135,8 @@ export default defineContentScript({
           addedAt: Date.now(),
         };
 
-        sendMessage("purchaseHistoryAdd", item).catch(() => {});
+        console.log("[poe-sl] Sending csPurchaseHistoryAdd message:", item);
+        sendMessage("csPurchaseHistoryAdd", item).catch(() => {});
       });
     }
   },

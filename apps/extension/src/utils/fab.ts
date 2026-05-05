@@ -1,4 +1,5 @@
 import type { Draft } from "@/types";
+import { sendMessage } from "./messages";
 
 export function injectFab(drafts: Draft[], url: string) {
   if (sessionStorage.getItem("poe-sl-fab-dismissed")) {
@@ -211,7 +212,7 @@ export function injectFab(drafts: Draft[], url: string) {
 
     shadow.querySelectorAll(".btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        chrome.runtime.sendMessage({ type: "open-sidepanel" });
+        sendMessage("csOpenSidepanel");
       });
     });
 
@@ -236,7 +237,7 @@ export function injectFab(drafts: Draft[], url: string) {
     shadow.appendChild(container);
 
     shadow.querySelector(".fab-btn")!.addEventListener("click", () => {
-      chrome.runtime.sendMessage({ type: "open-sidepanel" });
+      sendMessage("csOpenSidepanel");
     });
 
     shadow.querySelector(".fab-close-btn")!.addEventListener("click", (e) => {
