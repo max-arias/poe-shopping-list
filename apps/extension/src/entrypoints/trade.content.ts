@@ -49,9 +49,19 @@ export default defineContentScript({
       sendMessage("csCaptureStatus", available).catch(() => {});
     }
 
-    /** Inject a "Save search" button before the trade site's Clear button. */
+    /** Inject a "Save search" button before the trade site's Clear button.
+     *  Disabled when no search results are visible; re-enabled when results appear. */
     function injectSaveSearchButton() {
-      if (document.querySelector("[data-poe-sl='save-search']")) return;
+      const hasResults = isCaptureable(document);
+      const existing = document.querySelector(
+        "[data-poe-sl='save-search']",
+      ) as HTMLButtonElement | null;
+
+      if (existing) {
+        existing.disabled = !hasResults;
+        applyButtonStateStyle(existing);
+        return;
+      }
 
       const clearBtn = document.querySelector(SELECTORS.clearBtn);
       if (!clearBtn?.parentElement) return;
@@ -60,6 +70,7 @@ export default defineContentScript({
       btn.type = "button";
       btn.dataset.poeSl = "save-search";
       btn.textContent = "Save search";
+      btn.disabled = !hasResults;
       btn.style.cssText = [
         "background:transparent",
         "border:1px solid #7f6e4e",
@@ -71,23 +82,38 @@ export default defineContentScript({
         "border-radius:2px",
         "margin-right:8px",
         "font-family:inherit",
-        "transition:background .15s,color .15s",
+        "transition:background .15s,color .15s,opacity .15s",
       ].join(";");
+      applyButtonStateStyle(btn);
 
       btn.addEventListener("mouseenter", () => {
+        if (btn.disabled) return;
         btn.style.background = "#c28a2a";
         btn.style.color = "#140e04";
       });
       btn.addEventListener("mouseleave", () => {
+        if (btn.disabled) return;
         btn.style.background = "transparent";
         btn.style.color = "#c28a2a";
       });
 
       btn.addEventListener("click", () => {
+        if (btn.disabled) return;
         sendMessage("csSaveSearch");
       });
 
       clearBtn.before(btn);
+    }
+
+    /** Apply visual styling that reflects the button's disabled state. */
+    function applyButtonStateStyle(btn: HTMLButtonElement) {
+      if (btn.disabled) {
+        btn.style.opacity = "0.4";
+        btn.style.cursor = "not-allowed";
+      } else {
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+      }
     }
 
     /** Listen for clicks on "Travel to Hideout" buttons and send purchase history data. */

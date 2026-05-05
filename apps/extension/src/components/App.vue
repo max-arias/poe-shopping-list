@@ -9,6 +9,7 @@ import MineTab from "./mine/MineTab.vue";
 import HistoryTab from "./history/HistoryTab.vue";
 import DetailPanel from "./detail/DetailPanel.vue";
 import SaveModal from "./mine/SaveModal.vue";
+import ChooseListModal from "./mine/ChooseListModal.vue";
 import EditItemSheet from "./mine/EditItemSheet.vue";
 import ExportSheet from "./mine/ExportSheet.vue";
 import ImportSheet from "./mine/ImportSheet.vue";
@@ -29,13 +30,12 @@ watch([isLoaded, pendingTrigger], ([loaded, trigger]) => {
   pendingTrigger.value = 0;
   triggerSaveSearch.setValue(0); // clear the storage trigger
 
-  if (drafts.value.length > 0) {
-    // Open the most recent draft's detail and the save modal
-    ui.openDetail(drafts.value[0].id);
+  if (drafts.value.length > 0 && ui.currentView.type === "detail") {
+    // A draft is already open — save directly to it
     ui.openSaveModal();
   } else {
-    // No lists yet — prompt the user to create one
-    ui.autoCreateList = true;
+    // No draft open or no lists yet — let the user choose or create one
+    ui.openChooseListModal();
   }
 });
 
@@ -129,6 +129,7 @@ watchEffect(() => {
 
     <!-- Overlays -->
     <SaveModal v-if="ui.saveModalOpen" />
+    <ChooseListModal v-if="ui.chooseListModalOpen" />
     <EditItemSheet v-if="ui.editSheetItemId" />
     <ExportSheet v-if="ui.exportSheetOpen" />
     <ImportSheet v-if="ui.importSheetOpen" />

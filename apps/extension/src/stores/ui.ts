@@ -15,7 +15,7 @@ export const useUiStore = defineStore("ui", () => {
   const editSheetItemId = ref<string | null>(null);
   const exportSheetOpen = ref(false);
   const importSheetOpen = ref(false);
-  const autoCreateList = ref(false);
+  const chooseListModalOpen = ref(false);
 
   function setTab(tab: TabId) {
     activeTab.value = tab;
@@ -83,6 +83,12 @@ export const useUiStore = defineStore("ui", () => {
     closeKebab,
     exportSheetOpen,
     importSheetOpen,
-    autoCreateList,
+    chooseListModalOpen,
+    openChooseListModal() {
+      chooseListModalOpen.value = true;
+    },
+    closeChooseListModal() {
+      chooseListModalOpen.value = false;
+    },
   };
 });

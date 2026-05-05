@@ -13,12 +13,12 @@ Content Script  ←──→  Service Worker  ←──→  Side Panel
 
 ### Channel naming convention (`src/utils/messages.ts`)
 
-| Prefix | Direction | Example |
-|--------|-----------|---------|
-| `cs*` | Content Script → Service Worker | `csCaptureStatus`, `csPurchaseHistoryAdd`, `csSaveSearch`, `csOpenSidepanel` |
-| `cs*` (handlers) | Service Worker → Content Script (via tab targeting) | `csCaptureRead`, `csAutoCaptureRead`, `csSearchBarGet` |
-| `sp*` | Side Panel → Service Worker (relayed to CS) | `spCaptureRead`, `spAutoCaptureRead`, `spSearchBarGet` |
-| (broadcast) | Service Worker → all extension pages | `captureStatusChanged` |
+| Prefix           | Direction                                           | Example                                                                      |
+| ---------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `cs*`            | Content Script → Service Worker                     | `csCaptureStatus`, `csPurchaseHistoryAdd`, `csSaveSearch`, `csOpenSidepanel` |
+| `cs*` (handlers) | Service Worker → Content Script (via tab targeting) | `csCaptureRead`, `csAutoCaptureRead`, `csSearchBarGet`                       |
+| `sp*`            | Side Panel → Service Worker (relayed to CS)         | `spCaptureRead`, `spAutoCaptureRead`, `spSearchBarGet`                       |
+| (broadcast)      | Service Worker → all extension pages                | `captureStatusChanged`                                                       |
 
 ### When to use messaging (`@webext-core/messaging`)
 

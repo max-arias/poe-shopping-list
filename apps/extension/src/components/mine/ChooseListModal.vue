@@ -1,0 +1,116 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { useUiStore } from "../../stores/ui";
+import { useDraftList } from "../../composables/useDraftList";
+import { useSettings } from "../../composables/useSettings";
+import BtnGhost from "../shared/BtnGhost.vue";
+import BtnGold from "../shared/BtnGold.vue";
+
+const ui = useUiStore();
+const { drafts, createDraft } = useDraftList();
+const { settings } = useSettings();
+
+const showCreateForm = ref(false);
+const newName = ref("");
+const creating = ref(false);
+
+function selectDraft(draftId: string) {
+  ui.openDetail(draftId);
+  ui.closeChooseListModal();
+  ui.openSaveModal();
+}
+
+async function handleCreate() {
+  if (!newName.value.trim() || creating.value) return;
+  creating.value = true;
+  const d = await createDraft(newName.value, settings.value.league);
+  creating.value = false;
+  ui.openDetail(d.id);
+  ui.closeChooseListModal();
+  ui.openSaveModal();
+}
+
+function closeForm() {
+  showCreateForm.value = false;
+  newName.value = "";
+}
+</script>
+
+<template>
+  <!-- Backdrop -->
+  <div
+    class="absolute inset-0 bg-black/50 flex items-end z-30"
+    @click.self="ui.closeChooseListModal()"
+  >
+    <!-- Sheet -->
+    <div
+      class="w-full bg-bg border-t-2 border-gold flex flex-col gap-3 p-3.5 pb-3"
+      style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
+    >
+      <!-- Header -->
+      <div class="flex items-center">
+        <p class="text-[13px] font-semibold text-ink">Save to List</p>
+        <div class="flex-1" />
+        <button
+          @click="ui.closeChooseListModal()"
+          class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Existing lists -->
+      <div v-if="drafts.length > 0" class="flex flex-col gap-1.5 max-h-40 overflow-auto">
+        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">Choose a list</p>
+        <button
+          v-for="d in drafts"
+          :key="d.id"
+          @click="selectDraft(d.id)"
+          class="flex items-center gap-2 h-9 px-2.5 border border-stroke rounded-sm text-[13px] text-ink bg-transparent cursor-pointer hover:bg-gold-soft transition-colors text-left"
+        >
+          <div class="w-2 h-2 rounded-full bg-gold shrink-0" />
+          <span class="flex-1 truncate">{{ d.name }}</span>
+          <span class="text-[10px] text-ink-muted">
+            {{ d.items.length }} item{{ d.items.length !== 1 ? "s" : "" }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Create new list -->
+      <div class="flex flex-col gap-2">
+        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">
+          {{ drafts.length > 0 ? "Or create a new list" : "Create a new list" }}
+        </p>
+
+        <div v-if="showCreateForm" class="flex flex-col gap-2">
+          <input
+            v-model="newName"
+            placeholder='e.g. "RF Jugg"'
+            maxlength="80"
+            @keydown.enter="handleCreate"
+            @keydown.escape="closeForm"
+            class="w-full h-9 px-2.5 text-[13px] border border-gold-edge rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-gold"
+            autofocus
+          />
+          <div class="flex gap-2">
+            <BtnGhost label="Cancel" :full="true" size="md" @click="closeForm" />
+            <BtnGold
+              label="Create & Save"
+              :disabled="!newName.trim() || creating"
+              @click="handleCreate"
+            />
+          </div>
+        </div>
+
+        <BtnGhost
+          v-else
+          label="+ New List"
+          :gold="true"
+          :full="true"
+          size="md"
+          @click="showCreateForm = true"
+        />
+      </div>
+    </div>
+  </div>
+</template>

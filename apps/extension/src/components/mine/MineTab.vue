@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
@@ -24,14 +24,6 @@ const deletingDraft = computed(() => drafts.value.find((d) => d.id === deletingI
 
 const allNewUrls = computed(() =>
   [newPrimaryUrl.value, ...newExtraUrls.value].filter((u) => u.trim() !== ""),
-);
-
-// Auto-open the new-list form when triggered from the "Save search" button
-watch(
-  () => ui.autoCreateList,
-  (val) => {
-    if (val) showNewForm.value = true;
-  },
 );
 
 function addExtraUrl() {
@@ -85,12 +77,6 @@ async function handleCreate() {
   creating.value = false;
   closeNewForm();
   ui.openDetail(d.id);
-
-  // If triggered from "Save search" button, open the save modal after creating the list
-  if (ui.autoCreateList) {
-    ui.autoCreateList = false;
-    ui.openSaveModal();
-  }
 }
 
 async function confirmDelete() {
