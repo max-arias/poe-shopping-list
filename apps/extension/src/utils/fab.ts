@@ -8,13 +8,14 @@ const MIN_TOP = 20;
 const RIGHT_OFFSET = 20;
 const DRAG_THRESHOLD = 6;
 const FADE_DURATION_MS = 180;
+const DISMISSED_KEY = "poe-sl-fab-dismissed";
 
 const fabPositionItem = storage.defineItem<number>(STORAGE.fabPosition, {
   fallback: DEFAULT_TOP,
 });
 
 export async function injectFab(drafts: Draft[], url: string) {
-  if (sessionStorage.getItem("poe-sl-fab-dismissed")) {
+  if (sessionStorage.getItem(DISMISSED_KEY)) {
     return;
   }
 
@@ -241,7 +242,7 @@ export async function injectFab(drafts: Draft[], url: string) {
     }
 
     shadow.getElementById("close-btn")?.addEventListener("click", () => {
-      sessionStorage.setItem("poe-sl-fab-dismissed", "1");
+      sessionStorage.setItem(DISMISSED_KEY, "1");
       host.remove();
     });
   } else {
@@ -272,7 +273,7 @@ export async function injectFab(drafts: Draft[], url: string) {
 
     closeButton.addEventListener("click", (e) => {
       e.stopPropagation();
-      sessionStorage.setItem("poe-sl-fab-dismissed", "1");
+      sessionStorage.setItem(DISMISSED_KEY, "1");
       host.remove();
     });
   }
@@ -283,7 +284,14 @@ export async function injectFab(drafts: Draft[], url: string) {
     setVisible(visible: boolean) {
       setFabVisible(host, visible);
     },
+    destroy() {
+      host.remove();
+    },
   };
+}
+
+export function resetFabDismissedState() {
+  sessionStorage.removeItem(DISMISSED_KEY);
 }
 
 function escapeHtml(s: string): string {

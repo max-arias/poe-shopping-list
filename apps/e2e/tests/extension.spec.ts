@@ -4,6 +4,8 @@ const mockTradePagePath = decodeURIComponent(
   new URL("./mocks/trade-page.html", import.meta.url).pathname,
 ).replace(/^\//, "");
 
+const TRADE_URL = "https://www.pathofexile.com/trade/search/Mirage/test-search-id";
+
 async function loadMockTradePage(page: import("@playwright/test").Page) {
   await page.route("https://www.pathofexile.com/trade/**", async (route) => {
     await route.fulfill({
@@ -13,7 +15,7 @@ async function loadMockTradePage(page: import("@playwright/test").Page) {
     });
   });
 
-  await page.goto("https://www.pathofexile.com/trade/search/Mirage/test-search-id");
+  await page.goto(TRADE_URL);
 }
 
 test.describe("Extension E2E", () => {
@@ -30,6 +32,16 @@ test.describe("Extension E2E", () => {
     // Empty-state content in Mine tab
     await expect(sp.getByTestId("empty-mine")).toBeVisible();
     await expect(sp.getByTestId("create-list-btn")).toBeVisible();
+  });
+
+  test("History tab defaults to Visits and shows current page", async ({ page, context }) => {
+    await loadMockTradePage(page);
+
+    const sp = await openSidepanel(page, context);
+
+    await sp.getByRole("tab", { name: "History" }).click();
+    await expect(sp.getByRole("button", { name: /^Visits \(/ })).toBeVisible();
+    await expect(sp.getByText(TRADE_URL)).toBeVisible({ timeout: 10_000 });
   });
 
   test("FAB opens the sidepanel and restores dragged position", async ({ page, context }) => {

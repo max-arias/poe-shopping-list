@@ -1,5 +1,5 @@
 import { onMessage, sendMessage } from "../utils/messages";
-import type { PurchaseHistoryItem } from "../types";
+import type { PurchaseHistoryItem, VisitHistoryItem } from "../types";
 
 export default defineBackground(() => {
   // ── Side panel activation ─────────────────────────────────────────────────
@@ -85,6 +85,16 @@ export default defineBackground(() => {
       current.unshift(item);
     }
     await browser.storage.local.set({ purchaseHistory: current });
+  });
+
+  onMessage("csVisitHistoryAdd", async (message) => {
+    const item = message.data;
+    const stored = await browser.storage.local.get("visitHistory");
+    const current: VisitHistoryItem[] = Array.isArray(stored.visitHistory)
+      ? stored.visitHistory
+      : [];
+    current.unshift(item);
+    await browser.storage.local.set({ visitHistory: current });
   });
 
   // CS requests save-search flow → open sidepanel + trigger save

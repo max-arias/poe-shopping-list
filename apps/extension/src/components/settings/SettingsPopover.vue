@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
-import { POE1_LEAGUES, POE2_LEAGUES, DEFAULT_POE1_LEAGUE, DEFAULT_POE2_LEAGUE } from "@/types";
+import {
+  POE1_LEAGUES,
+  POE2_LEAGUES,
+  DEFAULT_POE1_LEAGUE,
+  DEFAULT_POE2_LEAGUE,
+  DEFAULT_SETTINGS,
+} from "@/types";
 
 const ui = useUiStore();
 const { settings, updateSettings } = useSettings();
@@ -22,6 +28,18 @@ const leagueOptions = computed(() =>
 function setGame(g: "poe1" | "poe2") {
   const defaultLeague = g === "poe1" ? DEFAULT_POE1_LEAGUE : DEFAULT_POE2_LEAGUE;
   updateSettings({ game: g, league: defaultLeague });
+}
+
+function toggleShowFloatingActionButton() {
+  updateSettings({
+    showFloatingActionButton: !settings.value.showFloatingActionButton,
+  });
+}
+
+function resetShowFloatingActionButton() {
+  updateSettings({
+    showFloatingActionButton: DEFAULT_SETTINGS.showFloatingActionButton,
+  });
 }
 </script>
 
@@ -121,6 +139,40 @@ function setGame(g: "poe1" | "poe2") {
             <div
               class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm transition-transform"
               :class="settings.autoCapturePrice ? 'translate-x-4' : 'translate-x-0'"
+            />
+          </button>
+        </div>
+
+        <!-- Show floating action button -->
+        <div class="px-3 py-3 flex items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <p class="text-[12px] text-ink">Show floating action button</p>
+              <button
+                type="button"
+                class="text-[10px] text-accent underline underline-offset-2 cursor-pointer"
+                @click="resetShowFloatingActionButton"
+              >
+                Reset
+              </button>
+            </div>
+            <p class="text-[10px] text-ink-muted">Show the trade-page FAB shortcut</p>
+          </div>
+          <button
+            @click="toggleShowFloatingActionButton"
+            role="switch"
+            :aria-checked="settings.showFloatingActionButton"
+            aria-label="Show floating action button"
+            class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 transition-colors shrink-0"
+            :class="
+              settings.showFloatingActionButton
+                ? 'bg-accent border-accent-edge'
+                : 'bg-surface border-stroke'
+            "
+          >
+            <div
+              class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm transition-transform"
+              :class="settings.showFloatingActionButton ? 'translate-x-4' : 'translate-x-0'"
             />
           </button>
         </div>

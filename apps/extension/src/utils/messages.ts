@@ -1,6 +1,6 @@
 import { defineExtensionMessaging } from "@webext-core/messaging";
 import type { TradeCapture } from "@/trade-dom";
-import type { PurchaseHistoryItem } from "@/types";
+import type { PurchaseHistoryItem, VisitHistoryItem } from "@/types";
 
 /**
  * Messaging protocol for the PoE Shopping List extension.
@@ -21,6 +21,8 @@ interface ProtocolMap {
   csCaptureStatus(available: boolean): void;
   /** Content script sends a purchase history item */
   csPurchaseHistoryAdd(item: PurchaseHistoryItem): void;
+  /** Content script sends a visit history item */
+  csVisitHistoryAdd(item: VisitHistoryItem): void;
   /** Content script requests the save-search flow (open sidepanel + trigger save) */
   csSaveSearch(): void;
   /** Content script requests the sidepanel to open */

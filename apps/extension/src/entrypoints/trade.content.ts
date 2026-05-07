@@ -1,3 +1,6 @@
+import { DEFAULT_SETTINGS, type Settings } from "@/types";
+import { STORAGE } from "@/types/storage";
+
 export default defineContentScript({
   matches: ["https://www.pathofexile.com/trade/*", "https://pathofexile.com/trade/*"],
   runAt: "document_idle",
@@ -7,14 +10,40 @@ export default defineContentScript({
       await import("@/trade-dom");
     const { onMessage, sendMessage } = await import("../utils/messages");
     const { storage } = await import("wxt/utils/storage");
-    const { injectFab } = await import("../utils/fab");
+    const { injectFab, resetFabDismissedState } = await import("../utils/fab");
 
     const drafts = (await storage.getItem<any[]>("local:drafts")) ?? [];
-    const fab = await injectFab(drafts, window.location.href);
+    const settingsItem = storage.defineItem<Settings>(STORAGE.settings, {
+      fallback: DEFAULT_SETTINGS,
+    });
+    let fab = (await settingsItem.getValue()).showFloatingActionButton
+      ? await injectFab(drafts, window.location.href)
+      : undefined;
+    let lastTrackedVisitUrl: string | null = null;
+    let isFabVisible = true;
+
+    settingsItem.watch(async (value) => {
+      const showFloatingActionButton = value?.showFloatingActionButton !== false;
+
+      if (!showFloatingActionButton) {
+        fab?.destroy();
+        fab = undefined;
+        return;
+      }
+
+      resetFabDismissedState();
+
+      if (!fab) {
+        fab = await injectFab(drafts, window.location.href);
+        fab?.setVisible(isFabVisible);
+      }
+    });
 
     injectSaveSearchButton();
     reportStatus();
+    trackVisitIfNeeded();
     listenForTravelToHideout();
+    installHistoryListeners();
 
     const container = document.querySelector("#main-content, .resultset, body");
     if (container) {
@@ -23,6 +52,7 @@ export default defineContentScript({
         clearTimeout(observerTimer);
         observerTimer = setTimeout(() => {
           reportStatus();
+          trackVisitIfNeeded();
           injectSaveSearchButton();
         }, 200);
       }).observe(container, { childList: true, subtree: true });
@@ -44,12 +74,59 @@ export default defineContentScript({
     });
 
     onMessage("csFabVisibilitySet", (message) => {
+      isFabVisible = message.data.visible;
       fab?.setVisible(message.data.visible);
     });
 
     function reportStatus() {
       const available = isCaptureable(document);
       sendMessage("csCaptureStatus", available).catch(() => {});
+    }
+
+    function installHistoryListeners() {
+      window.addEventListener("poe-sl:locationchange", trackVisitIfNeeded);
+      window.addEventListener("popstate", trackVisitIfNeeded);
+      window.addEventListener("hashchange", trackVisitIfNeeded);
+
+      const { pushState, replaceState } = window.history;
+
+      window.history.pushState = function (...args) {
+        const result = pushState.apply(this, args);
+        window.dispatchEvent(new Event("poe-sl:locationchange"));
+        return result;
+      };
+
+      window.history.replaceState = function (...args) {
+        const result = replaceState.apply(this, args);
+        window.dispatchEvent(new Event("poe-sl:locationchange"));
+        return result;
+      };
+    }
+
+    function isTradeSearchUrl(url: string): boolean {
+      try {
+        const parsed = new URL(url);
+        const hostname = parsed.hostname.replace(/^www\./, "");
+        return hostname === "pathofexile.com" && parsed.pathname.startsWith("/trade/search/");
+      } catch {
+        return false;
+      }
+    }
+
+    function trackVisitIfNeeded() {
+      const url = window.location.href;
+      if (!isTradeSearchUrl(url) || url === lastTrackedVisitUrl) {
+        return;
+      }
+
+      const name = getSearchBarText(document).trim();
+      lastTrackedVisitUrl = url;
+      sendMessage("csVisitHistoryAdd", {
+        id: crypto.randomUUID(),
+        url,
+        ...(name ? { name } : {}),
+        addedAt: Date.now(),
+      }).catch(() => {});
     }
 
     /** Inject a "Save search" button before the trade site's Clear button.
@@ -129,7 +206,7 @@ export default defineContentScript({
 
         // Check if tracking is enabled
         const settings = await storage.getItem<{ trackPurchaseHistory?: boolean }>(
-          "local:settings:v1",
+          STORAGE.settings,
         );
         if (settings?.trackPurchaseHistory === false) {
           return;

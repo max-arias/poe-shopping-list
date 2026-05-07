@@ -2,18 +2,40 @@
 import { ref, computed, watch, nextTick, onBeforeUnmount } from "vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { usePurchaseHistory } from "../../composables/usePurchaseHistory";
+import { useVisitHistory } from "../../composables/useVisitHistory";
 import { useUiStore } from "../../stores/ui";
 import HistoryItemRow from "./HistoryItemRow.vue";
+import HistoryVisitRow from "./HistoryVisitRow.vue";
 import HistoryKebabMenu from "./HistoryKebabMenu.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 
 const { items, isLoaded, removeItems, renameItem, changePrice } = usePurchaseHistory();
+const {
+  items: visitItems,
+  isLoaded: isVisitHistoryLoaded,
+  removeItems: removeVisitItems,
+} = useVisitHistory();
 const ui = useUiStore();
+
+const activeSubtab = ref<"visits" | "purchases">("visits");
+const isLoadedAny = computed(() => isLoaded.value && isVisitHistoryLoaded.value);
+const visibleItems = computed(() =>
+  activeSubtab.value === "visits" ? visitItems.value : items.value,
+);
 
 const selectedIds = ref<Set<string>>(new Set());
 const allSelected = computed(
-  () => items.value.length > 0 && selectedIds.value.size === items.value.length,
+  () => visibleItems.value.length > 0 && selectedIds.value.size === visibleItems.value.length,
 );
+
+watch(activeSubtab, () => {
+  selectedIds.value = new Set();
+});
+
+watch(visibleItems, (nextItems) => {
+  const nextIds = new Set(nextItems.map((item) => item.id));
+  selectedIds.value = new Set([...selectedIds.value].filter((id) => nextIds.has(id)));
+});
 
 function toggleSelect(id: string) {
   const next = new Set(selectedIds.value);
@@ -26,12 +48,16 @@ function toggleAll() {
   if (allSelected.value) {
     selectedIds.value = new Set();
   } else {
-    selectedIds.value = new Set(items.value.map((i) => i.id));
+    selectedIds.value = new Set(visibleItems.value.map((i) => i.id));
   }
 }
 
 async function deleteSelected() {
-  await removeItems([...selectedIds.value]);
+  if (activeSubtab.value === "visits") {
+    await removeVisitItems([...selectedIds.value]);
+  } else {
+    await removeItems([...selectedIds.value]);
+  }
   selectedIds.value = new Set();
 }
 
@@ -101,7 +127,32 @@ watch(changingPriceItemId, async (val) => {
 
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
-    <template v-if="!isLoaded">
+    <div class="flex border-b border-stroke-soft bg-surface shrink-0 px-2 pt-2">
+      <button
+        @click="activeSubtab = 'visits'"
+        class="flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent transition-colors"
+        :class="
+          activeSubtab === 'visits'
+            ? 'border-stroke bg-bg text-accent-ink-str'
+            : 'border-transparent text-ink-muted hover:text-ink'
+        "
+      >
+        Visits ({{ visitItems.length }})
+      </button>
+      <button
+        @click="activeSubtab = 'purchases'"
+        class="flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent transition-colors"
+        :class="
+          activeSubtab === 'purchases'
+            ? 'border-stroke bg-bg text-accent-ink-str'
+            : 'border-transparent text-ink-muted hover:text-ink'
+        "
+      >
+        Purchases ({{ items.length }})
+      </button>
+    </div>
+
+    <template v-if="!isLoadedAny">
       <div class="flex-1 px-3 py-3 space-y-2.5 overflow-hidden">
         <div
           v-for="row in 5"
@@ -110,7 +161,15 @@ watch(changingPriceItemId, async (val) => {
         />
       </div>
     </template>
-    <template v-else-if="items.length === 0">
+    <template v-else-if="activeSubtab === 'visits' && visitItems.length === 0">
+      <div class="flex-1 flex flex-col items-center justify-center gap-3 px-5 text-center">
+        <p class="text-[13px] font-semibold text-ink">No visits yet</p>
+        <p class="text-[11px] text-ink-muted max-w-[220px] leading-relaxed">
+          Every trade search page you visit will show up here so you can reopen it later.
+        </p>
+      </div>
+    </template>
+    <template v-else-if="activeSubtab === 'purchases' && items.length === 0">
       <div class="flex-1 flex flex-col items-center justify-center gap-3 px-5 text-center">
         <p class="text-[13px] font-semibold text-ink">No purchases yet</p>
         <p class="text-[11px] text-ink-muted max-w-[200px] leading-relaxed">
@@ -131,7 +190,11 @@ watch(changingPriceItemId, async (val) => {
           class="w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
         />
         <span class="text-[11px] text-ink-muted flex-1">
-          {{ selectedIds.size > 0 ? `${selectedIds.size} selected` : `${items.length} items` }}
+          {{
+            selectedIds.size > 0
+              ? `${selectedIds.size} selected`
+              : `${visibleItems.length} ${activeSubtab}`
+          }}
         </span>
         <button
           v-if="selectedIds.size > 0"
@@ -144,14 +207,24 @@ watch(changingPriceItemId, async (val) => {
 
       <!-- Items list -->
       <div class="flex-1 overflow-auto relative" @click="ui.closeKebab()">
-        <div v-for="item in items" :key="item.id" class="relative" @click.stop>
-          <HistoryItemRow :item="item" @toggle-select="toggleSelect" />
-          <HistoryKebabMenu
-            v-if="ui.kebabOpenItemId === item.id"
+        <div v-if="activeSubtab === 'visits'">
+          <HistoryVisitRow
+            v-for="item in visitItems"
+            :key="item.id"
             :item="item"
-            @rename="startRename"
-            @change-price="startChangePrice"
+            @toggle-select="toggleSelect"
           />
+        </div>
+        <div v-else>
+          <div v-for="item in items" :key="item.id" class="relative" @click.stop>
+            <HistoryItemRow :item="item" @toggle-select="toggleSelect" />
+            <HistoryKebabMenu
+              v-if="ui.kebabOpenItemId === item.id"
+              :item="item"
+              @rename="startRename"
+              @change-price="startChangePrice"
+            />
+          </div>
         </div>
       </div>
     </template>
