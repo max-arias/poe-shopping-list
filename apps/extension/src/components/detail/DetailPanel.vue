@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AnimatePresence, motion } from "motion-v";
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { useUiStore } from "../../stores/ui";
@@ -8,6 +9,12 @@ import ItemRow from "../mine/ItemRow.vue";
 import KebabMenu from "../mine/KebabMenu.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
+import {
+  buttonMotionProps,
+  dialogMotionProps,
+  overlayMotionProps,
+  subtleButtonMotionProps,
+} from "../../utils/motion";
 
 const ui = useUiStore();
 const { draft, unmarkAll, deleteDraft, updateCapture, setBuildInfo } = useDraftList();
@@ -124,33 +131,35 @@ async function saveLinkBuild() {
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
     <!-- Header -->
     <div class="shrink-0 flex items-center gap-2 px-3 py-2.5 border-b border-stroke">
-      <button
+      <motion.button
         @click="ui.closeDetail()"
-        class="motion-button text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none px-0.5"
+        v-bind="subtleButtonMotionProps"
+        class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none px-0.5"
         aria-label="Back"
       >
         ←
-      </button>
+      </motion.button>
       <p class="text-[13px] font-semibold text-ink flex-1 truncate">
         {{ draft?.name ?? "My List" }}
       </p>
-      <button
+      <motion.button
         @click="ui.toggleSettings()"
-        class="motion-button w-7 h-7 flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border border-transparent rounded-sm hover:bg-surface hover:text-ink"
+        v-bind="subtleButtonMotionProps"
+        class="w-7 h-7 flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border border-transparent rounded-sm hover:bg-surface hover:text-ink"
         title="Settings"
         aria-label="Settings"
       >
         ⚙
-      </button>
+      </motion.button>
     </div>
 
     <!-- Items -->
     <div class="flex-1 overflow-auto relative" @click="ui.closeKebab()">
       <div v-for="item in draft?.items ?? []" :key="item.id" class="relative" @click.stop>
         <ItemRow :item="item" />
-        <Transition name="popover-fade">
+        <AnimatePresence>
           <KebabMenu v-if="ui.kebabOpenItemId === item.id" :item="item" />
-        </Transition>
+        </AnimatePresence>
       </div>
 
       <div
@@ -178,18 +187,21 @@ async function saveLinkBuild() {
     </div>
 
     <!-- Unmark confirm -->
-    <Transition name="dialog-fade">
-      <div
+    <AnimatePresence>
+      <motion.div
         v-if="showUnmarkConfirm"
+        key="unmark-confirm"
         ref="unmarkDialogRef"
-        class="motion-overlay absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+        v-bind="overlayMotionProps"
+        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
         role="dialog"
         aria-modal="true"
         @keydown.escape="showUnmarkConfirm = false"
         @click.self="showUnmarkConfirm = false"
       >
-        <div
-          class="motion-dialog bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
+        <motion.div
+          v-bind="dialogMotionProps"
+          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
         >
           <p class="text-[13px] font-semibold text-ink">More options</p>
           <BtnGhost
@@ -239,23 +251,26 @@ async function saveLinkBuild() {
             "
           />
           <BtnGhost label="Cancel" :full="true" size="md" @click="showUnmarkConfirm = false" />
-        </div>
-      </div>
-    </Transition>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
 
     <!-- Delete confirm -->
-    <Transition name="dialog-fade">
-      <div
+    <AnimatePresence>
+      <motion.div
         v-if="showDeleteConfirm"
+        key="delete-confirm"
         ref="deleteDialogRef"
-        class="motion-overlay absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+        v-bind="overlayMotionProps"
+        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
         role="dialog"
         aria-modal="true"
         @keydown.escape="showDeleteConfirm = false"
         @click.self="showDeleteConfirm = false"
       >
-        <div
-          class="motion-dialog bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
+        <motion.div
+          v-bind="dialogMotionProps"
+          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
         >
           <p class="text-[13px] font-semibold text-ink">Delete "{{ draft?.name }}"?</p>
           <p class="text-[11px] text-ink-muted">
@@ -264,30 +279,34 @@ async function saveLinkBuild() {
           </p>
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="md" @click="showDeleteConfirm = false" />
-            <button
+            <motion.button
               @click="confirmDelete"
+              v-bind="buttonMotionProps"
               class="flex-1 h-8 px-2.5 inline-flex items-center justify-center text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
             >
               Delete
-            </button>
+            </motion.button>
           </div>
-        </div>
-      </div>
-    </Transition>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
 
     <!-- Link build overlay -->
-    <Transition name="dialog-fade">
-      <div
+    <AnimatePresence>
+      <motion.div
         v-if="showLinkBuild"
+        key="link-build"
         ref="linkDialogRef"
-        class="motion-overlay absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+        v-bind="overlayMotionProps"
+        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
         role="dialog"
         aria-modal="true"
         @keydown.escape="showLinkBuild = false"
         @click.self="showLinkBuild = false"
       >
-        <div
-          class="motion-dialog bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
+        <motion.div
+          v-bind="dialogMotionProps"
+          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
         >
           <p class="text-[13px] font-semibold text-ink">Link build URL</p>
           <div class="flex flex-col gap-1.5">
@@ -314,19 +333,21 @@ async function saveLinkBuild() {
                 aria-label="Additional URL"
                 class="flex-1 h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent"
               />
-              <button
+              <motion.button
                 @click="linkAssociatedUrls.splice(i, 1)"
-                class="motion-button w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
+                v-bind="subtleButtonMotionProps"
+                class="w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
               >
                 ✕
-              </button>
+              </motion.button>
             </div>
-            <button
+            <motion.button
               @click="linkAssociatedUrls.push('')"
-              class="motion-button self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+              v-bind="subtleButtonMotionProps"
+              class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
             >
               + Add another URL
-            </button>
+            </motion.button>
           </div>
 
           <div class="flex flex-col gap-1.5">
@@ -351,15 +372,16 @@ async function saveLinkBuild() {
                 showLinkBuild = false;
               "
             />
-            <button
+            <motion.button
               @click="saveLinkBuild"
+              v-bind="buttonMotionProps"
               class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
             >
               Save
-            </button>
+            </motion.button>
           </div>
-        </div>
-      </div>
-    </Transition>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   </div>
 </template>

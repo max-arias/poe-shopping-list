@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { motion } from "motion-v";
 import type { PurchaseHistoryItem } from "@/types";
 import { useUiStore } from "../../stores/ui";
-import { usePurchaseHistory } from "../../composables/usePurchaseHistory";
 import { useSettings } from "../../composables/useSettings";
+import { buttonMotionProps, subtleButtonMotionProps } from "../../utils/motion";
 
 const { item } = defineProps<{ item: PurchaseHistoryItem }>();
 const emit = defineEmits<{ "toggle-select": [id: string] }>();
 
 const ui = useUiStore();
-const { removeItem } = usePurchaseHistory();
 const { settings } = useSettings();
 
 const formatPrice = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
@@ -24,7 +24,7 @@ async function openSearch(url: string) {
 </script>
 
 <template>
-  <div class="motion-row flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft">
+  <div class="flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft">
     <!-- Checkbox for mass selection -->
     <input
       type="checkbox"
@@ -35,12 +35,13 @@ async function openSearch(url: string) {
 
     <!-- Name + base -->
     <div class="flex-1 min-w-0">
-      <button
+      <motion.button
         @click.stop="openSearch(item.searchUrl)"
-        class="motion-button text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full block"
+        v-bind="buttonMotionProps"
+        class="text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full block"
       >
         {{ item.name }}
-      </button>
+      </motion.button>
       <span v-if="item.base" class="text-[10px] text-ink-muted block truncate">
         {{ item.base }}
       </span>
@@ -53,11 +54,12 @@ async function openSearch(url: string) {
     </span>
 
     <!-- Kebab -->
-    <button
+    <motion.button
       @click.stop="ui.toggleKebab(item.id)"
+      v-bind="subtleButtonMotionProps"
       class="text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
     >
       ⋯
-    </button>
+    </motion.button>
   </div>
 </template>

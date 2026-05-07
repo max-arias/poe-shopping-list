@@ -64,8 +64,8 @@ See `src/utils/messages.ts` for the typed `ProtocolMap` and `src/entrypoints/bac
 ## Tech Stack
 
 - WXT 0.20, Vue 3 (Composition API + `<script setup>`), Pinia, Tailwind v4, Zod
-- Build: `vp dev`, `vp build`, `vp check`
-- E2E: Playwright (`npm run e2e` from root)
+- Build: use `vp run ext`, `vp run ext:build`, `vp run ext:check` from the repo root, or `wxt` directly inside `apps/extension`; do not run plain `vp build` because it does not build this project correctly
+- E2E: Playwright (`vp run e2e` from root)
 
 ## Key Conventions
 
@@ -73,3 +73,4 @@ See `src/utils/messages.ts` for the typed `ProtocolMap` and `src/entrypoints/bac
 - Storage keys defined in `types/storage.ts`
 - Design tokens in `styles/tokens.css` (PoE gold/dark theme)
 - Components organized by feature: `mine/`, `history/`, `detail/`, `settings/`, `shared/`
+- This project is unreleased: prefer clean forward-only changes over backward-compat layers or migration code unless explicitly requested

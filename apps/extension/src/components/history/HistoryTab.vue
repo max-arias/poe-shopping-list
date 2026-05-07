@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onBeforeUnmount } from "vue";
+import { AnimatePresence, motion } from "motion-v";
+import { ref, computed, watch, nextTick } from "vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { usePurchaseHistory } from "../../composables/usePurchaseHistory";
 import { useVisitHistory } from "../../composables/useVisitHistory";
@@ -8,6 +9,13 @@ import HistoryItemRow from "./HistoryItemRow.vue";
 import HistoryVisitRow from "./HistoryVisitRow.vue";
 import HistoryKebabMenu from "./HistoryKebabMenu.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
+import {
+  buttonMotionProps,
+  createSlideMotionProps,
+  dialogMotionProps,
+  overlayMotionProps,
+  skeletonPulseMotionProps,
+} from "../../utils/motion";
 
 const { items, isLoaded, removeItems, renameItem, changePrice } = usePurchaseHistory();
 const {
@@ -123,14 +131,17 @@ watch(changingPriceItemId, async (val) => {
     priceFocusTrap.deactivate();
   }
 });
+
+const subviewSlideMotionProps = createSlideMotionProps(8);
 </script>
 
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
     <div class="flex border-b border-stroke-soft bg-surface shrink-0 px-2 pt-2">
-      <button
+      <motion.button
         @click="activeSubtab = 'visits'"
-        class="motion-button flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent transition-colors"
+        v-bind="buttonMotionProps"
+        class="flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent"
         :class="
           activeSubtab === 'visits'
             ? 'border-stroke bg-bg text-accent-ink-str'
@@ -138,10 +149,11 @@ watch(changingPriceItemId, async (val) => {
         "
       >
         Visits ({{ visitItems.length }})
-      </button>
-      <button
+      </motion.button>
+      <motion.button
         @click="activeSubtab = 'purchases'"
-        class="motion-button flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent transition-colors"
+        v-bind="buttonMotionProps"
+        class="flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent"
         :class="
           activeSubtab === 'purchases'
             ? 'border-stroke bg-bg text-accent-ink-str'
@@ -149,15 +161,16 @@ watch(changingPriceItemId, async (val) => {
         "
       >
         Purchases ({{ items.length }})
-      </button>
+      </motion.button>
     </div>
 
     <template v-if="!isLoadedAny">
       <div class="flex-1 px-3 py-3 space-y-2.5 overflow-hidden">
-        <div
+        <motion.div
           v-for="row in 5"
           :key="row"
-          class="h-16 rounded-md border border-stroke-soft bg-surface/70 animate-pulse"
+          v-bind="skeletonPulseMotionProps"
+          class="h-16 rounded-md border border-stroke-soft bg-surface/70"
         />
       </div>
     </template>
@@ -196,56 +209,65 @@ watch(changingPriceItemId, async (val) => {
               : `${visibleItems.length} ${activeSubtab}`
           }}
         </span>
-        <button
+        <motion.button
           v-if="selectedIds.size > 0"
           @click="deleteSelected"
-          class="motion-button text-[11px] text-destructive hover:underline cursor-pointer bg-transparent border-0 px-0 py-0 font-medium"
+          v-bind="buttonMotionProps"
+          class="text-[11px] text-destructive hover:underline cursor-pointer bg-transparent border-0 px-0 py-0 font-medium"
         >
           Delete selected
-        </button>
+        </motion.button>
       </div>
 
       <!-- Items list -->
       <div class="flex-1 overflow-auto relative" @click="ui.closeKebab()">
-        <Transition name="subview-slide" mode="out-in">
-          <div v-if="activeSubtab === 'visits'" key="visits">
+        <AnimatePresence mode="wait" :initial="false">
+          <motion.div
+            v-if="activeSubtab === 'visits'"
+            key="visits"
+            v-bind="subviewSlideMotionProps"
+            class="h-full"
+          >
             <HistoryVisitRow
               v-for="item in visitItems"
               :key="item.id"
               :item="item"
               @toggle-select="toggleSelect"
             />
-          </div>
-          <div v-else key="purchases">
+          </motion.div>
+          <motion.div v-else key="purchases" v-bind="subviewSlideMotionProps" class="h-full">
             <div v-for="item in items" :key="item.id" class="relative" @click.stop>
               <HistoryItemRow :item="item" @toggle-select="toggleSelect" />
-              <Transition name="popover-fade">
+              <AnimatePresence>
                 <HistoryKebabMenu
                   v-if="ui.kebabOpenItemId === item.id"
                   :item="item"
                   @rename="startRename"
                   @change-price="startChangePrice"
                 />
-              </Transition>
+              </AnimatePresence>
             </div>
-          </div>
-        </Transition>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </template>
 
     <!-- Rename overlay -->
-    <Transition name="dialog-fade">
-      <div
+    <AnimatePresence>
+      <motion.div
         v-if="renamingItemId"
+        key="rename-item"
         ref="renameDialogRef"
-        class="motion-overlay absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+        v-bind="overlayMotionProps"
+        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
         role="dialog"
         aria-modal="true"
         @keydown.escape="renamingItemId = null"
         @click.self="renamingItemId = null"
       >
-        <div
-          class="motion-dialog bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
+        <motion.div
+          v-bind="dialogMotionProps"
+          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
         >
           <p class="text-[13px] font-semibold text-ink">Rename item</p>
           <input
@@ -258,30 +280,34 @@ watch(changingPriceItemId, async (val) => {
           />
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="sm" @click="renamingItemId = null" />
-            <button
+            <motion.button
               @click="confirmRename"
+              v-bind="buttonMotionProps"
               class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
             >
               Save
-            </button>
+            </motion.button>
           </div>
-        </div>
-      </div>
-    </Transition>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
 
     <!-- Change price overlay -->
-    <Transition name="dialog-fade">
-      <div
+    <AnimatePresence>
+      <motion.div
         v-if="changingPriceItemId"
+        key="change-price"
         ref="priceDialogRef"
-        class="motion-overlay absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+        v-bind="overlayMotionProps"
+        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
         role="dialog"
         aria-modal="true"
         @keydown.escape="changingPriceItemId = null"
         @click.self="changingPriceItemId = null"
       >
-        <div
-          class="motion-dialog bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
+        <motion.div
+          v-bind="dialogMotionProps"
+          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
         >
           <p class="text-[13px] font-semibold text-ink">Change price</p>
           <div class="flex gap-2">
@@ -307,15 +333,16 @@ watch(changingPriceItemId, async (val) => {
           </div>
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="sm" @click="changingPriceItemId = null" />
-            <button
+            <motion.button
               @click="confirmChangePrice"
+              v-bind="buttonMotionProps"
               class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
             >
               Save
-            </button>
+            </motion.button>
           </div>
-        </div>
-      </div>
-    </Transition>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   </div>
 </template>

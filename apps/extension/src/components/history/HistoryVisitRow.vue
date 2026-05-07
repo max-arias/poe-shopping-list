@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { motion } from "motion-v";
 import type { VisitHistoryItem } from "@/types";
+import { subtleButtonMotionProps } from "../../utils/motion";
 
 const { item } = defineProps<{ item: VisitHistoryItem }>();
 const emit = defineEmits<{ "toggle-select": [id: string] }>();
@@ -35,8 +37,9 @@ async function openVisit(url: string) {
       <p class="text-[10px] text-ink-muted mb-0.5">
         {{ formattedTimestamp }}
       </p>
-      <button
+      <motion.button
         @click.stop="openVisit(item.url)"
+        v-bind="subtleButtonMotionProps"
         class="w-full min-w-0 cursor-pointer border-0 bg-transparent p-0 text-left"
         :title="item.url"
       >
@@ -49,7 +52,7 @@ async function openVisit(url: string) {
         <span class="block truncate text-[11px] text-ink-muted hover:text-ink">
           {{ item.url }}
         </span>
-      </button>
+      </motion.button>
     </div>
   </div>
 </template>

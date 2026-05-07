@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AnimatePresence, motion } from "motion-v";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
@@ -6,6 +7,13 @@ import { useSettings } from "../../composables/useSettings";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
+import {
+  buttonMotionProps,
+  inlineMotionProps,
+  overlayMotionProps,
+  sheetMotionProps,
+  subtleButtonMotionProps,
+} from "../../utils/motion";
 
 const ui = useUiStore();
 const { drafts, createDraft } = useDraftList();
@@ -43,55 +51,64 @@ function closeForm() {
 </script>
 
 <template>
-  <Transition name="sheet-fade" appear>
-    <div
-      ref="dialogRef"
-      class="motion-overlay absolute inset-0 bg-black/50 flex items-end z-30"
-      role="dialog"
-      aria-modal="true"
-      @keydown.escape="ui.closeChooseListModal()"
-      @click.self="ui.closeChooseListModal()"
+  <motion.div
+    ref="dialogRef"
+    v-bind="overlayMotionProps"
+    class="absolute inset-0 bg-black/50 flex items-end z-30"
+    role="dialog"
+    aria-modal="true"
+    @keydown.escape="ui.closeChooseListModal()"
+    @click.self="ui.closeChooseListModal()"
+  >
+    <motion.div
+      v-bind="sheetMotionProps"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 shadow-panel"
     >
-      <div
-        class="motion-sheet w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 shadow-panel"
-      >
-        <!-- Header -->
-        <div class="flex items-center">
-          <p class="text-[13px] font-semibold text-ink">Save to List</p>
-          <div class="flex-1" />
-          <button
-            @click="ui.closeChooseListModal()"
-            class="motion-button text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
-          >
-            ✕
-          </button>
-        </div>
+      <!-- Header -->
+      <div class="flex items-center">
+        <p class="text-[13px] font-semibold text-ink">Save to List</p>
+        <div class="flex-1" />
+        <motion.button
+          @click="ui.closeChooseListModal()"
+          v-bind="subtleButtonMotionProps"
+          class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
+        >
+          ✕
+        </motion.button>
+      </div>
 
-        <!-- Existing lists -->
-        <div v-if="drafts.length > 0" class="flex flex-col gap-1.5 max-h-40 overflow-auto">
-          <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">Choose a list</p>
-          <button
-            v-for="d in drafts"
-            :key="d.id"
-            @click="selectDraft(d.id)"
-            class="motion-button flex items-center gap-2 h-9 px-2.5 border border-stroke rounded-sm text-[13px] text-ink bg-transparent cursor-pointer hover:bg-accent-soft transition-colors text-left"
-          >
-            <div class="w-2 h-2 rounded-full bg-accent shrink-0" />
-            <span class="flex-1 truncate">{{ d.name }}</span>
-            <span class="text-[10px] text-ink-muted">
-              {{ d.items.length }} item{{ d.items.length !== 1 ? "s" : "" }}
-            </span>
-          </button>
-        </div>
+      <!-- Existing lists -->
+      <div v-if="drafts.length > 0" class="flex flex-col gap-1.5 max-h-40 overflow-auto">
+        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">Choose a list</p>
+        <motion.button
+          v-for="d in drafts"
+          :key="d.id"
+          @click="selectDraft(d.id)"
+          v-bind="buttonMotionProps"
+          class="flex items-center gap-2 h-9 px-2.5 border border-stroke rounded-sm text-[13px] text-ink bg-transparent cursor-pointer hover:bg-accent-soft text-left"
+        >
+          <div class="w-2 h-2 rounded-full bg-accent shrink-0" />
+          <span class="flex-1 truncate">{{ d.name }}</span>
+          <span class="text-[10px] text-ink-muted">
+            {{ d.items.length }} item{{ d.items.length !== 1 ? "s" : "" }}
+          </span>
+        </motion.button>
+      </div>
 
-        <!-- Create new list -->
-        <div class="flex flex-col gap-2">
-          <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">
-            {{ drafts.length > 0 ? "Or create a new list" : "Create a new list" }}
-          </p>
+      <!-- Create new list -->
+      <div class="flex flex-col gap-2">
+        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">
+          {{ drafts.length > 0 ? "Or create a new list" : "Create a new list" }}
+        </p>
 
-          <Transition name="inline-expand" mode="out-in">
-            <div v-if="showCreateForm" key="form" class="motion-inline flex flex-col gap-2">
+        <motion.div layout>
+          <AnimatePresence mode="wait" :initial="false">
+            <motion.div
+              v-if="showCreateForm"
+              key="form"
+              v-bind="inlineMotionProps"
+              class="flex flex-col gap-2"
+            >
               <input
                 v-model="newName"
                 placeholder='e.g. "RF Jugg"'
@@ -110,19 +127,19 @@ function closeForm() {
                   @click="handleCreate"
                 />
               </div>
-            </div>
-            <BtnGhost
-              v-else
-              key="button"
-              label="+ New List"
-              :accent="true"
-              :full="true"
-              size="md"
-              @click="showCreateForm = true"
-            />
-          </Transition>
-        </div>
+            </motion.div>
+            <motion.div v-else key="button" v-bind="inlineMotionProps">
+              <BtnGhost
+                label="+ New List"
+                :accent="true"
+                :full="true"
+                size="md"
+                @click="showCreateForm = true"
+              />
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
       </div>
-    </div>
-  </Transition>
+    </motion.div>
+  </motion.div>
 </template>

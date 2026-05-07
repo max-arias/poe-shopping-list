@@ -1,8 +1,16 @@
 <script setup lang="ts">
+import { AnimatePresence, motion } from "motion-v";
 import type { DraftItem } from "@/types";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
+import {
+  buttonMotionProps,
+  checkToggleMotionProps,
+  checkmarkMotionProps,
+  rowMotionTransition,
+  subtleButtonMotionProps,
+} from "../../utils/motion";
 
 const { item } = defineProps<{ item: DraftItem }>();
 
@@ -23,37 +31,49 @@ async function openTrade(url: string) {
 </script>
 
 <template>
-  <div
-    class="motion-row flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft"
-    :class="item.completed ? 'opacity-60 bg-accent-soft/20' : ''"
+  <motion.div
+    class="flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft"
+    :animate="
+      item.completed
+        ? { opacity: 0.6, backgroundColor: 'var(--poe-accent-soft)' }
+        : { opacity: 1, backgroundColor: 'rgba(0, 0, 0, 0)' }
+    "
+    :transition="rowMotionTransition"
   >
     <!-- Checkbox -->
-    <button
+    <motion.button
       @click="setComplete(item.id, !item.completed)"
+      v-bind="checkToggleMotionProps"
       role="checkbox"
       :aria-checked="item.completed"
       aria-label="Mark as acquired"
-      class="motion-check-toggle w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
+      class="w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
       :class="item.completed ? 'bg-accent border-accent-edge' : ''"
     >
-      <span
-        v-if="item.completed"
-        class="motion-checkmark text-accent-ink text-[10px] font-bold leading-none"
-        >✓</span
-      >
-    </button>
+      <AnimatePresence>
+        <motion.span
+          v-if="item.completed"
+          key="check"
+          v-bind="checkmarkMotionProps"
+          class="text-accent-ink text-[10px] font-bold leading-none"
+        >
+          ✓
+        </motion.span>
+      </AnimatePresence>
+    </motion.button>
 
     <!-- Name -->
     <div class="flex-1 min-w-0">
-      <button
+      <motion.button
         v-if="item.tradeUrl"
         @click.stop="openTrade(item.tradeUrl!)"
+        v-bind="buttonMotionProps"
         :aria-label="item.name"
-        class="motion-button text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full"
+        class="text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full"
         :class="item.completed ? 'line-through' : ''"
       >
         {{ item.name }}
-      </button>
+      </motion.button>
       <span
         v-else
         class="text-[13px] font-medium text-ink truncate block"
@@ -70,12 +90,13 @@ async function openTrade(url: string) {
     </span>
 
     <!-- Kebab -->
-    <button
+    <motion.button
       @click.stop="ui.toggleKebab(item.id)"
+      v-bind="subtleButtonMotionProps"
       aria-label="Item actions"
       class="text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
     >
       ⋯
-    </button>
-  </div>
+    </motion.button>
+  </motion.div>
 </template>

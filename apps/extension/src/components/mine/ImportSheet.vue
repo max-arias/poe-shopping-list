@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { motion } from "motion-v";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
@@ -6,6 +7,7 @@ import { importDraft } from "../../composables/useImportExport";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
+import { overlayMotionProps, sheetMotionProps, subtleButtonMotionProps } from "../../utils/motion";
 
 const ui = useUiStore();
 const { addDraft } = useDraftList();
@@ -38,53 +40,54 @@ async function handleImport() {
 </script>
 
 <template>
-  <Transition name="sheet-fade" appear>
-    <div
-      ref="dialogRef"
-      class="motion-overlay absolute inset-0 bg-black/50 flex items-end z-20"
-      role="dialog"
-      aria-modal="true"
-      @keydown.escape="ui.closeImportSheet()"
-      @click.self="ui.closeImportSheet()"
+  <motion.div
+    ref="dialogRef"
+    v-bind="overlayMotionProps"
+    class="absolute inset-0 bg-black/50 flex items-end z-20"
+    role="dialog"
+    aria-modal="true"
+    @keydown.escape="ui.closeImportSheet()"
+    @click.self="ui.closeImportSheet()"
+  >
+    <motion.div
+      v-bind="sheetMotionProps"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto shadow-panel"
     >
-      <div
-        class="motion-sheet w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto shadow-panel"
-      >
-        <div class="flex items-center shrink-0">
-          <p class="text-[13px] font-semibold text-ink">Import list</p>
-          <div class="flex-1" />
-          <button
-            @click="ui.closeImportSheet()"
-            class="motion-button text-ink-muted text-base cursor-pointer bg-transparent border-0"
-          >
-            ✕
-          </button>
-        </div>
-
-        <p class="text-[11px] text-ink-muted">
-          Paste the exported string from another user to import their list.
-        </p>
-
-        <textarea
-          v-model="input"
-          placeholder="Paste exported list string here…"
-          aria-label="Import list string"
-          class="w-full h-24 px-2.5 py-2 text-[11px] font-mono border border-stroke rounded-sm text-ink bg-bg resize-none placeholder:text-ink-muted"
-          @keydown.enter.ctrl="handleImport"
-        />
-
-        <p v-if="error" class="text-[11px] text-destructive">{{ error }}</p>
-
-        <div class="flex gap-2">
-          <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeImportSheet()" />
-          <BtnAccent
-            label="Import"
-            :full="true"
-            :disabled="!input.trim() || importing"
-            @click="handleImport"
-          />
-        </div>
+      <div class="flex items-center shrink-0">
+        <p class="text-[13px] font-semibold text-ink">Import list</p>
+        <div class="flex-1" />
+        <motion.button
+          @click="ui.closeImportSheet()"
+          v-bind="subtleButtonMotionProps"
+          class="text-ink-muted text-base cursor-pointer bg-transparent border-0"
+        >
+          ✕
+        </motion.button>
       </div>
-    </div>
-  </Transition>
+
+      <p class="text-[11px] text-ink-muted">
+        Paste the exported string from another user to import their list.
+      </p>
+
+      <textarea
+        v-model="input"
+        placeholder="Paste exported list string here…"
+        aria-label="Import list string"
+        class="w-full h-24 px-2.5 py-2 text-[11px] font-mono border border-stroke rounded-sm text-ink bg-bg resize-none placeholder:text-ink-muted"
+        @keydown.enter.ctrl="handleImport"
+      />
+
+      <p v-if="error" class="text-[11px] text-destructive">{{ error }}</p>
+
+      <div class="flex gap-2">
+        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeImportSheet()" />
+        <BtnAccent
+          label="Import"
+          :full="true"
+          :disabled="!input.trim() || importing"
+          @click="handleImport"
+        />
+      </div>
+    </motion.div>
+  </motion.div>
 </template>

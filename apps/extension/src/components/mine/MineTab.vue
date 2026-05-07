@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AnimatePresence, motion } from "motion-v";
 import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
@@ -8,6 +9,11 @@ import MineListRow from "./MineListRow.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
+import {
+  inlineMotionProps,
+  skeletonPulseMotionProps,
+  subtleButtonMotionProps,
+} from "../../utils/motion";
 
 const { drafts, isLoaded, createDraft, deleteDraftById } = useDraftList();
 const { settings } = useSettings();
@@ -101,10 +107,11 @@ async function confirmDelete() {
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden relative">
     <template v-if="!isLoaded">
       <div class="flex-1 px-3 py-3 space-y-2.5 overflow-hidden">
-        <div
+        <motion.div
           v-for="row in 4"
           :key="row"
-          class="h-14 rounded-md border border-stroke-soft bg-surface/70 animate-pulse"
+          v-bind="skeletonPulseMotionProps"
+          class="h-14 rounded-md border border-stroke-soft bg-surface/70"
         />
       </div>
     </template>
@@ -150,88 +157,102 @@ async function confirmDelete() {
     <!-- Footer: + New List -->
     <div class="shrink-0 px-3 py-2.5 border-t border-stroke bg-surface">
       <!-- Expanded create form -->
-      <Transition name="inline-expand" mode="out-in">
-        <div v-if="showNewForm" key="form" class="motion-inline flex flex-col gap-2">
-          <!-- Name row -->
-          <input
-            v-model="newName"
-            placeholder='e.g. "RF Jugg"'
-            maxlength="80"
-            aria-label="List name"
-            @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
-            autofocus
-          />
-
-          <!-- Primary URL (optional) -->
-          <input
-            v-model="newPrimaryUrl"
-            placeholder="Build / Guide URL (optional)"
-            aria-label="Build or guide URL"
-            @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
-          />
-
-          <!-- Extra URLs -->
-          <div v-for="(_, i) in newExtraUrls" :key="i" class="flex gap-1.5 items-center">
-            <input
-              v-model="newExtraUrls[i]"
-              placeholder="Additional URL…"
-              aria-label="Additional URL"
-              @keydown.escape="closeNewForm"
-              class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
-            />
-            <button
-              @click="removeExtraUrl(i)"
-              class="motion-button w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
-              title="Remove URL"
-            >
-              ✕
-            </button>
-          </div>
-
-          <button
-            @click="addExtraUrl"
-            class="motion-button self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+      <motion.div layout>
+        <AnimatePresence mode="wait" :initial="false">
+          <motion.div
+            v-if="showNewForm"
+            key="form"
+            v-bind="inlineMotionProps"
+            class="flex flex-col gap-2"
           >
-            + Add another URL
-          </button>
-
-          <!-- Creator -->
-          <input
-            v-model="newCreator"
-            placeholder="Creator name…"
-            maxlength="80"
-            aria-label="Creator name"
-            @keydown.enter="handleCreate"
-            @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
-          />
-
-          <!-- Actions -->
-          <div class="flex gap-2">
-            <BtnGhost label="Cancel" :full="true" size="sm" @click="closeNewForm" />
-            <BtnAccent
-              label="Create"
-              size="sm"
-              :full="true"
-              :disabled="!newName.trim() || creating"
-              @click="handleCreate"
+            <!-- Name row -->
+            <input
+              v-model="newName"
+              placeholder='e.g. "RF Jugg"'
+              maxlength="80"
+              aria-label="List name"
+              @keydown.escape="closeNewForm"
+              class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
+              autofocus
             />
-          </div>
-        </div>
 
-        <div v-else key="actions" class="motion-inline flex items-center gap-2">
-          <BtnAccent
-            class="flex-1"
-            label="+ New List"
-            size="md"
-            :full="false"
-            @click="openNewForm"
-          />
-          <BtnGhost label="↓ Import" size="md" @click="ui.openImportSheet()" />
-        </div>
-      </Transition>
+            <!-- Primary URL (optional) -->
+            <input
+              v-model="newPrimaryUrl"
+              placeholder="Build / Guide URL (optional)"
+              aria-label="Build or guide URL"
+              @keydown.escape="closeNewForm"
+              class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
+            />
+
+            <!-- Extra URLs -->
+            <div v-for="(_, i) in newExtraUrls" :key="i" class="flex gap-1.5 items-center">
+              <input
+                v-model="newExtraUrls[i]"
+                placeholder="Additional URL…"
+                aria-label="Additional URL"
+                @keydown.escape="closeNewForm"
+                class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
+              />
+              <motion.button
+                @click="removeExtraUrl(i)"
+                v-bind="subtleButtonMotionProps"
+                class="w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
+                title="Remove URL"
+              >
+                ✕
+              </motion.button>
+            </div>
+
+            <motion.button
+              @click="addExtraUrl"
+              v-bind="subtleButtonMotionProps"
+              class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+            >
+              + Add another URL
+            </motion.button>
+
+            <!-- Creator -->
+            <input
+              v-model="newCreator"
+              placeholder="Creator name…"
+              maxlength="80"
+              aria-label="Creator name"
+              @keydown.enter="handleCreate"
+              @keydown.escape="closeNewForm"
+              class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
+            />
+
+            <!-- Actions -->
+            <div class="flex gap-2">
+              <BtnGhost label="Cancel" :full="true" size="sm" @click="closeNewForm" />
+              <BtnAccent
+                label="Create"
+                size="sm"
+                :full="true"
+                :disabled="!newName.trim() || creating"
+                @click="handleCreate"
+              />
+            </div>
+          </motion.div>
+
+          <motion.div
+            v-else
+            key="actions"
+            v-bind="inlineMotionProps"
+            class="flex items-center gap-2"
+          >
+            <BtnAccent
+              class="flex-1"
+              label="+ New List"
+              size="md"
+              :full="false"
+              @click="openNewForm"
+            />
+            <BtnGhost label="↓ Import" size="md" @click="ui.openImportSheet()" />
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
     </div>
   </div>
 </template>

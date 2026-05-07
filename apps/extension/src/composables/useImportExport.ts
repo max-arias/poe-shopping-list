@@ -1,6 +1,7 @@
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 import { DraftSchema } from "@/types";
 import type { Draft } from "@/types";
+import type { ItemKind } from "@/types";
 
 /**
  * Export a draft list as a compressed, URL-safe string.
@@ -47,7 +48,7 @@ export function importDraft(encoded: string): Draft {
   const draft: Draft = {
     id: crypto.randomUUID(),
     name: String(portable.n ?? ""),
-    game: String(portable.g ?? "poe1"),
+    game: "poe1",
     league: String(portable.l ?? ""),
     createdAt: Date.now(),
     items: Array.isArray(portable.i)
@@ -58,7 +59,7 @@ export function importDraft(encoded: string): Draft {
           tradeUrl: String(item.u ?? ""),
           capture: null,
           completed: false,
-          kind: String(item.k ?? "unique"),
+          kind: String(item.k ?? "unique") as ItemKind,
           base: item.b ? String(item.b) : undefined,
           addedAt: Date.now(),
         }))

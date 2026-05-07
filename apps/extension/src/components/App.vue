@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AnimatePresence, motion } from "motion-v";
 import { computed, watchEffect, watch, ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../stores/ui";
 import { useSettings } from "../composables/useSettings";
@@ -15,6 +16,12 @@ import ExportSheet from "./mine/ExportSheet.vue";
 import ImportSheet from "./mine/ImportSheet.vue";
 import SettingsPopover from "./settings/SettingsPopover.vue";
 import CaptureUnavailableBanner from "./shared/CaptureUnavailableBanner.vue";
+import {
+  bannerMotionProps,
+  buttonMotionProps,
+  createSlideMotionProps,
+  subtleButtonMotionProps,
+} from "../utils/motion";
 
 const ui = useUiStore();
 const { settings } = useSettings();
@@ -24,7 +31,7 @@ const triggerSaveSearch = storage.defineItem<number>("local:triggerSaveSearch", 
   fallback: 0,
 });
 const pendingTrigger = ref(0);
-let sidepanelVisibilityPort: browser.Runtime.Port | null = null;
+let sidepanelVisibilityPort: ReturnType<typeof browser.runtime.connect> | null = null;
 
 async function reportSidepanelVisibility(open: boolean) {
   await sendMessage("spSidepanelVisibilitySet", { open }).catch(() => {});
@@ -100,6 +107,9 @@ const resolvedTheme = computed(() => {
 watchEffect(() => {
   document.documentElement.setAttribute("data-theme", resolvedTheme.value);
 });
+
+const viewSlideMotionProps = createSlideMotionProps(10);
+const subviewSlideMotionProps = createSlideMotionProps(8);
 </script>
 
 <template>
@@ -110,11 +120,12 @@ watchEffect(() => {
       class="flex items-center gap-2 border-b border-stroke shrink-0 px-2"
     >
       <div role="tablist" class="flex flex-1">
-        <button
+        <motion.button
           @click="ui.setTab('mine')"
+          v-bind="buttonMotionProps"
           role="tab"
           :aria-selected="ui.activeTab === 'mine'"
-          class="motion-button flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
+          class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0"
           :class="
             ui.activeTab === 'mine'
               ? 'text-accent-ink-str border-b-2 border-accent'
@@ -122,12 +133,13 @@ watchEffect(() => {
           "
         >
           My Lists
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           @click="ui.setTab('history')"
+          v-bind="buttonMotionProps"
           role="tab"
           :aria-selected="ui.activeTab === 'history'"
-          class="motion-button flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
+          class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0"
           :class="
             ui.activeTab === 'history'
               ? 'text-accent-ink-str border-b-2 border-accent'
@@ -135,42 +147,82 @@ watchEffect(() => {
           "
         >
           History
-        </button>
+        </motion.button>
       </div>
-      <button
+      <motion.button
         @click="ui.toggleSettings()"
-        class="motion-button w-7 h-7 flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border border-transparent rounded-sm hover:bg-surface hover:text-ink"
+        v-bind="subtleButtonMotionProps"
+        class="w-7 h-7 flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border border-transparent rounded-sm hover:bg-surface hover:text-ink"
         title="Settings"
         aria-label="Settings"
       >
         ⚙
-      </button>
+      </motion.button>
     </div>
 
     <!-- Capture unavailable banner -->
-    <Transition name="banner-drop">
-      <CaptureUnavailableBanner v-if="ui.captureUnavailable" />
-    </Transition>
+    <AnimatePresence>
+      <motion.div v-if="ui.captureUnavailable" key="capture-banner" v-bind="bannerMotionProps">
+        <CaptureUnavailableBanner />
+      </motion.div>
+    </AnimatePresence>
 
-    <Transition name="view-slide" mode="out-in">
-      <!-- Detail panel -->
-      <DetailPanel v-if="ui.currentView.type === 'detail'" key="detail" />
+    <AnimatePresence mode="wait" :initial="false">
+      <motion.div
+        v-if="ui.currentView.type === 'detail'"
+        key="detail"
+        v-bind="viewSlideMotionProps"
+        class="flex-1 min-h-0 flex flex-col overflow-hidden"
+      >
+        <DetailPanel />
+      </motion.div>
 
-      <!-- Tabs view -->
-      <div v-else key="tabs" role="tabpanel" class="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <Transition name="subview-slide" mode="out-in">
-          <MineTab v-if="ui.activeTab === 'mine'" key="mine" />
-          <HistoryTab v-else key="history" />
-        </Transition>
-      </div>
-    </Transition>
+      <motion.div
+        v-else
+        key="tabs"
+        v-bind="viewSlideMotionProps"
+        role="tabpanel"
+        class="flex-1 min-h-0 flex flex-col overflow-hidden"
+      >
+        <AnimatePresence mode="wait" :initial="false">
+          <motion.div
+            v-if="ui.activeTab === 'mine'"
+            key="mine"
+            v-bind="subviewSlideMotionProps"
+            class="flex-1 min-h-0 flex flex-col overflow-hidden"
+          >
+            <MineTab />
+          </motion.div>
+          <motion.div
+            v-else
+            key="history"
+            v-bind="subviewSlideMotionProps"
+            class="flex-1 min-h-0 flex flex-col overflow-hidden"
+          >
+            <HistoryTab />
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
+    </AnimatePresence>
 
     <!-- Overlays -->
-    <SaveModal v-if="ui.saveModalOpen" />
-    <ChooseListModal v-if="ui.chooseListModalOpen" />
-    <EditItemSheet v-if="ui.editSheetItemId" />
-    <ExportSheet v-if="ui.exportSheetOpen" />
-    <ImportSheet v-if="ui.importSheetOpen" />
-    <SettingsPopover v-if="ui.settingsOpen" />
+    <AnimatePresence>
+      <SaveModal v-if="ui.saveModalOpen" key="save-modal" />
+    </AnimatePresence>
+    <AnimatePresence>
+      <ChooseListModal v-if="ui.chooseListModalOpen" key="choose-list-modal" />
+    </AnimatePresence>
+    <AnimatePresence>
+      <EditItemSheet v-if="ui.editSheetItemId" key="edit-item-sheet" />
+    </AnimatePresence>
+    <AnimatePresence>
+      <ExportSheet v-if="ui.exportSheetOpen" key="export-sheet" />
+    </AnimatePresence>
+    <AnimatePresence>
+      <ImportSheet v-if="ui.importSheetOpen" key="import-sheet" />
+    </AnimatePresence>
+    <AnimatePresence>
+      <SettingsPopover v-if="ui.settingsOpen" key="settings-popover" />
+    </AnimatePresence>
   </div>
 </template>

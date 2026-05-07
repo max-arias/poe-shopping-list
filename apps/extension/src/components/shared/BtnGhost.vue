@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { motion } from "motion-v";
+import { buttonMotionProps } from "../../utils/motion";
+
 const {
   label,
   size = "sm",
@@ -17,10 +20,11 @@ const emit = defineEmits<{ click: [] }>();
 </script>
 
 <template>
-  <button
+  <motion.button
     :disabled="disabled"
     @click="!disabled && emit('click')"
-    class="motion-button inline-flex items-center justify-center gap-1.5 px-2.5 rounded-sm bg-transparent cursor-pointer select-none"
+    v-bind="buttonMotionProps"
+    class="inline-flex items-center justify-center gap-1.5 px-2.5 rounded-sm bg-transparent cursor-pointer select-none"
     :class="{
       'w-full': full,
       'h-[26px] text-[11px]': size === 'sm',
@@ -31,5 +35,5 @@ const emit = defineEmits<{ click: [] }>();
     }"
   >
     <slot>{{ label }}</slot>
-  </button>
+  </motion.button>
 </template>
