@@ -1,7 +1,19 @@
 import type { Draft } from "@/types";
+import { STORAGE } from "@/types/storage";
+import { storage } from "wxt/utils/storage";
 import { sendMessage } from "./messages";
 
-export function injectFab(drafts: Draft[], url: string) {
+const DEFAULT_TOP = 96;
+const MIN_TOP = 20;
+const RIGHT_OFFSET = 20;
+const DRAG_THRESHOLD = 6;
+const FADE_DURATION_MS = 180;
+
+const fabPositionItem = storage.defineItem<number>(STORAGE.fabPosition, {
+  fallback: DEFAULT_TOP,
+});
+
+export async function injectFab(drafts: Draft[], url: string) {
   if (sessionStorage.getItem("poe-sl-fab-dismissed")) {
     return;
   }
@@ -9,17 +21,18 @@ export function injectFab(drafts: Draft[], url: string) {
   // Find matches considering buildUrl and associatedUrls
   const matches = drafts.filter((d) => {
     if (d.buildUrl && url.startsWith(d.buildUrl)) return true;
-    if (d.associatedUrls && d.associatedUrls.some((u) => url.startsWith(u))) return true;
+    if (d.associatedUrls?.some((u) => url.startsWith(u))) return true;
     return false;
   });
 
   // Limit to latest 5
   const latestMatches = matches.slice(0, 5);
 
+  const savedTop = await fabPositionItem.getValue();
+
   const host = document.createElement("div");
   host.dataset.testid = "poe-sl-fab-host";
-  host.style.cssText =
-    "position:fixed;top:20px;right:20px;z-index:2147483647;font-family:ui-sans-serif,system-ui,sans-serif;";
+  host.style.cssText = `position:fixed;top:${savedTop}px;right:${RIGHT_OFFSET}px;z-index:2147483647;font-family:ui-sans-serif,system-ui,sans-serif;`;
   document.body.appendChild(host);
 
   const shadow = host.attachShadow({ mode: "open" });
@@ -129,6 +142,14 @@ export function injectFab(drafts: Draft[], url: string) {
       flex-direction: column;
       align-items: flex-end;
       gap: 6px;
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    .fab-btn-wrapper.dragging {
+      cursor: grabbing;
     }
     .fab-btn {
       width: 44px;
@@ -144,6 +165,9 @@ export function injectFab(drafts: Draft[], url: string) {
       color: #c28a2a;
       transition: transform 0.2s, background 0.2s;
       padding: 0;
+    }
+    .fab-btn-wrapper.dragging .fab-btn {
+      transform: none;
     }
     .fab-btn:hover {
       background: #1e1710;
@@ -210,13 +234,13 @@ export function injectFab(drafts: Draft[], url: string) {
     shadow.appendChild(style);
     shadow.appendChild(container);
 
-    shadow.querySelectorAll(".btn").forEach((btn) => {
+    for (const btn of shadow.querySelectorAll(".btn")) {
       btn.addEventListener("click", () => {
         sendMessage("csOpenSidepanel");
       });
-    });
+    }
 
-    shadow.getElementById("close-btn")!.addEventListener("click", () => {
+    shadow.getElementById("close-btn")?.addEventListener("click", () => {
       sessionStorage.setItem("poe-sl-fab-dismissed", "1");
       host.remove();
     });
@@ -236,16 +260,30 @@ export function injectFab(drafts: Draft[], url: string) {
     shadow.appendChild(style);
     shadow.appendChild(container);
 
-    shadow.querySelector(".fab-btn")!.addEventListener("click", () => {
+    const wrapper = shadow.querySelector(".fab-btn-wrapper") as HTMLDivElement;
+    const fabButton = shadow.querySelector(".fab-btn") as HTMLButtonElement;
+    const closeButton = shadow.querySelector(".fab-close-btn") as HTMLButtonElement;
+
+    setupVerticalDrag(host, wrapper);
+
+    fabButton.addEventListener("click", () => {
       sendMessage("csOpenSidepanel");
     });
 
-    shadow.querySelector(".fab-close-btn")!.addEventListener("click", (e) => {
+    closeButton.addEventListener("click", (e) => {
       e.stopPropagation();
       sessionStorage.setItem("poe-sl-fab-dismissed", "1");
       host.remove();
     });
   }
+
+  setFabVisible(host, true);
+
+  return {
+    setVisible(visible: boolean) {
+      setFabVisible(host, visible);
+    },
+  };
 }
 
 function escapeHtml(s: string): string {
@@ -254,4 +292,91 @@ function escapeHtml(s: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function setupVerticalDrag(host: HTMLDivElement, wrapper: HTMLDivElement) {
+  let pointerId: number | null = null;
+  let startPointerY = 0;
+  let startTop = 0;
+  let moved = false;
+  let suppressClick = false;
+
+  const handlePointerMove = (event: PointerEvent) => {
+    if (pointerId !== event.pointerId) {
+      return;
+    }
+
+    const deltaY = event.clientY - startPointerY;
+    if (Math.abs(deltaY) >= DRAG_THRESHOLD) {
+      moved = true;
+      event.preventDefault();
+    }
+
+    host.style.top = `${clampFabTop(startTop + deltaY, host)}px`;
+  };
+
+  const cleanupWindowListeners = () => {
+    window.removeEventListener("pointermove", handlePointerMove);
+    window.removeEventListener("pointerup", handlePointerUp);
+    window.removeEventListener("pointercancel", handlePointerUp);
+  };
+
+  const handlePointerUp = async (event: PointerEvent) => {
+    if (pointerId !== event.pointerId) {
+      return;
+    }
+
+    cleanupWindowListeners();
+    wrapper.classList.remove("dragging");
+
+    if (moved) {
+      suppressClick = true;
+      setTimeout(() => {
+        suppressClick = false;
+      }, 0);
+      await fabPositionItem.setValue(Number.parseFloat(host.style.top) || DEFAULT_TOP);
+    }
+
+    pointerId = null;
+  };
+
+  wrapper.addEventListener("pointerdown", (event) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest(".fab-close-btn")) {
+      return;
+    }
+
+    pointerId = event.pointerId;
+    startPointerY = event.clientY;
+    startTop = Number.parseFloat(host.style.top) || DEFAULT_TOP;
+    moved = false;
+    wrapper.classList.add("dragging");
+    window.addEventListener("pointermove", handlePointerMove, { passive: false });
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+  });
+
+  wrapper.addEventListener(
+    "click",
+    (event) => {
+      if (!suppressClick) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    true,
+  );
+}
+
+function clampFabTop(nextTop: number, host: HTMLDivElement) {
+  const maxTop = Math.max(MIN_TOP, window.innerHeight - host.offsetHeight - MIN_TOP);
+  return Math.min(Math.max(nextTop, MIN_TOP), maxTop);
+}
+
+function setFabVisible(host: HTMLDivElement, visible: boolean) {
+  host.style.transition = `opacity ${FADE_DURATION_MS}ms ease`;
+  host.style.opacity = visible ? "1" : "0";
+  host.style.pointerEvents = visible ? "auto" : "none";
 }

@@ -4,6 +4,7 @@ import { useUiStore } from "../stores/ui";
 import { useSettings } from "../composables/useSettings";
 import { useDraftList } from "../composables/useDraftList";
 import { storage } from "wxt/utils/storage";
+import { sendMessage } from "../utils/messages";
 import ChromeBar from "./layout/ChromeBar.vue";
 import MineTab from "./mine/MineTab.vue";
 import HistoryTab from "./history/HistoryTab.vue";
@@ -24,6 +25,18 @@ const triggerSaveSearch = storage.defineItem<number>("local:triggerSaveSearch", 
   fallback: 0,
 });
 const pendingTrigger = ref(0);
+let sidepanelVisibilityPort: browser.Runtime.Port | null = null;
+
+async function reportSidepanelVisibility(open: boolean) {
+  await sendMessage("spSidepanelVisibilitySet", { open }).catch(() => {});
+
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id) {
+    return;
+  }
+
+  sidepanelVisibilityPort?.postMessage({ tabId: tab.id, open });
+}
 
 watch([isLoaded, pendingTrigger], ([loaded, trigger]) => {
   if (!loaded || !trigger) return;
@@ -40,6 +53,9 @@ watch([isLoaded, pendingTrigger], ([loaded, trigger]) => {
 });
 
 onMounted(async () => {
+  sidepanelVisibilityPort = browser.runtime.connect({ name: "poe-sl-sidepanel-visibility" });
+  void reportSidepanelVisibility(true);
+
   // Pick up a trigger that was set before the sidepanel mounted
   const current = await triggerSaveSearch.getValue();
   if (current) pendingTrigger.value = current;
@@ -49,6 +65,9 @@ onMounted(async () => {
   });
 
   onBeforeUnmount(() => {
+    void reportSidepanelVisibility(false);
+    sidepanelVisibilityPort?.disconnect();
+    sidepanelVisibilityPort = null;
     unwatch();
   });
 });
@@ -130,7 +149,7 @@ watchEffect(() => {
     <DetailPanel v-if="ui.currentView.type === 'detail'" />
 
     <!-- Tabs view -->
-    <div v-else role="tabpanel">
+    <div v-else role="tabpanel" class="flex-1 min-h-0 flex flex-col overflow-hidden">
       <MineTab v-if="ui.activeTab === 'mine'" />
       <HistoryTab v-else />
     </div>

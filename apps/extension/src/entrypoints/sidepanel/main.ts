@@ -1,4 +1,4 @@
-import { createApp, defineComponent, h } from "vue";
+import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "../../components/App.vue";
 import "../../assets/main.css";

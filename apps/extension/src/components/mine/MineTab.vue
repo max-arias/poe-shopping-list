@@ -99,7 +99,15 @@ async function confirmDelete() {
 
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden relative">
-    <template v-if="!isLoaded" />
+    <template v-if="!isLoaded">
+      <div class="flex-1 px-3 py-3 space-y-2.5 overflow-hidden">
+        <div
+          v-for="row in 4"
+          :key="row"
+          class="h-14 rounded-md border border-stroke-soft bg-surface/70 animate-pulse"
+        />
+      </div>
+    </template>
     <EmptyMine v-else-if="drafts.length === 0" />
     <template v-else>
       <div class="flex-1 overflow-auto" @click="deletingId = null">
@@ -137,89 +145,85 @@ async function confirmDelete() {
           </div>
         </div>
       </div>
+    </template>
 
-      <!-- Footer: + New List -->
-      <div class="shrink-0 px-3 py-2.5 border-t border-stroke bg-surface">
-        <!-- Expanded create form -->
-        <div v-if="showNewForm" class="flex flex-col gap-2">
-          <!-- Name row -->
+    <!-- Footer: + New List -->
+    <div class="shrink-0 px-3 py-2.5 border-t border-stroke bg-surface">
+      <!-- Expanded create form -->
+      <div v-if="showNewForm" class="flex flex-col gap-2">
+        <!-- Name row -->
+        <input
+          v-model="newName"
+          placeholder='e.g. "RF Jugg"'
+          maxlength="80"
+          aria-label="List name"
+          @keydown.escape="closeNewForm"
+          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
+          autofocus
+        />
+
+        <!-- Primary URL (optional) -->
+        <input
+          v-model="newPrimaryUrl"
+          placeholder="Build / Guide URL (optional)"
+          aria-label="Build or guide URL"
+          @keydown.escape="closeNewForm"
+          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
+        />
+
+        <!-- Extra URLs -->
+        <div v-for="(_, i) in newExtraUrls" :key="i" class="flex gap-1.5 items-center">
           <input
-            v-model="newName"
-            placeholder='e.g. "RF Jugg"'
-            maxlength="80"
-            aria-label="List name"
+            v-model="newExtraUrls[i]"
+            placeholder="Additional URL…"
+            aria-label="Additional URL"
             @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
-            autofocus
+            class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
           />
-
-          <!-- Primary URL (optional) -->
-          <input
-            v-model="newPrimaryUrl"
-            placeholder="Build / Guide URL (optional)"
-            aria-label="Build or guide URL"
-            @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
-          />
-
-          <!-- Extra URLs -->
-          <div v-for="(_, i) in newExtraUrls" :key="i" class="flex gap-1.5 items-center">
-            <input
-              v-model="newExtraUrls[i]"
-              placeholder="Additional URL…"
-              aria-label="Additional URL"
-              @keydown.escape="closeNewForm"
-              class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
-            />
-            <button
-              @click="removeExtraUrl(i)"
-              class="w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
-              title="Remove URL"
-            >
-              ✕
-            </button>
-          </div>
-
           <button
-            @click="addExtraUrl"
-            class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+            @click="removeExtraUrl(i)"
+            class="w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
+            title="Remove URL"
           >
-            + Add another URL
+            ✕
           </button>
-
-          <!-- Creator -->
-          <input
-            v-model="newCreator"
-            placeholder="Creator name…"
-            maxlength="80"
-            aria-label="Creator name"
-            @keydown.enter="handleCreate"
-            @keydown.escape="closeNewForm"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
-          />
-
-          <!-- Actions -->
-          <div class="flex gap-2">
-            <BtnGhost label="Cancel" :full="true" size="sm" @click="closeNewForm" />
-            <BtnAccent
-              label="Create"
-              size="sm"
-              :full="true"
-              :disabled="!newName.trim() || creating"
-              @click="handleCreate"
-            />
-          </div>
         </div>
 
-        <BtnAccent v-else label="+ New List" size="md" @click="openNewForm" />
-        <BtnGhost
-          v-if="!showNewForm"
-          label="↓ Import"
-          size="md"
-          class="ml-2"
-          @click="ui.importSheetOpen = true"
+        <button
+          @click="addExtraUrl"
+          class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+        >
+          + Add another URL
+        </button>
+
+        <!-- Creator -->
+        <input
+          v-model="newCreator"
+          placeholder="Creator name…"
+          maxlength="80"
+          aria-label="Creator name"
+          @keydown.enter="handleCreate"
+          @keydown.escape="closeNewForm"
+          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
         />
+
+        <!-- Actions -->
+        <div class="flex gap-2">
+          <BtnGhost label="Cancel" :full="true" size="sm" @click="closeNewForm" />
+          <BtnAccent
+            label="Create"
+            size="sm"
+            :full="true"
+            :disabled="!newName.trim() || creating"
+            @click="handleCreate"
+          />
+        </div>
       </div>
-    </template>
+
+      <div v-else class="flex items-center gap-2">
+        <BtnAccent class="flex-1" label="+ New List" size="md" :full="false" @click="openNewForm" />
+        <BtnGhost label="↓ Import" size="md" @click="ui.openImportSheet()" />
+      </div>
+    </div>
   </div>
 </template>

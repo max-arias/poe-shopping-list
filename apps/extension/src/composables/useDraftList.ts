@@ -1,6 +1,6 @@
 import { storage } from "wxt/utils/storage";
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import { type Draft, type DraftItem, type TradeCapture, type ItemKind } from "@/types";
+import { ref, computed } from "vue";
+import type { Draft, DraftItem, TradeCapture, ItemKind } from "@/types";
 import { useUiStore } from "../stores/ui";
 
 const draftsItem = storage.defineItem<Draft[]>("local:drafts", {
@@ -12,25 +12,33 @@ function normalizeDraft(d: Draft): Draft {
   return Array.isArray(d.items) ? d : { ...d, items: [] };
 }
 
+const drafts = ref<Draft[]>([]);
+const isLoaded = ref(false);
+let initialized = false;
+
+function ensureInitialized() {
+  if (initialized) return;
+  initialized = true;
+
+  void draftsItem.getValue().then((stored) => {
+    drafts.value = stored.map(normalizeDraft);
+    isLoaded.value = true;
+  });
+
+  draftsItem.watch((val) => {
+    drafts.value = (val ?? []).map(normalizeDraft);
+    isLoaded.value = true;
+  });
+}
+
 export function useDraftList() {
-  const drafts = ref<Draft[]>([]);
-  const isLoaded = ref(false);
+  ensureInitialized();
   const ui = useUiStore();
 
   const draft = computed<Draft | null>(() => {
     const v = ui.currentView;
     if (v.type !== "detail") return null;
     return drafts.value.find((d) => d.id === v.draftId) ?? null;
-  });
-
-  onMounted(async () => {
-    const stored = await draftsItem.getValue();
-    drafts.value = stored.map(normalizeDraft);
-    isLoaded.value = true;
-    const unwatch = draftsItem.watch((val) => {
-      drafts.value = (val ?? []).map(normalizeDraft);
-    });
-    onBeforeUnmount(unwatch);
   });
 
   async function saveAll(updated: Draft[]) {
@@ -62,6 +70,12 @@ export function useDraftList() {
     };
     await saveAll([...drafts.value, d]);
     return d;
+  }
+
+  async function addDraft(importedDraft: Draft) {
+    const normalized = normalizeDraft(importedDraft);
+    await saveAll([...drafts.value, normalized]);
+    return normalized;
   }
 
   async function renameDraft(name: string) {
@@ -177,6 +191,7 @@ export function useDraftList() {
     draft,
     isLoaded,
     createDraft,
+    addDraft,
     renameDraft,
     deleteDraft,
     deleteDraftById,

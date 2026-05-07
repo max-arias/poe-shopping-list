@@ -41,6 +41,12 @@ interface ProtocolMap {
   spAutoCaptureRead(): TradeCapture | null;
   /** Sidepanel requests search bar text (SW relays to active tab's CS) */
   spSearchBarGet(): { text: string };
+  /** Sidepanel reports open/close state so SW can relay FAB visibility */
+  spSidepanelVisibilitySet(data: { open: boolean }): void;
+
+  // ── Service Worker → Content Script relay ────────────────────────────────
+  /** SW relays FAB visibility changes to the current tab's content script */
+  csFabVisibilitySet(data: { visible: boolean }): void;
 
   // ── Service Worker → Side Panel broadcast ───────────────────────────────
   /** SW broadcasts capture availability change to all extension pages */

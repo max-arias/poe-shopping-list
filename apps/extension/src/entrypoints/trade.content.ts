@@ -10,7 +10,7 @@ export default defineContentScript({
     const { injectFab } = await import("../utils/fab");
 
     const drafts = (await storage.getItem<any[]>("local:drafts")) ?? [];
-    injectFab(drafts, window.location.href);
+    const fab = await injectFab(drafts, window.location.href);
 
     injectSaveSearchButton();
     reportStatus();
@@ -41,6 +41,10 @@ export default defineContentScript({
     onMessage("csSearchBarGet", () => {
       const text = getSearchBarText(document);
       return { text };
+    });
+
+    onMessage("csFabVisibilitySet", (message) => {
+      fab?.setVisible(message.data.visible);
     });
 
     function reportStatus() {

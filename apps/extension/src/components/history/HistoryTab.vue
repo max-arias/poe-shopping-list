@@ -101,7 +101,15 @@ watch(changingPriceItemId, async (val) => {
 
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
-    <template v-if="!isLoaded" />
+    <template v-if="!isLoaded">
+      <div class="flex-1 px-3 py-3 space-y-2.5 overflow-hidden">
+        <div
+          v-for="row in 5"
+          :key="row"
+          class="h-16 rounded-md border border-stroke-soft bg-surface/70 animate-pulse"
+        />
+      </div>
+    </template>
     <template v-else-if="items.length === 0">
       <div class="flex-1 flex flex-col items-center justify-center gap-3 px-5 text-center">
         <p class="text-[13px] font-semibold text-ink">No purchases yet</p>

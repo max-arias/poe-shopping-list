@@ -224,7 +224,7 @@ async function saveLinkBuild() {
           size="md"
           @click="
             showUnmarkConfirm = false;
-            ui.importSheetOpen = true;
+            ui.openImportSheet();
           "
         />
         <BtnGhost label="Cancel" :full="true" size="md" @click="showUnmarkConfirm = false" />

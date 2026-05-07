@@ -8,7 +8,7 @@ import BtnAccent from "../shared/BtnAccent.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 
 const ui = useUiStore();
-const { createDraft, saveDraft } = useDraftList();
+const { addDraft } = useDraftList();
 
 const input = ref("");
 const error = ref("");
@@ -26,10 +26,9 @@ async function handleImport() {
 
   try {
     const draft = importDraft(input.value.trim());
-    // Save the imported draft to storage
-    await saveDraft(draft);
+    await addDraft(draft);
     input.value = "";
-    ui.closeDetail();
+    ui.closeImportSheet();
   } catch (e: unknown) {
     error.value = e instanceof Error ? e.message : "Failed to import list";
   } finally {
@@ -45,8 +44,8 @@ async function handleImport() {
     class="absolute inset-0 bg-black/50 flex items-end z-20"
     role="dialog"
     aria-modal="true"
-    @keydown.escape="ui.closeDetail()"
-    @click.self="ui.closeDetail()"
+    @keydown.escape="ui.closeImportSheet()"
+    @click.self="ui.closeImportSheet()"
   >
     <!-- Sheet -->
     <div
@@ -56,7 +55,7 @@ async function handleImport() {
         <p class="text-[13px] font-semibold text-ink">Import list</p>
         <div class="flex-1" />
         <button
-          @click="ui.closeDetail()"
+          @click="ui.closeImportSheet()"
           class="text-ink-muted text-base cursor-pointer bg-transparent border-0"
         >
           ✕
@@ -78,7 +77,7 @@ async function handleImport() {
       <p v-if="error" class="text-[11px] text-destructive">{{ error }}</p>
 
       <div class="flex gap-2">
-        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeDetail()" />
+        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeImportSheet()" />
         <BtnAccent
           label="Import"
           :full="true"

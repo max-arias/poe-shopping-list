@@ -4,9 +4,63 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PoE Shopping List</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --boot-bg: #11100f;
+        --boot-surface: #1a1816;
+        --boot-stroke: rgba(245, 234, 214, 0.12);
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--boot-bg);
+      }
+
+      body {
+        font-family: Inter, system-ui, sans-serif;
+      }
+
+      #app {
+        min-height: 100vh;
+        background: var(--boot-bg);
+      }
+
+      .boot-shell {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--boot-bg);
+      }
+
+      .boot-bar {
+        height: 34px;
+        border-bottom: 1px solid var(--boot-stroke);
+        background: var(--boot-surface);
+      }
+
+      .boot-tabs {
+        height: 31px;
+        border-bottom: 1px solid var(--boot-stroke);
+        background: var(--boot-bg);
+      }
+
+      .boot-list {
+        flex: 1;
+        padding: 12px;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div class="boot-shell" aria-hidden="true">
+        <div class="boot-bar"></div>
+        <div class="boot-tabs"></div>
+        <div class="boot-list"></div>
+      </div>
+    </div>
     <script type="module" src="./sidepanel/main.ts"></script>
   </body>
 </html>

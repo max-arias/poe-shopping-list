@@ -1,6 +1,6 @@
 import { storage } from "wxt/utils/storage";
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import { type PurchaseHistoryItem } from "@/types";
+import { ref } from "vue";
+import type { PurchaseHistoryItem } from "@/types";
 
 const purchaseHistoryItem = storage.defineItem<PurchaseHistoryItem[]>("local:purchaseHistory", {
   fallback: [],
@@ -33,26 +33,31 @@ function toPlain<T>(val: T[]): T[] {
   return JSON.parse(JSON.stringify(val));
 }
 
-export function usePurchaseHistory() {
-  const items = ref<PurchaseHistoryItem[]>([]);
-  const isLoaded = ref(false);
+const items = ref<PurchaseHistoryItem[]>([]);
+const isLoaded = ref(false);
+let initialized = false;
 
-  onMounted(async () => {
-    const stored = await purchaseHistoryItem.getValue();
+function ensureInitialized() {
+  if (initialized) return;
+  initialized = true;
+
+  void purchaseHistoryItem.getValue().then(async (stored) => {
     items.value = toArray(stored);
     isLoaded.value = true;
 
-    // If storage had corrupted data, fix it now
     if (!Array.isArray(stored) && stored != null) {
       await purchaseHistoryItem.setValue(toPlain(items.value));
     }
-
-    const unwatch = purchaseHistoryItem.watch((val) => {
-      items.value = toArray(val);
-    });
-
-    onBeforeUnmount(unwatch);
   });
+
+  purchaseHistoryItem.watch((val) => {
+    items.value = toArray(val);
+    isLoaded.value = true;
+  });
+}
+
+export function usePurchaseHistory() {
+  ensureInitialized();
 
   async function removeItem(id: string) {
     const updated = items.value.filter((i) => i.id !== id);

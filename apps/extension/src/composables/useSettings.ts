@@ -1,23 +1,32 @@
 import { storage } from "wxt/utils/storage";
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref } from "vue";
 import { type Settings, DEFAULT_SETTINGS } from "@/types";
 
 const settingsItem = storage.defineItem<Settings>("local:settings:v1", {
   fallback: DEFAULT_SETTINGS,
 });
 
-export function useSettings() {
-  const settings = ref<Settings>({ ...DEFAULT_SETTINGS });
-  const isLoaded = ref(false);
+const settings = ref<Settings>({ ...DEFAULT_SETTINGS });
+const isLoaded = ref(false);
+let initialized = false;
 
-  onMounted(async () => {
-    settings.value = await settingsItem.getValue();
+function ensureInitialized() {
+  if (initialized) return;
+  initialized = true;
+
+  void settingsItem.getValue().then((value) => {
+    settings.value = value;
     isLoaded.value = true;
-    const unwatch = settingsItem.watch((val) => {
-      if (val) settings.value = val;
-    });
-    onUnmounted(unwatch);
   });
+
+  settingsItem.watch((val) => {
+    if (val) settings.value = val;
+    isLoaded.value = true;
+  });
+}
+
+export function useSettings() {
+  ensureInitialized();
 
   async function updateSettings(patch: Partial<Settings>) {
     const current = await settingsItem.getValue();

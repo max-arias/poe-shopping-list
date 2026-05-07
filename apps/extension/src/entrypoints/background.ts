@@ -8,6 +8,34 @@ export default defineBackground(() => {
   // @ts-expect-error — chrome.sidePanel is MV3-only
   chrome.sidePanel?.setPanelBehavior?.({ openPanelOnActionClick: true });
 
+  browser.runtime.onConnect.addListener((port) => {
+    if (port.name !== "poe-sl-sidepanel-visibility") {
+      return;
+    }
+
+    let activeTabId: number | null = null;
+
+    port.onMessage.addListener((message: { tabId?: number; open?: boolean }) => {
+      if (typeof message.tabId !== "number") {
+        return;
+      }
+
+      activeTabId = message.tabId;
+
+      if (typeof message.open === "boolean") {
+        sendMessage("csFabVisibilitySet", { visible: !message.open }, activeTabId).catch(() => {});
+      }
+    });
+
+    port.onDisconnect.addListener(() => {
+      if (typeof activeTabId !== "number") {
+        return;
+      }
+
+      sendMessage("csFabVisibilitySet", { visible: true }, activeTabId).catch(() => {});
+    });
+  });
+
   // Sync side panel enabled state for all already-open tabs on service worker start
   browser.runtime.onInstalled.addListener(() => initSidePanelForCurrentTabs());
   browser.runtime.onStartup.addListener(() => initSidePanelForCurrentTabs());
@@ -99,6 +127,13 @@ export default defineBackground(() => {
     const tabId = await getActiveTabId();
     if (!tabId) return { text: "" };
     return await sendMessage("csSearchBarGet", undefined, tabId);
+  });
+
+  // SP reports open/close state → relay FAB visibility to active tab's CS
+  onMessage("spSidepanelVisibilitySet", async (message) => {
+    const tabId = await getActiveTabId();
+    if (!tabId) return;
+    await sendMessage("csFabVisibilitySet", { visible: !message.data.open }, tabId).catch(() => {});
   });
 });
 

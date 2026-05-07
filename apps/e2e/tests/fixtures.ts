@@ -107,3 +107,7 @@ export async function openSidepanel(page: Page, context: BrowserContext): Promis
       "Ensure PW_CHROMIUM_ATTACH_TO_OTHER=1 is set and chrome.sidePanel.open() is working.",
   );
 }
+
+export async function closeSidepanel(sp: Page): Promise<void> {
+  await sp.close();
+}
