@@ -4,9 +4,26 @@ import type { PurchaseHistoryItem, VisitHistoryItem } from "../types";
 export default defineBackground(() => {
   // ── Side panel activation ─────────────────────────────────────────────────
 
-  // Let Chrome open the panel automatically on icon click
+  // Handle icon clicks ourselves so we can redirect non-trade pages to PoE Trade.
   // @ts-expect-error — chrome.sidePanel is MV3-only
-  chrome.sidePanel?.setPanelBehavior?.({ openPanelOnActionClick: true });
+  chrome.sidePanel?.setPanelBehavior?.({ openPanelOnActionClick: false });
+
+  browser.action.onClicked.addListener(async (tab: { id?: number; url?: string }) => {
+    const tabId = tab.id;
+
+    if (tabId && isTradeUrl(tab.url)) {
+      // @ts-expect-error — chrome.sidePanel is MV3-only
+      await chrome.sidePanel?.open?.({ tabId });
+      return;
+    }
+
+    if (tabId) {
+      await browser.tabs.update(tabId, { url: TRADE_HOME_URL });
+      return;
+    }
+
+    await browser.tabs.create({ url: TRADE_HOME_URL });
+  });
 
   browser.runtime.onConnect.addListener((port) => {
     if (port.name !== "poe-sl-sidepanel-visibility") {
@@ -149,11 +166,16 @@ export default defineBackground(() => {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+const TRADE_HOME_URL = "https://www.pathofexile.com/trade";
+
+function isTradeUrl(url?: string): boolean {
+  if (!url) return false;
+  return url.includes("pathofexile.com/trade");
+}
+
 function isSidePanelUrl(url?: string): boolean {
   if (!url) return false;
-  return (
-    url.includes("pathofexile.com/trade") || url.includes("pobb.in/") || url.includes("maxroll.gg/")
-  );
+  return isTradeUrl(url) || url.includes("pobb.in/") || url.includes("maxroll.gg/");
 }
 
 async function initSidePanelForCurrentTabs(): Promise<void> {

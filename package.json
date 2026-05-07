@@ -11,11 +11,12 @@
     "ext:zip": "vp run --filter @poe-sl/extension zip",
     "ext:zip:firefox": "vp run --filter @poe-sl/extension zip:firefox",
     "ext:check": "vp run --filter @poe-sl/extension check",
+    "ext:typecheck": "vp run --filter @poe-sl/extension typecheck",
     "e2e": "npm run ext:build && cd apps/e2e && npm test",
     "e2e:ui": "npm run ext:build && cd apps/e2e && npm run test:ui",
     "lint": "biome check .",
     "format": "biome format --write .",
-    "typecheck": "tsc --build"
+    "typecheck": "npm run ext:typecheck"
   },
   "dependencies": {
     "@webext-core/messaging": "^2.3.0"

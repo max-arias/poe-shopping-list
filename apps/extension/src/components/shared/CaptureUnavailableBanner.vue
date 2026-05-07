@@ -15,7 +15,7 @@
       </p>
     </div>
     <button
-      class="text-[11px] font-semibold text-warn-ink bg-transparent border-0 cursor-pointer shrink-0 whitespace-nowrap"
+      class="motion-button text-[11px] font-semibold text-warn-ink bg-transparent border-0 cursor-pointer shrink-0 whitespace-nowrap"
       aria-label="Check for updates"
     >
       Check updates

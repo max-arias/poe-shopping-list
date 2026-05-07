@@ -118,7 +118,7 @@ watchEffect(() => {
         @click="ui.setTab('mine')"
         role="tab"
         :aria-selected="ui.activeTab === 'mine'"
-        class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
+        class="motion-button flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
         :class="
           ui.activeTab === 'mine'
             ? 'text-accent-ink-str border-b-2 border-accent'
@@ -131,7 +131,7 @@ watchEffect(() => {
         @click="ui.setTab('history')"
         role="tab"
         :aria-selected="ui.activeTab === 'history'"
-        class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
+        class="motion-button flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
         :class="
           ui.activeTab === 'history'
             ? 'text-accent-ink-str border-b-2 border-accent'
@@ -143,16 +143,22 @@ watchEffect(() => {
     </div>
 
     <!-- Capture unavailable banner -->
-    <CaptureUnavailableBanner v-if="ui.captureUnavailable" />
+    <Transition name="banner-drop">
+      <CaptureUnavailableBanner v-if="ui.captureUnavailable" />
+    </Transition>
 
-    <!-- Detail panel -->
-    <DetailPanel v-if="ui.currentView.type === 'detail'" />
+    <Transition name="view-slide" mode="out-in">
+      <!-- Detail panel -->
+      <DetailPanel v-if="ui.currentView.type === 'detail'" key="detail" />
 
-    <!-- Tabs view -->
-    <div v-else role="tabpanel" class="flex-1 min-h-0 flex flex-col overflow-hidden">
-      <MineTab v-if="ui.activeTab === 'mine'" />
-      <HistoryTab v-else />
-    </div>
+      <!-- Tabs view -->
+      <div v-else key="tabs" role="tabpanel" class="flex-1 min-h-0 flex flex-col overflow-hidden">
+        <Transition name="subview-slide" mode="out-in">
+          <MineTab v-if="ui.activeTab === 'mine'" key="mine" />
+          <HistoryTab v-else key="history" />
+        </Transition>
+      </div>
+    </Transition>
 
     <!-- Overlays -->
     <SaveModal v-if="ui.saveModalOpen" />

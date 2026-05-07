@@ -20,7 +20,7 @@ const emit = defineEmits<{ openSettings: [] }>();
     </span>
     <button
       @click="emit('openSettings')"
-      class="w-[22px] h-[22px] flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border-0 rounded-sm hover:bg-block"
+      class="motion-button w-[22px] h-[22px] flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border-0 rounded-sm hover:bg-block"
       title="Settings"
       aria-label="Settings"
     >

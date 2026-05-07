@@ -24,8 +24,8 @@ async function openTrade(url: string) {
 
 <template>
   <div
-    class="flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft"
-    :class="item.completed ? 'opacity-60' : ''"
+    class="motion-row flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft"
+    :class="item.completed ? 'opacity-60 bg-accent-soft/20' : ''"
   >
     <!-- Checkbox -->
     <button
@@ -33,10 +33,12 @@ async function openTrade(url: string) {
       role="checkbox"
       :aria-checked="item.completed"
       aria-label="Mark as acquired"
-      class="w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
+      class="motion-check-toggle w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
       :class="item.completed ? 'bg-accent border-accent-edge' : ''"
     >
-      <span v-if="item.completed" class="text-accent-ink text-[10px] font-bold leading-none"
+      <span
+        v-if="item.completed"
+        class="motion-checkmark text-accent-ink text-[10px] font-bold leading-none"
         >✓</span
       >
     </button>
@@ -47,7 +49,7 @@ async function openTrade(url: string) {
         v-if="item.tradeUrl"
         @click.stop="openTrade(item.tradeUrl!)"
         :aria-label="item.name"
-        class="text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full"
+        class="motion-button text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full"
         :class="item.completed ? 'line-through' : ''"
       >
         {{ item.name }}

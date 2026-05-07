@@ -24,7 +24,7 @@ async function openSearch(url: string) {
 </script>
 
 <template>
-  <div class="flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft">
+  <div class="motion-row flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft">
     <!-- Checkbox for mass selection -->
     <input
       type="checkbox"
@@ -37,7 +37,7 @@ async function openSearch(url: string) {
     <div class="flex-1 min-w-0">
       <button
         @click.stop="openSearch(item.searchUrl)"
-        class="text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full block"
+        class="motion-button text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full block"
       >
         {{ item.name }}
       </button>

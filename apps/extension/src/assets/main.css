@@ -48,4 +48,198 @@
       opacity: 0;
     }
   }
+
+  @keyframes check-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.65);
+    }
+
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+@layer components {
+  .motion-button {
+    transition:
+      transform var(--motion-fast) var(--ease-out-quart),
+      background-color var(--motion-fast) var(--ease-out-quart),
+      border-color var(--motion-fast) var(--ease-out-quart),
+      color var(--motion-fast) var(--ease-out-quart),
+      opacity var(--motion-fast) var(--ease-out-quart),
+      box-shadow var(--motion-fast) var(--ease-out-quart);
+  }
+
+  .motion-button:hover:not(:disabled) {
+    filter: brightness(1.03);
+  }
+
+  .motion-button:active:not(:disabled) {
+    transform: scale(0.985);
+  }
+
+  .motion-overlay {
+    transition: background-color var(--motion-base) var(--ease-out-quart);
+  }
+
+  .motion-sheet,
+  .motion-dialog,
+  .motion-popover,
+  .motion-menu,
+  .motion-pane,
+  .motion-inline {
+    transform-origin: center;
+  }
+
+  .motion-row {
+    transition:
+      opacity var(--motion-fast) var(--ease-out-quart),
+      background-color var(--motion-fast) var(--ease-out-quart),
+      color var(--motion-fast) var(--ease-out-quart);
+  }
+
+  .motion-check-toggle {
+    transition:
+      transform var(--motion-fast) var(--ease-out-quart),
+      background-color var(--motion-fast) var(--ease-out-quart),
+      border-color var(--motion-fast) var(--ease-out-quart),
+      box-shadow var(--motion-fast) var(--ease-out-quart);
+  }
+
+  .motion-check-toggle:active {
+    transform: scale(0.92);
+  }
+
+  .motion-checkmark {
+    animation: check-pop var(--motion-fast) var(--ease-out-expo);
+  }
+}
+
+.sheet-fade-enter-active,
+.sheet-fade-leave-active,
+.dialog-fade-enter-active,
+.dialog-fade-leave-active,
+.popover-fade-enter-active,
+.popover-fade-leave-active {
+  transition: opacity var(--motion-base) var(--ease-out-quart);
+}
+
+.sheet-fade-enter-active .motion-overlay,
+.sheet-fade-leave-active .motion-overlay,
+.dialog-fade-enter-active .motion-overlay,
+.dialog-fade-leave-active .motion-overlay,
+.popover-fade-enter-active .motion-overlay,
+.popover-fade-leave-active .motion-overlay {
+  transition: opacity var(--motion-base) var(--ease-out-quart);
+}
+
+.sheet-fade-enter-active .motion-sheet,
+.sheet-fade-leave-active .motion-sheet {
+  transition:
+    transform var(--motion-slow) var(--ease-out-expo),
+    opacity var(--motion-base) var(--ease-out-quart);
+}
+
+.dialog-fade-enter-active .motion-dialog,
+.dialog-fade-leave-active .motion-dialog {
+  transition:
+    transform var(--motion-base) var(--ease-out-quint),
+    opacity var(--motion-fast) var(--ease-out-quart);
+}
+
+.popover-fade-enter-active .motion-popover,
+.popover-fade-leave-active .motion-popover,
+.popover-fade-enter-active .motion-menu,
+.popover-fade-leave-active .motion-menu {
+  transition:
+    transform var(--motion-base) var(--ease-out-quint),
+    opacity var(--motion-fast) var(--ease-out-quart);
+}
+
+.sheet-fade-enter-from,
+.sheet-fade-leave-to,
+.dialog-fade-enter-from,
+.dialog-fade-leave-to,
+.popover-fade-enter-from,
+.popover-fade-leave-to,
+.banner-drop-enter-from,
+.banner-drop-leave-to,
+.content-fade-enter-from,
+.content-fade-leave-to,
+.view-slide-enter-from,
+.view-slide-leave-to,
+.subview-slide-enter-from,
+.subview-slide-leave-to,
+.inline-expand-enter-from,
+.inline-expand-leave-to {
+  opacity: 0;
+}
+
+.sheet-fade-enter-from .motion-sheet,
+.sheet-fade-leave-to .motion-sheet {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.dialog-fade-enter-from .motion-dialog,
+.dialog-fade-leave-to .motion-dialog {
+  opacity: 0;
+  transform: translateY(10px) scale(0.985);
+}
+
+.popover-fade-enter-from .motion-popover,
+.popover-fade-leave-to .motion-popover,
+.popover-fade-enter-from .motion-menu,
+.popover-fade-leave-to .motion-menu {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.985);
+}
+
+.banner-drop-enter-active,
+.banner-drop-leave-active,
+.content-fade-enter-active,
+.content-fade-leave-active,
+.view-slide-enter-active,
+.view-slide-leave-active,
+.subview-slide-enter-active,
+.subview-slide-leave-active,
+.inline-expand-enter-active,
+.inline-expand-leave-active {
+  transition:
+    opacity var(--motion-base) var(--ease-out-quart),
+    transform var(--motion-base) var(--ease-out-expo);
+}
+
+.banner-drop-enter-from,
+.banner-drop-leave-to {
+  transform: translateY(-8px);
+}
+
+.view-slide-enter-from,
+.view-slide-leave-to {
+  transform: translateX(10px);
+}
+
+.subview-slide-enter-from,
+.subview-slide-leave-to {
+  transform: translateX(8px);
+}
+
+.inline-expand-enter-from,
+.inline-expand-leave-to {
+  transform: translateY(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

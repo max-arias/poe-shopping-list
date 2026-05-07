@@ -68,130 +68,132 @@ async function handleDelete() {
 </script>
 
 <template>
-  <div
-    ref="dialogRef"
-    class="absolute inset-0 bg-black/50 flex items-end z-20"
-    role="dialog"
-    aria-modal="true"
-    @keydown.escape="ui.closeEditSheet()"
-    @click.self="ui.closeEditSheet()"
-  >
+  <Transition name="sheet-fade" appear>
     <div
-      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
-      style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
+      ref="dialogRef"
+      class="motion-overlay absolute inset-0 bg-black/50 flex items-end z-20"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="ui.closeEditSheet()"
+      @click.self="ui.closeEditSheet()"
     >
-      <!-- Header -->
-      <div class="flex items-center">
-        <p class="text-[13px] font-semibold text-ink">Edit Item</p>
-        <div class="flex-1" />
-        <button
-          @click="ui.closeEditSheet()"
-          class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
-        >
-          ✕
-        </button>
-      </div>
-
-      <!-- Name field -->
-      <div>
-        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Name</p>
-        <input
-          v-model="name"
-          maxlength="120"
-          @keydown.enter="handleSave"
-          placeholder="Item name…"
-          aria-label="Item name"
-          class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink bg-bg"
-          autofocus
-        />
-      </div>
-
-      <!-- Trade URL field -->
-      <div>
-        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Trade URL</p>
-        <input
-          v-model="tradeUrl"
-          @keydown.enter="handleSave"
-          placeholder="https://pathofexile.com/trade/…"
-          aria-label="Trade URL"
-          class="w-full h-9 px-2.5 text-[13px] border border-stroke rounded-sm text-ink bg-bg"
-        />
-      </div>
-
-      <!-- Price section -->
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">Price</p>
+      <div
+        class="motion-sheet w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
+        style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
+      >
+        <!-- Header -->
+        <div class="flex items-center">
+          <p class="text-[13px] font-semibold text-ink">Edit Item</p>
+          <div class="flex-1" />
           <button
-            @click="handleRefresh"
-            :disabled="refreshing"
-            class="text-[10px] text-accent-ink-str cursor-pointer bg-transparent border-0 disabled:opacity-40"
+            @click="ui.closeEditSheet()"
+            class="motion-button text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
           >
-            {{ refreshing ? "Reading…" : "↻ Refresh from active tab" }}
+            ✕
           </button>
         </div>
-        <div
-          v-if="capture && capture.aggregates.sampleSize > 0"
-          class="border border-stroke rounded-sm p-2.5 grid grid-cols-3 gap-2 bg-surface"
-        >
-          <div
-            v-for="[label, val] in [
-              ['MIN', capture.aggregates.min],
-              ['MEDIAN', capture.aggregates.median],
-              ['AVG', capture.aggregates.avg],
-            ]"
-            :key="label"
-            class="flex flex-col gap-0.5"
-          >
-            <p class="text-[10px] text-ink-muted">{{ label }}</p>
-            <div class="flex items-baseline gap-1">
-              <span class="font-mono text-base font-semibold text-accent-ink-str">{{
-                fmt(val as number)
-              }}</span>
-              <span class="text-[10px] text-ink-muted">{{ capture.aggregates.currency }}</span>
-            </div>
+
+        <!-- Name field -->
+        <div>
+          <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Name</p>
+          <input
+            v-model="name"
+            maxlength="120"
+            @keydown.enter="handleSave"
+            placeholder="Item name…"
+            aria-label="Item name"
+            class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink bg-bg"
+            autofocus
+          />
+        </div>
+
+        <!-- Trade URL field -->
+        <div>
+          <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Trade URL</p>
+          <input
+            v-model="tradeUrl"
+            @keydown.enter="handleSave"
+            placeholder="https://pathofexile.com/trade/…"
+            aria-label="Trade URL"
+            class="w-full h-9 px-2.5 text-[13px] border border-stroke rounded-sm text-ink bg-bg"
+          />
+        </div>
+
+        <!-- Price section -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">Price</p>
+            <button
+              @click="handleRefresh"
+              :disabled="refreshing"
+              class="motion-button text-[10px] text-accent-ink-str cursor-pointer bg-transparent border-0 disabled:opacity-40"
+            >
+              {{ refreshing ? "Reading…" : "↻ Refresh from active tab" }}
+            </button>
           </div>
+          <Transition name="content-fade" mode="out-in">
+            <div v-if="capture && capture.aggregates.sampleSize > 0" key="capture">
+              <div class="border border-stroke rounded-sm p-2.5 grid grid-cols-3 gap-2 bg-surface">
+                <div
+                  v-for="[label, val] in [
+                    ['MIN', capture.aggregates.min],
+                    ['MEDIAN', capture.aggregates.median],
+                    ['AVG', capture.aggregates.avg],
+                  ]"
+                  :key="label"
+                  class="flex flex-col gap-0.5"
+                >
+                  <p class="text-[10px] text-ink-muted">{{ label }}</p>
+                  <div class="flex items-baseline gap-1">
+                    <span class="font-mono text-base font-semibold text-accent-ink-str">{{
+                      fmt(val as number)
+                    }}</span>
+                    <span class="text-[10px] text-ink-muted">{{
+                      capture.aggregates.currency
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-[10px] text-ink-muted mt-1">
+                {{ capture.aggregates.sampleSize }} listings captured · dominant currency:
+                {{ capture.aggregates.currency }}
+              </p>
+            </div>
+            <p v-else key="empty" class="text-[11px] text-ink-muted">No price data captured.</p>
+          </Transition>
         </div>
-        <p
-          v-if="capture && capture.aggregates.sampleSize > 0"
-          class="text-[10px] text-ink-muted mt-1"
-        >
-          {{ capture.aggregates.sampleSize }} listings captured · dominant currency:
-          {{ capture.aggregates.currency }}
-        </p>
-        <p v-else class="text-[11px] text-ink-muted">No price data captured.</p>
-      </div>
 
-      <!-- Save -->
-      <div class="flex gap-2">
-        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeEditSheet()" />
-        <BtnAccent label="Save" :disabled="!name.trim() || saving" @click="handleSave" />
-      </div>
-
-      <!-- Delete section -->
-      <div class="h-px bg-stroke-soft" />
-      <div v-if="!confirmingDelete">
-        <button
-          @click="confirmingDelete = true"
-          class="w-full h-8 text-xs font-medium text-destructive bg-transparent border border-destructive-edge rounded-sm cursor-pointer hover:bg-destructive-soft"
-        >
-          ✕ Delete item
-        </button>
-      </div>
-      <div v-else class="flex flex-col gap-2">
-        <p class="text-[11px] text-ink-muted text-center">
-          Remove "{{ item?.name }}"? This cannot be undone.
-        </p>
+        <!-- Save -->
         <div class="flex gap-2">
-          <BtnGhost label="Cancel" :full="true" size="md" @click="confirmingDelete = false" />
+          <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeEditSheet()" />
+          <BtnAccent label="Save" :disabled="!name.trim() || saving" @click="handleSave" />
+        </div>
+
+        <!-- Delete section -->
+        <div class="h-px bg-stroke-soft" />
+        <div v-if="!confirmingDelete">
           <button
-            @click="handleDelete"
-            class="flex-1 h-8 text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
+            @click="confirmingDelete = true"
+            class="motion-button w-full h-8 text-xs font-medium text-destructive bg-transparent border border-destructive-edge rounded-sm cursor-pointer hover:bg-destructive-soft"
           >
-            Delete
+            ✕ Delete item
           </button>
+        </div>
+        <div v-else class="flex flex-col gap-2">
+          <p class="text-[11px] text-ink-muted text-center">
+            Remove "{{ item?.name }}"? This cannot be undone.
+          </p>
+          <div class="flex gap-2">
+            <BtnGhost label="Cancel" :full="true" size="md" @click="confirmingDelete = false" />
+            <button
+              @click="handleDelete"
+              class="flex-1 h-8 text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>

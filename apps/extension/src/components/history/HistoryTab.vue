@@ -130,7 +130,7 @@ watch(changingPriceItemId, async (val) => {
     <div class="flex border-b border-stroke-soft bg-surface shrink-0 px-2 pt-2">
       <button
         @click="activeSubtab = 'visits'"
-        class="flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent transition-colors"
+        class="motion-button flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent transition-colors"
         :class="
           activeSubtab === 'visits'
             ? 'border-stroke bg-bg text-accent-ink-str'
@@ -141,7 +141,7 @@ watch(changingPriceItemId, async (val) => {
       </button>
       <button
         @click="activeSubtab = 'purchases'"
-        class="flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent transition-colors"
+        class="motion-button flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent transition-colors"
         :class="
           activeSubtab === 'purchases'
             ? 'border-stroke bg-bg text-accent-ink-str'
@@ -199,7 +199,7 @@ watch(changingPriceItemId, async (val) => {
         <button
           v-if="selectedIds.size > 0"
           @click="deleteSelected"
-          class="text-[11px] text-destructive hover:underline cursor-pointer bg-transparent border-0 px-0 py-0 font-medium"
+          class="motion-button text-[11px] text-destructive hover:underline cursor-pointer bg-transparent border-0 px-0 py-0 font-medium"
         >
           Delete selected
         </button>
@@ -207,107 +207,115 @@ watch(changingPriceItemId, async (val) => {
 
       <!-- Items list -->
       <div class="flex-1 overflow-auto relative" @click="ui.closeKebab()">
-        <div v-if="activeSubtab === 'visits'">
-          <HistoryVisitRow
-            v-for="item in visitItems"
-            :key="item.id"
-            :item="item"
-            @toggle-select="toggleSelect"
-          />
-        </div>
-        <div v-else>
-          <div v-for="item in items" :key="item.id" class="relative" @click.stop>
-            <HistoryItemRow :item="item" @toggle-select="toggleSelect" />
-            <HistoryKebabMenu
-              v-if="ui.kebabOpenItemId === item.id"
+        <Transition name="subview-slide" mode="out-in">
+          <div v-if="activeSubtab === 'visits'" key="visits">
+            <HistoryVisitRow
+              v-for="item in visitItems"
+              :key="item.id"
               :item="item"
-              @rename="startRename"
-              @change-price="startChangePrice"
+              @toggle-select="toggleSelect"
             />
           </div>
-        </div>
+          <div v-else key="purchases">
+            <div v-for="item in items" :key="item.id" class="relative" @click.stop>
+              <HistoryItemRow :item="item" @toggle-select="toggleSelect" />
+              <Transition name="popover-fade">
+                <HistoryKebabMenu
+                  v-if="ui.kebabOpenItemId === item.id"
+                  :item="item"
+                  @rename="startRename"
+                  @change-price="startChangePrice"
+                />
+              </Transition>
+            </div>
+          </div>
+        </Transition>
       </div>
     </template>
 
     <!-- Rename overlay -->
-    <div
-      v-if="renamingItemId"
-      ref="renameDialogRef"
-      class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
-      role="dialog"
-      aria-modal="true"
-      @keydown.escape="renamingItemId = null"
-      @click.self="renamingItemId = null"
-    >
+    <Transition name="dialog-fade">
       <div
-        class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
+        v-if="renamingItemId"
+        ref="renameDialogRef"
+        class="motion-overlay absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+        role="dialog"
+        aria-modal="true"
+        @keydown.escape="renamingItemId = null"
+        @click.self="renamingItemId = null"
       >
-        <p class="text-[13px] font-semibold text-ink">Rename item</p>
-        <input
-          v-model="renameValue"
-          aria-label="New name"
-          @keydown.enter="confirmRename"
-          @keydown.escape="renamingItemId = null"
-          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
-          autofocus
-        />
-        <div class="flex gap-2">
-          <BtnGhost label="Cancel" :full="true" size="sm" @click="renamingItemId = null" />
-          <button
-            @click="confirmRename"
-            class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Change price overlay -->
-    <div
-      v-if="changingPriceItemId"
-      ref="priceDialogRef"
-      class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
-      role="dialog"
-      aria-modal="true"
-      @keydown.escape="changingPriceItemId = null"
-      @click.self="changingPriceItemId = null"
-    >
-      <div
-        class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
-      >
-        <p class="text-[13px] font-semibold text-ink">Change price</p>
-        <div class="flex gap-2">
+        <div
+          class="motion-dialog bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
+        >
+          <p class="text-[13px] font-semibold text-ink">Rename item</p>
           <input
-            v-model="priceValue"
-            type="number"
-            min="0"
-            step="0.1"
-            aria-label="Price value"
-            @keydown.enter="confirmChangePrice"
-            @keydown.escape="changingPriceItemId = null"
-            class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
+            v-model="renameValue"
+            aria-label="New name"
+            @keydown.enter="confirmRename"
+            @keydown.escape="renamingItemId = null"
+            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
             autofocus
           />
-          <input
-            v-model="priceCurrency"
-            aria-label="Currency"
-            @keydown.enter="confirmChangePrice"
-            @keydown.escape="changingPriceItemId = null"
-            class="w-20 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
-            placeholder="chaos"
-          />
-        </div>
-        <div class="flex gap-2">
-          <BtnGhost label="Cancel" :full="true" size="sm" @click="changingPriceItemId = null" />
-          <button
-            @click="confirmChangePrice"
-            class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
-          >
-            Save
-          </button>
+          <div class="flex gap-2">
+            <BtnGhost label="Cancel" :full="true" size="sm" @click="renamingItemId = null" />
+            <button
+              @click="confirmRename"
+              class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
+            >
+              Save
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Transition>
+
+    <!-- Change price overlay -->
+    <Transition name="dialog-fade">
+      <div
+        v-if="changingPriceItemId"
+        ref="priceDialogRef"
+        class="motion-overlay absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+        role="dialog"
+        aria-modal="true"
+        @keydown.escape="changingPriceItemId = null"
+        @click.self="changingPriceItemId = null"
+      >
+        <div
+          class="motion-dialog bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
+        >
+          <p class="text-[13px] font-semibold text-ink">Change price</p>
+          <div class="flex gap-2">
+            <input
+              v-model="priceValue"
+              type="number"
+              min="0"
+              step="0.1"
+              aria-label="Price value"
+              @keydown.enter="confirmChangePrice"
+              @keydown.escape="changingPriceItemId = null"
+              class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
+              autofocus
+            />
+            <input
+              v-model="priceCurrency"
+              aria-label="Currency"
+              @keydown.enter="confirmChangePrice"
+              @keydown.escape="changingPriceItemId = null"
+              class="w-20 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
+              placeholder="chaos"
+            />
+          </div>
+          <div class="flex gap-2">
+            <BtnGhost label="Cancel" :full="true" size="sm" @click="changingPriceItemId = null" />
+            <button
+              @click="confirmChangePrice"
+              class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
