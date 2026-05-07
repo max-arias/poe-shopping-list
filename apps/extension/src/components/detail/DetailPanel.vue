@@ -134,6 +134,14 @@ async function saveLinkBuild() {
       <p class="text-[13px] font-semibold text-ink flex-1 truncate">
         {{ draft?.name ?? "My List" }}
       </p>
+      <button
+        @click="ui.toggleSettings()"
+        class="motion-button w-7 h-7 flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border border-transparent rounded-sm hover:bg-surface hover:text-ink"
+        title="Settings"
+        aria-label="Settings"
+      >
+        ⚙
+      </button>
     </div>
 
     <!-- Items -->
@@ -258,7 +266,7 @@ async function saveLinkBuild() {
             <BtnGhost label="Cancel" :full="true" size="md" @click="showDeleteConfirm = false" />
             <button
               @click="confirmDelete"
-              class="flex-1 h-8 text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
+              class="flex-1 h-8 px-2.5 inline-flex items-center justify-center text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
             >
               Delete
             </button>

@@ -5,7 +5,6 @@ import { useSettings } from "../composables/useSettings";
 import { useDraftList } from "../composables/useDraftList";
 import { storage } from "wxt/utils/storage";
 import { sendMessage } from "../utils/messages";
-import ChromeBar from "./layout/ChromeBar.vue";
 import MineTab from "./mine/MineTab.vue";
 import HistoryTab from "./history/HistoryTab.vue";
 import DetailPanel from "./detail/DetailPanel.vue";
@@ -105,40 +104,46 @@ watchEffect(() => {
 
 <template>
   <div class="h-full flex flex-col bg-bg text-ink font-sans overflow-hidden relative">
-    <!-- Top chrome -->
-    <ChromeBar @open-settings="ui.toggleSettings()" />
-
     <!-- Tab bar -->
     <div
       v-if="ui.currentView.type === 'tabs'"
-      role="tablist"
-      class="flex border-b border-stroke shrink-0"
+      class="flex items-center gap-2 border-b border-stroke shrink-0 px-2"
     >
+      <div role="tablist" class="flex flex-1">
+        <button
+          @click="ui.setTab('mine')"
+          role="tab"
+          :aria-selected="ui.activeTab === 'mine'"
+          class="motion-button flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
+          :class="
+            ui.activeTab === 'mine'
+              ? 'text-accent-ink-str border-b-2 border-accent'
+              : 'text-ink-muted hover:text-ink'
+          "
+        >
+          My Lists
+        </button>
+        <button
+          @click="ui.setTab('history')"
+          role="tab"
+          :aria-selected="ui.activeTab === 'history'"
+          class="motion-button flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
+          :class="
+            ui.activeTab === 'history'
+              ? 'text-accent-ink-str border-b-2 border-accent'
+              : 'text-ink-muted hover:text-ink'
+          "
+        >
+          History
+        </button>
+      </div>
       <button
-        @click="ui.setTab('mine')"
-        role="tab"
-        :aria-selected="ui.activeTab === 'mine'"
-        class="motion-button flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
-        :class="
-          ui.activeTab === 'mine'
-            ? 'text-accent-ink-str border-b-2 border-accent'
-            : 'text-ink-muted hover:text-ink'
-        "
+        @click="ui.toggleSettings()"
+        class="motion-button w-7 h-7 flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border border-transparent rounded-sm hover:bg-surface hover:text-ink"
+        title="Settings"
+        aria-label="Settings"
       >
-        My Lists
-      </button>
-      <button
-        @click="ui.setTab('history')"
-        role="tab"
-        :aria-selected="ui.activeTab === 'history'"
-        class="motion-button flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0 transition-colors"
-        :class="
-          ui.activeTab === 'history'
-            ? 'text-accent-ink-str border-b-2 border-accent'
-            : 'text-ink-muted hover:text-ink'
-        "
-      >
-        History
+        ⚙
       </button>
     </div>
 

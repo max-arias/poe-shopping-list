@@ -187,7 +187,7 @@ async function handleDelete() {
             <BtnGhost label="Cancel" :full="true" size="md" @click="confirmingDelete = false" />
             <button
               @click="handleDelete"
-              class="flex-1 h-8 text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
+              class="flex-1 h-8 px-2.5 inline-flex items-center justify-center text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
             >
               Delete
             </button>
