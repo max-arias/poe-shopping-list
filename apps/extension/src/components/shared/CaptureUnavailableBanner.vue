@@ -1,7 +1,4 @@
-<script setup lang="ts">
-import { motion } from "motion-v";
-import { subtleButtonMotionProps } from "../../utils/motion";
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div
@@ -19,12 +16,11 @@ import { subtleButtonMotionProps } from "../../utils/motion";
         Selectors may be out of date. You can still save by name.
       </p>
     </div>
-    <motion.button
-      v-bind="subtleButtonMotionProps"
+    <button
       class="text-[11px] font-semibold text-warn-ink bg-transparent border-0 cursor-pointer shrink-0 whitespace-nowrap"
       aria-label="Check for updates"
     >
       Check updates
-    </motion.button>
+    </button>
   </div>
 </template>

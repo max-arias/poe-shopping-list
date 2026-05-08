@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { motion } from "motion-v";
 import type { PurchaseHistoryItem } from "@/types";
 import { useUiStore } from "../../stores/ui";
 import { useSettings } from "../../composables/useSettings";
-import { buttonMotionProps, subtleButtonMotionProps } from "../../utils/motion";
 
 const { item } = defineProps<{ item: PurchaseHistoryItem }>();
 const emit = defineEmits<{ "toggle-select": [id: string] }>();
@@ -35,13 +33,12 @@ async function openSearch(url: string) {
 
     <!-- Name + base -->
     <div class="flex-1 min-w-0">
-      <motion.button
+      <button
         @click.stop="openSearch(item.searchUrl)"
-        v-bind="buttonMotionProps"
         class="text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full block"
       >
         {{ item.name }}
-      </motion.button>
+      </button>
       <span v-if="item.base" class="text-[10px] text-ink-muted block truncate">
         {{ item.base }}
       </span>
@@ -54,12 +51,11 @@ async function openSearch(url: string) {
     </span>
 
     <!-- Kebab -->
-    <motion.button
+    <button
       @click.stop="ui.toggleKebab(item.id)"
-      v-bind="subtleButtonMotionProps"
       class="text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
     >
       ⋯
-    </motion.button>
+    </button>
   </div>
 </template>

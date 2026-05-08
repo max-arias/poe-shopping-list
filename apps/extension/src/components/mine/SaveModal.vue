@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { motion } from "motion-v";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
@@ -9,7 +8,6 @@ import Pill from "../shared/Pill.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
-import { overlayMotionProps, sheetMotionProps, subtleButtonMotionProps } from "../../utils/motion";
 
 const ui = useUiStore();
 const { draft, addItem } = useDraftList();
@@ -73,30 +71,25 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
 </script>
 
 <template>
-  <motion.div
+  <div
     ref="dialogRef"
-    v-bind="overlayMotionProps"
     class="absolute inset-0 bg-black/50 flex items-end z-20"
     role="dialog"
     aria-modal="true"
     @keydown.escape="ui.closeSaveModal()"
     @click.self="ui.closeSaveModal()"
   >
-    <motion.div
-      v-bind="sheetMotionProps"
-      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 shadow-panel"
-    >
+    <div class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 shadow-panel">
       <!-- Header -->
       <div class="flex items-center">
         <p class="text-[13px] font-semibold text-ink">Save Search</p>
         <div class="flex-1" />
-        <motion.button
+        <button
           @click="ui.closeSaveModal()"
-          v-bind="subtleButtonMotionProps"
           class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
         >
           ✕
-        </motion.button>
+        </button>
       </div>
 
       <!-- Name field -->
@@ -130,36 +123,34 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
 
       <!-- Price preview -->
       <div v-if="loadingCapture" class="text-[11px] text-ink-muted text-center py-2">
-          Reading prices…
+        Reading prices…
       </div>
       <div v-else-if="capture && capture.aggregates.sampleSize > 0">
-          <div class="border border-stroke rounded-sm p-2.5 grid grid-cols-3 gap-2 bg-surface">
-            <div
-              v-for="[label, val] in [
-                ['MIN', capture.aggregates.min],
-                ['MEDIAN', capture.aggregates.median],
-                ['AVG', capture.aggregates.avg],
-              ]"
-              :key="label"
-              class="flex flex-col gap-0.5"
-            >
-              <p class="text-[10px] text-ink-muted">{{ label }}</p>
-              <div class="flex items-baseline gap-1">
-                <span class="font-mono text-base font-semibold text-accent-ink-str">{{
-                  fmt(val as number)
-                }}</span>
-                <span class="text-[10px] text-ink-muted">{{ capture.aggregates.currency }}</span>
-              </div>
+        <div class="border border-stroke rounded-sm p-2.5 grid grid-cols-3 gap-2 bg-surface">
+          <div
+            v-for="[label, val] in [
+              ['MIN', capture.aggregates.min],
+              ['MEDIAN', capture.aggregates.median],
+              ['AVG', capture.aggregates.avg],
+            ]"
+            :key="label"
+            class="flex flex-col gap-0.5"
+          >
+            <p class="text-[10px] text-ink-muted">{{ label }}</p>
+            <div class="flex items-baseline gap-1">
+              <span class="font-mono text-base font-semibold text-accent-ink-str">{{
+                fmt(val as number)
+              }}</span>
+              <span class="text-[10px] text-ink-muted">{{ capture.aggregates.currency }}</span>
             </div>
           </div>
-          <p class="text-[10px] text-ink-muted -mt-1">
-            {{ capture.aggregates.sampleSize }} listings captured · dominant currency:
-            {{ capture.aggregates.currency }}
-          </p>
+        </div>
+        <p class="text-[10px] text-ink-muted -mt-1">
+          {{ capture.aggregates.sampleSize }} listings captured · dominant currency:
+          {{ capture.aggregates.currency }}
+        </p>
       </div>
-      <p v-else class="text-[10px] text-ink-muted">
-          No price data — saving name only.
-      </p>
+      <p v-else class="text-[10px] text-ink-muted">No price data — saving name only.</p>
 
       <!-- Actions -->
       <div class="flex gap-2 mt-1">
@@ -170,6 +161,6 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
           @click="handleSave"
         />
       </div>
-    </motion.div>
-  </motion.div>
+    </div>
+  </div>
 </template>

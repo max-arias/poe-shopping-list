@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { AnimatePresence, motion } from "motion-v";
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { useUiStore } from "../../stores/ui";
@@ -10,7 +9,6 @@ import KebabMenu from "../mine/KebabMenu.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 import Button from "../shared/Button.vue";
-import { dialogMotionProps, overlayMotionProps } from "../../utils/motion";
 
 const ui = useUiStore();
 const { draft, unmarkAll, deleteDraft, updateCapture, setBuildInfo } = useDraftList();
@@ -154,9 +152,7 @@ async function saveLinkBuild() {
     <div class="flex-1 overflow-auto relative" @click="ui.closeKebab()">
       <div v-for="item in draft?.items ?? []" :key="item.id" class="relative" @click.stop>
         <ItemRow :item="item" />
-        <AnimatePresence>
-          <KebabMenu v-if="ui.kebabOpenItemId === item.id" :item="item" />
-        </AnimatePresence>
+        <KebabMenu v-if="ui.kebabOpenItemId === item.id" :item="item" />
       </div>
 
       <div
@@ -184,193 +180,179 @@ async function saveLinkBuild() {
     </div>
 
     <!-- Unmark confirm -->
-    <AnimatePresence>
-      <motion.div
-        v-if="showUnmarkConfirm"
-        key="unmark-confirm"
-        ref="unmarkDialogRef"
-        v-bind="overlayMotionProps"
-        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
-        role="dialog"
-        aria-modal="true"
-        @keydown.escape="showUnmarkConfirm = false"
-        @click.self="showUnmarkConfirm = false"
+    <div
+      v-if="showUnmarkConfirm"
+      key="unmark-confirm"
+      ref="unmarkDialogRef"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="showUnmarkConfirm = false"
+      @click.self="showUnmarkConfirm = false"
+    >
+      <div
+        class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
       >
-        <motion.div
-          v-bind="dialogMotionProps"
-          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
-        >
-          <p class="text-[13px] font-semibold text-ink">More options</p>
-          <BtnGhost
-            label="↻ Unmark all items"
-            :full="true"
-            size="md"
-            @click="
-              showUnmarkConfirm = false;
-              confirmUnmark();
-            "
-          />
-          <BtnGhost
-            label="↗ Link build URL"
-            :full="true"
-            size="md"
-            @click="
-              showUnmarkConfirm = false;
-              openLinkBuild();
-            "
-          />
-          <BtnGhost
-            label="✕ Delete this list"
-            :full="true"
-            size="md"
-            class="text-destructive"
-            @click="
-              showUnmarkConfirm = false;
-              showDeleteConfirm = true;
-            "
-          />
-          <BtnGhost
-            label="↑ Export list"
-            :full="true"
-            size="md"
-            @click="
-              showUnmarkConfirm = false;
-              ui.openExportSheet();
-            "
-          />
-          <BtnGhost
-            label="↓ Import list"
-            :full="true"
-            size="md"
-            @click="
-              showUnmarkConfirm = false;
-              ui.openImportSheet();
-            "
-          />
-          <BtnGhost label="Cancel" :full="true" size="md" @click="showUnmarkConfirm = false" />
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        <p class="text-[13px] font-semibold text-ink">More options</p>
+        <BtnGhost
+          label="↻ Unmark all items"
+          :full="true"
+          size="md"
+          @click="
+            showUnmarkConfirm = false;
+            confirmUnmark();
+          "
+        />
+        <BtnGhost
+          label="↗ Link build URL"
+          :full="true"
+          size="md"
+          @click="
+            showUnmarkConfirm = false;
+            openLinkBuild();
+          "
+        />
+        <BtnGhost
+          label="✕ Delete this list"
+          :full="true"
+          size="md"
+          class="text-destructive"
+          @click="
+            showUnmarkConfirm = false;
+            showDeleteConfirm = true;
+          "
+        />
+        <BtnGhost
+          label="↑ Export list"
+          :full="true"
+          size="md"
+          @click="
+            showUnmarkConfirm = false;
+            ui.openExportSheet();
+          "
+        />
+        <BtnGhost
+          label="↓ Import list"
+          :full="true"
+          size="md"
+          @click="
+            showUnmarkConfirm = false;
+            ui.openImportSheet();
+          "
+        />
+        <BtnGhost label="Cancel" :full="true" size="md" @click="showUnmarkConfirm = false" />
+      </div>
+    </div>
 
     <!-- Delete confirm -->
-    <AnimatePresence>
-      <motion.div
-        v-if="showDeleteConfirm"
-        key="delete-confirm"
-        ref="deleteDialogRef"
-        v-bind="overlayMotionProps"
-        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
-        role="dialog"
-        aria-modal="true"
-        @keydown.escape="showDeleteConfirm = false"
-        @click.self="showDeleteConfirm = false"
+    <div
+      v-if="showDeleteConfirm"
+      key="delete-confirm"
+      ref="deleteDialogRef"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="showDeleteConfirm = false"
+      @click.self="showDeleteConfirm = false"
+    >
+      <div
+        class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
       >
-        <motion.div
-          v-bind="dialogMotionProps"
-          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
-        >
-          <p class="text-[13px] font-semibold text-ink">Delete "{{ draft?.name }}"?</p>
-          <p class="text-[11px] text-ink-muted">
-            {{ draft?.items.length ?? 0 }} item{{ (draft?.items.length ?? 0) !== 1 ? "s" : "" }}
-            will be permanently removed. This cannot be undone.
-          </p>
-          <div class="flex gap-2">
-            <BtnGhost label="Cancel" :full="true" size="md" @click="showDeleteConfirm = false" />
-            <Button variant="destructive" :full="true" size="md" @click="confirmDelete">
-              Delete
-            </Button>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        <p class="text-[13px] font-semibold text-ink">Delete "{{ draft?.name }}"?</p>
+        <p class="text-[11px] text-ink-muted">
+          {{ draft?.items.length ?? 0 }} item{{ (draft?.items.length ?? 0) !== 1 ? "s" : "" }}
+          will be permanently removed. This cannot be undone.
+        </p>
+        <div class="flex gap-2">
+          <BtnGhost label="Cancel" :full="true" size="md" @click="showDeleteConfirm = false" />
+          <Button variant="destructive" :full="true" size="md" @click="confirmDelete">
+            Delete
+          </Button>
+        </div>
+      </div>
+    </div>
 
     <!-- Link build overlay -->
-    <AnimatePresence>
-      <motion.div
-        v-if="showLinkBuild"
-        key="link-build"
-        ref="linkDialogRef"
-        v-bind="overlayMotionProps"
-        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
-        role="dialog"
-        aria-modal="true"
-        @keydown.escape="showLinkBuild = false"
-        @click.self="showLinkBuild = false"
+    <div
+      v-if="showLinkBuild"
+      key="link-build"
+      ref="linkDialogRef"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="showLinkBuild = false"
+      @click.self="showLinkBuild = false"
+    >
+      <div
+        class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
       >
-        <motion.div
-          v-bind="dialogMotionProps"
-          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
-        >
-          <p class="text-[13px] font-semibold text-ink">Link build URL</p>
-          <div class="flex flex-col gap-1.5">
-            <label class="text-[10px] text-ink-muted uppercase tracking-wide">Build URL</label>
-            <input
-              v-model="linkBuildUrl"
-              type="url"
-              placeholder="pobb.in/… or maxroll.gg/…"
-              aria-label="Build URL"
-              class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent w-full"
-            />
-          </div>
+        <p class="text-[13px] font-semibold text-ink">Link build URL</p>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] text-ink-muted uppercase tracking-wide">Build URL</label>
+          <input
+            v-model="linkBuildUrl"
+            type="url"
+            placeholder="pobb.in/… or maxroll.gg/…"
+            aria-label="Build URL"
+            class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent w-full"
+          />
+        </div>
 
-          <!-- Associated / secondary URLs -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-[10px] text-ink-muted uppercase tracking-wide"
-              >Additional URLs</label
-            >
-            <div v-for="(_, i) in linkAssociatedUrls" :key="i" class="flex gap-1.5 items-center">
-              <input
-                v-model="linkAssociatedUrls[i]"
-                type="url"
-                placeholder="https://…"
-                aria-label="Additional URL"
-                class="flex-1 h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent"
-              />
-              <Button
-                variant="plainIcon"
-                size="iconSm"
-                @click="linkAssociatedUrls.splice(i, 1)"
-                aria-label="Remove URL"
-              >
-                ✕
-              </Button>
-            </div>
+        <!-- Associated / secondary URLs -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] text-ink-muted uppercase tracking-wide">Additional URLs</label>
+          <div v-for="(_, i) in linkAssociatedUrls" :key="i" class="flex gap-1.5 items-center">
+            <input
+              v-model="linkAssociatedUrls[i]"
+              type="url"
+              placeholder="https://…"
+              aria-label="Additional URL"
+              class="flex-1 h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent"
+            />
             <Button
-              variant="link"
-              size="link"
-              @click="linkAssociatedUrls.push('')"
-              class="self-start"
+              variant="plainIcon"
+              size="iconSm"
+              @click="linkAssociatedUrls.splice(i, 1)"
+              aria-label="Remove URL"
             >
-              + Add another URL
+              ✕
             </Button>
           </div>
+          <Button
+            variant="link"
+            size="link"
+            @click="linkAssociatedUrls.push('')"
+            class="self-start"
+          >
+            + Add another URL
+          </Button>
+        </div>
 
-          <div class="flex flex-col gap-1.5">
-            <label class="text-[10px] text-ink-muted uppercase tracking-wide">Creator</label>
-            <input
-              v-model="linkBuildCreator"
-              type="text"
-              placeholder="@creator"
-              aria-label="Creator name"
-              class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent w-full"
-            />
-          </div>
-          <div class="flex gap-2">
-            <BtnGhost label="Cancel" :full="true" size="md" @click="showLinkBuild = false" />
-            <BtnGhost
-              v-if="draft?.buildUrl"
-              label="Remove"
-              :full="true"
-              size="md"
-              @click="
-                setBuildInfo('', '', undefined);
-                showLinkBuild = false;
-              "
-            />
-            <BtnAccent label="Save" :full="true" size="md" @click="saveLinkBuild" />
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] text-ink-muted uppercase tracking-wide">Creator</label>
+          <input
+            v-model="linkBuildCreator"
+            type="text"
+            placeholder="@creator"
+            aria-label="Creator name"
+            class="h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent w-full"
+          />
+        </div>
+        <div class="flex gap-2">
+          <BtnGhost label="Cancel" :full="true" size="md" @click="showLinkBuild = false" />
+          <BtnGhost
+            v-if="draft?.buildUrl"
+            label="Remove"
+            :full="true"
+            size="md"
+            @click="
+              setBuildInfo('', '', undefined);
+              showLinkBuild = false;
+            "
+          />
+          <BtnAccent label="Save" :full="true" size="md" @click="saveLinkBuild" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>

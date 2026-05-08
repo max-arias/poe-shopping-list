@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { motion } from "motion-v";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
@@ -7,7 +6,6 @@ import { importDraft } from "../../composables/useImportExport";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
-import { overlayMotionProps, sheetMotionProps, subtleButtonMotionProps } from "../../utils/motion";
 
 const ui = useUiStore();
 const { addDraft } = useDraftList();
@@ -40,29 +38,26 @@ async function handleImport() {
 </script>
 
 <template>
-  <motion.div
+  <div
     ref="dialogRef"
-    v-bind="overlayMotionProps"
     class="absolute inset-0 bg-black/50 flex items-end z-20"
     role="dialog"
     aria-modal="true"
     @keydown.escape="ui.closeImportSheet()"
     @click.self="ui.closeImportSheet()"
   >
-    <motion.div
-      v-bind="sheetMotionProps"
+    <div
       class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto shadow-panel"
     >
       <div class="flex items-center shrink-0">
         <p class="text-[13px] font-semibold text-ink">Import list</p>
         <div class="flex-1" />
-        <motion.button
+        <button
           @click="ui.closeImportSheet()"
-          v-bind="subtleButtonMotionProps"
           class="text-ink-muted text-base cursor-pointer bg-transparent border-0"
         >
           ✕
-        </motion.button>
+        </button>
       </div>
 
       <p class="text-[11px] text-ink-muted">
@@ -88,6 +83,6 @@ async function handleImport() {
           @click="handleImport"
         />
       </div>
-    </motion.div>
-  </motion.div>
+    </div>
+  </div>
 </template>

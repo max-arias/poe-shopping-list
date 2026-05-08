@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { motion } from "motion-v";
-import { buttonMotionProps } from "../../utils/motion";
 import { buttonVariants, type ButtonVariants } from "./buttonStyles";
 
 const {
@@ -30,13 +28,7 @@ function handleClick(event: MouseEvent) {
 </script>
 
 <template>
-  <motion.button
-    v-bind="buttonMotionProps"
-    :type="type"
-    :disabled="disabled"
-    :class="classes"
-    @click="handleClick"
-  >
+  <button :type="type" :disabled="disabled" :class="classes" @click="handleClick">
     <slot>{{ label }}</slot>
-  </motion.button>
+  </button>
 </template>

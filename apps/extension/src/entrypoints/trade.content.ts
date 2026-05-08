@@ -162,7 +162,6 @@ export default defineContentScript({
         "border-radius:2px",
         "margin-right:8px",
         "font-family:inherit",
-        "transition:background .15s,color .15s,opacity .15s",
       ].join(";");
       applyButtonStateStyle(btn);
 

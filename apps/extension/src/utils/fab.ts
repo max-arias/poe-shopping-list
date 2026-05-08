@@ -7,7 +7,6 @@ const DEFAULT_TOP = 96;
 const MIN_TOP = 20;
 const RIGHT_OFFSET = 0;
 const DRAG_THRESHOLD = 6;
-const FADE_DURATION_MS = 180;
 const DISMISSED_KEY = "poe-sl-fab-dismissed";
 
 const fabPositionItem = storage.defineItem<number>(STORAGE.fabPosition, {
@@ -42,21 +41,6 @@ export async function injectFab(drafts: Draft[], url: string) {
 
   const style = document.createElement("style");
   style.textContent = `
-    @keyframes slide-in {
-      from {
-        opacity: 0;
-        transform: translateX(110%);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-    
-    .fab-container {
-      animation: slide-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
     /* Mini-view Mode (Ribbon) */
     .ribbon {
       padding: 12px 14px;
@@ -167,15 +151,12 @@ export async function injectFab(drafts: Draft[], url: string) {
       justify-content: center;
       cursor: pointer;
       color: #c28a2a;
-      transition: transform 0.2s, background 0.2s;
       padding: 0;
     }
     .fab-btn-wrapper.dragging .fab-btn {
-      transform: none;
     }
     .fab-btn:hover {
       background: #1e1710;
-      transform: scale(1.05);
     }
     .fab-btn img {
       width: 24px;
@@ -348,7 +329,6 @@ function clampFabTop(nextTop: number, host: HTMLDivElement) {
 }
 
 function setFabVisible(host: HTMLDivElement, visible: boolean) {
-  host.style.transition = `opacity ${FADE_DURATION_MS}ms ease`;
   host.style.opacity = visible ? "1" : "0";
   host.style.pointerEvents = visible ? "auto" : "none";
 }

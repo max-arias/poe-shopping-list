@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { motion } from "motion-v";
 import { computed } from "vue";
 import type { Draft } from "@/types";
 import { useDivineRate } from "../../composables/useDivineRate";
 import { useUiStore } from "../../stores/ui";
-import { subtleButtonMotionProps } from "../../utils/motion";
 
 const props = defineProps<{ draft: Draft }>();
 const emit = defineEmits<{ delete: [] }>();
@@ -62,13 +60,12 @@ const divineEquivalent = computed(() => {
       </div>
       <span class="text-ink-muted text-sm shrink-0">›</span>
     </div>
-    <motion.button
+    <button
       @click.stop="emit('delete')"
-      v-bind="subtleButtonMotionProps"
       class="shrink-0 w-7 h-7 flex items-center justify-center text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none hover:text-ink"
       title="Delete list"
     >
       ⋯
-    </motion.button>
+    </button>
   </div>
 </template>

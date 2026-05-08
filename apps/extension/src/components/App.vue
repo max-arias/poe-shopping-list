@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { AnimatePresence, motion } from "motion-v";
 import { computed, watchEffect, watch, ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../stores/ui";
 import { useSettings } from "../composables/useSettings";
@@ -17,7 +16,6 @@ import ImportSheet from "./mine/ImportSheet.vue";
 import SettingsPopover from "./settings/SettingsPopover.vue";
 import CaptureUnavailableBanner from "./shared/CaptureUnavailableBanner.vue";
 import Button from "./shared/Button.vue";
-import { bannerMotionProps, createSlideMotionProps } from "../utils/motion";
 
 const ui = useUiStore();
 const { settings } = useSettings();
@@ -103,9 +101,6 @@ const resolvedTheme = computed(() => {
 watchEffect(() => {
   document.documentElement.setAttribute("data-theme", resolvedTheme.value);
 });
-
-const viewSlideMotionProps = createSlideMotionProps(10);
-const subviewSlideMotionProps = createSlideMotionProps(8);
 </script>
 
 <template>
@@ -159,68 +154,37 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
     </div>
 
     <!-- Capture unavailable banner -->
-    <AnimatePresence>
-      <motion.div v-if="ui.captureUnavailable" key="capture-banner" v-bind="bannerMotionProps">
-        <CaptureUnavailableBanner />
-      </motion.div>
-    </AnimatePresence>
+    <div v-if="ui.captureUnavailable" key="capture-banner">
+      <CaptureUnavailableBanner />
+    </div>
 
-    <AnimatePresence mode="wait" :initial="false">
-      <motion.div
-        v-if="ui.currentView.type === 'detail'"
-        key="detail"
-        v-bind="viewSlideMotionProps"
+    <div
+      v-if="ui.currentView.type === 'detail'"
+      key="detail"
+      class="flex-1 min-h-0 flex flex-col overflow-hidden"
+    >
+      <DetailPanel />
+    </div>
+
+    <div v-else key="tabs" role="tabpanel" class="flex-1 min-h-0 flex flex-col overflow-hidden">
+      <div
+        v-if="ui.activeTab === 'mine'"
+        key="mine"
         class="flex-1 min-h-0 flex flex-col overflow-hidden"
       >
-        <DetailPanel />
-      </motion.div>
-
-      <motion.div
-        v-else
-        key="tabs"
-        v-bind="viewSlideMotionProps"
-        role="tabpanel"
-        class="flex-1 min-h-0 flex flex-col overflow-hidden"
-      >
-        <AnimatePresence mode="wait" :initial="false">
-          <motion.div
-            v-if="ui.activeTab === 'mine'"
-            key="mine"
-            v-bind="subviewSlideMotionProps"
-            class="flex-1 min-h-0 flex flex-col overflow-hidden"
-          >
-            <MineTab />
-          </motion.div>
-          <motion.div
-            v-else
-            key="history"
-            v-bind="subviewSlideMotionProps"
-            class="flex-1 min-h-0 flex flex-col overflow-hidden"
-          >
-            <HistoryTab />
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
-    </AnimatePresence>
+        <MineTab />
+      </div>
+      <div v-else key="history" class="flex-1 min-h-0 flex flex-col overflow-hidden">
+        <HistoryTab />
+      </div>
+    </div>
 
     <!-- Overlays -->
-    <AnimatePresence>
-      <SaveModal v-if="ui.saveModalOpen" key="save-modal" />
-    </AnimatePresence>
-    <AnimatePresence>
-      <ChooseListModal v-if="ui.chooseListModalOpen" key="choose-list-modal" />
-    </AnimatePresence>
-    <AnimatePresence>
-      <EditItemSheet v-if="ui.editSheetItemId" key="edit-item-sheet" />
-    </AnimatePresence>
-    <AnimatePresence>
-      <ExportSheet v-if="ui.exportSheetOpen" key="export-sheet" />
-    </AnimatePresence>
-    <AnimatePresence>
-      <ImportSheet v-if="ui.importSheetOpen" key="import-sheet" />
-    </AnimatePresence>
-    <AnimatePresence>
-      <SettingsPopover v-if="ui.settingsOpen" key="settings-popover" />
-    </AnimatePresence>
+    <SaveModal v-if="ui.saveModalOpen" key="save-modal" />
+    <ChooseListModal v-if="ui.chooseListModalOpen" key="choose-list-modal" />
+    <EditItemSheet v-if="ui.editSheetItemId" key="edit-item-sheet" />
+    <ExportSheet v-if="ui.exportSheetOpen" key="export-sheet" />
+    <ImportSheet v-if="ui.importSheetOpen" key="import-sheet" />
+    <SettingsPopover v-if="ui.settingsOpen" key="settings-popover" />
   </div>
 </template>

@@ -1,22 +1,14 @@
 <script setup lang="ts">
-import { motion, useDomRef } from 'motion-v';
-import { onMounted } from 'vue';
-import { useFocusTrap } from '../../composables/useFocusTrap';
-import { useSettings } from '../../composables/useSettings';
-import { useUiStore } from '../../stores/ui';
-import { POE1_LEAGUES } from '@/types';
-import {
-  buttonMotionProps,
-  overlayMotionProps,
-  popoverMotionProps,
-  subtleButtonMotionProps,
-  toggleKnobMotionProps,
-} from '../../utils/motion';
+import { onMounted, ref } from "vue";
+import { useFocusTrap } from "../../composables/useFocusTrap";
+import { useSettings } from "../../composables/useSettings";
+import { useUiStore } from "../../stores/ui";
+import { POE1_LEAGUES } from "@/types";
 
 const ui = useUiStore();
 const { settings, updateSettings } = useSettings();
 
-const dialogRef = useDomRef();
+const dialogRef = ref<HTMLElement | null>(null);
 const { activate: activateFocusTrap } = useFocusTrap(dialogRef);
 
 onMounted(() => {
@@ -31,14 +23,9 @@ function toggleShowFloatingActionButton() {
 </script>
 
 <template>
-  <motion.div
-    v-bind="overlayMotionProps"
-    class="absolute inset-0 bg-black/50 flex flex-col z-30"
-    @click.self="ui.toggleSettings()"
-  >
-    <motion.div
+  <div class="absolute inset-0 bg-black/50 flex flex-col z-30" @click.self="ui.toggleSettings()">
+    <div
       ref="dialogRef"
-      v-bind="popoverMotionProps"
       class="w-full bg-bg border-b border-stroke flex flex-col max-h-[90%] overflow-auto shadow-popover"
       role="dialog"
       aria-modal="true"
@@ -48,13 +35,12 @@ function toggleShowFloatingActionButton() {
       <!-- Header -->
       <div class="flex items-center px-3 py-2.5 border-b border-stroke shrink-0">
         <p class="text-[13px] font-semibold text-ink flex-1">Settings</p>
-        <motion.button
+        <button
           @click="ui.toggleSettings()"
-          v-bind="subtleButtonMotionProps"
           class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
         >
           ✕
-        </motion.button>
+        </button>
       </div>
 
       <div class="divide-y divide-stroke-soft">
@@ -75,11 +61,10 @@ function toggleShowFloatingActionButton() {
         <div class="px-3 py-3 flex items-center justify-between">
           <p class="text-[12px] text-ink">Theme</p>
           <div class="flex gap-1">
-            <motion.button
+            <button
               v-for="t in ['light', 'dark', 'system']"
               :key="t"
               @click="updateSettings({ theme: t as 'light' | 'dark' | 'system' })"
-              v-bind="buttonMotionProps"
               class="text-[11px] px-2.5 py-1 rounded-sm border cursor-pointer capitalize"
               :class="
                 settings.theme === t
@@ -88,7 +73,7 @@ function toggleShowFloatingActionButton() {
               "
             >
               {{ t }}
-            </motion.button>
+            </button>
           </div>
         </div>
 
@@ -98,9 +83,8 @@ function toggleShowFloatingActionButton() {
             <p class="text-[12px] text-ink">Auto-capture price</p>
             <p class="text-[10px] text-ink-muted">Read prices when saving a search</p>
           </div>
-          <motion.button
+          <button
             @click="updateSettings({ autoCapturePrice: !settings.autoCapturePrice })"
-            v-bind="subtleButtonMotionProps"
             role="switch"
             :aria-checked="settings.autoCapturePrice"
             aria-label="Auto-capture price"
@@ -111,12 +95,11 @@ function toggleShowFloatingActionButton() {
                 : 'bg-surface border-stroke'
             "
           >
-            <motion.div
-              v-bind="toggleKnobMotionProps"
+            <div
               class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm"
               :style="{ marginLeft: settings.autoCapturePrice ? '16px' : '0px' }"
             />
-          </motion.button>
+          </button>
         </div>
 
         <!-- Show floating action button -->
@@ -125,9 +108,8 @@ function toggleShowFloatingActionButton() {
             <p class="text-[12px] text-ink">Show floating action button</p>
             <p class="text-[10px] text-ink-muted">Show the trade-page FAB shortcut</p>
           </div>
-          <motion.button
+          <button
             @click="toggleShowFloatingActionButton"
-            v-bind="subtleButtonMotionProps"
             role="switch"
             :aria-checked="settings.showFloatingActionButton"
             aria-label="Show floating action button"
@@ -138,12 +120,11 @@ function toggleShowFloatingActionButton() {
                 : 'bg-surface border-stroke'
             "
           >
-            <motion.div
-              v-bind="toggleKnobMotionProps"
+            <div
               class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm"
               :style="{ marginLeft: settings.showFloatingActionButton ? '16px' : '0px' }"
             />
-          </motion.button>
+          </button>
         </div>
 
         <!-- Open in new tab -->
@@ -152,9 +133,8 @@ function toggleShowFloatingActionButton() {
             <p class="text-[12px] text-ink">Open items in new tab</p>
             <p class="text-[10px] text-ink-muted">vs. current tab</p>
           </div>
-          <motion.button
+          <button
             @click="updateSettings({ openItemsInNewTab: !settings.openItemsInNewTab })"
-            v-bind="subtleButtonMotionProps"
             role="switch"
             :aria-checked="settings.openItemsInNewTab"
             aria-label="Open items in new tab"
@@ -165,12 +145,11 @@ function toggleShowFloatingActionButton() {
                 : 'bg-surface border-stroke'
             "
           >
-            <motion.div
-              v-bind="toggleKnobMotionProps"
+            <div
               class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm"
               :style="{ marginLeft: settings.openItemsInNewTab ? '16px' : '0px' }"
             />
-          </motion.button>
+          </button>
         </div>
 
         <!-- Track purchase history -->
@@ -179,9 +158,8 @@ function toggleShowFloatingActionButton() {
             <p class="text-[12px] text-ink">Track purchase history</p>
             <p class="text-[10px] text-ink-muted">Log "Travel to Hideout" clicks</p>
           </div>
-          <motion.button
+          <button
             @click="updateSettings({ trackPurchaseHistory: !settings.trackPurchaseHistory })"
-            v-bind="subtleButtonMotionProps"
             role="switch"
             :aria-checked="settings.trackPurchaseHistory"
             aria-label="Track purchase history"
@@ -192,14 +170,13 @@ function toggleShowFloatingActionButton() {
                 : 'bg-surface border-stroke'
             "
           >
-            <motion.div
-              v-bind="toggleKnobMotionProps"
+            <div
               class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm"
               :style="{ marginLeft: settings.trackPurchaseHistory ? '16px' : '0px' }"
             />
-          </motion.button>
+          </button>
         </div>
       </div>
-    </motion.div>
-  </motion.div>
+    </div>
+  </div>
 </template>

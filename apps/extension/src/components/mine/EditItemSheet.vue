@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { AnimatePresence, motion } from "motion-v";
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
@@ -8,12 +7,6 @@ import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import Button from "../shared/Button.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
-import {
-  contentFadeMotionProps,
-  overlayMotionProps,
-  sheetMotionProps,
-  subtleButtonMotionProps,
-} from "../../utils/motion";
 
 const ui = useUiStore();
 const { draft, updateItem, updateCapture, removeItem } = useDraftList();
@@ -76,17 +69,15 @@ async function handleDelete() {
 </script>
 
 <template>
-  <motion.div
+  <div
     ref="dialogRef"
-    v-bind="overlayMotionProps"
     class="absolute inset-0 bg-black/50 flex items-end z-20"
     role="dialog"
     aria-modal="true"
     @keydown.escape="ui.closeEditSheet()"
     @click.self="ui.closeEditSheet()"
   >
-    <motion.div
-      v-bind="sheetMotionProps"
+    <div
       class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
       style="box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25)"
     >
@@ -94,13 +85,12 @@ async function handleDelete() {
       <div class="flex items-center">
         <p class="text-[13px] font-semibold text-ink">Edit Item</p>
         <div class="flex-1" />
-        <motion.button
+        <button
           @click="ui.closeEditSheet()"
-          v-bind="subtleButtonMotionProps"
           class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
         >
           ✕
-        </motion.button>
+        </button>
       </div>
 
       <!-- Name field -->
@@ -133,54 +123,40 @@ async function handleDelete() {
       <div>
         <div class="flex items-center justify-between mb-1">
           <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px]">Price</p>
-          <motion.button
+          <button
             @click="handleRefresh"
             :disabled="refreshing"
-            v-bind="subtleButtonMotionProps"
             class="text-[10px] text-accent-ink-str cursor-pointer bg-transparent border-0 disabled:opacity-40"
           >
             {{ refreshing ? "Reading…" : "↻ Refresh from active tab" }}
-          </motion.button>
+          </button>
         </div>
-        <AnimatePresence mode="wait" :initial="false">
-          <motion.div
-            v-if="capture && capture.aggregates.sampleSize > 0"
-            key="capture"
-            v-bind="contentFadeMotionProps"
-          >
-            <div class="border border-stroke rounded-sm p-2.5 grid grid-cols-3 gap-2 bg-surface">
-              <div
-                v-for="[label, val] in [
-                  ['MIN', capture.aggregates.min],
-                  ['MEDIAN', capture.aggregates.median],
-                  ['AVG', capture.aggregates.avg],
-                ]"
-                :key="label"
-                class="flex flex-col gap-0.5"
-              >
-                <p class="text-[10px] text-ink-muted">{{ label }}</p>
-                <div class="flex items-baseline gap-1">
-                  <span class="font-mono text-base font-semibold text-accent-ink-str">{{
-                    fmt(val as number)
-                  }}</span>
-                  <span class="text-[10px] text-ink-muted">{{ capture.aggregates.currency }}</span>
-                </div>
+        <div v-if="capture && capture.aggregates.sampleSize > 0" key="capture">
+          <div class="border border-stroke rounded-sm p-2.5 grid grid-cols-3 gap-2 bg-surface">
+            <div
+              v-for="[label, val] in [
+                ['MIN', capture.aggregates.min],
+                ['MEDIAN', capture.aggregates.median],
+                ['AVG', capture.aggregates.avg],
+              ]"
+              :key="label"
+              class="flex flex-col gap-0.5"
+            >
+              <p class="text-[10px] text-ink-muted">{{ label }}</p>
+              <div class="flex items-baseline gap-1">
+                <span class="font-mono text-base font-semibold text-accent-ink-str">{{
+                  fmt(val as number)
+                }}</span>
+                <span class="text-[10px] text-ink-muted">{{ capture.aggregates.currency }}</span>
               </div>
             </div>
-            <p class="text-[10px] text-ink-muted mt-1">
-              {{ capture.aggregates.sampleSize }} listings captured · dominant currency:
-              {{ capture.aggregates.currency }}
-            </p>
-          </motion.div>
-          <motion.p
-            v-else
-            key="empty"
-            v-bind="contentFadeMotionProps"
-            class="text-[11px] text-ink-muted"
-          >
-            No price data captured.
-          </motion.p>
-        </AnimatePresence>
+          </div>
+          <p class="text-[10px] text-ink-muted mt-1">
+            {{ capture.aggregates.sampleSize }} listings captured · dominant currency:
+            {{ capture.aggregates.currency }}
+          </p>
+        </div>
+        <p v-else key="empty" class="text-[11px] text-ink-muted">No price data captured.</p>
       </div>
 
       <!-- Save -->
@@ -192,13 +168,12 @@ async function handleDelete() {
       <!-- Delete section -->
       <div class="h-px bg-stroke-soft" />
       <div v-if="!confirmingDelete">
-        <motion.button
+        <button
           @click="confirmingDelete = true"
-          v-bind="subtleButtonMotionProps"
           class="w-full h-8 text-xs font-medium text-destructive bg-transparent border border-destructive-edge rounded-sm cursor-pointer hover:bg-destructive-soft"
         >
           ✕ Delete item
-        </motion.button>
+        </button>
       </div>
       <div v-else class="flex flex-col gap-2">
         <p class="text-[11px] text-ink-muted text-center">
@@ -211,6 +186,6 @@ async function handleDelete() {
           </Button>
         </div>
       </div>
-    </motion.div>
-  </motion.div>
+    </div>
+  </div>
 </template>

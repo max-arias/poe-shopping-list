@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { AnimatePresence, motion } from "motion-v";
 import { ref, computed, watch, nextTick } from "vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { usePurchaseHistory } from "../../composables/usePurchaseHistory";
@@ -11,12 +10,6 @@ import HistoryKebabMenu from "./HistoryKebabMenu.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import Button from "../shared/Button.vue";
-import {
-  createSlideMotionProps,
-  dialogMotionProps,
-  overlayMotionProps,
-  skeletonPulseMotionProps,
-} from "../../utils/motion";
 
 const { items, isLoaded, removeItems, renameItem, changePrice } = usePurchaseHistory();
 const {
@@ -132,8 +125,6 @@ watch(changingPriceItemId, async (val) => {
     priceFocusTrap.deactivate();
   }
 });
-
-const subviewSlideMotionProps = createSlideMotionProps(8);
 </script>
 
 <template>
@@ -169,10 +160,9 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
 
     <template v-if="!isLoadedAny">
       <div class="flex-1 px-3 py-3 space-y-2.5 overflow-hidden">
-        <motion.div
+        <div
           v-for="row in 5"
           :key="row"
-          v-bind="skeletonPulseMotionProps"
           class="h-16 rounded-md border border-stroke-soft bg-surface/70"
         />
       </div>
@@ -225,116 +215,99 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
 
       <!-- Items list -->
       <div class="flex-1 overflow-auto relative" @click="ui.closeKebab()">
-        <AnimatePresence mode="wait" :initial="false">
-          <motion.div
-            v-if="activeSubtab === 'visits'"
-            key="visits"
-            v-bind="subviewSlideMotionProps"
-            class="h-full"
-          >
-            <HistoryVisitRow
-              v-for="item in visitItems"
-              :key="item.id"
+        <div v-if="activeSubtab === 'visits'" key="visits" class="h-full">
+          <HistoryVisitRow
+            v-for="item in visitItems"
+            :key="item.id"
+            :item="item"
+            @toggle-select="toggleSelect"
+          />
+        </div>
+        <div v-else key="purchases" class="h-full">
+          <div v-for="item in items" :key="item.id" class="relative" @click.stop>
+            <HistoryItemRow :item="item" @toggle-select="toggleSelect" />
+            <HistoryKebabMenu
+              v-if="ui.kebabOpenItemId === item.id"
               :item="item"
-              @toggle-select="toggleSelect"
+              @rename="startRename"
+              @change-price="startChangePrice"
             />
-          </motion.div>
-          <motion.div v-else key="purchases" v-bind="subviewSlideMotionProps" class="h-full">
-            <div v-for="item in items" :key="item.id" class="relative" @click.stop>
-              <HistoryItemRow :item="item" @toggle-select="toggleSelect" />
-              <AnimatePresence>
-                <HistoryKebabMenu
-                  v-if="ui.kebabOpenItemId === item.id"
-                  :item="item"
-                  @rename="startRename"
-                  @change-price="startChangePrice"
-                />
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+          </div>
+        </div>
       </div>
     </template>
 
     <!-- Rename overlay -->
-    <AnimatePresence>
-      <motion.div
-        v-if="renamingItemId"
-        key="rename-item"
-        ref="renameDialogRef"
-        v-bind="overlayMotionProps"
-        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
-        role="dialog"
-        aria-modal="true"
-        @keydown.escape="renamingItemId = null"
-        @click.self="renamingItemId = null"
+    <div
+      v-if="renamingItemId"
+      key="rename-item"
+      ref="renameDialogRef"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="renamingItemId = null"
+      @click.self="renamingItemId = null"
+    >
+      <div
+        class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
       >
-        <motion.div
-          v-bind="dialogMotionProps"
-          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
-        >
-          <p class="text-[13px] font-semibold text-ink">Rename item</p>
-          <input
-            v-model="renameValue"
-            aria-label="New name"
-            @keydown.enter="confirmRename"
-            @keydown.escape="renamingItemId = null"
-            class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
-            autofocus
-          />
-          <div class="flex gap-2">
-            <BtnGhost label="Cancel" :full="true" size="sm" @click="renamingItemId = null" />
-            <BtnAccent label="Save" :full="true" size="md" @click="confirmRename" />
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        <p class="text-[13px] font-semibold text-ink">Rename item</p>
+        <input
+          v-model="renameValue"
+          aria-label="New name"
+          @keydown.enter="confirmRename"
+          @keydown.escape="renamingItemId = null"
+          class="w-full h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
+          autofocus
+        />
+        <div class="flex gap-2">
+          <BtnGhost label="Cancel" :full="true" size="sm" @click="renamingItemId = null" />
+          <BtnAccent label="Save" :full="true" size="md" @click="confirmRename" />
+        </div>
+      </div>
+    </div>
 
     <!-- Change price overlay -->
-    <AnimatePresence>
-      <motion.div
-        v-if="changingPriceItemId"
-        key="change-price"
-        ref="priceDialogRef"
-        v-bind="overlayMotionProps"
-        class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
-        role="dialog"
-        aria-modal="true"
-        @keydown.escape="changingPriceItemId = null"
-        @click.self="changingPriceItemId = null"
+    <div
+      v-if="changingPriceItemId"
+      key="change-price"
+      ref="priceDialogRef"
+      class="absolute inset-0 bg-black/50 flex items-center justify-center z-20 px-6"
+      role="dialog"
+      aria-modal="true"
+      @keydown.escape="changingPriceItemId = null"
+      @click.self="changingPriceItemId = null"
+    >
+      <div
+        class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
       >
-        <motion.div
-          v-bind="dialogMotionProps"
-          class="bg-bg border border-stroke rounded-md p-4 flex flex-col gap-3 w-full max-w-[280px]"
-        >
-          <p class="text-[13px] font-semibold text-ink">Change price</p>
-          <div class="flex gap-2">
-            <input
-              v-model="priceValue"
-              type="number"
-              min="0"
-              step="0.1"
-              aria-label="Price value"
-              @keydown.enter="confirmChangePrice"
-              @keydown.escape="changingPriceItemId = null"
-              class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
-              autofocus
-            />
-            <input
-              v-model="priceCurrency"
-              aria-label="Currency"
-              @keydown.enter="confirmChangePrice"
-              @keydown.escape="changingPriceItemId = null"
-              class="w-20 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
-              placeholder="chaos"
-            />
-          </div>
-          <div class="flex gap-2">
-            <BtnGhost label="Cancel" :full="true" size="sm" @click="changingPriceItemId = null" />
-            <BtnAccent label="Save" :full="true" size="md" @click="confirmChangePrice" />
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        <p class="text-[13px] font-semibold text-ink">Change price</p>
+        <div class="flex gap-2">
+          <input
+            v-model="priceValue"
+            type="number"
+            min="0"
+            step="0.1"
+            aria-label="Price value"
+            @keydown.enter="confirmChangePrice"
+            @keydown.escape="changingPriceItemId = null"
+            class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
+            autofocus
+          />
+          <input
+            v-model="priceCurrency"
+            aria-label="Currency"
+            @keydown.enter="confirmChangePrice"
+            @keydown.escape="changingPriceItemId = null"
+            class="w-20 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink bg-bg outline-none focus:border-accent"
+            placeholder="chaos"
+          />
+        </div>
+        <div class="flex gap-2">
+          <BtnGhost label="Cancel" :full="true" size="sm" @click="changingPriceItemId = null" />
+          <BtnAccent label="Save" :full="true" size="md" @click="confirmChangePrice" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>

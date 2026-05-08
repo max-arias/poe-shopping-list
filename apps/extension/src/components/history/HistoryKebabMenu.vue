@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { motion } from "motion-v";
 import type { PurchaseHistoryItem } from "@/types";
 import { useUiStore } from "../../stores/ui";
 import { usePurchaseHistory } from "../../composables/usePurchaseHistory";
-import { buttonMotionProps, popoverMotionProps } from "../../utils/motion";
 
 const { item } = defineProps<{ item: PurchaseHistoryItem }>();
 
@@ -36,8 +34,7 @@ async function handleAction(key: string) {
 </script>
 
 <template>
-  <motion.div
-    v-bind="popoverMotionProps"
+  <div
     role="menu"
     aria-label="Item actions menu"
     class="absolute right-2 z-10 bg-bg border border-stroke rounded-sm py-1 min-w-[160px] shadow-popover"
@@ -45,16 +42,15 @@ async function handleAction(key: string) {
   >
     <template v-for="action in actions" :key="'sep' in action ? 'sep' : action.key">
       <div v-if="'sep' in action" class="h-px bg-stroke-soft mx-0 my-1" />
-      <motion.button
+      <button
         v-else
         @click="handleAction(action.key)"
         role="menuitem"
-        v-bind="buttonMotionProps"
         class="w-full text-left px-3 py-1.5 text-xs bg-transparent border-0 cursor-pointer"
         :class="'danger' in action && action.danger ? 'text-destructive' : 'text-ink'"
       >
         {{ action.label }}
-      </motion.button>
+      </button>
     </template>
-  </motion.div>
+  </div>
 </template>
