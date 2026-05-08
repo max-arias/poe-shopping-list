@@ -43,8 +43,8 @@ async function copyToClipboard() {
     class="absolute inset-0 bg-black/50 flex items-end z-20"
     role="dialog"
     aria-modal="true"
-    @keydown.escape="ui.closeDetail()"
-    @click.self="ui.closeDetail()"
+    @keydown.escape="ui.closeExportSheet()"
+    @click.self="ui.closeExportSheet()"
   >
     <motion.div
       v-bind="sheetMotionProps"
@@ -54,7 +54,7 @@ async function copyToClipboard() {
         <p class="text-[13px] font-semibold text-ink">Export list</p>
         <div class="flex-1" />
         <motion.button
-          @click="ui.closeDetail()"
+          @click="ui.closeExportSheet()"
           v-bind="subtleButtonMotionProps"
           class="text-ink-muted text-base cursor-pointer bg-transparent border-0"
         >
@@ -76,7 +76,7 @@ async function copyToClipboard() {
       />
 
       <div class="flex gap-2">
-        <BtnGhost label="Close" :full="true" size="md" @click="ui.closeDetail()" />
+        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeExportSheet()" />
         <BtnAccent
           :label="copied ? 'Copied!' : 'Copy to clipboard'"
           :full="true"

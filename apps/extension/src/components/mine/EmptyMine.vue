@@ -4,6 +4,7 @@ import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
 import BtnAccent from "../shared/BtnAccent.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
+import Button from "../shared/Button.vue";
 
 const { createDraft } = useDraftList();
 const { settings } = useSettings();
@@ -148,21 +149,14 @@ function closeForm() {
           @keydown.escape="closeForm"
           class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
         />
-        <button
-          @click="removeExtraUrl(i)"
-          class="w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
-          title="Remove URL"
-        >
+        <Button variant="plainIcon" size="iconSm" @click="removeExtraUrl(i)" title="Remove URL">
           ✕
-        </button>
+        </Button>
       </div>
 
-      <button
-        @click="addExtraUrl"
-        class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
-      >
+      <Button variant="link" size="link" @click="addExtraUrl" class="self-start">
         + Add another URL
-      </button>
+      </Button>
 
       <!-- Creator -->
       <div>

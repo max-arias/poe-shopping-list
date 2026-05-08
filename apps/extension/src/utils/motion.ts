@@ -6,10 +6,10 @@ export const overlayMotionProps = {
 } as const;
 
 export const sheetMotionProps = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 18 },
-  transition: { type: "spring", visualDuration: 0.35, bounce: 0.12 },
+  initial: { opacity: 0, transform: "translateY(100%)" },
+  animate: { opacity: 1, transform: "translateY(0%)" },
+  exit: { opacity: 0, transform: "translateY(100%)" },
+  transition: { type: "spring", visualDuration: 0.22, bounce: 0.12 },
 } as const;
 
 export const dialogMotionProps = {

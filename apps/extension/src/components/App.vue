@@ -16,12 +16,8 @@ import ExportSheet from "./mine/ExportSheet.vue";
 import ImportSheet from "./mine/ImportSheet.vue";
 import SettingsPopover from "./settings/SettingsPopover.vue";
 import CaptureUnavailableBanner from "./shared/CaptureUnavailableBanner.vue";
-import {
-  bannerMotionProps,
-  buttonMotionProps,
-  createSlideMotionProps,
-  subtleButtonMotionProps,
-} from "../utils/motion";
+import Button from "./shared/Button.vue";
+import { bannerMotionProps, createSlideMotionProps } from "../utils/motion";
 
 const ui = useUiStore();
 const { settings } = useSettings();
@@ -120,12 +116,13 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
       class="flex items-center gap-2 border-b border-stroke shrink-0 px-2"
     >
       <div role="tablist" class="flex flex-1">
-        <motion.button
+        <Button
+          variant="tab"
+          size="tab"
           @click="ui.setTab('mine')"
-          v-bind="buttonMotionProps"
           role="tab"
           :aria-selected="ui.activeTab === 'mine'"
-          class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0"
+          class="flex-1"
           :class="
             ui.activeTab === 'mine'
               ? 'text-accent-ink-str border-b-2 border-accent'
@@ -133,13 +130,14 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
           "
         >
           My Lists
-        </motion.button>
-        <motion.button
+        </Button>
+        <Button
+          variant="tab"
+          size="tab"
           @click="ui.setTab('history')"
-          v-bind="buttonMotionProps"
           role="tab"
           :aria-selected="ui.activeTab === 'history'"
-          class="flex-1 py-1.5 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent border-0"
+          class="flex-1"
           :class="
             ui.activeTab === 'history'
               ? 'text-accent-ink-str border-b-2 border-accent'
@@ -147,17 +145,17 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
           "
         >
           History
-        </motion.button>
+        </Button>
       </div>
-      <motion.button
+      <Button
+        variant="icon"
+        size="iconMd"
         @click="ui.toggleSettings()"
-        v-bind="subtleButtonMotionProps"
-        class="w-7 h-7 flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border border-transparent rounded-sm hover:bg-surface hover:text-ink"
         title="Settings"
         aria-label="Settings"
       >
         ⚙
-      </motion.button>
+      </Button>
     </div>
 
     <!-- Capture unavailable banner -->

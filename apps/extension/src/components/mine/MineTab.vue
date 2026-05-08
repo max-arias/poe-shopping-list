@@ -8,12 +8,9 @@ import EmptyMine from "./EmptyMine.vue";
 import MineListRow from "./MineListRow.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
+import Button from "../shared/Button.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
-import {
-  inlineMotionProps,
-  skeletonPulseMotionProps,
-  subtleButtonMotionProps,
-} from "../../utils/motion";
+import { inlineMotionProps, skeletonPulseMotionProps } from "../../utils/motion";
 
 const { drafts, isLoaded, createDraft, deleteDraftById } = useDraftList();
 const { settings } = useSettings();
@@ -142,13 +139,15 @@ async function confirmDelete() {
           </p>
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="md" @click="deletingId = null" />
-            <button
+            <Button
+              variant="destructive"
+              :full="true"
+              size="md"
               @click="confirmDelete"
               aria-label="Delete list"
-              class="flex-1 h-8 px-2.5 inline-flex items-center justify-center text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
             >
               Delete
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -194,23 +193,19 @@ async function confirmDelete() {
                 @keydown.escape="closeNewForm"
                 class="flex-1 h-8 px-2.5 text-xs border border-stroke rounded-sm text-ink placeholder:text-ink-muted bg-bg outline-none focus:border-accent"
               />
-              <motion.button
+              <Button
+                variant="plainIcon"
+                size="iconSm"
                 @click="removeExtraUrl(i)"
-                v-bind="subtleButtonMotionProps"
-                class="w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
                 title="Remove URL"
               >
                 ✕
-              </motion.button>
+              </Button>
             </div>
 
-            <motion.button
-              @click="addExtraUrl"
-              v-bind="subtleButtonMotionProps"
-              class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
-            >
+            <Button variant="link" size="link" @click="addExtraUrl" class="self-start">
               + Add another URL
-            </motion.button>
+            </Button>
 
             <!-- Creator -->
             <input

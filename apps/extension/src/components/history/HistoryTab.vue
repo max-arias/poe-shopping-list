@@ -9,8 +9,9 @@ import HistoryItemRow from "./HistoryItemRow.vue";
 import HistoryVisitRow from "./HistoryVisitRow.vue";
 import HistoryKebabMenu from "./HistoryKebabMenu.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
+import BtnAccent from "../shared/BtnAccent.vue";
+import Button from "../shared/Button.vue";
 import {
-  buttonMotionProps,
   createSlideMotionProps,
   dialogMotionProps,
   overlayMotionProps,
@@ -138,10 +139,11 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
     <div class="flex border-b border-stroke-soft bg-surface shrink-0 px-2 pt-2">
-      <motion.button
+      <Button
+        variant="subtab"
+        size="subtab"
         @click="activeSubtab = 'visits'"
-        v-bind="buttonMotionProps"
-        class="flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent"
+        class="flex-1"
         :class="
           activeSubtab === 'visits'
             ? 'border-stroke bg-bg text-accent-ink-str'
@@ -149,11 +151,12 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
         "
       >
         Visits ({{ visitItems.length }})
-      </motion.button>
-      <motion.button
+      </Button>
+      <Button
+        variant="subtab"
+        size="subtab"
         @click="activeSubtab = 'purchases'"
-        v-bind="buttonMotionProps"
-        class="flex-1 rounded-t-md border border-b-0 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.5px] cursor-pointer bg-transparent"
+        class="flex-1"
         :class="
           activeSubtab === 'purchases'
             ? 'border-stroke bg-bg text-accent-ink-str'
@@ -161,7 +164,7 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
         "
       >
         Purchases ({{ items.length }})
-      </motion.button>
+      </Button>
     </div>
 
     <template v-if="!isLoadedAny">
@@ -209,14 +212,15 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
               : `${visibleItems.length} ${activeSubtab}`
           }}
         </span>
-        <motion.button
+        <Button
           v-if="selectedIds.size > 0"
+          variant="dangerLink"
+          size="link"
           @click="deleteSelected"
-          v-bind="buttonMotionProps"
-          class="text-[11px] text-destructive hover:underline cursor-pointer bg-transparent border-0 px-0 py-0 font-medium"
+          class="text-[11px]"
         >
           Delete selected
-        </motion.button>
+        </Button>
       </div>
 
       <!-- Items list -->
@@ -280,13 +284,7 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
           />
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="sm" @click="renamingItemId = null" />
-            <motion.button
-              @click="confirmRename"
-              v-bind="buttonMotionProps"
-              class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
-            >
-              Save
-            </motion.button>
+            <BtnAccent label="Save" :full="true" size="md" @click="confirmRename" />
           </div>
         </motion.div>
       </motion.div>
@@ -333,13 +331,7 @@ const subviewSlideMotionProps = createSlideMotionProps(8);
           </div>
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="sm" @click="changingPriceItemId = null" />
-            <motion.button
-              @click="confirmChangePrice"
-              v-bind="buttonMotionProps"
-              class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
-            >
-              Save
-            </motion.button>
+            <BtnAccent label="Save" :full="true" size="md" @click="confirmChangePrice" />
           </div>
         </motion.div>
       </motion.div>

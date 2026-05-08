@@ -5,7 +5,7 @@ import { sendMessage } from "./messages";
 
 const DEFAULT_TOP = 96;
 const MIN_TOP = 20;
-const RIGHT_OFFSET = 20;
+const RIGHT_OFFSET = 0;
 const DRAG_THRESHOLD = 6;
 const FADE_DURATION_MS = 180;
 const DISMISSED_KEY = "poe-sl-fab-dismissed";
@@ -30,6 +30,8 @@ export async function injectFab(drafts: Draft[], url: string) {
   const latestMatches = matches.slice(0, 5);
 
   const savedTop = await fabPositionItem.getValue();
+  const extensionIconPath = browser.runtime.getManifest().icons?.[48] ?? "icons/icon48.png";
+  const extensionIconUrl = browser.runtime.getURL(extensionIconPath as any);
 
   const host = document.createElement("div");
   host.dataset.testid = "poe-sl-fab-host";
@@ -153,11 +155,12 @@ export async function injectFab(drafts: Draft[], url: string) {
       cursor: grabbing;
     }
     .fab-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      border-radius: 0;
       background: #15110b;
       border: 2px solid #c28a2a;
+      border-right: none;
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       display: flex;
       align-items: center;
@@ -174,35 +177,11 @@ export async function injectFab(drafts: Draft[], url: string) {
       background: #1e1710;
       transform: scale(1.05);
     }
-    .fab-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-    }
-    .fab-close-btn {
-      background: #15110b;
-      border: 1px solid #8a7e66;
-      color: #8a7e66;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      cursor: pointer;
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      opacity: 0;
-      transition: opacity 0.2s, color 0.2s, border-color 0.2s;
-    }
-    .fab-btn-wrapper:hover .fab-close-btn {
-      opacity: 1;
-    }
-    .fab-close-btn:hover {
-      color: #e8dcbe;
-      border-color: #e8dcbe;
+    .fab-btn img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      pointer-events: none;
     }
   `;
 
@@ -250,11 +229,8 @@ export async function injectFab(drafts: Draft[], url: string) {
     container.innerHTML = `
       <div class="fab-btn-wrapper">
         <button class="fab-btn" data-testid="poe-sl-fab-btn" title="Open PoE Shopping List">
-          <svg viewBox="0 0 24 24">
-            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-          </svg>
+          <img src="${extensionIconUrl}" alt="PoE Shopping List" />
         </button>
-        <button class="fab-close-btn" title="Dismiss">✕</button>
       </div>
     `;
 
@@ -263,18 +239,11 @@ export async function injectFab(drafts: Draft[], url: string) {
 
     const wrapper = shadow.querySelector(".fab-btn-wrapper") as HTMLDivElement;
     const fabButton = shadow.querySelector(".fab-btn") as HTMLButtonElement;
-    const closeButton = shadow.querySelector(".fab-close-btn") as HTMLButtonElement;
 
     setupVerticalDrag(host, wrapper);
 
     fabButton.addEventListener("click", () => {
       sendMessage("csOpenSidepanel");
-    });
-
-    closeButton.addEventListener("click", (e) => {
-      e.stopPropagation();
-      sessionStorage.setItem(DISMISSED_KEY, "1");
-      host.remove();
     });
   }
 
@@ -349,11 +318,6 @@ function setupVerticalDrag(host: HTMLDivElement, wrapper: HTMLDivElement) {
   };
 
   wrapper.addEventListener("pointerdown", (event) => {
-    const target = event.target as HTMLElement | null;
-    if (target?.closest(".fab-close-btn")) {
-      return;
-    }
-
     pointerId = event.pointerId;
     startPointerY = event.clientY;
     startTop = Number.parseFloat(host.style.top) || DEFAULT_TOP;

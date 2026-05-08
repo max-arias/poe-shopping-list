@@ -39,5 +39,11 @@ export default defineConfig({
         128: "icons/icon128.png",
       },
     },
+    web_accessible_resources: [
+      {
+        resources: ["icons/*.png"],
+        matches: ["https://www.pathofexile.com/*", "https://pathofexile.com/*"],
+      },
+    ],
   },
 });

@@ -9,12 +9,8 @@ import ItemRow from "../mine/ItemRow.vue";
 import KebabMenu from "../mine/KebabMenu.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
-import {
-  buttonMotionProps,
-  dialogMotionProps,
-  overlayMotionProps,
-  subtleButtonMotionProps,
-} from "../../utils/motion";
+import Button from "../shared/Button.vue";
+import { dialogMotionProps, overlayMotionProps } from "../../utils/motion";
 
 const ui = useUiStore();
 const { draft, unmarkAll, deleteDraft, updateCapture, setBuildInfo } = useDraftList();
@@ -131,26 +127,27 @@ async function saveLinkBuild() {
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
     <!-- Header -->
     <div class="shrink-0 flex items-center gap-2 px-3 py-2.5 border-b border-stroke">
-      <motion.button
+      <Button
+        variant="plainIcon"
+        size="link"
         @click="ui.closeDetail()"
-        v-bind="subtleButtonMotionProps"
-        class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none px-0.5"
+        class="text-base leading-none px-0.5"
         aria-label="Back"
       >
         ←
-      </motion.button>
+      </Button>
       <p class="text-[13px] font-semibold text-ink flex-1 truncate">
         {{ draft?.name ?? "My List" }}
       </p>
-      <motion.button
+      <Button
+        variant="icon"
+        size="iconMd"
         @click="ui.toggleSettings()"
-        v-bind="subtleButtonMotionProps"
-        class="w-7 h-7 flex items-center justify-center text-ink-muted text-sm cursor-pointer bg-transparent border border-transparent rounded-sm hover:bg-surface hover:text-ink"
         title="Settings"
         aria-label="Settings"
       >
         ⚙
-      </motion.button>
+      </Button>
     </div>
 
     <!-- Items -->
@@ -238,7 +235,7 @@ async function saveLinkBuild() {
             size="md"
             @click="
               showUnmarkConfirm = false;
-              ui.exportSheetOpen = true;
+              ui.openExportSheet();
             "
           />
           <BtnGhost
@@ -279,13 +276,9 @@ async function saveLinkBuild() {
           </p>
           <div class="flex gap-2">
             <BtnGhost label="Cancel" :full="true" size="md" @click="showDeleteConfirm = false" />
-            <motion.button
-              @click="confirmDelete"
-              v-bind="buttonMotionProps"
-              class="flex-1 h-8 px-2.5 inline-flex items-center justify-center text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
-            >
+            <Button variant="destructive" :full="true" size="md" @click="confirmDelete">
               Delete
-            </motion.button>
+            </Button>
           </div>
         </motion.div>
       </motion.div>
@@ -333,21 +326,23 @@ async function saveLinkBuild() {
                 aria-label="Additional URL"
                 class="flex-1 h-8 px-2 text-[12px] bg-bg border border-stroke rounded-sm text-ink outline-none focus:border-accent"
               />
-              <motion.button
+              <Button
+                variant="plainIcon"
+                size="iconSm"
                 @click="linkAssociatedUrls.splice(i, 1)"
-                v-bind="subtleButtonMotionProps"
-                class="w-6 h-6 flex items-center justify-center text-ink-muted hover:text-ink cursor-pointer bg-transparent border-0 shrink-0 text-base leading-none"
+                aria-label="Remove URL"
               >
                 ✕
-              </motion.button>
+              </Button>
             </div>
-            <motion.button
+            <Button
+              variant="link"
+              size="link"
               @click="linkAssociatedUrls.push('')"
-              v-bind="subtleButtonMotionProps"
-              class="self-start text-[10px] text-accent-ink-str hover:underline cursor-pointer bg-transparent border-0 px-0 py-0"
+              class="self-start"
             >
               + Add another URL
-            </motion.button>
+            </Button>
           </div>
 
           <div class="flex flex-col gap-1.5">
@@ -372,13 +367,7 @@ async function saveLinkBuild() {
                 showLinkBuild = false;
               "
             />
-            <motion.button
-              @click="saveLinkBuild"
-              v-bind="buttonMotionProps"
-              class="flex-1 h-8 text-xs font-semibold bg-accent text-accent-ink border-0 rounded-sm cursor-pointer"
-            >
-              Save
-            </motion.button>
+            <BtnAccent label="Save" :full="true" size="md" @click="saveLinkBuild" />
           </div>
         </motion.div>
       </motion.div>

@@ -6,6 +6,7 @@ import { useDraftList } from "../../composables/useDraftList";
 import { sendMessage } from "../../utils/messages";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
+import Button from "../shared/Button.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import {
   contentFadeMotionProps,
@@ -205,12 +206,9 @@ async function handleDelete() {
         </p>
         <div class="flex gap-2">
           <BtnGhost label="Cancel" :full="true" size="md" @click="confirmingDelete = false" />
-          <button
-            @click="handleDelete"
-            class="flex-1 h-8 px-2.5 inline-flex items-center justify-center text-xs font-semibold bg-destructive text-destructive-ink border-0 rounded-sm cursor-pointer"
-          >
+          <Button variant="destructive" :full="true" size="md" @click="handleDelete">
             Delete
-          </button>
+          </Button>
         </div>
       </div>
     </motion.div>

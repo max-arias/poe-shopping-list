@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AnimatePresence, motion } from "motion-v";
+import { motion } from "motion-v";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
@@ -9,7 +9,6 @@ import BtnAccent from "../shared/BtnAccent.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import {
   buttonMotionProps,
-  inlineMotionProps,
   overlayMotionProps,
   sheetMotionProps,
   subtleButtonMotionProps,
@@ -101,14 +100,8 @@ function closeForm() {
           {{ drafts.length > 0 ? "Or create a new list" : "Create a new list" }}
         </p>
 
-        <motion.div layout>
-          <AnimatePresence mode="wait" :initial="false">
-            <motion.div
-              v-if="showCreateForm"
-              key="form"
-              v-bind="inlineMotionProps"
-              class="flex flex-col gap-2"
-            >
+        <div>
+          <div v-if="showCreateForm" class="flex flex-col gap-2">
               <input
                 v-model="newName"
                 placeholder='e.g. "RF Jugg"'
@@ -127,8 +120,8 @@ function closeForm() {
                   @click="handleCreate"
                 />
               </div>
-            </motion.div>
-            <motion.div v-else key="button" v-bind="inlineMotionProps">
+          </div>
+          <div v-else>
               <BtnGhost
                 label="+ New List"
                 :accent="true"
@@ -136,9 +129,8 @@ function closeForm() {
                 size="md"
                 @click="showCreateForm = true"
               />
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </motion.div>
   </motion.div>

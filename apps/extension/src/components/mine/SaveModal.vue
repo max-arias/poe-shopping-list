@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AnimatePresence, motion } from "motion-v";
+import { motion } from "motion-v";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useUiStore } from "../../stores/ui";
 import { useDraftList } from "../../composables/useDraftList";
@@ -9,12 +9,7 @@ import Pill from "../shared/Pill.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
 import BtnAccent from "../shared/BtnAccent.vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
-import {
-  contentFadeMotionProps,
-  overlayMotionProps,
-  sheetMotionProps,
-  subtleButtonMotionProps,
-} from "../../utils/motion";
+import { overlayMotionProps, sheetMotionProps, subtleButtonMotionProps } from "../../utils/motion";
 
 const ui = useUiStore();
 const { draft, addItem } = useDraftList();
@@ -134,20 +129,10 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
       </div>
 
       <!-- Price preview -->
-      <AnimatePresence mode="wait" :initial="false">
-        <motion.div
-          v-if="loadingCapture"
-          key="loading"
-          v-bind="contentFadeMotionProps"
-          class="text-[11px] text-ink-muted text-center py-2"
-        >
+      <div v-if="loadingCapture" class="text-[11px] text-ink-muted text-center py-2">
           Reading prices…
-        </motion.div>
-        <motion.div
-          v-else-if="capture && capture.aggregates.sampleSize > 0"
-          key="capture"
-          v-bind="contentFadeMotionProps"
-        >
+      </div>
+      <div v-else-if="capture && capture.aggregates.sampleSize > 0">
           <div class="border border-stroke rounded-sm p-2.5 grid grid-cols-3 gap-2 bg-surface">
             <div
               v-for="[label, val] in [
@@ -171,16 +156,10 @@ const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
             {{ capture.aggregates.sampleSize }} listings captured · dominant currency:
             {{ capture.aggregates.currency }}
           </p>
-        </motion.div>
-        <motion.p
-          v-else
-          key="empty"
-          v-bind="contentFadeMotionProps"
-          class="text-[10px] text-ink-muted"
-        >
+      </div>
+      <p v-else class="text-[10px] text-ink-muted">
           No price data — saving name only.
-        </motion.p>
-      </AnimatePresence>
+      </p>
 
       <!-- Actions -->
       <div class="flex gap-2 mt-1">

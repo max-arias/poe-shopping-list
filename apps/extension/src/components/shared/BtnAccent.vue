@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { motion } from "motion-v";
-import { buttonMotionProps } from "../../utils/motion";
+import Button from "./Button.vue";
 
 const {
   label,
@@ -18,18 +17,14 @@ const emit = defineEmits<{ click: [] }>();
 </script>
 
 <template>
-  <motion.button
+  <Button
+    variant="accent"
+    :label="label"
+    :size="size"
+    :full="full"
     :disabled="disabled"
     @click="!disabled && emit('click')"
-    v-bind="buttonMotionProps"
-    class="flex items-center justify-center px-3.5 uppercase tracking-[0.4px] font-semibold rounded-sm border border-accent-edge bg-accent text-accent-ink shadow-btn cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
-    :class="{
-      'w-full': full,
-      'h-7 text-[11px]': size === 'sm',
-      'h-9 text-xs': size === 'md',
-      'h-11 text-sm': size === 'lg',
-    }"
   >
     <slot>{{ label }}</slot>
-  </motion.button>
+  </Button>
 </template>

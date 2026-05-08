@@ -58,6 +58,14 @@ export const useUiStore = defineStore("ui", () => {
     importSheetOpen.value = true;
   }
 
+  function openExportSheet() {
+    exportSheetOpen.value = true;
+  }
+
+  function closeExportSheet() {
+    exportSheetOpen.value = false;
+  }
+
   function closeImportSheet() {
     importSheetOpen.value = false;
   }
@@ -87,6 +95,8 @@ export const useUiStore = defineStore("ui", () => {
     editSheetItemId,
     openEditSheet,
     closeEditSheet,
+    openExportSheet,
+    closeExportSheet,
     openImportSheet,
     closeImportSheet,
     toggleKebab,

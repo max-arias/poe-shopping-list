@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { motion } from "motion-v";
-import { ref, onMounted } from "vue";
-import { useFocusTrap } from "../../composables/useFocusTrap";
-import { useSettings } from "../../composables/useSettings";
-import { useUiStore } from "../../stores/ui";
-import { POE1_LEAGUES, DEFAULT_SETTINGS } from "@/types";
+import { motion, useDomRef } from 'motion-v';
+import { onMounted } from 'vue';
+import { useFocusTrap } from '../../composables/useFocusTrap';
+import { useSettings } from '../../composables/useSettings';
+import { useUiStore } from '../../stores/ui';
+import { POE1_LEAGUES } from '@/types';
 import {
   buttonMotionProps,
   overlayMotionProps,
   popoverMotionProps,
   subtleButtonMotionProps,
   toggleKnobMotionProps,
-} from "../../utils/motion";
+} from '../../utils/motion';
 
 const ui = useUiStore();
 const { settings, updateSettings } = useSettings();
 
-const dialogRef = ref<HTMLElement | null>(null);
+const dialogRef = useDomRef();
 const { activate: activateFocusTrap } = useFocusTrap(dialogRef);
 
 onMounted(() => {
@@ -26,12 +26,6 @@ onMounted(() => {
 function toggleShowFloatingActionButton() {
   updateSettings({
     showFloatingActionButton: !settings.value.showFloatingActionButton,
-  });
-}
-
-function resetShowFloatingActionButton() {
-  updateSettings({
-    showFloatingActionButton: DEFAULT_SETTINGS.showFloatingActionButton,
   });
 }
 </script>
@@ -128,17 +122,7 @@ function resetShowFloatingActionButton() {
         <!-- Show floating action button -->
         <div class="px-3 py-3 flex items-center justify-between gap-3">
           <div>
-            <div class="flex items-center gap-2">
-              <p class="text-[12px] text-ink">Show floating action button</p>
-              <motion.button
-                type="button"
-                v-bind="subtleButtonMotionProps"
-                class="text-[10px] text-accent underline underline-offset-2 cursor-pointer"
-                @click="resetShowFloatingActionButton"
-              >
-                Reset
-              </motion.button>
-            </div>
+            <p class="text-[12px] text-ink">Show floating action button</p>
             <p class="text-[10px] text-ink-muted">Show the trade-page FAB shortcut</p>
           </div>
           <motion.button
