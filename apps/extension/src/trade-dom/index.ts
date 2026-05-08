@@ -1,5 +1,5 @@
-export { SELECTORS } from './selectors.js';
-import { SELECTORS } from './selectors.js';
+export { SELECTORS } from "./selectors.js";
+import { SELECTORS } from "./selectors.js";
 
 // ── Public types ─────────────────────────────────────────────────────────────
 
@@ -51,9 +51,9 @@ export function extractSamples(root: Document | Element): RawListing[] {
 
   const rows = root.querySelectorAll(SELECTORS.allRows);
   console.log(
-    '[poe-sl] extractSamples: rows found =',
+    "[poe-sl] extractSamples: rows found =",
     rows.length,
-    '| selector =',
+    "| selector =",
     SELECTORS.allRows,
   );
 
@@ -64,24 +64,24 @@ export function extractSamples(root: Document | Element): RawListing[] {
     const priceWrapper = row.querySelector(SELECTORS.priceWrapper);
     if (!priceWrapper) {
       console.log(
-        '[poe-sl] row',
+        "[poe-sl] row",
         listingId,
-        '— no priceWrapper (selector:',
+        "— no priceWrapper (selector:",
         SELECTORS.priceWrapper,
-        ')',
+        ")",
       );
       continue;
     }
 
-    console.log('[poe-sl] row', listingId, '— priceWrapper innerHTML:', priceWrapper.innerHTML);
+    console.log("[poe-sl] row", listingId, "— priceWrapper innerHTML:", priceWrapper.innerHTML);
 
     let priceValue: number | null = null;
-    for (const span of priceWrapper.querySelectorAll('span')) {
-      const text = span.textContent?.trim() ?? '';
+    for (const span of priceWrapper.querySelectorAll("span")) {
+      const text = span.textContent?.trim() ?? "";
       console.log(
-        '[poe-sl]   span text:',
+        "[poe-sl]   span text:",
         JSON.stringify(text),
-        '| matches numeric:',
+        "| matches numeric:",
         SELECTORS.priceAmountRe.test(text),
       );
       if (SELECTORS.priceAmountRe.test(text)) {
@@ -91,21 +91,21 @@ export function extractSamples(root: Document | Element): RawListing[] {
     }
     // Targeted fallback: price value lives in the span immediately after a <br>
     if (priceValue === null) {
-      const directSpan = priceWrapper.querySelector('br + span');
-      const t = directSpan?.textContent?.trim() ?? '';
-      console.log('[poe-sl]   br+span fallback text:', JSON.stringify(t));
+      const directSpan = priceWrapper.querySelector("br + span");
+      const t = directSpan?.textContent?.trim() ?? "";
+      console.log("[poe-sl]   br+span fallback text:", JSON.stringify(t));
       if (SELECTORS.priceAmountRe.test(t)) priceValue = Number.parseFloat(t);
     }
     if (priceValue === null) {
-      console.log('[poe-sl]   → no numeric price found, skipping row', listingId);
+      console.log("[poe-sl]   → no numeric price found, skipping row", listingId);
       continue;
     }
 
     const img = priceWrapper.querySelector(SELECTORS.currencyImg);
     const currencySpanEl = priceWrapper.querySelector(SELECTORS.currencySpan);
     const priceCurrency =
-      img?.getAttribute('alt') ?? currencySpanEl?.textContent?.trim() ?? 'chaos';
-    console.log('[poe-sl]   → price =', priceValue, priceCurrency);
+      img?.getAttribute("alt") ?? currencySpanEl?.textContent?.trim() ?? "chaos";
+    console.log("[poe-sl]   → price =", priceValue, priceCurrency);
 
     listings.push({ listingId, priceValue, priceCurrency });
   }
@@ -126,7 +126,7 @@ export function buildCapture(root: Document, tradeUrl: string): TradeCapture {
     return {
       tradeUrl,
       samples: [],
-      aggregates: { min: 0, median: 0, avg: 0, sampleSize: 0, currency: 'chaos' },
+      aggregates: { min: 0, median: 0, avg: 0, sampleSize: 0, currency: "chaos" },
       capturedAt,
     };
   }
@@ -166,17 +166,17 @@ export function getSearchBarText(root: Document): string {
   for (const selector of SELECTORS.searchBarInputs) {
     const el = root.querySelector(selector) as HTMLInputElement | null;
     console.log(
-      '[poe-sl] getSearchBarText: selector',
+      "[poe-sl] getSearchBarText: selector",
       JSON.stringify(selector),
-      '→ el =',
+      "→ el =",
       el,
-      '| value =',
+      "| value =",
       el?.value,
     );
     if (el?.value) return el.value.trim();
   }
-  console.log('[poe-sl] getSearchBarText: no match found');
-  return '';
+  console.log("[poe-sl] getSearchBarText: no match found");
+  return "";
 }
 
 // ── Internals ─────────────────────────────────────────────────────────────────
@@ -187,7 +187,7 @@ function getDominantCurrency(samples: RawListing[]): string {
     counts.set(s.priceCurrency, (counts.get(s.priceCurrency) ?? 0) + 1);
   }
 
-  let best = 'chaos';
+  let best = "chaos";
   let bestCount = 0;
   for (const [currency, count] of counts) {
     if (count > bestCount || (count === bestCount && tieBreak(currency, best))) {
@@ -217,35 +217,35 @@ export function extractRowData(row: Element): RowData | null {
 
   // Item name: first .itemName .lc inside the row
   const nameEl = row.querySelector(SELECTORS.itemName);
-  const name = nameEl?.textContent?.trim() ?? '';
+  const name = nameEl?.textContent?.trim() ?? "";
   if (!name) return null;
 
   // Base type: .itemName.typeLine .lc
   const baseEl = row.querySelector(SELECTORS.itemBase);
-  const base = baseEl?.textContent?.trim() ?? '';
+  const base = baseEl?.textContent?.trim() ?? "";
 
   // Price extraction (same logic as extractSamples for a single row)
   const priceWrapper = row.querySelector(SELECTORS.priceWrapper);
   if (!priceWrapper) return null;
 
   let priceValue: number | null = null;
-  for (const span of priceWrapper.querySelectorAll('span')) {
-    const text = span.textContent?.trim() ?? '';
+  for (const span of priceWrapper.querySelectorAll("span")) {
+    const text = span.textContent?.trim() ?? "";
     if (SELECTORS.priceAmountRe.test(text)) {
       priceValue = Number.parseFloat(text);
       break;
     }
   }
   if (priceValue === null) {
-    const directSpan = priceWrapper.querySelector('br + span');
-    const t = directSpan?.textContent?.trim() ?? '';
+    const directSpan = priceWrapper.querySelector("br + span");
+    const t = directSpan?.textContent?.trim() ?? "";
     if (SELECTORS.priceAmountRe.test(t)) priceValue = Number.parseFloat(t);
   }
   if (priceValue === null) return null;
 
   const img = priceWrapper.querySelector(SELECTORS.currencyImg);
   const currencySpanEl = priceWrapper.querySelector(SELECTORS.currencySpan);
-  const priceCurrency = img?.getAttribute('alt') ?? currencySpanEl?.textContent?.trim() ?? 'chaos';
+  const priceCurrency = img?.getAttribute("alt") ?? currencySpanEl?.textContent?.trim() ?? "chaos";
 
   return { listingId, name, base, priceValue, priceCurrency };
 }

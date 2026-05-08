@@ -1,6 +1,6 @@
 <script setup lang="ts">
-type Tone = 'neutral' | 'accent' | 'warn' | 'good';
-const { tone = 'neutral' } = defineProps<{ tone?: Tone }>();
+type Tone = "neutral" | "accent" | "warn" | "good";
+const { tone = "neutral" } = defineProps<{ tone?: Tone }>();
 </script>
 
 <template>

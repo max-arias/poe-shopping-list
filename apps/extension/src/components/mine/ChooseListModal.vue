@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { useDraftList } from '../../composables/useDraftList';
-import { useFocusTrap } from '../../composables/useFocusTrap';
-import { useSettings } from '../../composables/useSettings';
-import { useUiStore } from '../../stores/ui';
-import BtnAccent from '../shared/BtnAccent.vue';
-import BtnGhost from '../shared/BtnGhost.vue';
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import { useDraftList } from "../../composables/useDraftList";
+import { useFocusTrap } from "../../composables/useFocusTrap";
+import { useSettings } from "../../composables/useSettings";
+import { useUiStore } from "../../stores/ui";
+import BtnAccent from "../shared/BtnAccent.vue";
+import BtnGhost from "../shared/BtnGhost.vue";
 
 const ui = useUiStore();
 const { drafts, createDraft } = useDraftList();
 const { settings } = useSettings();
 
 const showCreateForm = ref(false);
-const newName = ref('');
+const newName = ref("");
 const creating = ref(false);
 
 const dialogRef = ref<HTMLElement | null>(null);
@@ -38,7 +38,7 @@ async function handleCreate() {
 
 function closeForm() {
   showCreateForm.value = false;
-  newName.value = '';
+  newName.value = "";
 }
 </script>
 

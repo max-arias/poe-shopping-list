@@ -1,4 +1,4 @@
-import { type Ref, onBeforeUnmount } from 'vue';
+import { type Ref, onBeforeUnmount } from "vue";
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -14,7 +14,7 @@ export function useFocusTrap(containerRef: Ref<FocusTrapContainer>) {
 
     if (el instanceof HTMLElement) return el;
 
-    if (typeof el === 'object' && '$el' in el && el.$el instanceof HTMLElement) {
+    if (typeof el === "object" && "$el" in el && el.$el instanceof HTMLElement) {
       return el.$el;
     }
 
@@ -37,13 +37,13 @@ export function useFocusTrap(containerRef: Ref<FocusTrapContainer>) {
       focusable[0].focus();
     } else {
       // Fallback: focus the container itself if nothing is focusable
-      el.setAttribute('tabindex', '-1');
+      el.setAttribute("tabindex", "-1");
       el.focus();
     }
 
     // Add keydown listener
     keydownHandler = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== "Tab") return;
 
       const focusable = getFocusableElements();
       if (focusable.length === 0) {
@@ -67,14 +67,14 @@ export function useFocusTrap(containerRef: Ref<FocusTrapContainer>) {
       }
     };
 
-    el.addEventListener('keydown', keydownHandler);
+    el.addEventListener("keydown", keydownHandler);
   }
 
   function deactivate() {
     const el = resolveContainer();
 
     if (keydownHandler && el) {
-      el.removeEventListener('keydown', keydownHandler);
+      el.removeEventListener("keydown", keydownHandler);
       keydownHandler = null;
     }
   }

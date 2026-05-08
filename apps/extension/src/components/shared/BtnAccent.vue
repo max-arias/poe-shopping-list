@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import Button from './Button.vue';
+import Button from "./Button.vue";
 
 const {
   label,
-  size = 'md',
+  size = "md",
   full = true,
   disabled = false,
 } = defineProps<{
   label?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   full?: boolean;
   disabled?: boolean;
 }>();

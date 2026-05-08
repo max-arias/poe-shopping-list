@@ -1,8 +1,8 @@
-import { DEFAULT_SETTINGS, type Settings } from '@/types';
-import { ref } from 'vue';
-import { storage } from 'wxt/utils/storage';
+import { DEFAULT_SETTINGS, type Settings } from "@/types";
+import { ref } from "vue";
+import { storage } from "wxt/utils/storage";
 
-const settingsItem = storage.defineItem<Settings>('local:settings:v1', {
+const settingsItem = storage.defineItem<Settings>("local:settings:v1", {
   fallback: DEFAULT_SETTINGS,
 });
 

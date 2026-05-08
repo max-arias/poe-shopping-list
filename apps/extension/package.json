@@ -9,7 +9,7 @@
     "typecheck": "wxt prepare && vue-tsc --noEmit",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
-    "check": "vp check"
+    "check": "vp check src wxt.config.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

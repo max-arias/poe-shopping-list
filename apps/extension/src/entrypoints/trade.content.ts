@@ -1,18 +1,18 @@
-import { DEFAULT_SETTINGS, type Draft, type Settings } from '@/types';
-import { STORAGE } from '@/types/storage';
+import { DEFAULT_SETTINGS, type Draft, type Settings } from "@/types";
+import { STORAGE } from "@/types/storage";
 
 export default defineContentScript({
-  matches: ['https://www.pathofexile.com/trade/*', 'https://pathofexile.com/trade/*'],
-  runAt: 'document_idle',
+  matches: ["https://www.pathofexile.com/trade/*", "https://pathofexile.com/trade/*"],
+  runAt: "document_idle",
 
   async main() {
     const { buildCapture, isCaptureable, getSearchBarText, extractRowData, SELECTORS } =
-      await import('@/trade-dom');
-    const { onMessage, sendMessage } = await import('../utils/messages');
-    const { storage } = await import('wxt/utils/storage');
-    const { injectFab, resetFabDismissedState } = await import('../utils/fab');
+      await import("@/trade-dom");
+    const { onMessage, sendMessage } = await import("../utils/messages");
+    const { storage } = await import("wxt/utils/storage");
+    const { injectFab, resetFabDismissedState } = await import("../utils/fab");
 
-    const drafts = (await storage.getItem<Draft[]>('local:drafts')) ?? [];
+    const drafts = (await storage.getItem<Draft[]>("local:drafts")) ?? [];
     const settingsItem = storage.defineItem<Settings>(STORAGE.settings, {
       fallback: DEFAULT_SETTINGS,
     });
@@ -45,7 +45,7 @@ export default defineContentScript({
     listenForTravelToHideout();
     installHistoryListeners();
 
-    const container = document.querySelector('#main-content, .resultset, body');
+    const container = document.querySelector("#main-content, .resultset, body");
     if (container) {
       let observerTimer: ReturnType<typeof setTimeout>;
       new MutationObserver(() => {
@@ -58,47 +58,47 @@ export default defineContentScript({
       }).observe(container, { childList: true, subtree: true });
     }
 
-    onMessage('csCaptureRead', () => {
+    onMessage("csCaptureRead", () => {
       const capture = buildCapture(document, window.location.href);
       return capture;
     });
 
-    onMessage('csAutoCaptureRead', () => {
+    onMessage("csAutoCaptureRead", () => {
       const capture = buildCapture(document, window.location.href);
       return capture;
     });
 
-    onMessage('csSearchBarGet', () => {
+    onMessage("csSearchBarGet", () => {
       const text = getSearchBarText(document);
       return { text };
     });
 
-    onMessage('csFabVisibilitySet', (message) => {
+    onMessage("csFabVisibilitySet", (message) => {
       isFabVisible = message.data.visible;
       fab?.setVisible(message.data.visible);
     });
 
     function reportStatus() {
       const available = isCaptureable(document);
-      sendMessage('csCaptureStatus', available).catch(() => {});
+      sendMessage("csCaptureStatus", available).catch(() => {});
     }
 
     function installHistoryListeners() {
-      window.addEventListener('poe-sl:locationchange', trackVisitIfNeeded);
-      window.addEventListener('popstate', trackVisitIfNeeded);
-      window.addEventListener('hashchange', trackVisitIfNeeded);
+      window.addEventListener("poe-sl:locationchange", trackVisitIfNeeded);
+      window.addEventListener("popstate", trackVisitIfNeeded);
+      window.addEventListener("hashchange", trackVisitIfNeeded);
 
       const { pushState, replaceState } = window.history;
 
       window.history.pushState = function (...args) {
         const result = pushState.apply(this, args);
-        window.dispatchEvent(new Event('poe-sl:locationchange'));
+        window.dispatchEvent(new Event("poe-sl:locationchange"));
         return result;
       };
 
       window.history.replaceState = function (...args) {
         const result = replaceState.apply(this, args);
-        window.dispatchEvent(new Event('poe-sl:locationchange'));
+        window.dispatchEvent(new Event("poe-sl:locationchange"));
         return result;
       };
     }
@@ -106,8 +106,8 @@ export default defineContentScript({
     function isTradeSearchUrl(url: string): boolean {
       try {
         const parsed = new URL(url);
-        const hostname = parsed.hostname.replace(/^www\./, '');
-        return hostname === 'pathofexile.com' && parsed.pathname.startsWith('/trade/search/');
+        const hostname = parsed.hostname.replace(/^www\./, "");
+        return hostname === "pathofexile.com" && parsed.pathname.startsWith("/trade/search/");
       } catch {
         return false;
       }
@@ -121,7 +121,7 @@ export default defineContentScript({
 
       const name = getSearchBarText(document).trim();
       lastTrackedVisitUrl = url;
-      sendMessage('csVisitHistoryAdd', {
+      sendMessage("csVisitHistoryAdd", {
         id: crypto.randomUUID(),
         url,
         ...(name ? { name } : {}),
@@ -146,39 +146,39 @@ export default defineContentScript({
       const clearBtn = document.querySelector(SELECTORS.clearBtn);
       if (!clearBtn?.parentElement) return;
 
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.dataset.poeSl = 'save-search';
-      btn.textContent = 'Save search';
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.dataset.poeSl = "save-search";
+      btn.textContent = "Save search";
       btn.disabled = !hasResults;
       btn.style.cssText = [
-        'background:transparent',
-        'border:1px solid #7f6e4e',
-        'color:#c28a2a',
-        'padding:6px 14px',
-        'font-size:13px',
-        'font-weight:600',
-        'cursor:pointer',
-        'border-radius:2px',
-        'margin-right:8px',
-        'font-family:inherit',
-      ].join(';');
+        "background:transparent",
+        "border:1px solid #7f6e4e",
+        "color:#c28a2a",
+        "padding:6px 14px",
+        "font-size:13px",
+        "font-weight:600",
+        "cursor:pointer",
+        "border-radius:2px",
+        "margin-right:8px",
+        "font-family:inherit",
+      ].join(";");
       applyButtonStateStyle(btn);
 
-      btn.addEventListener('mouseenter', () => {
+      btn.addEventListener("mouseenter", () => {
         if (btn.disabled) return;
-        btn.style.background = '#c28a2a';
-        btn.style.color = '#140e04';
+        btn.style.background = "#c28a2a";
+        btn.style.color = "#140e04";
       });
-      btn.addEventListener('mouseleave', () => {
+      btn.addEventListener("mouseleave", () => {
         if (btn.disabled) return;
-        btn.style.background = 'transparent';
-        btn.style.color = '#c28a2a';
+        btn.style.background = "transparent";
+        btn.style.color = "#c28a2a";
       });
 
-      btn.addEventListener('click', () => {
+      btn.addEventListener("click", () => {
         if (btn.disabled) return;
-        sendMessage('csSaveSearch');
+        sendMessage("csSaveSearch");
       });
 
       clearBtn.before(btn);
@@ -187,17 +187,17 @@ export default defineContentScript({
     /** Apply visual styling that reflects the button's disabled state. */
     function applyButtonStateStyle(btn: HTMLButtonElement) {
       if (btn.disabled) {
-        btn.style.opacity = '0.4';
-        btn.style.cursor = 'not-allowed';
+        btn.style.opacity = "0.4";
+        btn.style.cursor = "not-allowed";
       } else {
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
       }
     }
 
     /** Listen for clicks on "Travel to Hideout" buttons and send purchase history data. */
     function listenForTravelToHideout() {
-      document.addEventListener('click', async (e) => {
+      document.addEventListener("click", async (e) => {
         const target = e.target as HTMLElement;
         // Check if the click is on or inside a .direct-btn (Travel to Hideout)
         const travelBtn = target.closest(SELECTORS.travelBtn) as HTMLElement | null;
@@ -222,7 +222,7 @@ export default defineContentScript({
           return;
         }
 
-        const item: import('@/types').PurchaseHistoryItem = {
+        const item: import("@/types").PurchaseHistoryItem = {
           id: crypto.randomUUID(),
           listingId: data.listingId,
           name: data.name,
@@ -233,7 +233,7 @@ export default defineContentScript({
           addedAt: Date.now(),
         };
 
-        sendMessage('csPurchaseHistoryAdd', item).catch(() => {});
+        sendMessage("csPurchaseHistoryAdd", item).catch(() => {});
       });
     }
   },

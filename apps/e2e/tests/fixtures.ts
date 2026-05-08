@@ -2,25 +2,24 @@
 // Enables Playwright to attach to pages created by chrome.sidePanel.open(),
 // making the sidepanel accessible via context.pages().
 // See: https://github.com/microsoft/playwright/issues/26693
-process.env.PW_CHROMIUM_ATTACH_TO_OTHER = '1';
+process.env.PW_CHROMIUM_ATTACH_TO_OTHER = "1";
 
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { type BrowserContext, type Page, test as base, chromium } from '@playwright/test';
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { type BrowserContext, type Page, test as base, chromium } from "@playwright/test";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const pathToExtension = path.resolve(__dirname, '../../extension/.output/chrome-mv3');
+const pathToExtension = path.resolve(__dirname, "../../extension/.output/chrome-mv3");
 
 export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
   // Playwright fixture callbacks require an object destructuring pattern.
-  // biome-ignore lint/correctness/noEmptyPattern: no built-in fixtures are needed here.
-  context: async ({}, use) => {
-    const context = await chromium.launchPersistentContext('', {
+  context: async ({ browserName: _browserName }, use) => {
+    const context = await chromium.launchPersistentContext("", {
       headless: false,
       args: [
         `--disable-extensions-except=${pathToExtension}`,
@@ -34,9 +33,9 @@ export const test = base.extend<{
   extensionId: async ({ context }, use) => {
     let [serviceWorker] = context.serviceWorkers();
     if (!serviceWorker) {
-      serviceWorker = await context.waitForEvent('serviceworker');
+      serviceWorker = await context.waitForEvent("serviceworker");
     }
-    const extensionId = serviceWorker.url().split('/')[2];
+    const extensionId = serviceWorker.url().split("/")[2];
     await use(extensionId);
   },
 });
@@ -59,10 +58,10 @@ export async function setStorage(
   value: unknown,
 ): Promise<void> {
   const [sw] = context.serviceWorkers();
-  if (!sw) throw new Error('No service worker found');
+  if (!sw) throw new Error("No service worker found");
 
   // wxt/storage stores "local:drafts" as just "drafts" in chrome.storage.local
-  const storageKey = key.includes(':') ? key.split(':').slice(1).join(':') : key;
+  const storageKey = key.includes(":") ? key.split(":").slice(1).join(":") : key;
 
   await sw.evaluate(
     ({ k, v }) =>
@@ -85,8 +84,8 @@ export async function openSidepanel(page: Page, context: BrowserContext): Promis
   const pagesBefore = new Set(context.pages());
 
   // Click the FAB button to trigger csOpenSidepanel → chrome.sidePanel.open()
-  const fabBtn = page.getByTestId('poe-sl-fab-btn');
-  await fabBtn.waitFor({ state: 'visible', timeout: 10_000 });
+  const fabBtn = page.getByTestId("poe-sl-fab-btn");
+  await fabBtn.waitFor({ state: "visible", timeout: 10_000 });
   await fabBtn.click();
 
   // Wait for the sidepanel page to appear in context.pages().
@@ -98,20 +97,20 @@ export async function openSidepanel(page: Page, context: BrowserContext): Promis
     if (newPages.length > 0) {
       const sp = newPages[0];
       // Wait for the sidepanel to finish initial navigation
-      await sp.waitForLoadState('domcontentloaded');
+      await sp.waitForLoadState("domcontentloaded");
       return sp;
     }
     await page.waitForTimeout(200);
   }
 
   throw new Error(
-    'Sidepanel page did not appear after clicking the FAB button. ' +
-      'Ensure PW_CHROMIUM_ATTACH_TO_OTHER=1 is set and chrome.sidePanel.open() is working.',
+    "Sidepanel page did not appear after clicking the FAB button. " +
+      "Ensure PW_CHROMIUM_ATTACH_TO_OTHER=1 is set and chrome.sidePanel.open() is working.",
   );
 }
 
 export async function waitForSidepanelReady(sp: Page): Promise<void> {
-  await base.expect(sp.getByRole('tab', { name: 'My Lists' })).toBeVisible({ timeout: 10_000 });
+  await base.expect(sp.getByRole("tab", { name: "My Lists" })).toBeVisible({ timeout: 10_000 });
 }
 
 export async function closeSidepanel(sp: Page): Promise<void> {

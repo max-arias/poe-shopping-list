@@ -3,13 +3,13 @@
 // No assets, no deps.
 
 const DC = {
-  bg: '#f0eee9',
-  grid: 'rgba(0,0,0,0.06)',
-  label: 'rgba(60,50,40,0.7)',
-  title: 'rgba(40,30,20,0.85)',
-  subtitle: 'rgba(60,50,40,0.6)',
-  postitBg: '#fef4a8',
-  postitText: '#5a4a2a',
+  bg: "#f0eee9",
+  grid: "rgba(0,0,0,0.06)",
+  label: "rgba(60,50,40,0.7)",
+  title: "rgba(40,30,20,0.85)",
+  subtitle: "rgba(60,50,40,0.6)",
+  postitBg: "#fef4a8",
+  postitText: "#5a4a2a",
   font: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
 };
 
@@ -111,7 +111,7 @@ function DesignCanvas({ children, minScale = 0.1, maxScale = 8, style = {} }) {
       e.preventDefault();
       vp.setPointerCapture(e.pointerId);
       drag = { id: e.pointerId, lx: e.clientX, ly: e.clientY };
-      vp.style.cursor = 'grabbing';
+      vp.style.cursor = "grabbing";
     };
     const onPointerMove = (e) => {
       if (!drag || e.pointerId !== drag.id) return;
@@ -125,26 +125,26 @@ function DesignCanvas({ children, minScale = 0.1, maxScale = 8, style = {} }) {
       if (!drag || e.pointerId !== drag.id) return;
       vp.releasePointerCapture(e.pointerId);
       drag = null;
-      vp.style.cursor = '';
+      vp.style.cursor = "";
     };
 
-    vp.addEventListener('wheel', onWheel, { passive: false });
-    vp.addEventListener('gesturestart', onGestureStart, { passive: false });
-    vp.addEventListener('gesturechange', onGestureChange, { passive: false });
-    vp.addEventListener('gestureend', onGestureEnd, { passive: false });
-    vp.addEventListener('pointerdown', onPointerDown);
-    vp.addEventListener('pointermove', onPointerMove);
-    vp.addEventListener('pointerup', onPointerUp);
-    vp.addEventListener('pointercancel', onPointerUp);
+    vp.addEventListener("wheel", onWheel, { passive: false });
+    vp.addEventListener("gesturestart", onGestureStart, { passive: false });
+    vp.addEventListener("gesturechange", onGestureChange, { passive: false });
+    vp.addEventListener("gestureend", onGestureEnd, { passive: false });
+    vp.addEventListener("pointerdown", onPointerDown);
+    vp.addEventListener("pointermove", onPointerMove);
+    vp.addEventListener("pointerup", onPointerUp);
+    vp.addEventListener("pointercancel", onPointerUp);
     return () => {
-      vp.removeEventListener('wheel', onWheel);
-      vp.removeEventListener('gesturestart', onGestureStart);
-      vp.removeEventListener('gesturechange', onGestureChange);
-      vp.removeEventListener('gestureend', onGestureEnd);
-      vp.removeEventListener('pointerdown', onPointerDown);
-      vp.removeEventListener('pointermove', onPointerMove);
-      vp.removeEventListener('pointerup', onPointerUp);
-      vp.removeEventListener('pointercancel', onPointerUp);
+      vp.removeEventListener("wheel", onWheel);
+      vp.removeEventListener("gesturestart", onGestureStart);
+      vp.removeEventListener("gesturechange", onGestureChange);
+      vp.removeEventListener("gestureend", onGestureEnd);
+      vp.removeEventListener("pointerdown", onPointerDown);
+      vp.removeEventListener("pointermove", onPointerMove);
+      vp.removeEventListener("pointerup", onPointerUp);
+      vp.removeEventListener("pointercancel", onPointerUp);
     };
   }, [apply, minScale, maxScale]);
 
@@ -154,32 +154,32 @@ function DesignCanvas({ children, minScale = 0.1, maxScale = 8, style = {} }) {
       ref={vpRef}
       className="design-canvas"
       style={{
-        height: '100vh',
-        width: '100vw',
+        height: "100vh",
+        width: "100vw",
         background: DC.bg,
-        overflow: 'hidden',
-        overscrollBehavior: 'none',
-        touchAction: 'none',
-        position: 'relative',
+        overflow: "hidden",
+        overscrollBehavior: "none",
+        touchAction: "none",
+        position: "relative",
         fontFamily: DC.font,
-        boxSizing: 'border-box',
+        boxSizing: "border-box",
         ...style,
       }}
     >
       <div
         ref={worldRef}
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: 0,
           left: 0,
-          transformOrigin: '0 0',
-          willChange: 'transform',
-          width: 'max-content',
-          minWidth: '100%',
-          minHeight: '100%',
-          padding: '60px 0 80px',
+          transformOrigin: "0 0",
+          willChange: "transform",
+          width: "max-content",
+          minWidth: "100%",
+          minHeight: "100%",
+          padding: "60px 0 80px",
           backgroundImage: gridSvg,
-          backgroundSize: '120px 120px',
+          backgroundSize: "120px 120px",
         }}
       >
         {children}
@@ -193,8 +193,8 @@ function DesignCanvas({ children, minScale = 0.1, maxScale = 8, style = {} }) {
 // ─────────────────────────────────────────────────────────────
 function DCSection({ title, subtitle, children, gap = 48 }) {
   return (
-    <div style={{ marginBottom: 80, position: 'relative' }}>
-      <div style={{ padding: '0 60px 36px' }}>
+    <div style={{ marginBottom: 80, position: "relative" }}>
+      <div style={{ padding: "0 60px 36px" }}>
         <div
           style={{
             fontSize: 22,
@@ -221,11 +221,11 @@ function DCSection({ title, subtitle, children, gap = 48 }) {
       {/* h-stack — clips offscreen, never wraps */}
       <div
         style={{
-          display: 'flex',
+          display: "flex",
           gap,
-          padding: '0 60px',
-          alignItems: 'flex-start',
-          width: 'max-content',
+          padding: "0 60px",
+          alignItems: "flex-start",
+          width: "max-content",
         }}
       >
         {children}
@@ -239,18 +239,18 @@ function DCSection({ title, subtitle, children, gap = 48 }) {
 // ─────────────────────────────────────────────────────────────
 function DCArtboard({ label, children, width, height, style = {} }) {
   return (
-    <div style={{ position: 'relative', flexShrink: 0 }}>
+    <div style={{ position: "relative", flexShrink: 0 }}>
       {label && (
         <div
           style={{
-            position: 'absolute',
-            bottom: '100%',
+            position: "absolute",
+            bottom: "100%",
             left: 0,
             paddingBottom: 8,
             fontSize: 12,
             fontWeight: 500,
             color: DC.label,
-            whiteSpace: 'nowrap',
+            whiteSpace: "nowrap",
           }}
         >
           {label}
@@ -259,11 +259,11 @@ function DCArtboard({ label, children, width, height, style = {} }) {
       <div
         style={{
           borderRadius: 2,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)',
-          overflow: 'hidden',
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06)",
+          overflow: "hidden",
           width,
           height,
-          background: '#fff',
+          background: "#fff",
           ...style,
         }}
       >
@@ -280,19 +280,19 @@ function DCPostIt({ children, top, left, right, bottom, rotate = -2, width = 180
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         top,
         left,
         right,
         bottom,
         width,
         background: DC.postitBg,
-        padding: '14px 16px',
+        padding: "14px 16px",
         fontFamily: '"Comic Sans MS", "Marker Felt", "Segoe Print", cursive',
         fontSize: 14,
         lineHeight: 1.4,
         color: DC.postitText,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)',
+        boxShadow: "0 2px 8px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)",
         transform: `rotate(${rotate}deg)`,
         zIndex: 5,
       }}

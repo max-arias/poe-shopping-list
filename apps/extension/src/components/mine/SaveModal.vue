@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { useDraftList } from '../../composables/useDraftList';
-import { useFocusTrap } from '../../composables/useFocusTrap';
-import { useSettings } from '../../composables/useSettings';
-import { useUiStore } from '../../stores/ui';
-import { sendMessage } from '../../utils/messages';
-import BtnAccent from '../shared/BtnAccent.vue';
-import BtnGhost from '../shared/BtnGhost.vue';
-import Pill from '../shared/Pill.vue';
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import { useDraftList } from "../../composables/useDraftList";
+import { useFocusTrap } from "../../composables/useFocusTrap";
+import { useSettings } from "../../composables/useSettings";
+import { useUiStore } from "../../stores/ui";
+import { sendMessage } from "../../utils/messages";
+import BtnAccent from "../shared/BtnAccent.vue";
+import BtnGhost from "../shared/BtnGhost.vue";
+import Pill from "../shared/Pill.vue";
 
 const ui = useUiStore();
 const { draft, addItem } = useDraftList();
 const { settings } = useSettings();
 
-const itemName = ref('');
+const itemName = ref("");
 const saving = ref(false);
-const capture = ref<import('@/types').TradeCapture | null>(null);
+const capture = ref<import("@/types").TradeCapture | null>(null);
 const loadingCapture = ref(false);
 
 const dialogRef = ref<HTMLElement | null>(null);
@@ -28,22 +28,22 @@ onMounted(async () => {
 
   if (!itemName.value) {
     try {
-      const res = await sendMessage('spSearchBarGet');
-      console.log('[poe-sl] modal: spSearchBarGet =', res);
-      itemName.value = res?.text ?? '';
+      const res = await sendMessage("spSearchBarGet");
+      console.log("[poe-sl] modal: spSearchBarGet =", res);
+      itemName.value = res?.text ?? "";
     } catch (e) {
-      console.error('[poe-sl] modal: spSearchBarGet error:', e);
+      console.error("[poe-sl] modal: spSearchBarGet error:", e);
     }
   }
 
   if (settings.value.autoCapturePrice) {
     loadingCapture.value = true;
     try {
-      const cap = await sendMessage('spCaptureRead');
-      console.log('[poe-sl] modal: spCaptureRead =', cap);
+      const cap = await sendMessage("spCaptureRead");
+      console.log("[poe-sl] modal: spCaptureRead =", cap);
       capture.value = cap ?? null;
     } catch (e) {
-      console.error('[poe-sl] modal: spCaptureRead error:', e);
+      console.error("[poe-sl] modal: spCaptureRead error:", e);
       capture.value = null;
     } finally {
       loadingCapture.value = false;
@@ -55,11 +55,11 @@ async function handleSave() {
   if (!itemName.value.trim() || saving.value || !draft.value) return;
   saving.value = true;
   // Determine trade URL: use capture URL or current active tab URL
-  let tradeUrl = capture.value?.tradeUrl ?? '';
+  let tradeUrl = capture.value?.tradeUrl ?? "";
   if (!tradeUrl) {
     try {
       const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-      tradeUrl = tab?.url ?? '';
+      tradeUrl = tab?.url ?? "";
     } catch {}
   }
   await addItem(itemName.value.trim(), tradeUrl, capture.value);

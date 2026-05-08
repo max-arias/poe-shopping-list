@@ -7,9 +7,9 @@ const { wf } = window;
 const TabBar = ({ active, onSelect, tabs }) => (
   <div
     style={{
-      display: 'flex',
-      borderBottom: '1px solid var(--wf-stroke)',
-      background: 'var(--wf-tab-bg)',
+      display: "flex",
+      borderBottom: "1px solid var(--wf-stroke)",
+      background: "var(--wf-tab-bg)",
     }}
   >
     {tabs.map((t) => {
@@ -19,22 +19,22 @@ const TabBar = ({ active, onSelect, tabs }) => (
           key={t.key}
           onClick={() => onSelect?.(t.key)}
           onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') onSelect?.(t.key);
+            if (event.key === "Enter" || event.key === " ") onSelect?.(t.key);
           }}
           role="tab"
           tabIndex={0}
           style={{
             flex: 1,
-            padding: '11px 0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            padding: "11px 0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             gap: 6,
             fontSize: 12,
             fontWeight: on ? 600 : 400,
-            color: on ? 'var(--wf-gold-ink-strong)' : 'var(--wf-muted)',
-            borderBottom: on ? '2px solid var(--wf-gold)' : '2px solid transparent',
-            cursor: 'pointer',
+            color: on ? "var(--wf-gold-ink-strong)" : "var(--wf-muted)",
+            borderBottom: on ? "2px solid var(--wf-gold)" : "2px solid transparent",
+            cursor: "pointer",
           }}
         >
           <span>{t.label}</span>
@@ -42,12 +42,12 @@ const TabBar = ({ active, onSelect, tabs }) => (
             <span
               style={{
                 fontSize: 10,
-                padding: '0 5px',
+                padding: "0 5px",
                 borderRadius: 6,
                 minWidth: 14,
-                background: on ? 'var(--wf-gold-soft)' : 'var(--wf-pill-bg)',
-                color: on ? 'var(--wf-gold-ink-strong)' : 'var(--wf-muted)',
-                textAlign: 'center',
+                background: on ? "var(--wf-gold-soft)" : "var(--wf-pill-bg)",
+                color: on ? "var(--wf-gold-ink-strong)" : "var(--wf-muted)",
+                textAlign: "center",
               }}
             >
               {t.badge}
@@ -63,12 +63,12 @@ const TabBar = ({ active, onSelect, tabs }) => (
 const ActiveListHeader = ({ density }) => (
   <div
     style={{
-      padding: density === 'compact' ? '8px 12px' : '12px 14px',
-      borderBottom: '1px solid var(--wf-stroke-soft)',
-      display: 'flex',
-      alignItems: 'center',
+      padding: density === "compact" ? "8px 12px" : "12px 14px",
+      borderBottom: "1px solid var(--wf-stroke-soft)",
+      display: "flex",
+      alignItems: "center",
       gap: 10,
-      background: 'var(--wf-section-bg)',
+      background: "var(--wf-section-bg)",
     }}
   >
     <div
@@ -76,7 +76,7 @@ const ActiveListHeader = ({ density }) => (
         width: 8,
         height: 8,
         borderRadius: 4,
-        background: 'var(--wf-gold)',
+        background: "var(--wf-gold)",
         flexShrink: 0,
       }}
     />
@@ -96,45 +96,45 @@ const ActiveListHeader = ({ density }) => (
 const KebabMenu = ({ top = 40, right = 10 }) => (
   <div
     style={{
-      position: 'absolute',
+      position: "absolute",
       top,
       right,
-      background: 'var(--wf-bg)',
-      border: '1px solid var(--wf-stroke)',
+      background: "var(--wf-bg)",
+      border: "1px solid var(--wf-stroke)",
       borderRadius: 2,
-      padding: '4px 0',
+      padding: "4px 0",
       minWidth: 160,
-      boxShadow: '0 6px 20px rgba(0,0,0,0.18)',
+      boxShadow: "0 6px 20px rgba(0,0,0,0.18)",
       zIndex: 10,
       fontSize: 12,
     }}
   >
     {[
-      ['📤  Publish this list', 'gold'],
-      ['✏️  Rename'],
-      ['↻  Unmark all'],
-      ['⭳  Export JSON'],
-      ['—'],
-      ['🗑  Delete list', 'danger'],
+      ["📤  Publish this list", "gold"],
+      ["✏️  Rename"],
+      ["↻  Unmark all"],
+      ["⭳  Export JSON"],
+      ["—"],
+      ["🗑  Delete list", "danger"],
     ].map(([label, tone]) =>
-      label === '—' ? (
+      label === "—" ? (
         <div
           key={label}
-          style={{ height: 1, background: 'var(--wf-stroke-soft)', margin: '4px 0' }}
+          style={{ height: 1, background: "var(--wf-stroke-soft)", margin: "4px 0" }}
         />
       ) : (
         <div
           key={label}
           style={{
-            padding: '7px 12px',
+            padding: "7px 12px",
             color:
-              tone === 'gold'
-                ? 'var(--wf-gold-ink-strong)'
-                : tone === 'danger'
-                  ? '#a8432a'
-                  : 'var(--wf-ink)',
-            fontWeight: tone === 'gold' ? 600 : 400,
-            cursor: 'pointer',
+              tone === "gold"
+                ? "var(--wf-gold-ink-strong)"
+                : tone === "danger"
+                  ? "#a8432a"
+                  : "var(--wf-ink)",
+            fontWeight: tone === "gold" ? 600 : 400,
+            cursor: "pointer",
           }}
         >
           {label}
@@ -150,8 +150,8 @@ const MineTab = ({ density, state, showKebab }) => {
   return (
     <>
       <ActiveListHeader density={D} />
-      <div style={{ flex: 1, overflow: 'auto', minHeight: 0, position: 'relative' }}>
-        {state === 'empty' ? (
+      <div style={{ flex: 1, overflow: "auto", minHeight: 0, position: "relative" }}>
+        {state === "empty" ? (
           <EmptyMine />
         ) : (
           <>
@@ -197,25 +197,25 @@ const MineTab = ({ density, state, showKebab }) => {
       {/* Footer: gold CTA + secondary publish */}
       <div
         style={{
-          padding: '10px 12px',
-          borderTop: '1px solid var(--wf-stroke)',
-          background: 'var(--wf-footer-bg)',
-          display: 'flex',
-          flexDirection: 'column',
+          padding: "10px 12px",
+          borderTop: "1px solid var(--wf-stroke)",
+          background: "var(--wf-footer-bg)",
+          display: "flex",
+          flexDirection: "column",
           gap: 8,
         }}
       >
         <wf.BtnGold label="Save This Search" />
-        {state !== 'empty' && (
-          <div style={{ display: 'flex', gap: 8 }}>
+        {state !== "empty" && (
+          <div style={{ display: "flex", gap: 8 }}>
             <wf.BtnGhost label="+ New list" full />
             <wf.BtnGhost
               label="Publish ▸"
               full
               style={{
-                borderStyle: 'solid',
-                borderColor: 'var(--wf-gold-edge)',
-                color: 'var(--wf-gold-ink-strong)',
+                borderStyle: "solid",
+                borderColor: "var(--wf-gold-edge)",
+                color: "var(--wf-gold-ink-strong)",
               }}
             />
           </div>
@@ -228,15 +228,15 @@ const MineTab = ({ density, state, showKebab }) => {
 const EmptyMine = () => (
   <div
     style={{
-      padding: '32px 20px',
-      display: 'flex',
-      flexDirection: 'column',
+      padding: "32px 20px",
+      display: "flex",
+      flexDirection: "column",
       gap: 16,
-      alignItems: 'center',
-      textAlign: 'center',
+      alignItems: "center",
+      textAlign: "center",
     }}
   >
-    <wf.Block w={56} h={56} style={{ borderStyle: 'dashed', borderRadius: 28 }}>
+    <wf.Block w={56} h={56} style={{ borderStyle: "dashed", borderRadius: 28 }}>
       shop
     </wf.Block>
     <wf.T size="md" weight={600}>
@@ -244,32 +244,32 @@ const EmptyMine = () => (
     </wf.T>
     <div
       style={{
-        width: '100%',
+        width: "100%",
         maxWidth: 260,
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
         gap: 10,
-        textAlign: 'left',
+        textAlign: "left",
       }}
     >
       {[
-        ['1', 'Name your list (e.g. "RF Jugg")'],
-        ['2', 'Open pathofexile.com/trade'],
-        ['3', 'Run a search → tap Save This Search'],
+        ["1", 'Name your list (e.g. "RF Jugg")'],
+        ["2", "Open pathofexile.com/trade"],
+        ["3", "Run a search → tap Save This Search"],
       ].map(([n, t]) => (
-        <div key={n} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div key={n} style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <div
             style={{
               width: 22,
               height: 22,
               borderRadius: 11,
-              background: 'var(--wf-gold-soft)',
-              color: 'var(--wf-gold-ink-strong)',
+              background: "var(--wf-gold-soft)",
+              color: "var(--wf-gold-ink-strong)",
               fontSize: 11,
               fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               flexShrink: 0,
             }}
           >
@@ -288,19 +288,19 @@ const EmptyMine = () => (
 
 // ─── FOLLOWING tab contents ─────────────────────────────────
 const FollowingTab = ({ density, state }) => {
-  if (state === 'empty') {
+  if (state === "empty") {
     return (
       <div
         style={{
-          padding: '40px 22px',
-          display: 'flex',
-          flexDirection: 'column',
+          padding: "40px 22px",
+          display: "flex",
+          flexDirection: "column",
           gap: 14,
-          textAlign: 'center',
-          alignItems: 'center',
+          textAlign: "center",
+          alignItems: "center",
         }}
       >
-        <wf.Block w={48} h={48} style={{ borderStyle: 'dashed', borderRadius: 24 }}>
+        <wf.Block w={48} h={48} style={{ borderStyle: "dashed", borderRadius: 24 }}>
           ★
         </wf.Block>
         <wf.T size="md" weight={600}>
@@ -314,20 +314,20 @@ const FollowingTab = ({ density, state }) => {
     );
   }
   return (
-    <div style={{ flex: 1, overflow: 'auto' }}>
+    <div style={{ flex: 1, overflow: "auto" }}>
       {[
-        ['Archmage Hiero — Cheap Starter', '@lightee', 12, '340c · 2h fresh'],
-        ['RF Jugg — 1div Budget', '@mathil', 9, '45c · 1d fresh'],
-        ['LA Deadeye Mapper', '@ziz', 18, '2.1div · 3d fresh'],
-      ].map(([t, a, n, f], i) => (
+        ["Archmage Hiero — Cheap Starter", "@lightee", 12, "340c · 2h fresh"],
+        ["RF Jugg — 1div Budget", "@mathil", 9, "45c · 1d fresh"],
+        ["LA Deadeye Mapper", "@ziz", 18, "2.1div · 3d fresh"],
+      ].map(([t, a, n, f]) => (
         <div
           key={t}
           style={{
-            padding: density === 'compact' ? '10px 14px' : '14px 14px',
-            borderBottom: '1px solid var(--wf-stroke-soft)',
-            display: 'flex',
+            padding: density === "compact" ? "10px 14px" : "14px 14px",
+            borderBottom: "1px solid var(--wf-stroke-soft)",
+            display: "flex",
             gap: 10,
-            alignItems: 'flex-start',
+            alignItems: "flex-start",
           }}
         >
           <wf.Block w={36} h={36}>
@@ -345,7 +345,7 @@ const FollowingTab = ({ density, state }) => {
             </wf.T>
           </div>
           <div
-            style={{ color: 'var(--wf-muted)', fontSize: 14, padding: '0 2px', cursor: 'pointer' }}
+            style={{ color: "var(--wf-muted)", fontSize: 14, padding: "0 2px", cursor: "pointer" }}
           >
             ⋯
           </div>
@@ -360,78 +360,78 @@ const FollowingTab = ({ density, state }) => {
 
 // ─── TRENDING tab contents ──────────────────────────────────
 const TrendingTab = ({ density }) => {
-  const filters = ['All', 'Hiero', 'Jugg', 'Starter', 'Mapper', 'Boss'];
+  const filters = ["All", "Hiero", "Jugg", "Starter", "Mapper", "Boss"];
   const lists = [
     {
-      title: 'Penance Brand Hiero — Under 5 div',
-      author: '@lightee',
+      title: "Penance Brand Hiero — Under 5 div",
+      author: "@lightee",
       items: 14,
-      total: '4.2 div',
-      trend: '+312',
+      total: "4.2 div",
+      trend: "+312",
       rank: 1,
-      league: 'Phrecia SC',
+      league: "Phrecia SC",
     },
     {
-      title: 'RF Jugg League Starter',
-      author: '@mathil',
+      title: "RF Jugg League Starter",
+      author: "@mathil",
       items: 9,
-      total: '45 c',
-      trend: '+268',
+      total: "45 c",
+      trend: "+268",
       rank: 2,
-      league: 'Phrecia SC',
+      league: "Phrecia SC",
     },
     {
-      title: 'LA Deadeye Mapper',
-      author: '@ziz',
+      title: "LA Deadeye Mapper",
+      author: "@ziz",
       items: 18,
-      total: '2.1 div',
-      trend: '+204',
+      total: "2.1 div",
+      trend: "+204",
       rank: 3,
-      league: 'Phrecia SC',
+      league: "Phrecia SC",
     },
     {
-      title: 'Corrupting Fever Champion',
-      author: '@octavian',
+      title: "Corrupting Fever Champion",
+      author: "@octavian",
       items: 11,
-      total: '80 c',
-      trend: '+177',
+      total: "80 c",
+      trend: "+177",
       rank: 4,
-      league: 'Phrecia SC',
+      league: "Phrecia SC",
     },
     {
-      title: 'Boneshatter Slayer',
-      author: '@kobe',
+      title: "Boneshatter Slayer",
+      author: "@kobe",
       items: 13,
-      total: '1.1 div',
-      trend: '+142',
+      total: "1.1 div",
+      trend: "+142",
       rank: 5,
-      league: 'Phrecia SC',
+      league: "Phrecia SC",
     },
   ];
   return (
     <>
       <div
         style={{
-          display: 'flex',
+          display: "flex",
           gap: 6,
-          padding: '8px 12px',
-          overflowX: 'auto',
-          borderBottom: '1px solid var(--wf-stroke-soft)',
+          padding: "8px 12px",
+          overflowX: "auto",
+          borderBottom: "1px solid var(--wf-stroke-soft)",
         }}
       >
         {filters.map((f, i) => (
           <div
             key={f}
             style={{
-              padding: '4px 10px',
+              padding: "4px 10px",
               fontSize: 11,
               fontWeight: i === 0 ? 600 : 400,
-              border: '1px solid var(--wf-stroke)',
-              background: i === 0 ? 'var(--wf-gold-soft)' : 'transparent',
-              color: i === 0 ? 'var(--wf-gold-ink-strong)' : 'var(--wf-ink)',
+              border: "1px solid var(--wf-stroke)",
+              background: i === 0 ? "var(--wf-gold-soft)" : "transparent",
+              color: i === 0 ? "var(--wf-gold-ink-strong)" : "var(--wf-ink)",
               borderRadius: 2,
-              whiteSpace: 'nowrap',
-              cursor: 'pointer',
+              whiteSpace: "nowrap",
+              cursor: "pointer",
             }}
           >
             {f}
@@ -439,16 +439,16 @@ const TrendingTab = ({ density }) => {
         ))}
       </div>
       {/* cards */}
-      <div style={{ flex: 1, overflow: 'auto' }}>
+      <div style={{ flex: 1, overflow: "auto" }}>
         {lists.map((l) => (
           <div
             key={l.title}
             style={{
-              padding: density === 'compact' ? '10px 12px' : '14px 12px',
-              borderBottom: '1px solid var(--wf-stroke-soft)',
-              display: 'flex',
+              padding: density === "compact" ? "10px 12px" : "14px 12px",
+              borderBottom: "1px solid var(--wf-stroke-soft)",
+              display: "flex",
               gap: 10,
-              alignItems: 'flex-start',
+              alignItems: "flex-start",
             }}
           >
             <div
@@ -456,16 +456,16 @@ const TrendingTab = ({ density }) => {
                 width: 28,
                 height: 28,
                 flexShrink: 0,
-                background: 'var(--wf-gold-soft)',
-                border: '1px solid var(--wf-gold-edge)',
+                background: "var(--wf-gold-soft)",
+                border: "1px solid var(--wf-gold-edge)",
                 borderRadius: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 fontSize: 13,
                 fontWeight: 700,
-                color: 'var(--wf-gold-ink-strong)',
-                fontFamily: 'ui-monospace, monospace',
+                color: "var(--wf-gold-ink-strong)",
+                fontFamily: "ui-monospace, monospace",
               }}
             >
               {l.rank}
@@ -477,16 +477,16 @@ const TrendingTab = ({ density }) => {
               <wf.T size="xs" color="var(--wf-muted)" style={{ marginTop: 2 }}>
                 {l.author} · {l.items} items · {l.total}
               </wf.T>
-              <div style={{ display: 'flex', gap: 4, marginTop: 6 }}>
+              <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
                 <wf.Pill tone="good">↑ {l.trend} follows</wf.Pill>
               </div>
             </div>
             <wf.BtnGhost
               label="Follow"
               style={{
-                borderStyle: 'solid',
-                borderColor: 'var(--wf-gold-edge)',
-                color: 'var(--wf-gold-ink-strong)',
+                borderStyle: "solid",
+                borderColor: "var(--wf-gold-edge)",
+                color: "var(--wf-gold-ink-strong)",
                 fontWeight: 600,
               }}
             />
@@ -501,32 +501,32 @@ const TrendingTab = ({ density }) => {
 const SaveSearchModal = () => (
   <div
     style={{
-      position: 'absolute',
+      position: "absolute",
       inset: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'flex-end',
+      background: "rgba(0,0,0,0.5)",
+      display: "flex",
+      alignItems: "flex-end",
       zIndex: 20,
     }}
   >
     <div
       style={{
-        width: '100%',
-        background: 'var(--wf-bg)',
-        borderTop: '2px solid var(--wf-gold)',
-        boxShadow: '0 -6px 20px rgba(0,0,0,0.25)',
-        padding: '14px 14px 12px',
-        display: 'flex',
-        flexDirection: 'column',
+        width: "100%",
+        background: "var(--wf-bg)",
+        borderTop: "2px solid var(--wf-gold)",
+        boxShadow: "0 -6px 20px rgba(0,0,0,0.25)",
+        padding: "14px 14px 12px",
+        display: "flex",
+        flexDirection: "column",
         gap: 12,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         <wf.T size="md" weight={600}>
           Save Search
         </wf.T>
         <div style={{ flex: 1 }} />
-        <wf.T size="lg" color="var(--wf-muted)" style={{ cursor: 'pointer' }}>
+        <wf.T size="lg" color="var(--wf-muted)" style={{ cursor: "pointer" }}>
           ✕
         </wf.T>
       </div>
@@ -536,19 +536,19 @@ const SaveSearchModal = () => (
         <wf.T
           size="xs"
           color="var(--wf-muted)"
-          style={{ marginBottom: 4, letterSpacing: 0.6, textTransform: 'uppercase' }}
+          style={{ marginBottom: 4, letterSpacing: 0.6, textTransform: "uppercase" }}
         >
           Name
         </wf.T>
         <div
           style={{
-            border: '1px solid var(--wf-gold-edge)',
-            background: 'var(--wf-bg)',
+            border: "1px solid var(--wf-gold-edge)",
+            background: "var(--wf-bg)",
             borderRadius: 2,
-            padding: '8px 10px',
+            padding: "8px 10px",
             fontSize: 13,
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
           }}
         >
           <span>Crown of Eyes · +1 phys spell</span>
@@ -557,8 +557,8 @@ const SaveSearchModal = () => (
             style={{
               width: 1,
               height: 14,
-              background: 'var(--wf-ink)',
-              animation: 'blink 1s steps(2) infinite',
+              background: "var(--wf-ink)",
+              animation: "blink 1s steps(2) infinite",
             }}
           />
         </div>
@@ -572,22 +572,22 @@ const SaveSearchModal = () => (
         <wf.T
           size="xs"
           color="var(--wf-muted)"
-          style={{ marginBottom: 4, letterSpacing: 0.6, textTransform: 'uppercase' }}
+          style={{ marginBottom: 4, letterSpacing: 0.6, textTransform: "uppercase" }}
         >
           Save to
         </wf.T>
         <div
           style={{
-            border: '1px solid var(--wf-stroke)',
+            border: "1px solid var(--wf-stroke)",
             borderRadius: 2,
-            padding: '8px 10px',
+            padding: "8px 10px",
             fontSize: 13,
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 6,
           }}
         >
-          <span style={{ width: 8, height: 8, borderRadius: 4, background: 'var(--wf-gold)' }} />
+          <span style={{ width: 8, height: 8, borderRadius: 4, background: "var(--wf-gold)" }} />
           <span>Penance Brand Hiero</span>
           <wf.Pill tone="gold" style={{ marginLeft: 4 }}>
             ACTIVE
@@ -600,30 +600,30 @@ const SaveSearchModal = () => (
       {/* Captured price preview */}
       <div
         style={{
-          border: '1px solid var(--wf-stroke)',
+          border: "1px solid var(--wf-stroke)",
           borderRadius: 2,
           padding: 10,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: 8,
-          background: 'var(--wf-section-bg)',
+          background: "var(--wf-section-bg)",
         }}
       >
         {[
-          ['MIN', '1.6'],
-          ['MEDIAN', '1.8'],
-          ['AVG', '2.1'],
+          ["MIN", "1.6"],
+          ["MEDIAN", "1.8"],
+          ["AVG", "2.1"],
         ].map(([l, v]) => (
-          <div key={l} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div key={l} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <wf.T size="xs" color="var(--wf-muted)">
               {l}
             </wf.T>
-            <div style={{ display: 'flex', gap: 3, alignItems: 'baseline' }}>
+            <div style={{ display: "flex", gap: 3, alignItems: "baseline" }}>
               <wf.T
                 size="xl"
                 weight={600}
                 color="var(--wf-gold-ink-strong)"
-                style={{ fontFamily: 'ui-monospace, monospace' }}
+                style={{ fontFamily: "ui-monospace, monospace" }}
               >
                 {v}
               </wf.T>
@@ -639,7 +639,7 @@ const SaveSearchModal = () => (
       </wf.T>
 
       {/* Cancel / Save */}
-      <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+      <div style={{ display: "flex", gap: 8, marginTop: 2 }}>
         <wf.BtnGhost label="Cancel" full style={{ height: 36 }} />
         <wf.BtnGold label="Save" />
       </div>
@@ -651,12 +651,12 @@ const SaveSearchModal = () => (
 const CaptureUnavailableBanner = () => (
   <div
     style={{
-      padding: '8px 12px',
-      background: 'var(--wf-warn-bg)',
-      borderBottom: '1px solid var(--wf-warn-edge)',
-      display: 'flex',
+      padding: "8px 12px",
+      background: "var(--wf-warn-bg)",
+      borderBottom: "1px solid var(--wf-warn-edge)",
+      display: "flex",
       gap: 8,
-      alignItems: 'flex-start',
+      alignItems: "flex-start",
     }}
   >
     <div
@@ -664,13 +664,13 @@ const CaptureUnavailableBanner = () => (
         width: 14,
         height: 14,
         borderRadius: 10,
-        background: 'var(--wf-warn-ink)',
-        color: 'var(--wf-bg)',
+        background: "var(--wf-warn-ink)",
+        color: "var(--wf-bg)",
         fontSize: 10,
         fontWeight: 700,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         flexShrink: 0,
       }}
     >
@@ -684,7 +684,7 @@ const CaptureUnavailableBanner = () => (
         Selectors may be out of date. You can still save by name.
       </wf.T>
     </div>
-    <wf.T size="xs" color="var(--wf-warn-ink)" weight={600} style={{ cursor: 'pointer' }}>
+    <wf.T size="xs" color="var(--wf-warn-ink)" weight={600} style={{ cursor: "pointer" }}>
       Check updates
     </wf.T>
   </div>
@@ -695,13 +695,13 @@ const PublishConfirmation = () => (
   <div
     style={{
       flex: 1,
-      overflow: 'auto',
-      padding: '24px 18px',
-      display: 'flex',
-      flexDirection: 'column',
+      overflow: "auto",
+      padding: "24px 18px",
+      display: "flex",
+      flexDirection: "column",
       gap: 16,
-      alignItems: 'center',
-      textAlign: 'center',
+      alignItems: "center",
+      textAlign: "center",
     }}
   >
     <div
@@ -709,12 +709,12 @@ const PublishConfirmation = () => (
         width: 56,
         height: 56,
         borderRadius: 28,
-        background: 'var(--wf-gold-soft)',
-        border: '2px solid var(--wf-gold)',
-        color: 'var(--wf-gold-ink-strong)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        background: "var(--wf-gold-soft)",
+        border: "2px solid var(--wf-gold)",
+        color: "var(--wf-gold-ink-strong)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         fontSize: 26,
         fontWeight: 700,
       }}
@@ -732,25 +732,25 @@ const PublishConfirmation = () => (
 
     <div
       style={{
-        width: '100%',
-        border: '1px solid var(--wf-gold-edge)',
-        background: 'var(--wf-section-bg)',
+        width: "100%",
+        border: "1px solid var(--wf-gold-edge)",
+        background: "var(--wf-section-bg)",
         borderRadius: 2,
-        padding: '10px 12px',
-        display: 'flex',
-        alignItems: 'center',
+        padding: "10px 12px",
+        display: "flex",
+        alignItems: "center",
         gap: 8,
       }}
     >
       <wf.T
         size="sm"
         style={{
-          fontFamily: 'ui-monospace, monospace',
+          fontFamily: "ui-monospace, monospace",
           flex: 1,
-          textAlign: 'left',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
+          textAlign: "left",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
         }}
       >
         poe-shop.gg/lists/k7x2hq9n
@@ -758,31 +758,31 @@ const PublishConfirmation = () => (
       <wf.BtnGhost
         label="Copy"
         style={{
-          borderStyle: 'solid',
-          borderColor: 'var(--wf-gold-edge)',
-          color: 'var(--wf-gold-ink-strong)',
+          borderStyle: "solid",
+          borderColor: "var(--wf-gold-edge)",
+          color: "var(--wf-gold-ink-strong)",
         }}
       />
     </div>
 
     <div
-      style={{ width: '100%', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 6 }}
+      style={{ width: "100%", textAlign: "left", display: "flex", flexDirection: "column", gap: 6 }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <wf.T size="xs" color="var(--wf-muted)">
           Slug
         </wf.T>
-        <wf.T size="xs" style={{ fontFamily: 'ui-monospace, monospace' }}>
+        <wf.T size="xs" style={{ fontFamily: "ui-monospace, monospace" }}>
           k7x2hq9n
         </wf.T>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <wf.T size="xs" color="var(--wf-muted)">
           Items
         </wf.T>
         <wf.T size="xs">5 (4 priced)</wf.T>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <wf.T size="xs" color="var(--wf-muted)">
           League
         </wf.T>
@@ -790,7 +790,7 @@ const PublishConfirmation = () => (
       </div>
     </div>
 
-    <div style={{ display: 'flex', gap: 8, width: '100%' }}>
+    <div style={{ display: "flex", gap: 8, width: "100%" }}>
       <wf.BtnGhost label="New draft" full />
       <wf.BtnGold label="View on web →" />
     </div>
@@ -801,34 +801,34 @@ const PublishConfirmation = () => (
 const PublishSheet = () => (
   <div
     style={{
-      position: 'absolute',
+      position: "absolute",
       inset: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'flex-end',
+      background: "rgba(0,0,0,0.5)",
+      display: "flex",
+      alignItems: "flex-end",
       zIndex: 20,
     }}
   >
     <div
       style={{
-        width: '100%',
-        background: 'var(--wf-bg)',
-        borderTop: '2px solid var(--wf-gold)',
-        boxShadow: '0 -6px 20px rgba(0,0,0,0.25)',
-        padding: '14px 14px 12px',
-        display: 'flex',
-        flexDirection: 'column',
+        width: "100%",
+        background: "var(--wf-bg)",
+        borderTop: "2px solid var(--wf-gold)",
+        boxShadow: "0 -6px 20px rgba(0,0,0,0.25)",
+        padding: "14px 14px 12px",
+        display: "flex",
+        flexDirection: "column",
         gap: 12,
-        maxHeight: '90%',
-        overflow: 'auto',
+        maxHeight: "90%",
+        overflow: "auto",
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         <wf.T size="md" weight={600}>
           Publish list
         </wf.T>
         <div style={{ flex: 1 }} />
-        <wf.T size="lg" color="var(--wf-muted)" style={{ cursor: 'pointer' }}>
+        <wf.T size="lg" color="var(--wf-muted)" style={{ cursor: "pointer" }}>
           ✕
         </wf.T>
       </div>
@@ -837,15 +837,15 @@ const PublishSheet = () => (
         <wf.T
           size="xs"
           color="var(--wf-muted)"
-          style={{ marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.6 }}
+          style={{ marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.6 }}
         >
           Title
         </wf.T>
         <div
           style={{
-            border: '1px solid var(--wf-stroke)',
+            border: "1px solid var(--wf-stroke)",
             borderRadius: 2,
-            padding: '8px 10px',
+            padding: "8px 10px",
             fontSize: 13,
           }}
         >
@@ -856,17 +856,17 @@ const PublishSheet = () => (
         <wf.T
           size="xs"
           color="var(--wf-muted)"
-          style={{ marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.6 }}
+          style={{ marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.6 }}
         >
           League
         </wf.T>
         <div
           style={{
-            border: '1px solid var(--wf-stroke)',
+            border: "1px solid var(--wf-stroke)",
             borderRadius: 2,
-            padding: '8px 10px',
+            padding: "8px 10px",
             fontSize: 13,
-            display: 'flex',
+            display: "flex",
           }}
         >
           <span>Phrecia SC</span>
@@ -878,17 +878,17 @@ const PublishSheet = () => (
         <wf.T
           size="xs"
           color="var(--wf-muted)"
-          style={{ marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.6 }}
+          style={{ marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.6 }}
         >
           Build URL (optional)
         </wf.T>
         <div
           style={{
-            border: '1px dashed var(--wf-stroke)',
+            border: "1px dashed var(--wf-stroke)",
             borderRadius: 2,
-            padding: '8px 10px',
+            padding: "8px 10px",
             fontSize: 12,
-            color: 'var(--wf-muted)',
+            color: "var(--wf-muted)",
           }}
         >
           pobb.in/… or maxroll.gg/…
@@ -897,28 +897,28 @@ const PublishSheet = () => (
 
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
           gap: 5,
-          padding: '8px 10px',
-          background: 'var(--wf-section-bg)',
-          border: '1px solid var(--wf-stroke-soft)',
+          padding: "8px 10px",
+          background: "var(--wf-section-bg)",
+          border: "1px solid var(--wf-stroke-soft)",
           borderRadius: 2,
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <wf.T size="xs" color="var(--wf-muted)">
             Items
           </wf.T>
           <wf.T size="xs">5</wf.T>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <wf.T size="xs" color="var(--wf-muted)">
             Priced
           </wf.T>
           <wf.T size="xs">4 of 5</wf.T>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <wf.T size="xs" color="var(--wf-muted)">
             Total
           </wf.T>
@@ -930,12 +930,12 @@ const PublishSheet = () => (
 
       <div
         style={{
-          padding: '8px 10px',
-          background: 'var(--wf-block)',
-          border: '1px dashed var(--wf-stroke)',
+          padding: "8px 10px",
+          background: "var(--wf-block)",
+          border: "1px dashed var(--wf-stroke)",
           borderRadius: 2,
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
           gap: 8,
         }}
       >
@@ -945,11 +945,11 @@ const PublishSheet = () => (
         </wf.T>
       </div>
 
-      <div style={{ display: 'flex', gap: 8 }}>
+      <div style={{ display: "flex", gap: 8 }}>
         <wf.BtnGhost label="Cancel" full style={{ height: 36 }} />
         <wf.BtnGold label="Publish" />
       </div>
-      <wf.T size="xs" color="var(--wf-muted)" style={{ textAlign: 'center' }}>
+      <wf.T size="xs" color="var(--wf-muted)" style={{ textAlign: "center" }}>
         Lists are immutable once published.
       </wf.T>
     </div>
@@ -960,27 +960,27 @@ const PublishSheet = () => (
 const SettingsPopover = () => (
   <div
     style={{
-      position: 'absolute',
+      position: "absolute",
       top: 34,
       right: 8,
       width: 260,
-      background: 'var(--wf-bg)',
-      border: '1px solid var(--wf-stroke)',
+      background: "var(--wf-bg)",
+      border: "1px solid var(--wf-stroke)",
       borderRadius: 3,
-      boxShadow: '0 8px 28px rgba(0,0,0,0.22)',
+      boxShadow: "0 8px 28px rgba(0,0,0,0.22)",
       zIndex: 30,
-      padding: '12px 14px',
-      display: 'flex',
-      flexDirection: 'column',
+      padding: "12px 14px",
+      display: "flex",
+      flexDirection: "column",
       gap: 12,
     }}
   >
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <wf.T size="sm" weight={600}>
         Settings
       </wf.T>
       <div style={{ flex: 1 }} />
-      <wf.T size="md" color="var(--wf-muted)" style={{ cursor: 'pointer' }}>
+      <wf.T size="md" color="var(--wf-muted)" style={{ cursor: "pointer" }}>
         ✕
       </wf.T>
     </div>
@@ -988,18 +988,18 @@ const SettingsPopover = () => (
       <wf.T
         size="xs"
         color="var(--wf-muted)"
-        style={{ marginBottom: 4, letterSpacing: 0.6, textTransform: 'uppercase' }}
+        style={{ marginBottom: 4, letterSpacing: 0.6, textTransform: "uppercase" }}
       >
         League
       </wf.T>
       <div
         style={{
-          border: '1px solid var(--wf-gold-edge)',
+          border: "1px solid var(--wf-gold-edge)",
           borderRadius: 2,
-          padding: '7px 10px',
+          padding: "7px 10px",
           fontSize: 12,
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <span>Phrecia SC</span>
@@ -1014,20 +1014,20 @@ const SettingsPopover = () => (
       <wf.T
         size="xs"
         color="var(--wf-muted)"
-        style={{ marginBottom: 4, letterSpacing: 0.6, textTransform: 'uppercase' }}
+        style={{ marginBottom: 4, letterSpacing: 0.6, textTransform: "uppercase" }}
       >
         Game
       </wf.T>
-      <div style={{ display: 'flex', gap: 6 }}>
+      <div style={{ display: "flex", gap: 6 }}>
         <div
           style={{
             flex: 1,
-            padding: '6px 8px',
+            padding: "6px 8px",
             fontSize: 11,
-            textAlign: 'center',
-            border: '1px solid var(--wf-gold-edge)',
-            background: 'var(--wf-gold-soft)',
-            color: 'var(--wf-gold-ink-strong)',
+            textAlign: "center",
+            border: "1px solid var(--wf-gold-edge)",
+            background: "var(--wf-gold-soft)",
+            color: "var(--wf-gold-ink-strong)",
             borderRadius: 2,
             fontWeight: 600,
           }}
@@ -1037,11 +1037,11 @@ const SettingsPopover = () => (
         <div
           style={{
             flex: 1,
-            padding: '6px 8px',
+            padding: "6px 8px",
             fontSize: 11,
-            textAlign: 'center',
-            border: '1px dashed var(--wf-stroke)',
-            color: 'var(--wf-muted)',
+            textAlign: "center",
+            border: "1px dashed var(--wf-stroke)",
+            color: "var(--wf-muted)",
             borderRadius: 2,
           }}
         >
@@ -1053,38 +1053,38 @@ const SettingsPopover = () => (
       <wf.T
         size="xs"
         color="var(--wf-muted)"
-        style={{ marginBottom: 6, letterSpacing: 0.6, textTransform: 'uppercase' }}
+        style={{ marginBottom: 6, letterSpacing: 0.6, textTransform: "uppercase" }}
       >
         Preferences
       </wf.T>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 12 }}>
         {[
-          ['Auto-capture price on save', true],
-          ['Show capture-unavailable banner', true],
-          ['Open items in new tab', false],
+          ["Auto-capture price on save", true],
+          ["Show capture-unavailable banner", true],
+          ["Open items in new tab", false],
         ].map(([l, on]) => (
-          <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div key={l} style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div
               style={{
                 width: 26,
                 height: 14,
                 borderRadius: 7,
-                background: on ? 'var(--wf-gold)' : 'var(--wf-block)',
-                border: '1px solid var(--wf-stroke)',
-                position: 'relative',
+                background: on ? "var(--wf-gold)" : "var(--wf-block)",
+                border: "1px solid var(--wf-stroke)",
+                position: "relative",
                 flexShrink: 0,
               }}
             >
               <div
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: 1,
                   left: on ? 13 : 1,
                   width: 10,
                   height: 10,
                   borderRadius: 5,
-                  background: 'var(--wf-bg)',
-                  border: '1px solid var(--wf-stroke)',
+                  background: "var(--wf-bg)",
+                  border: "1px solid var(--wf-stroke)",
                 }}
               />
             </div>
@@ -1095,16 +1095,16 @@ const SettingsPopover = () => (
     </div>
     <div
       style={{
-        borderTop: '1px solid var(--wf-stroke-soft)',
+        borderTop: "1px solid var(--wf-stroke-soft)",
         paddingTop: 8,
-        display: 'flex',
+        display: "flex",
         gap: 12,
       }}
     >
-      <wf.T size="xs" color="var(--wf-muted)" style={{ cursor: 'pointer' }}>
+      <wf.T size="xs" color="var(--wf-muted)" style={{ cursor: "pointer" }}>
         Privacy
       </wf.T>
-      <wf.T size="xs" color="var(--wf-muted)" style={{ cursor: 'pointer' }}>
+      <wf.T size="xs" color="var(--wf-muted)" style={{ cursor: "pointer" }}>
         Help
       </wf.T>
       <div style={{ flex: 1 }} />
@@ -1119,48 +1119,48 @@ const SettingsPopover = () => (
 function PanelV2({ density, state }) {
   const D = density;
   const tabs = [
-    { key: 'mine', label: 'Mine', badge: 2 },
-    { key: 'following', label: 'Following', badge: 3 },
-    { key: 'trending', label: 'Trending', badge: '🔥' },
+    { key: "mine", label: "Mine", badge: 2 },
+    { key: "following", label: "Following", badge: 3 },
+    { key: "trending", label: "Trending", badge: "🔥" },
   ];
 
   const activeTab =
-    state === 'following' || state === 'following-empty'
-      ? 'following'
-      : state === 'trending'
-        ? 'trending'
-        : 'mine';
+    state === "following" || state === "following-empty"
+      ? "following"
+      : state === "trending"
+        ? "trending"
+        : "mine";
 
   const modal =
-    state === 'save-modal' ? (
+    state === "save-modal" ? (
       <SaveSearchModal />
-    ) : state === 'publish-sheet' ? (
+    ) : state === "publish-sheet" ? (
       <PublishSheet />
     ) : null;
 
-  const showSettings = state === 'settings';
+  const showSettings = state === "settings";
 
   return (
-    <wf.Panel width={380} height={640} style={{ position: 'relative' }}>
+    <wf.Panel width={380} height={640} style={{ position: "relative" }}>
       <wf.ChromeBar league="Phrecia SC" />
       {showSettings && <SettingsPopover />}
       <TabBar active={activeTab} tabs={tabs} />
-      {state === 'capture-unavailable' && <CaptureUnavailableBanner />}
+      {state === "capture-unavailable" && <CaptureUnavailableBanner />}
 
-      {activeTab === 'mine' && state !== 'publish-done' && (
+      {activeTab === "mine" && state !== "publish-done" && (
         <MineTab
           density={D}
-          state={state === 'empty' ? 'empty' : 'draft'}
-          showKebab={state === 'kebab'}
+          state={state === "empty" ? "empty" : "draft"}
+          showKebab={state === "kebab"}
         />
       )}
-      {state === 'publish-done' && <PublishConfirmation />}
+      {state === "publish-done" && <PublishConfirmation />}
 
-      {activeTab === 'following' && (
-        <FollowingTab density={D} state={state === 'following-empty' ? 'empty' : 'list'} />
+      {activeTab === "following" && (
+        <FollowingTab density={D} state={state === "following-empty" ? "empty" : "list"} />
       )}
 
-      {activeTab === 'trending' && <TrendingTab density={D} />}
+      {activeTab === "trending" && <TrendingTab density={D} />}
 
       {/* Modal overlay */}
       {modal}
@@ -1169,8 +1169,8 @@ function PanelV2({ density, state }) {
 }
 
 // blink keyframe
-const style = document.createElement('style');
-style.textContent = '@keyframes blink { 50% { opacity: 0; } }';
+const style = document.createElement("style");
+style.textContent = "@keyframes blink { 50% { opacity: 0; } }";
 document.head.appendChild(style);
 
 Object.assign(window, { PanelV2 });

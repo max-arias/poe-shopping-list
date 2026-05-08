@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useDivineRate } from '../../composables/useDivineRate';
-import { useDraftList } from '../../composables/useDraftList';
-import BtnGhost from '../shared/BtnGhost.vue';
+import { computed } from "vue";
+import { useDivineRate } from "../../composables/useDivineRate";
+import { useDraftList } from "../../composables/useDraftList";
+import BtnGhost from "../shared/BtnGhost.vue";
 
 const { draft } = useDraftList();
 const { divineRate } = useDivineRate();
@@ -26,7 +26,7 @@ const estimate = computed(() => {
 });
 
 const divineEquivalent = computed(() => {
-  if (!estimate.value || estimate.value.currency !== 'chaos') return null;
+  if (!estimate.value || estimate.value.currency !== "chaos") return null;
   if (!divineRate.value) return null;
   return (estimate.value.value / divineRate.value).toFixed(1);
 });

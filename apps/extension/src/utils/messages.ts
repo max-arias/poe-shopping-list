@@ -1,6 +1,6 @@
-import type { TradeCapture } from '@/trade-dom';
-import type { PurchaseHistoryItem, VisitHistoryItem } from '@/types';
-import { defineExtensionMessaging } from '@webext-core/messaging';
+import type { TradeCapture } from "@/trade-dom";
+import type { PurchaseHistoryItem, VisitHistoryItem } from "@/types";
+import { defineExtensionMessaging } from "@webext-core/messaging";
 
 /**
  * Messaging protocol for the PoE Shopping List extension.

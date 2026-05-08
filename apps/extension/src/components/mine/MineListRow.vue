@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Draft } from '@/types';
-import { computed } from 'vue';
-import { useDivineRate } from '../../composables/useDivineRate';
-import { useUiStore } from '../../stores/ui';
+import type { Draft } from "@/types";
+import { computed } from "vue";
+import { useDivineRate } from "../../composables/useDivineRate";
+import { useUiStore } from "../../stores/ui";
 
 const props = defineProps<{ draft: Draft }>();
 const emit = defineEmits<{ delete: [] }>();
@@ -26,7 +26,7 @@ const estimate = computed(() => {
 });
 
 const divineEquivalent = computed(() => {
-  if (!estimate.value || estimate.value.currency !== 'chaos') return null;
+  if (!estimate.value || estimate.value.currency !== "chaos") return null;
   if (!divineRate.value) return null;
   return (estimate.value.value / divineRate.value).toFixed(1);
 });

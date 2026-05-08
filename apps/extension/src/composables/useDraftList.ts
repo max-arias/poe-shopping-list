@@ -1,9 +1,9 @@
-import type { Draft, DraftItem, ItemKind, TradeCapture } from '@/types';
-import { computed, ref } from 'vue';
-import { storage } from 'wxt/utils/storage';
-import { useUiStore } from '../stores/ui';
+import type { Draft, DraftItem, ItemKind, TradeCapture } from "@/types";
+import { computed, ref } from "vue";
+import { storage } from "wxt/utils/storage";
+import { useUiStore } from "../stores/ui";
 
-const draftsItem = storage.defineItem<Draft[]>('local:drafts', {
+const draftsItem = storage.defineItem<Draft[]>("local:drafts", {
   fallback: [],
 });
 
@@ -37,7 +37,7 @@ export function useDraftList() {
 
   const draft = computed<Draft | null>(() => {
     const v = ui.currentView;
-    if (v.type !== 'detail') return null;
+    if (v.type !== "detail") return null;
     return drafts.value.find((d) => d.id === v.draftId) ?? null;
   });
 
@@ -52,7 +52,7 @@ export function useDraftList() {
 
   async function createDraft(
     name: string,
-    league = '',
+    league = "",
     buildUrl?: string,
     buildCreator?: string,
     associatedUrls?: string[],
@@ -60,7 +60,7 @@ export function useDraftList() {
     const d: Draft = {
       id: crypto.randomUUID(),
       name: name.trim(),
-      game: 'poe1',
+      game: "poe1",
       league,
       createdAt: Date.now(),
       items: [],
@@ -98,7 +98,7 @@ export function useDraftList() {
     name: string,
     tradeUrl: string,
     capture: TradeCapture | null,
-    kind: ItemKind = 'unique',
+    kind: ItemKind = "unique",
   ) {
     const target = drafts.value.find((d) => d.id === draftId);
     if (!target) return null;
@@ -122,7 +122,7 @@ export function useDraftList() {
     name: string,
     tradeUrl: string,
     capture: TradeCapture | null,
-    kind: ItemKind = 'unique',
+    kind: ItemKind = "unique",
   ) {
     if (!draft.value) return null;
     return addItemToDraft(draft.value.id, name, tradeUrl, capture, kind);
@@ -152,7 +152,7 @@ export function useDraftList() {
     });
   }
 
-  async function updateItem(itemId: string, patch: Partial<Pick<DraftItem, 'name' | 'tradeUrl'>>) {
+  async function updateItem(itemId: string, patch: Partial<Pick<DraftItem, "name" | "tradeUrl">>) {
     if (!draft.value) return;
     await saveDraft({
       ...draft.value,
