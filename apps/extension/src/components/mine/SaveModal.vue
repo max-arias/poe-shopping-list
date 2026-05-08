@@ -16,6 +16,7 @@ const { settings } = useSettings();
 const itemName = ref("");
 const saving = ref(false);
 const capture = ref<import("@/types").TradeCapture | null>(null);
+const filters = ref<import("@/types").SearchFilterSnapshot | null>(null);
 const loadingCapture = ref(false);
 
 const dialogRef = ref<HTMLElement | null>(null);
@@ -49,6 +50,12 @@ onMounted(async () => {
       loadingCapture.value = false;
     }
   }
+
+  try {
+    filters.value = await sendMessage("spSearchFiltersRead");
+  } catch {
+    filters.value = null;
+  }
 });
 
 async function handleSave() {
@@ -62,7 +69,7 @@ async function handleSave() {
       tradeUrl = tab?.url ?? "";
     } catch {}
   }
-  await addItem(itemName.value.trim(), tradeUrl, capture.value);
+  await addItem(itemName.value.trim(), tradeUrl, capture.value, filters.value);
   saving.value = false;
   ui.closeSaveModal();
 }

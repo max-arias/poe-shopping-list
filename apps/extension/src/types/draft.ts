@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { GameSchema } from "./game";
 import { ItemKindSchema } from "./item";
+import { SearchFilterSnapshotSchema } from "./searchFilters";
 import { TradeCaptureSchema } from "./trade";
 
 export const DraftItemSchema = z.object({
@@ -9,6 +10,7 @@ export const DraftItemSchema = z.object({
   name: z.string().min(1).max(120),
   tradeUrl: z.string(),
   capture: TradeCaptureSchema.nullable(),
+  filters: SearchFilterSnapshotSchema.optional(),
   completed: z.boolean().default(false),
   kind: ItemKindSchema.default("unique"),
   base: z.string().optional(),

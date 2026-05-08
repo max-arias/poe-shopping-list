@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { VisitHistoryItem } from "@/types";
+import SearchFilterSummary from "../shared/SearchFilterSummary.vue";
 
 const { item } = defineProps<{ item: VisitHistoryItem }>();
 const emit = defineEmits<{ "toggle-select": [id: string] }>();
@@ -23,10 +24,10 @@ async function openVisit(url: string) {
 </script>
 
 <template>
-  <div class="flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft">
+  <div class="flex items-start gap-2.5 px-3 py-2.5 border-b border-stroke-soft">
     <input
       type="checkbox"
-      class="w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
+      class="mt-1 w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
       aria-label="Toggle select visit"
       @change="emit('toggle-select', item.id)"
     />
@@ -50,6 +51,7 @@ async function openVisit(url: string) {
           {{ item.url }}
         </span>
       </button>
+      <SearchFilterSummary :filters="item.filters" />
     </div>
   </div>
 </template>

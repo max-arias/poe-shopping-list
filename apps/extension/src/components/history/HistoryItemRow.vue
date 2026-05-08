@@ -2,6 +2,7 @@
 import type { PurchaseHistoryItem } from "@/types";
 import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
+import SearchFilterSummary from "../shared/SearchFilterSummary.vue";
 
 const { item } = defineProps<{ item: PurchaseHistoryItem }>();
 const emit = defineEmits<{ "toggle-select": [id: string] }>();
@@ -22,11 +23,11 @@ async function openSearch(url: string) {
 </script>
 
 <template>
-  <div class="flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft">
+  <div class="flex items-start gap-2.5 px-3 py-2.5 border-b border-stroke-soft">
     <!-- Checkbox for mass selection -->
     <input
       type="checkbox"
-      class="w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
+      class="mt-1 w-3.5 h-3.5 shrink-0 accent-accent cursor-pointer"
       aria-label="Toggle select item"
       @change="emit('toggle-select', item.id)"
     />
@@ -42,10 +43,11 @@ async function openSearch(url: string) {
       <span v-if="item.base" class="text-[10px] text-ink-muted block truncate">
         {{ item.base }}
       </span>
+      <SearchFilterSummary :filters="item.filters" />
     </div>
 
     <!-- Price -->
-    <span class="font-mono text-xs font-semibold text-accent-ink-str shrink-0">
+    <span class="mt-0.5 font-mono text-xs font-semibold text-accent-ink-str shrink-0">
       {{ formatPrice(item.priceValue) }}
       <span class="opacity-70 text-[10px]">{{ item.priceCurrency }}</span>
     </span>
@@ -53,7 +55,7 @@ async function openSearch(url: string) {
     <!-- Kebab -->
     <button
       @click.stop="ui.toggleKebab(item.id)"
-      class="text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
+      class="mt-0.5 text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
     >
       ⋯
     </button>

@@ -24,6 +24,29 @@ export interface TradeCapture {
   capturedAt: number;
 }
 
+export interface SearchFilterValue {
+  label: string;
+  value: string;
+}
+
+export interface SearchFilterEntry {
+  label: string;
+  values: SearchFilterValue[];
+}
+
+export interface SearchFilterGroup {
+  label: string;
+  entries: SearchFilterEntry[];
+}
+
+export interface SearchFilterSnapshot {
+  game: "poe1";
+  tradeUrl: string;
+  searchText?: string;
+  capturedAt: number;
+  groups: SearchFilterGroup[];
+}
+
 export interface RowData {
   listingId: string;
   name: string;
@@ -177,6 +200,156 @@ export function getSearchBarText(root: Document): string {
   }
   console.log("[poe-sl] getSearchBarText: no match found");
   return "";
+}
+
+export function buildSearchFilterSnapshot(
+  root: Document,
+  tradeUrl: string,
+): SearchFilterSnapshot | null {
+  const groups = extractSearchFilterGroups(root);
+  if (groups.length === 0) return null;
+
+  const searchText = getSearchBarText(root);
+  return {
+    game: "poe1",
+    tradeUrl,
+    ...(searchText ? { searchText } : {}),
+    capturedAt: Date.now(),
+    groups,
+  };
+}
+
+function extractSearchFilterGroups(root: Document): SearchFilterGroup[] {
+  const groups: SearchFilterGroup[] = [];
+  const searchText = getSearchBarText(root);
+  if (searchText) {
+    groups.push({
+      label: "Search",
+      entries: [{ label: "Query", values: [{ label: "Query", value: searchText }] }],
+    });
+  }
+
+  for (const groupEl of root.querySelectorAll(".search-advanced .filter-group")) {
+    const group = groupEl as HTMLElement;
+    const label = cleanText(
+      group.querySelector(":scope > .filter-group-header .filter-title")?.textContent ?? "",
+    );
+    if (!label || label.toLowerCase() === "trade filters") continue;
+
+    const body = group.querySelector(":scope > .filter-group-body");
+    if (!body) continue;
+
+    const entries: SearchFilterEntry[] = [];
+    const headerEntry = extractFilterEntry(
+      group.querySelector(":scope > .filter-group-header .filter") as HTMLElement | null,
+    );
+    if (headerEntry) entries.push(headerEntry);
+
+    for (const filterEl of body.querySelectorAll(":scope > .filter")) {
+      const entry = extractFilterEntry(filterEl as HTMLElement);
+      if (entry) entries.push(entry);
+    }
+
+    if (entries.length > 0) groups.push({ label, entries });
+  }
+
+  return groups;
+}
+
+function extractFilterEntry(filter: HTMLElement | null): SearchFilterEntry | null {
+  if (!filter) return null;
+  if (!isEnabledFilter(filter)) return null;
+
+  const titleEl = filter.querySelector(":scope > .filter-body > .filter-title");
+  const rawLabel = cleanText(titleEl?.textContent ?? "");
+  const label = rawLabel.replace(/\s*\?\s*$/, "");
+  if (!label || /^\+\s*Add Stat Filter/i.test(label)) return null;
+
+  const values: SearchFilterValue[] = [];
+  const selected = extractSelectedText(filter);
+  if (selected && !isDefaultValue(selected)) {
+    values.push({ label: "value", value: selected });
+  }
+
+  const socketValues = extractSocketValues(filter);
+  values.push(...socketValues);
+
+  const range = extractRange(filter);
+  if (range) values.push({ label: "range", value: range });
+
+  const textInput = [...filter.querySelectorAll("input[type='text']")]
+    .map((input) => (input as HTMLInputElement).value.trim())
+    .find(Boolean);
+  if (textInput && !isDefaultValue(textInput)) values.push({ label: "value", value: textInput });
+
+  const weight = (
+    filter.querySelector("input[placeholder='weight']") as HTMLInputElement | null
+  )?.value.trim();
+  if (weight) values.push({ label: "weight", value: `weight ${weight}` });
+
+  if (values.length === 0 && filter.querySelector(".mutate-type")) {
+    values.push({ label: "value", value: "exists" });
+  }
+
+  if (values.length === 0) return null;
+  return { label, values };
+}
+
+function isEnabledFilter(filter: HTMLElement): boolean {
+  const toggle = filter.querySelector(
+    ":scope > .input-group-btn > .toggle-btn",
+  ) as HTMLElement | null;
+  return !toggle || !toggle.classList.contains("off");
+}
+
+function extractSelectedText(filter: HTMLElement): string | null {
+  const selected = filter.querySelector(".multiselect__option--selected span");
+  const selectedText = cleanText(selected?.textContent ?? "");
+  if (selectedText) return selectedText;
+
+  const tags = filter.querySelectorAll(".multiselect__tag span, .multiselect__single");
+  const texts = [...tags].map((el) => cleanText(el.textContent ?? "")).filter(Boolean);
+  if (texts.length > 0) return texts.join(", ");
+
+  return null;
+}
+
+function extractRange(filter: HTMLElement): string | null {
+  const min = [...filter.querySelectorAll("input[placeholder='min']")]
+    .map((input) => (input as HTMLInputElement).value.trim())
+    .find(Boolean);
+  const max = [...filter.querySelectorAll("input[placeholder='max']")]
+    .map((input) => (input as HTMLInputElement).value.trim())
+    .find(Boolean);
+
+  if (min && max) return `${min}-${max}`;
+  if (min) return `${min}+`;
+  if (max) return `≤${max}`;
+  return null;
+}
+
+function extractSocketValues(filter: HTMLElement): SearchFilterValue[] {
+  const sockets = [
+    ["R", ".socket.str"],
+    ["G", ".socket.dex"],
+    ["B", ".socket.int"],
+    ["W", ".socket.gen"],
+  ] as const;
+
+  return sockets.flatMap(([label, selector]) => {
+    const value = (filter.querySelector(selector) as HTMLInputElement | null)?.value.trim();
+    return value ? [{ label, value: `${label}${value}` }] : [];
+  });
+}
+
+function isDefaultValue(value: string): boolean {
+  return ["any", "any time", "buyout or fixed price", "chaos orb equivalent"].includes(
+    value.toLowerCase(),
+  );
+}
+
+function cleanText(value: string): string {
+  return value.replace(/\s+/g, " ").trim();
 }
 
 // ── Internals ─────────────────────────────────────────────────────────────────

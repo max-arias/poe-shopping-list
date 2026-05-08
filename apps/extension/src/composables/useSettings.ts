@@ -15,12 +15,12 @@ function ensureInitialized() {
   initialized = true;
 
   void settingsItem.getValue().then((value) => {
-    settings.value = value;
+    settings.value = { ...DEFAULT_SETTINGS, ...value };
     isLoaded.value = true;
   });
 
   settingsItem.watch((val) => {
-    if (val) settings.value = val;
+    if (val) settings.value = { ...DEFAULT_SETTINGS, ...val };
     isLoaded.value = true;
   });
 }
@@ -30,7 +30,7 @@ export function useSettings() {
 
   async function updateSettings(patch: Partial<Settings>) {
     const current = await settingsItem.getValue();
-    const updated: Settings = { ...current, ...patch };
+    const updated: Settings = { ...DEFAULT_SETTINGS, ...current, ...patch };
     await settingsItem.setValue(updated);
     settings.value = updated;
   }

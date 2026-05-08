@@ -3,6 +3,7 @@ import type { DraftItem } from "@/types";
 import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
+import SearchFilterSummary from "../shared/SearchFilterSummary.vue";
 
 const { item } = defineProps<{ item: DraftItem }>();
 
@@ -24,7 +25,7 @@ async function openTrade(url: string) {
 
 <template>
   <div
-    class="flex items-center gap-2.5 px-3 py-2.5 border-b border-stroke-soft"
+    class="flex items-start gap-2.5 px-3 py-2.5 border-b border-stroke-soft"
     :class="item.completed ? 'bg-accent-soft opacity-60' : ''"
   >
     <!-- Checkbox -->
@@ -33,7 +34,7 @@ async function openTrade(url: string) {
       role="checkbox"
       :aria-checked="item.completed"
       aria-label="Mark as acquired"
-      class="w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
+      class="mt-1 w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
       :class="item.completed ? 'bg-accent border-accent-edge' : ''"
     >
       <span
@@ -63,10 +64,14 @@ async function openTrade(url: string) {
       >
         {{ item.name }}
       </span>
+      <SearchFilterSummary :filters="item.filters" />
     </div>
 
     <!-- Price -->
-    <span v-if="item.capture" class="font-mono text-xs font-semibold text-accent-ink-str shrink-0">
+    <span
+      v-if="item.capture"
+      class="mt-0.5 font-mono text-xs font-semibold text-accent-ink-str shrink-0"
+    >
       ~{{ formatPrice(item.capture.aggregates.median) }}
       <span class="opacity-70 text-[10px]">{{ item.capture.aggregates.currency }}</span>
     </span>
@@ -75,7 +80,7 @@ async function openTrade(url: string) {
     <button
       @click.stop="ui.toggleKebab(item.id)"
       aria-label="Item actions"
-      class="text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
+      class="mt-0.5 text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
     >
       ⋯
     </button>

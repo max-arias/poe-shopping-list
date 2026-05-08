@@ -1,4 +1,4 @@
-import type { Draft, DraftItem, ItemKind, TradeCapture } from "@/types";
+import type { Draft, DraftItem, ItemKind, SearchFilterSnapshot, TradeCapture } from "@/types";
 import { computed, ref } from "vue";
 import { storage } from "wxt/utils/storage";
 import { useUiStore } from "../stores/ui";
@@ -98,6 +98,7 @@ export function useDraftList() {
     name: string,
     tradeUrl: string,
     capture: TradeCapture | null,
+    filters?: SearchFilterSnapshot | null,
     kind: ItemKind = "unique",
   ) {
     const target = drafts.value.find((d) => d.id === draftId);
@@ -108,6 +109,7 @@ export function useDraftList() {
       name,
       tradeUrl,
       capture,
+      ...(filters ? { filters } : {}),
       completed: false,
       kind,
       addedAt: Date.now(),
@@ -122,10 +124,11 @@ export function useDraftList() {
     name: string,
     tradeUrl: string,
     capture: TradeCapture | null,
+    filters?: SearchFilterSnapshot | null,
     kind: ItemKind = "unique",
   ) {
     if (!draft.value) return null;
-    return addItemToDraft(draft.value.id, name, tradeUrl, capture, kind);
+    return addItemToDraft(draft.value.id, name, tradeUrl, capture, filters, kind);
   }
 
   async function removeItem(itemId: string) {

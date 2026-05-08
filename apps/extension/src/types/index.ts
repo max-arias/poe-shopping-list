@@ -1,6 +1,16 @@
 export { GameSchema, type Game, POE1_LEAGUES, DEFAULT_POE1_LEAGUE } from "./game";
 export { ItemKindSchema, type ItemKind } from "./item";
 export { RawListingSchema, TradeCaptureSchema, type RawListing, type TradeCapture } from "./trade";
+export {
+  SearchFilterEntrySchema,
+  SearchFilterGroupSchema,
+  SearchFilterSnapshotSchema,
+  SearchFilterValueSchema,
+  type SearchFilterEntry,
+  type SearchFilterGroup,
+  type SearchFilterSnapshot,
+  type SearchFilterValue,
+} from "./searchFilters";
 export { DraftItemSchema, DraftSchema, type DraftItem, type Draft } from "./draft";
 export { SettingsSchema, type Settings, DEFAULT_SETTINGS } from "./settings";
 export { PurchaseHistoryItemSchema, type PurchaseHistoryItem } from "./purchaseHistory";

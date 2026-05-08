@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SearchFilterSnapshotSchema } from "./searchFilters";
 
 export const PurchaseHistoryItemSchema = z.object({
   id: z.string(),
@@ -8,6 +9,7 @@ export const PurchaseHistoryItemSchema = z.object({
   priceValue: z.number(),
   priceCurrency: z.string(),
   searchUrl: z.string(),
+  filters: SearchFilterSnapshotSchema.optional(),
   addedAt: z.number().int(),
 });
 export type PurchaseHistoryItem = z.infer<typeof PurchaseHistoryItemSchema>;

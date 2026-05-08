@@ -156,6 +156,12 @@ export default defineBackground(() => {
     return await sendMessage("csSearchBarGet", undefined, tabId);
   });
 
+  onMessage("spSearchFiltersRead", async () => {
+    const tabId = await getActiveTabId();
+    if (!tabId) return null;
+    return await sendMessage("csSearchFiltersRead", undefined, tabId);
+  });
+
   // SP reports open/close state → relay FAB visibility to active tab's CS
   onMessage("spSidepanelVisibilitySet", async (message) => {
     const tabId = await getActiveTabId();

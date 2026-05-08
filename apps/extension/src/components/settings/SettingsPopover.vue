@@ -102,6 +102,33 @@ function toggleShowFloatingActionButton() {
           </button>
         </div>
 
+        <!-- Display filter values -->
+        <div class="px-3 py-3 flex items-center justify-between gap-3">
+          <div>
+            <p class="text-[12px] text-ink">Display filter values</p>
+            <p class="text-[10px] text-ink-muted">
+              Show captured filter summaries in lists/history
+            </p>
+          </div>
+          <button
+            @click="updateSettings({ displayFilterValues: !settings.displayFilterValues })"
+            role="switch"
+            :aria-checked="settings.displayFilterValues"
+            aria-label="Display filter values"
+            class="w-9 h-5 rounded-full border cursor-pointer flex items-center px-0.5 shrink-0"
+            :class="
+              settings.displayFilterValues
+                ? 'bg-accent border-accent-edge'
+                : 'bg-surface border-stroke'
+            "
+          >
+            <div
+              class="w-3.5 h-3.5 rounded-full bg-knob shadow-sm"
+              :style="{ marginLeft: settings.displayFilterValues ? '16px' : '0px' }"
+            />
+          </button>
+        </div>
+
         <!-- Show floating action button -->
         <div class="px-3 py-3 flex items-center justify-between gap-3">
           <div>

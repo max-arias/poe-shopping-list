@@ -6,8 +6,14 @@ export default defineContentScript({
   runAt: "document_idle",
 
   async main() {
-    const { buildCapture, isCaptureable, getSearchBarText, extractRowData, SELECTORS } =
-      await import("@/trade-dom");
+    const {
+      buildCapture,
+      buildSearchFilterSnapshot,
+      isCaptureable,
+      getSearchBarText,
+      extractRowData,
+      SELECTORS,
+    } = await import("@/trade-dom");
     const { onMessage, sendMessage } = await import("../utils/messages");
     const { storage } = await import("wxt/utils/storage");
     const { injectFab, resetFabDismissedState } = await import("../utils/fab");
@@ -73,6 +79,10 @@ export default defineContentScript({
       return { text };
     });
 
+    onMessage("csSearchFiltersRead", () => {
+      return buildSearchFilterSnapshot(document, window.location.href);
+    });
+
     onMessage("csFabVisibilitySet", (message) => {
       isFabVisible = message.data.visible;
       fab?.setVisible(message.data.visible);
@@ -120,11 +130,13 @@ export default defineContentScript({
       }
 
       const name = getSearchBarText(document).trim();
+      const filters = buildSearchFilterSnapshot(document, url);
       lastTrackedVisitUrl = url;
       sendMessage("csVisitHistoryAdd", {
         id: crypto.randomUUID(),
         url,
         ...(name ? { name } : {}),
+        ...(filters ? { filters } : {}),
         addedAt: Date.now(),
       }).catch(() => {});
     }
@@ -222,6 +234,7 @@ export default defineContentScript({
           return;
         }
 
+        const filters = buildSearchFilterSnapshot(document, window.location.href);
         const item: import("@/types").PurchaseHistoryItem = {
           id: crypto.randomUUID(),
           listingId: data.listingId,
@@ -230,6 +243,7 @@ export default defineContentScript({
           priceValue: data.priceValue,
           priceCurrency: data.priceCurrency,
           searchUrl: window.location.href,
+          ...(filters ? { filters } : {}),
           addedAt: Date.now(),
         };
 

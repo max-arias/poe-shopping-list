@@ -1,4 +1,4 @@
-import type { TradeCapture } from "@/trade-dom";
+import type { SearchFilterSnapshot, TradeCapture } from "@/trade-dom";
 import type { PurchaseHistoryItem, VisitHistoryItem } from "@/types";
 import { defineExtensionMessaging } from "@webext-core/messaging";
 
@@ -35,6 +35,8 @@ interface ProtocolMap {
   csAutoCaptureRead(): TradeCapture | null;
   /** Returns the current search bar text */
   csSearchBarGet(): { text: string };
+  /** Returns active non-default PoE1 search filters from the current page */
+  csSearchFiltersRead(): SearchFilterSnapshot | null;
 
   // ── Side Panel → Service Worker ──────────────────────────────────────────
   /** Sidepanel requests capture data (SW relays to active tab's CS) */
@@ -43,6 +45,8 @@ interface ProtocolMap {
   spAutoCaptureRead(): TradeCapture | null;
   /** Sidepanel requests search bar text (SW relays to active tab's CS) */
   spSearchBarGet(): { text: string };
+  /** Sidepanel requests active filters (SW relays to active tab's CS) */
+  spSearchFiltersRead(): SearchFilterSnapshot | null;
   /** Sidepanel reports open/close state so SW can relay FAB visibility */
   spSidepanelVisibilitySet(data: { open: boolean }): void;
 
