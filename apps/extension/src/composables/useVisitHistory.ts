@@ -1,8 +1,8 @@
-import { storage } from "wxt/utils/storage";
-import { ref } from "vue";
-import type { VisitHistoryItem } from "@/types";
+import type { VisitHistoryItem } from '@/types';
+import { ref } from 'vue';
+import { storage } from 'wxt/utils/storage';
 
-const visitHistoryItem = storage.defineItem<VisitHistoryItem[]>("local:visitHistory", {
+const visitHistoryItem = storage.defineItem<VisitHistoryItem[]>('local:visitHistory', {
   fallback: [],
 });
 
@@ -12,7 +12,7 @@ function normalizeItem(item: VisitHistoryItem): VisitHistoryItem {
 
 function toArray(val: unknown): VisitHistoryItem[] {
   if (Array.isArray(val)) return val.map(normalizeItem);
-  if (val && typeof val === "object") {
+  if (val && typeof val === 'object') {
     const obj = val as Record<string, unknown>;
     const keys = Object.keys(obj).sort((a, b) => Number(a) - Number(b));
     if (keys.length > 0 && keys.every((k) => /^\d+$/.test(k))) {

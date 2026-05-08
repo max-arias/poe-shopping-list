@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useUiStore } from "../../stores/ui";
-import { useDraftList } from "../../composables/useDraftList";
-import { importDraft } from "../../composables/useImportExport";
-import BtnGhost from "../shared/BtnGhost.vue";
-import BtnAccent from "../shared/BtnAccent.vue";
-import { useFocusTrap } from "../../composables/useFocusTrap";
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { useDraftList } from '../../composables/useDraftList';
+import { useFocusTrap } from '../../composables/useFocusTrap';
+import { importDraft } from '../../composables/useImportExport';
+import { useUiStore } from '../../stores/ui';
+import BtnAccent from '../shared/BtnAccent.vue';
+import BtnGhost from '../shared/BtnGhost.vue';
 
 const ui = useUiStore();
 const { addDraft } = useDraftList();
 
-const input = ref("");
-const error = ref("");
+const input = ref('');
+const error = ref('');
 const importing = ref(false);
 
 const dialogRef = ref<HTMLElement | null>(null);
@@ -21,16 +21,16 @@ onBeforeUnmount(deactivate);
 
 async function handleImport() {
   if (!input.value.trim() || importing.value) return;
-  error.value = "";
+  error.value = '';
   importing.value = true;
 
   try {
     const draft = importDraft(input.value.trim());
     await addDraft(draft);
-    input.value = "";
+    input.value = '';
     ui.closeImportSheet();
   } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : "Failed to import list";
+    error.value = e instanceof Error ? e.message : 'Failed to import list';
   } finally {
     importing.value = false;
   }

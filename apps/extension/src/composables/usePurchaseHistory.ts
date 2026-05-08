@@ -1,8 +1,8 @@
-import { storage } from "wxt/utils/storage";
-import { ref } from "vue";
-import type { PurchaseHistoryItem } from "@/types";
+import type { PurchaseHistoryItem } from '@/types';
+import { ref } from 'vue';
+import { storage } from 'wxt/utils/storage';
 
-const purchaseHistoryItem = storage.defineItem<PurchaseHistoryItem[]>("local:purchaseHistory", {
+const purchaseHistoryItem = storage.defineItem<PurchaseHistoryItem[]>('local:purchaseHistory', {
   fallback: [],
 });
 
@@ -17,7 +17,7 @@ function normalizeItem(item: PurchaseHistoryItem): PurchaseHistoryItem {
  */
 function toArray(val: unknown): PurchaseHistoryItem[] {
   if (Array.isArray(val)) return val.map(normalizeItem);
-  if (val && typeof val === "object") {
+  if (val && typeof val === 'object') {
     // Handle object-with-numeric-keys (e.g. {"0": {...}})
     const obj = val as Record<string, unknown>;
     const keys = Object.keys(obj).sort((a, b) => Number(a) - Number(b));

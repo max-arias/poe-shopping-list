@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { DraftItem } from "@/types";
-import { useUiStore } from "../../stores/ui";
-import { useDraftList } from "../../composables/useDraftList";
+import type { DraftItem } from '@/types';
+import { useDraftList } from '../../composables/useDraftList';
+import { useUiStore } from '../../stores/ui';
 
 const { item } = defineProps<{ item: DraftItem }>();
 
@@ -9,30 +9,30 @@ const ui = useUiStore();
 const { removeItem, setComplete } = useDraftList();
 
 const actions = [
-  { label: "↗  Open search", key: "open" },
-  { label: "⎘  Copy URL", key: "copy" },
-  { label: "✎  Edit", key: "edit" },
-  { label: item.completed ? "○  Unmark" : "✓  Mark as acquired", key: "toggle" },
+  { label: '↗  Open search', key: 'open' },
+  { label: '⎘  Copy URL', key: 'copy' },
+  { label: '✎  Edit', key: 'edit' },
+  { label: item.completed ? '○  Unmark' : '✓  Mark as acquired', key: 'toggle' },
   { sep: true },
-  { label: "✕  Remove", key: "delete", danger: true },
+  { label: '✕  Remove', key: 'delete', danger: true },
 ] as const;
 
 async function handleAction(key: string) {
   ui.closeKebab();
   switch (key) {
-    case "open":
-      window.open(item.tradeUrl, "_blank");
+    case 'open':
+      window.open(item.tradeUrl, '_blank');
       break;
-    case "copy":
+    case 'copy':
       await navigator.clipboard.writeText(item.tradeUrl);
       break;
-    case "toggle":
+    case 'toggle':
       await setComplete(item.id, !item.completed);
       break;
-    case "edit":
+    case 'edit':
       ui.openEditSheet(item.id);
       break;
-    case "delete":
+    case 'delete':
       await removeItem(item.id);
       break;
   }

@@ -1,9 +1,7 @@
 {
   "name": "poe-shopping-list",
   "private": true,
-  "workspaces": [
-    "apps/*"
-  ],
+  "workspaces": ["apps/*"],
   "scripts": {
     "ext": "vp run --filter @poe-sl/extension dev",
     "ext:build": "vp run --filter @poe-sl/extension build",

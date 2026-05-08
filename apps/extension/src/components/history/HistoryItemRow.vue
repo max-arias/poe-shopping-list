@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { PurchaseHistoryItem } from "@/types";
-import { useUiStore } from "../../stores/ui";
-import { useSettings } from "../../composables/useSettings";
+import type { PurchaseHistoryItem } from '@/types';
+import { useSettings } from '../../composables/useSettings';
+import { useUiStore } from '../../stores/ui';
 
 const { item } = defineProps<{ item: PurchaseHistoryItem }>();
-const emit = defineEmits<{ "toggle-select": [id: string] }>();
+const emit = defineEmits<{ 'toggle-select': [id: string] }>();
 
 const ui = useUiStore();
 const { settings } = useSettings();

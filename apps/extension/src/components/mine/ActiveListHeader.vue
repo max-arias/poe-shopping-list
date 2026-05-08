@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useDraftList } from "../../composables/useDraftList";
-import { useDivineRate } from "../../composables/useDivineRate";
-import BtnGhost from "../shared/BtnGhost.vue";
+import { computed } from 'vue';
+import { useDivineRate } from '../../composables/useDivineRate';
+import { useDraftList } from '../../composables/useDraftList';
+import BtnGhost from '../shared/BtnGhost.vue';
 
 const { draft } = useDraftList();
 const { divineRate } = useDivineRate();
@@ -10,27 +10,23 @@ const emit = defineEmits<{ switch: [] }>();
 
 const estimate = computed(() => {
   const items = draft.value?.items ?? [];
-  const priced = items.filter((i) => i.capture && i.capture.aggregates.sampleSize > 0);
+  const priced = items.flatMap((i) =>
+    i.capture && i.capture.aggregates.sampleSize > 0 ? [i.capture.aggregates] : [],
+  );
   if (!priced.length) return null;
 
   // Tally currencies
   const counts = new Map<string, number>();
-  for (const i of priced)
-    counts.set(
-      i.capture!.aggregates.currency,
-      (counts.get(i.capture!.aggregates.currency) ?? 0) + 1,
-    );
+  for (const i of priced) counts.set(i.currency, (counts.get(i.currency) ?? 0) + 1);
   const dominant = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
   if (!dominant) return null;
 
-  const sum = priced
-    .filter((i) => i.capture!.aggregates.currency === dominant)
-    .reduce((acc, i) => acc + i.capture!.aggregates.median, 0);
+  const sum = priced.filter((i) => i.currency === dominant).reduce((acc, i) => acc + i.median, 0);
   return { value: Math.round(sum * 10) / 10, currency: dominant };
 });
 
 const divineEquivalent = computed(() => {
-  if (!estimate.value || estimate.value.currency !== "chaos") return null;
+  if (!estimate.value || estimate.value.currency !== 'chaos') return null;
   if (!divineRate.value) return null;
   return (estimate.value.value / divineRate.value).toFixed(1);
 });

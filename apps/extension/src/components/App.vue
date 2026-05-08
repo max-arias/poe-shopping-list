@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { computed, watchEffect, watch, ref, onMounted, onBeforeUnmount } from "vue";
-import { useUiStore } from "../stores/ui";
-import { useSettings } from "../composables/useSettings";
-import { useDraftList } from "../composables/useDraftList";
-import { storage } from "wxt/utils/storage";
-import { sendMessage } from "../utils/messages";
-import MineTab from "./mine/MineTab.vue";
-import HistoryTab from "./history/HistoryTab.vue";
-import DetailPanel from "./detail/DetailPanel.vue";
-import SaveModal from "./mine/SaveModal.vue";
-import ChooseListModal from "./mine/ChooseListModal.vue";
-import EditItemSheet from "./mine/EditItemSheet.vue";
-import ExportSheet from "./mine/ExportSheet.vue";
-import ImportSheet from "./mine/ImportSheet.vue";
-import SettingsPopover from "./settings/SettingsPopover.vue";
-import CaptureUnavailableBanner from "./shared/CaptureUnavailableBanner.vue";
-import Button from "./shared/Button.vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
+import { storage } from 'wxt/utils/storage';
+import { useDraftList } from '../composables/useDraftList';
+import { useSettings } from '../composables/useSettings';
+import { useUiStore } from '../stores/ui';
+import { sendMessage } from '../utils/messages';
+import DetailPanel from './detail/DetailPanel.vue';
+import HistoryTab from './history/HistoryTab.vue';
+import ChooseListModal from './mine/ChooseListModal.vue';
+import EditItemSheet from './mine/EditItemSheet.vue';
+import ExportSheet from './mine/ExportSheet.vue';
+import ImportSheet from './mine/ImportSheet.vue';
+import MineTab from './mine/MineTab.vue';
+import SaveModal from './mine/SaveModal.vue';
+import SettingsPopover from './settings/SettingsPopover.vue';
+import Button from './shared/Button.vue';
+import CaptureUnavailableBanner from './shared/CaptureUnavailableBanner.vue';
 
 const ui = useUiStore();
 const { settings } = useSettings();
 const { drafts, isLoaded } = useDraftList();
 
-const triggerSaveSearch = storage.defineItem<number>("local:triggerSaveSearch", {
+const triggerSaveSearch = storage.defineItem<number>('local:triggerSaveSearch', {
   fallback: 0,
 });
 const pendingTrigger = ref(0);
 let sidepanelVisibilityPort: ReturnType<typeof browser.runtime.connect> | null = null;
 
 async function reportSidepanelVisibility(open: boolean) {
-  await sendMessage("spSidepanelVisibilitySet", { open }).catch(() => {});
+  await sendMessage('spSidepanelVisibilitySet', { open }).catch(() => {});
 
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
   if (!tab?.id) {
@@ -43,7 +43,7 @@ watch([isLoaded, pendingTrigger], ([loaded, trigger]) => {
   pendingTrigger.value = 0;
   triggerSaveSearch.setValue(0); // clear the storage trigger
 
-  if (drafts.value.length > 0 && ui.currentView.type === "detail") {
+  if (drafts.value.length > 0 && ui.currentView.type === 'detail') {
     // A draft is already open — save directly to it
     ui.openSaveModal();
   } else {
@@ -53,7 +53,7 @@ watch([isLoaded, pendingTrigger], ([loaded, trigger]) => {
 });
 
 onMounted(async () => {
-  sidepanelVisibilityPort = browser.runtime.connect({ name: "poe-sl-sidepanel-visibility" });
+  sidepanelVisibilityPort = browser.runtime.connect({ name: 'poe-sl-sidepanel-visibility' });
   void reportSidepanelVisibility(true);
 
   // Pick up a trigger that was set before the sidepanel mounted
@@ -93,13 +93,13 @@ watch(
 );
 
 const resolvedTheme = computed(() => {
-  if (settings.value.theme === "dark") return "dark";
-  if (settings.value.theme === "light") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  if (settings.value.theme === 'dark') return 'dark';
+  if (settings.value.theme === 'light') return 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 });
 
 watchEffect(() => {
-  document.documentElement.setAttribute("data-theme", resolvedTheme.value);
+  document.documentElement.setAttribute('data-theme', resolvedTheme.value);
 });
 </script>
 

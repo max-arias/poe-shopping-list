@@ -1,5 +1,5 @@
-import { onMessage, sendMessage } from "../utils/messages";
-import type { PurchaseHistoryItem, VisitHistoryItem } from "../types";
+import type { PurchaseHistoryItem, VisitHistoryItem } from '../types';
+import { onMessage, sendMessage } from '../utils/messages';
 
 export default defineBackground(() => {
   // ── Side panel activation ─────────────────────────────────────────────────
@@ -26,30 +26,30 @@ export default defineBackground(() => {
   });
 
   browser.runtime.onConnect.addListener((port) => {
-    if (port.name !== "poe-sl-sidepanel-visibility") {
+    if (port.name !== 'poe-sl-sidepanel-visibility') {
       return;
     }
 
     let activeTabId: number | null = null;
 
     port.onMessage.addListener((message: { tabId?: number; open?: boolean }) => {
-      if (typeof message.tabId !== "number") {
+      if (typeof message.tabId !== 'number') {
         return;
       }
 
       activeTabId = message.tabId;
 
-      if (typeof message.open === "boolean") {
-        sendMessage("csFabVisibilitySet", { visible: !message.open }, activeTabId).catch(() => {});
+      if (typeof message.open === 'boolean') {
+        sendMessage('csFabVisibilitySet', { visible: !message.open }, activeTabId).catch(() => {});
       }
     });
 
     port.onDisconnect.addListener(() => {
-      if (typeof activeTabId !== "number") {
+      if (typeof activeTabId !== 'number') {
         return;
       }
 
-      sendMessage("csFabVisibilitySet", { visible: true }, activeTabId).catch(() => {});
+      sendMessage('csFabVisibilitySet', { visible: true }, activeTabId).catch(() => {});
     });
   });
 
@@ -66,7 +66,7 @@ export default defineBackground(() => {
   });
 
   browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    if (changeInfo.status === "complete") {
+    if (changeInfo.status === 'complete') {
       try {
         await setSidePanelEnabled(tabId, isSidePanelUrl(tab.url));
       } catch {}
@@ -76,12 +76,12 @@ export default defineBackground(() => {
   // ── Content Script → Service Worker handlers ─────────────────────────────
 
   // CS reports capture availability → broadcast to sidepanel
-  onMessage("csCaptureStatus", (message) => {
+  onMessage('csCaptureStatus', (message) => {
     const tabId = message.sender.tab?.id;
     const tabUrl = message.sender.tab?.url;
     if (!tabId || !tabUrl) return;
 
-    sendMessage("captureStatusChanged", {
+    sendMessage('captureStatusChanged', {
       tabId,
       tabUrl,
       available: message.data,
@@ -89,9 +89,9 @@ export default defineBackground(() => {
   });
 
   // CS sends purchase history item → persist to storage
-  onMessage("csPurchaseHistoryAdd", async (message) => {
+  onMessage('csPurchaseHistoryAdd', async (message) => {
     const item = message.data;
-    const stored = await browser.storage.local.get("purchaseHistory");
+    const stored = await browser.storage.local.get('purchaseHistory');
     const current: PurchaseHistoryItem[] = Array.isArray(stored.purchaseHistory)
       ? stored.purchaseHistory
       : [];
@@ -104,9 +104,9 @@ export default defineBackground(() => {
     await browser.storage.local.set({ purchaseHistory: current });
   });
 
-  onMessage("csVisitHistoryAdd", async (message) => {
+  onMessage('csVisitHistoryAdd', async (message) => {
     const item = message.data;
-    const stored = await browser.storage.local.get("visitHistory");
+    const stored = await browser.storage.local.get('visitHistory');
     const current: VisitHistoryItem[] = Array.isArray(stored.visitHistory)
       ? stored.visitHistory
       : [];
@@ -115,7 +115,7 @@ export default defineBackground(() => {
   });
 
   // CS requests save-search flow → open sidepanel + trigger save
-  onMessage("csSaveSearch", async (message) => {
+  onMessage('csSaveSearch', async (message) => {
     const tabId = message.sender.tab?.id;
     if (tabId) {
       // @ts-expect-error — chrome.sidePanel is MV3-only
@@ -125,7 +125,7 @@ export default defineBackground(() => {
   });
 
   // CS requests sidepanel open
-  onMessage("csOpenSidepanel", async (message) => {
+  onMessage('csOpenSidepanel', async (message) => {
     const tabId = message.sender.tab?.id;
     if (tabId) {
       // @ts-expect-error — chrome.sidePanel is MV3-only
@@ -136,46 +136,46 @@ export default defineBackground(() => {
   // ── Side Panel → Service Worker handlers (relay to Content Script) ──────
 
   // SP requests capture data → relay to active tab's CS
-  onMessage("spCaptureRead", async () => {
+  onMessage('spCaptureRead', async () => {
     const tabId = await getActiveTabId();
     if (!tabId) return null;
-    return await sendMessage("csCaptureRead", undefined, tabId);
+    return await sendMessage('csCaptureRead', undefined, tabId);
   });
 
   // SP requests auto-capture data → relay to active tab's CS
-  onMessage("spAutoCaptureRead", async () => {
+  onMessage('spAutoCaptureRead', async () => {
     const tabId = await getActiveTabId();
     if (!tabId) return null;
-    return await sendMessage("csAutoCaptureRead", undefined, tabId);
+    return await sendMessage('csAutoCaptureRead', undefined, tabId);
   });
 
   // SP requests search bar text → relay to active tab's CS
-  onMessage("spSearchBarGet", async () => {
+  onMessage('spSearchBarGet', async () => {
     const tabId = await getActiveTabId();
-    if (!tabId) return { text: "" };
-    return await sendMessage("csSearchBarGet", undefined, tabId);
+    if (!tabId) return { text: '' };
+    return await sendMessage('csSearchBarGet', undefined, tabId);
   });
 
   // SP reports open/close state → relay FAB visibility to active tab's CS
-  onMessage("spSidepanelVisibilitySet", async (message) => {
+  onMessage('spSidepanelVisibilitySet', async (message) => {
     const tabId = await getActiveTabId();
     if (!tabId) return;
-    await sendMessage("csFabVisibilitySet", { visible: !message.data.open }, tabId).catch(() => {});
+    await sendMessage('csFabVisibilitySet', { visible: !message.data.open }, tabId).catch(() => {});
   });
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const TRADE_HOME_URL = "https://www.pathofexile.com/trade";
+const TRADE_HOME_URL = 'https://www.pathofexile.com/trade';
 
 function isTradeUrl(url?: string): boolean {
   if (!url) return false;
-  return url.includes("pathofexile.com/trade");
+  return url.includes('pathofexile.com/trade');
 }
 
 function isSidePanelUrl(url?: string): boolean {
   if (!url) return false;
-  return isTradeUrl(url) || url.includes("pobb.in/") || url.includes("maxroll.gg/");
+  return isTradeUrl(url) || url.includes('pobb.in/') || url.includes('maxroll.gg/');
 }
 
 async function initSidePanelForCurrentTabs(): Promise<void> {
@@ -191,7 +191,7 @@ async function setSidePanelEnabled(tabId: number, enabled: boolean): Promise<voi
     await chrome.sidePanel?.setOptions?.({
       tabId,
       enabled,
-      path: "sidepanel.html",
+      path: 'sidepanel.html',
     });
   } catch {}
 }

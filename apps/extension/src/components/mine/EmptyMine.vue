@@ -1,36 +1,36 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useDraftList } from "../../composables/useDraftList";
-import { useSettings } from "../../composables/useSettings";
-import BtnAccent from "../shared/BtnAccent.vue";
-import BtnGhost from "../shared/BtnGhost.vue";
-import Button from "../shared/Button.vue";
+import { computed, onMounted, ref } from 'vue';
+import { useDraftList } from '../../composables/useDraftList';
+import { useSettings } from '../../composables/useSettings';
+import BtnAccent from '../shared/BtnAccent.vue';
+import BtnGhost from '../shared/BtnGhost.vue';
+import Button from '../shared/Button.vue';
 
 const { createDraft } = useDraftList();
 const { settings } = useSettings();
 
 const showForm = ref(false);
-const draftName = ref("");
-const primaryUrl = ref("");
+const draftName = ref('');
+const primaryUrl = ref('');
 const extraUrls = ref<string[]>([]);
-const creator = ref("");
+const creator = ref('');
 const creating = ref(false);
 
 const steps = [
   'Name your list (e.g. "RF Jugg")',
-  "Open pathofexile.com/trade",
-  "Run a search → tap Save This Search",
+  'Open pathofexile.com/trade',
+  'Run a search → tap Save This Search',
 ];
 
 async function getCurrentTabUrl(): Promise<string> {
   try {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    const url = tab?.url ?? "";
+    const url = tab?.url ?? '';
     // Trade site URLs aren't build guides — don't auto-fill them
-    if (/pathofexile\.com\/trade/.test(url)) return "";
+    if (/pathofexile\.com\/trade/.test(url)) return '';
     return url;
   } catch {}
-  return "";
+  return '';
 }
 
 onMounted(async () => {
@@ -38,7 +38,7 @@ onMounted(async () => {
 });
 
 function addExtraUrl() {
-  extraUrls.value.push("");
+  extraUrls.value.push('');
 }
 
 function removeExtraUrl(i: number) {
@@ -47,7 +47,7 @@ function removeExtraUrl(i: number) {
 
 // Collect all non-empty valid-looking URLs
 const allUrls = computed(() => {
-  return [primaryUrl.value, ...extraUrls.value].filter((u) => u.trim() !== "");
+  return [primaryUrl.value, ...extraUrls.value].filter((u) => u.trim() !== '');
 });
 
 const mainUrl = computed(() => allUrls.value[0] || undefined);
@@ -67,10 +67,10 @@ async function handleCreate() {
   );
   creating.value = false;
   showForm.value = false;
-  draftName.value = "";
-  primaryUrl.value = "";
+  draftName.value = '';
+  primaryUrl.value = '';
   extraUrls.value = [];
-  creator.value = "";
+  creator.value = '';
 }
 
 function openForm() {
@@ -79,10 +79,10 @@ function openForm() {
 
 function closeForm() {
   showForm.value = false;
-  draftName.value = "";
-  primaryUrl.value = "";
+  draftName.value = '';
+  primaryUrl.value = '';
   extraUrls.value = [];
-  creator.value = "";
+  creator.value = '';
 }
 </script>
 

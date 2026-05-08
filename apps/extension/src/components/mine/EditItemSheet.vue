@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
-import { useUiStore } from "../../stores/ui";
-import { useDraftList } from "../../composables/useDraftList";
-import { sendMessage } from "../../utils/messages";
-import BtnGhost from "../shared/BtnGhost.vue";
-import BtnAccent from "../shared/BtnAccent.vue";
-import Button from "../shared/Button.vue";
-import { useFocusTrap } from "../../composables/useFocusTrap";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useDraftList } from '../../composables/useDraftList';
+import { useFocusTrap } from '../../composables/useFocusTrap';
+import { useUiStore } from '../../stores/ui';
+import { sendMessage } from '../../utils/messages';
+import BtnAccent from '../shared/BtnAccent.vue';
+import BtnGhost from '../shared/BtnGhost.vue';
+import Button from '../shared/Button.vue';
 
 const ui = useUiStore();
 const { draft, updateItem, updateCapture, removeItem } = useDraftList();
 
 const item = computed(() => draft.value?.items.find((i) => i.id === ui.editSheetItemId));
 
-const name = ref("");
-const tradeUrl = ref("");
+const name = ref('');
+const tradeUrl = ref('');
 const capture = ref(item.value?.capture ?? null);
 
 watch(
@@ -22,7 +22,7 @@ watch(
   (newItem) => {
     if (newItem) {
       name.value = newItem.name;
-      tradeUrl.value = newItem.tradeUrl ?? "";
+      tradeUrl.value = newItem.tradeUrl ?? '';
       capture.value = newItem.capture;
     }
   },
@@ -51,7 +51,7 @@ async function handleRefresh() {
   if (!item.value || refreshing.value) return;
   refreshing.value = true;
   try {
-    const cap = await sendMessage("spCaptureRead");
+    const cap = await sendMessage('spCaptureRead');
     if (cap) {
       capture.value = cap;
       await updateCapture(item.value.id, cap);

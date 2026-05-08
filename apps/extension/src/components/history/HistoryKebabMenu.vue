@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { PurchaseHistoryItem } from "@/types";
-import { useUiStore } from "../../stores/ui";
-import { usePurchaseHistory } from "../../composables/usePurchaseHistory";
+import type { PurchaseHistoryItem } from '@/types';
+import { usePurchaseHistory } from '../../composables/usePurchaseHistory';
+import { useUiStore } from '../../stores/ui';
 
 const { item } = defineProps<{ item: PurchaseHistoryItem }>();
 
@@ -9,10 +9,10 @@ const ui = useUiStore();
 const { removeItem } = usePurchaseHistory();
 
 const actions = [
-  { label: "✎  Rename", key: "rename" },
-  { label: "¤  Change price", key: "changePrice" },
+  { label: '✎  Rename', key: 'rename' },
+  { label: '¤  Change price', key: 'changePrice' },
   { sep: true },
-  { label: "✕  Delete", key: "delete", danger: true },
+  { label: '✕  Delete', key: 'delete', danger: true },
 ] as const;
 
 const emit = defineEmits<{ rename: [id: string]; changePrice: [id: string] }>();
@@ -20,13 +20,13 @@ const emit = defineEmits<{ rename: [id: string]; changePrice: [id: string] }>();
 async function handleAction(key: string) {
   ui.closeKebab();
   switch (key) {
-    case "rename":
-      emit("rename", item.id);
+    case 'rename':
+      emit('rename', item.id);
       break;
-    case "changePrice":
-      emit("changePrice", item.id);
+    case 'changePrice':
+      emit('changePrice', item.id);
       break;
-    case "delete":
+    case 'delete':
       await removeItem(item.id);
       break;
   }

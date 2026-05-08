@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { VisitHistoryItem } from "@/types";
+import type { VisitHistoryItem } from '@/types';
 
 const { item } = defineProps<{ item: VisitHistoryItem }>();
-const emit = defineEmits<{ "toggle-select": [id: string] }>();
+const emit = defineEmits<{ 'toggle-select': [id: string] }>();
 
 const timestampFormatter = new Intl.DateTimeFormat(undefined, {
-  weekday: "short",
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
+  weekday: 'short',
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
 });
 
 const formattedTimestamp = timestampFormatter.format(item.addedAt);

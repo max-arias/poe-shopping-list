@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useFocusTrap } from "../../composables/useFocusTrap";
-import { useSettings } from "../../composables/useSettings";
-import { useUiStore } from "../../stores/ui";
-import { POE1_LEAGUES } from "@/types";
+import { POE1_LEAGUES } from '@/types';
+import { onMounted, ref } from 'vue';
+import { useFocusTrap } from '../../composables/useFocusTrap';
+import { useSettings } from '../../composables/useSettings';
+import { useUiStore } from '../../stores/ui';
 
 const ui = useUiStore();
 const { settings, updateSettings } = useSettings();

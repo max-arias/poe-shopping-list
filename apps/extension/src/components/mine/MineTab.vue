@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from "vue";
-import { useDraftList } from "../../composables/useDraftList";
-import { useSettings } from "../../composables/useSettings";
-import { useUiStore } from "../../stores/ui";
-import EmptyMine from "./EmptyMine.vue";
-import MineListRow from "./MineListRow.vue";
-import BtnGhost from "../shared/BtnGhost.vue";
-import BtnAccent from "../shared/BtnAccent.vue";
-import Button from "../shared/Button.vue";
-import { useFocusTrap } from "../../composables/useFocusTrap";
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { useDraftList } from '../../composables/useDraftList';
+import { useFocusTrap } from '../../composables/useFocusTrap';
+import { useSettings } from '../../composables/useSettings';
+import { useUiStore } from '../../stores/ui';
+import BtnAccent from '../shared/BtnAccent.vue';
+import BtnGhost from '../shared/BtnGhost.vue';
+import Button from '../shared/Button.vue';
+import EmptyMine from './EmptyMine.vue';
+import MineListRow from './MineListRow.vue';
 
 const { drafts, isLoaded, createDraft, deleteDraftById } = useDraftList();
 const { settings } = useSettings();
 const ui = useUiStore();
 
 const showNewForm = ref(false);
-const newName = ref("");
-const newPrimaryUrl = ref("");
+const newName = ref('');
+const newPrimaryUrl = ref('');
 const newExtraUrls = ref<string[]>([]);
-const newCreator = ref("");
+const newCreator = ref('');
 const creating = ref(false);
 const deletingId = ref<string | null>(null);
 
@@ -35,11 +35,11 @@ watch(deletingId, (val) => {
 const deletingDraft = computed(() => drafts.value.find((d) => d.id === deletingId.value) ?? null);
 
 const allNewUrls = computed(() =>
-  [newPrimaryUrl.value, ...newExtraUrls.value].filter((u) => u.trim() !== ""),
+  [newPrimaryUrl.value, ...newExtraUrls.value].filter((u) => u.trim() !== ''),
 );
 
 function addExtraUrl() {
-  newExtraUrls.value.push("");
+  newExtraUrls.value.push('');
 }
 
 function removeExtraUrl(i: number) {
@@ -49,12 +49,12 @@ function removeExtraUrl(i: number) {
 async function getCurrentTabUrl(): Promise<string> {
   try {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    const url = tab?.url ?? "";
+    const url = tab?.url ?? '';
     // Trade site URLs aren't build guides — don't auto-fill them
-    if (/pathofexile\.com\/trade/.test(url)) return "";
+    if (/pathofexile\.com\/trade/.test(url)) return '';
     return url;
   } catch {}
-  return "";
+  return '';
 }
 
 onMounted(async () => {
@@ -67,10 +67,10 @@ function openNewForm() {
 
 function closeNewForm() {
   showNewForm.value = false;
-  newName.value = "";
-  newPrimaryUrl.value = "";
+  newName.value = '';
+  newPrimaryUrl.value = '';
   newExtraUrls.value = [];
-  newCreator.value = "";
+  newCreator.value = '';
 }
 
 async function handleCreate() {

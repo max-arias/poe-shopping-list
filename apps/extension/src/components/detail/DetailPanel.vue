@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
-import { useFocusTrap } from "../../composables/useFocusTrap";
-import { useUiStore } from "../../stores/ui";
-import { useDraftList } from "../../composables/useDraftList";
-import { onMessage, sendMessage } from "../../utils/messages";
-import ItemRow from "../mine/ItemRow.vue";
-import KebabMenu from "../mine/KebabMenu.vue";
-import BtnAccent from "../shared/BtnAccent.vue";
-import BtnGhost from "../shared/BtnGhost.vue";
-import Button from "../shared/Button.vue";
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useDraftList } from '../../composables/useDraftList';
+import { useFocusTrap } from '../../composables/useFocusTrap';
+import { useUiStore } from '../../stores/ui';
+import { onMessage, sendMessage } from '../../utils/messages';
+import ItemRow from '../mine/ItemRow.vue';
+import KebabMenu from '../mine/KebabMenu.vue';
+import BtnAccent from '../shared/BtnAccent.vue';
+import BtnGhost from '../shared/BtnGhost.vue';
+import Button from '../shared/Button.vue';
 
 const ui = useUiStore();
 const { draft, unmarkAll, deleteDraft, updateCapture, setBuildInfo } = useDraftList();
@@ -16,8 +16,8 @@ const { draft, unmarkAll, deleteDraft, updateCapture, setBuildInfo } = useDraftL
 const showDeleteConfirm = ref(false);
 const showUnmarkConfirm = ref(false);
 const showLinkBuild = ref(false);
-const linkBuildUrl = ref("");
-const linkBuildCreator = ref("");
+const linkBuildUrl = ref('');
+const linkBuildCreator = ref('');
 const linkAssociatedUrls = ref<string[]>([]);
 const isTradeSearchPage = ref(false);
 
@@ -64,7 +64,7 @@ watch(showLinkBuild, async (val) => {
 async function checkTradeSearchPage() {
   try {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    const url = tab?.url ?? "";
+    const url = tab?.url ?? '';
     isTradeSearchPage.value = /pathofexile\.com\/trade2?\/search\//.test(url);
   } catch {
     isTradeSearchPage.value = false;
@@ -73,21 +73,21 @@ async function checkTradeSearchPage() {
 
 onMounted(async () => {
   await checkTradeSearchPage();
-  removeCaptureListener = onMessage("captureStatusChanged", async (message) => {
+  removeCaptureListener = onMessage('captureStatusChanged', async (message) => {
     const { tabUrl, available } = message.data;
     if (!available || !draft.value) return;
     const match = draft.value.items.find((i) => i.tradeUrl === tabUrl);
     if (!match) return;
-    const capture = await sendMessage("spCaptureRead");
+    const capture = await sendMessage('spCaptureRead');
     if (capture) await updateCapture(match.id, capture);
   });
 });
 
 async function openSaveModal() {
-  let name = "";
+  let name = '';
   try {
-    const res = await sendMessage("spSearchBarGet");
-    name = res?.text ?? "";
+    const res = await sendMessage('spSearchBarGet');
+    name = res?.text ?? '';
   } catch {}
   ui.openSaveModal(name);
 }
@@ -104,14 +104,14 @@ async function confirmUnmark() {
 }
 
 function openLinkBuild() {
-  linkBuildUrl.value = draft.value?.buildUrl ?? "";
-  linkBuildCreator.value = draft.value?.buildCreator ?? "";
+  linkBuildUrl.value = draft.value?.buildUrl ?? '';
+  linkBuildCreator.value = draft.value?.buildCreator ?? '';
   linkAssociatedUrls.value = draft.value?.associatedUrls ? [...draft.value.associatedUrls] : [];
   showLinkBuild.value = true;
 }
 
 async function saveLinkBuild() {
-  const extras = linkAssociatedUrls.value.filter((u) => u.trim() !== "");
+  const extras = linkAssociatedUrls.value.filter((u) => u.trim() !== '');
   await setBuildInfo(
     linkBuildUrl.value,
     linkBuildCreator.value,

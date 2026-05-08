@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { DraftItem } from "@/types";
-import { useUiStore } from "../../stores/ui";
-import { useDraftList } from "../../composables/useDraftList";
-import { useSettings } from "../../composables/useSettings";
+import type { DraftItem } from '@/types';
+import { useDraftList } from '../../composables/useDraftList';
+import { useSettings } from '../../composables/useSettings';
+import { useUiStore } from '../../stores/ui';
 
 const { item } = defineProps<{ item: DraftItem }>();
 

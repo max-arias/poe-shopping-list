@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from "vue";
-import { useFocusTrap } from "../../composables/useFocusTrap";
-import { usePurchaseHistory } from "../../composables/usePurchaseHistory";
-import { useVisitHistory } from "../../composables/useVisitHistory";
-import { useUiStore } from "../../stores/ui";
-import HistoryItemRow from "./HistoryItemRow.vue";
-import HistoryVisitRow from "./HistoryVisitRow.vue";
-import HistoryKebabMenu from "./HistoryKebabMenu.vue";
-import BtnGhost from "../shared/BtnGhost.vue";
-import BtnAccent from "../shared/BtnAccent.vue";
-import Button from "../shared/Button.vue";
+import { computed, nextTick, ref, watch } from 'vue';
+import { useFocusTrap } from '../../composables/useFocusTrap';
+import { usePurchaseHistory } from '../../composables/usePurchaseHistory';
+import { useVisitHistory } from '../../composables/useVisitHistory';
+import { useUiStore } from '../../stores/ui';
+import BtnAccent from '../shared/BtnAccent.vue';
+import BtnGhost from '../shared/BtnGhost.vue';
+import Button from '../shared/Button.vue';
+import HistoryItemRow from './HistoryItemRow.vue';
+import HistoryKebabMenu from './HistoryKebabMenu.vue';
+import HistoryVisitRow from './HistoryVisitRow.vue';
 
 const { items, isLoaded, removeItems, renameItem, changePrice } = usePurchaseHistory();
 const {
@@ -19,10 +19,10 @@ const {
 } = useVisitHistory();
 const ui = useUiStore();
 
-const activeSubtab = ref<"visits" | "purchases">("visits");
+const activeSubtab = ref<'visits' | 'purchases'>('visits');
 const isLoadedAny = computed(() => isLoaded.value && isVisitHistoryLoaded.value);
 const visibleItems = computed(() =>
-  activeSubtab.value === "visits" ? visitItems.value : items.value,
+  activeSubtab.value === 'visits' ? visitItems.value : items.value,
 );
 
 const selectedIds = ref<Set<string>>(new Set());
@@ -55,7 +55,7 @@ function toggleAll() {
 }
 
 async function deleteSelected() {
-  if (activeSubtab.value === "visits") {
+  if (activeSubtab.value === 'visits') {
     await removeVisitItems([...selectedIds.value]);
   } else {
     await removeItems([...selectedIds.value]);
@@ -65,7 +65,7 @@ async function deleteSelected() {
 
 // Rename sheet state
 const renamingItemId = ref<string | null>(null);
-const renameValue = ref("");
+const renameValue = ref('');
 
 function startRename(id: string) {
   const item = items.value.find((i) => i.id === id);
@@ -83,8 +83,8 @@ async function confirmRename() {
 
 // Change price sheet state
 const changingPriceItemId = ref<string | null>(null);
-const priceValue = ref("");
-const priceCurrency = ref("");
+const priceValue = ref('');
+const priceCurrency = ref('');
 
 function startChangePrice(id: string) {
   const item = items.value.find((i) => i.id === id);
@@ -99,7 +99,7 @@ async function confirmChangePrice() {
   if (!changingPriceItemId.value) return;
   const val = Number.parseFloat(priceValue.value);
   if (Number.isNaN(val) || val <= 0) return;
-  await changePrice(changingPriceItemId.value, val, priceCurrency.value.trim() || "chaos");
+  await changePrice(changingPriceItemId.value, val, priceCurrency.value.trim() || 'chaos');
   changingPriceItemId.value = null;
 }
 

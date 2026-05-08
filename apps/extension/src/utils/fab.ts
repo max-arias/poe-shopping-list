@@ -1,13 +1,13 @@
-import type { Draft } from "@/types";
-import { STORAGE } from "@/types/storage";
-import { storage } from "wxt/utils/storage";
-import { sendMessage } from "./messages";
+import type { Draft } from '@/types';
+import { STORAGE } from '@/types/storage';
+import { storage } from 'wxt/utils/storage';
+import { sendMessage } from './messages';
 
 const DEFAULT_TOP = 96;
 const MIN_TOP = 20;
 const RIGHT_OFFSET = 0;
 const DRAG_THRESHOLD = 6;
-const DISMISSED_KEY = "poe-sl-fab-dismissed";
+const DISMISSED_KEY = 'poe-sl-fab-dismissed';
 
 const fabPositionItem = storage.defineItem<number>(STORAGE.fabPosition, {
   fallback: DEFAULT_TOP,
@@ -29,17 +29,16 @@ export async function injectFab(drafts: Draft[], url: string) {
   const latestMatches = matches.slice(0, 5);
 
   const savedTop = await fabPositionItem.getValue();
-  const extensionIconPath = browser.runtime.getManifest().icons?.[48] ?? "icons/icon48.png";
-  const extensionIconUrl = browser.runtime.getURL(extensionIconPath as any);
+  const extensionIconUrl = browser.runtime.getURL('/icons/icon48.png');
 
-  const host = document.createElement("div");
-  host.dataset.testid = "poe-sl-fab-host";
+  const host = document.createElement('div');
+  host.dataset.testid = 'poe-sl-fab-host';
   host.style.cssText = `position:fixed;top:${savedTop}px;right:${RIGHT_OFFSET}px;z-index:2147483647;font-family:ui-sans-serif,system-ui,sans-serif;`;
   document.body.appendChild(host);
 
-  const shadow = host.attachShadow({ mode: "open" });
+  const shadow = host.attachShadow({ mode: 'open' });
 
-  const style = document.createElement("style");
+  const style = document.createElement('style');
   style.textContent = `
     /* Mini-view Mode (Ribbon) */
     .ribbon {
@@ -166,8 +165,8 @@ export async function injectFab(drafts: Draft[], url: string) {
     }
   `;
 
-  const container = document.createElement("div");
-  container.className = "fab-container";
+  const container = document.createElement('div');
+  container.className = 'fab-container';
 
   if (latestMatches.length > 0) {
     // Mini-view mode
@@ -179,7 +178,7 @@ export async function injectFab(drafts: Draft[], url: string) {
         <button class="btn" data-idx="${i}">View →</button>
       </div>`,
       )
-      .join("");
+      .join('');
 
     container.innerHTML = `
       <div class="ribbon">
@@ -195,14 +194,14 @@ export async function injectFab(drafts: Draft[], url: string) {
     shadow.appendChild(style);
     shadow.appendChild(container);
 
-    for (const btn of shadow.querySelectorAll(".btn")) {
-      btn.addEventListener("click", () => {
-        sendMessage("csOpenSidepanel");
+    for (const btn of shadow.querySelectorAll('.btn')) {
+      btn.addEventListener('click', () => {
+        sendMessage('csOpenSidepanel');
       });
     }
 
-    shadow.getElementById("close-btn")?.addEventListener("click", () => {
-      sessionStorage.setItem(DISMISSED_KEY, "1");
+    shadow.getElementById('close-btn')?.addEventListener('click', () => {
+      sessionStorage.setItem(DISMISSED_KEY, '1');
       host.remove();
     });
   } else {
@@ -218,13 +217,13 @@ export async function injectFab(drafts: Draft[], url: string) {
     shadow.appendChild(style);
     shadow.appendChild(container);
 
-    const wrapper = shadow.querySelector(".fab-btn-wrapper") as HTMLDivElement;
-    const fabButton = shadow.querySelector(".fab-btn") as HTMLButtonElement;
+    const wrapper = shadow.querySelector('.fab-btn-wrapper') as HTMLDivElement;
+    const fabButton = shadow.querySelector('.fab-btn') as HTMLButtonElement;
 
     setupVerticalDrag(host, wrapper);
 
-    fabButton.addEventListener("click", () => {
-      sendMessage("csOpenSidepanel");
+    fabButton.addEventListener('click', () => {
+      sendMessage('csOpenSidepanel');
     });
   }
 
@@ -246,10 +245,10 @@ export function resetFabDismissedState() {
 
 function escapeHtml(s: string): string {
   return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function setupVerticalDrag(host: HTMLDivElement, wrapper: HTMLDivElement) {
@@ -274,9 +273,9 @@ function setupVerticalDrag(host: HTMLDivElement, wrapper: HTMLDivElement) {
   };
 
   const cleanupWindowListeners = () => {
-    window.removeEventListener("pointermove", handlePointerMove);
-    window.removeEventListener("pointerup", handlePointerUp);
-    window.removeEventListener("pointercancel", handlePointerUp);
+    window.removeEventListener('pointermove', handlePointerMove);
+    window.removeEventListener('pointerup', handlePointerUp);
+    window.removeEventListener('pointercancel', handlePointerUp);
   };
 
   const handlePointerUp = async (event: PointerEvent) => {
@@ -285,7 +284,7 @@ function setupVerticalDrag(host: HTMLDivElement, wrapper: HTMLDivElement) {
     }
 
     cleanupWindowListeners();
-    wrapper.classList.remove("dragging");
+    wrapper.classList.remove('dragging');
 
     if (moved) {
       suppressClick = true;
@@ -298,19 +297,19 @@ function setupVerticalDrag(host: HTMLDivElement, wrapper: HTMLDivElement) {
     pointerId = null;
   };
 
-  wrapper.addEventListener("pointerdown", (event) => {
+  wrapper.addEventListener('pointerdown', (event) => {
     pointerId = event.pointerId;
     startPointerY = event.clientY;
     startTop = Number.parseFloat(host.style.top) || DEFAULT_TOP;
     moved = false;
-    wrapper.classList.add("dragging");
-    window.addEventListener("pointermove", handlePointerMove, { passive: false });
-    window.addEventListener("pointerup", handlePointerUp);
-    window.addEventListener("pointercancel", handlePointerUp);
+    wrapper.classList.add('dragging');
+    window.addEventListener('pointermove', handlePointerMove, { passive: false });
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
   });
 
   wrapper.addEventListener(
-    "click",
+    'click',
     (event) => {
       if (!suppressClick) {
         return;
@@ -329,6 +328,6 @@ function clampFabTop(nextTop: number, host: HTMLDivElement) {
 }
 
 function setFabVisible(host: HTMLDivElement, visible: boolean) {
-  host.style.opacity = visible ? "1" : "0";
-  host.style.pointerEvents = visible ? "auto" : "none";
+  host.style.opacity = visible ? '1' : '0';
+  host.style.pointerEvents = visible ? 'auto' : 'none';
 }

@@ -1,7 +1,7 @@
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
-import { DraftSchema } from "@/types";
-import type { Draft } from "@/types";
-import type { ItemKind } from "@/types";
+import { DraftSchema } from '@/types';
+import type { Draft } from '@/types';
+import type { ItemKind } from '@/types';
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 
 /**
  * Export a draft list as a compressed, URL-safe string.
@@ -33,13 +33,13 @@ export function exportDraft(draft: Draft): string {
  */
 export function importDraft(encoded: string): Draft {
   const json = decompressFromEncodedURIComponent(encoded);
-  if (!json) throw new Error("Invalid import string: decompression failed");
+  if (!json) throw new Error('Invalid import string: decompression failed');
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(json);
   } catch {
-    throw new Error("Invalid import string: not valid JSON");
+    throw new Error('Invalid import string: not valid JSON');
   }
 
   // Reconstruct a full Draft from the portable format
@@ -47,19 +47,19 @@ export function importDraft(encoded: string): Draft {
 
   const draft: Draft = {
     id: crypto.randomUUID(),
-    name: String(portable.n ?? ""),
-    game: "poe1",
-    league: String(portable.l ?? ""),
+    name: String(portable.n ?? ''),
+    game: 'poe1',
+    league: String(portable.l ?? ''),
     createdAt: Date.now(),
     items: Array.isArray(portable.i)
       ? (portable.i as Array<Record<string, unknown>>).map((item, pos) => ({
           id: crypto.randomUUID(),
           position: pos,
-          name: String(item.n ?? ""),
-          tradeUrl: String(item.u ?? ""),
+          name: String(item.n ?? ''),
+          tradeUrl: String(item.u ?? ''),
           capture: null,
           completed: false,
-          kind: String(item.k ?? "unique") as ItemKind,
+          kind: String(item.k ?? 'unique') as ItemKind,
           base: item.b ? String(item.b) : undefined,
           addedAt: Date.now(),
         }))

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import { useUiStore } from "../../stores/ui";
-import { useDraftList } from "../../composables/useDraftList";
-import { exportDraft } from "../../composables/useImportExport";
-import BtnGhost from "../shared/BtnGhost.vue";
-import BtnAccent from "../shared/BtnAccent.vue";
-import { useFocusTrap } from "../../composables/useFocusTrap";
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useDraftList } from '../../composables/useDraftList';
+import { useFocusTrap } from '../../composables/useFocusTrap';
+import { exportDraft } from '../../composables/useImportExport';
+import { useUiStore } from '../../stores/ui';
+import BtnAccent from '../shared/BtnAccent.vue';
+import BtnGhost from '../shared/BtnGhost.vue';
 
 const ui = useUiStore();
 const { draft } = useDraftList();
 
-const encoded = computed(() => (draft.value ? exportDraft(draft.value) : ""));
+const encoded = computed(() => (draft.value ? exportDraft(draft.value) : ''));
 const copied = ref(false);
 
 const dialogRef = ref<HTMLElement | null>(null);
@@ -28,7 +28,7 @@ async function copyToClipboard() {
     }, 2000);
   } catch {
     // Fallback: select the textarea
-    const el = document.querySelector<HTMLTextAreaElement>("[data-export-textarea]");
+    const el = document.querySelector<HTMLTextAreaElement>('[data-export-textarea]');
     el?.select();
   }
 }
