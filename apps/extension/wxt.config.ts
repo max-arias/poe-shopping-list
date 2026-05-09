@@ -41,8 +41,13 @@ export default defineConfig({
     },
     web_accessible_resources: [
       {
-        resources: ["icons/*.png"],
-        matches: ["https://www.pathofexile.com/*", "https://pathofexile.com/*"],
+        resources: ["icons/*.png", "stat-index.json"],
+        matches: [
+          "https://www.pathofexile.com/*",
+          "https://pathofexile.com/*",
+          "https://pobb.in/*",
+          "https://maxroll.gg/*",
+        ],
       },
     ],
   },

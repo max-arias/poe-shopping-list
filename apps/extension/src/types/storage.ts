@@ -5,4 +5,5 @@ export const STORAGE = {
   purchaseHistory: "local:purchaseHistory",
   visitHistory: "local:visitHistory",
   triggerSaveSearch: "local:triggerSaveSearch",
+  pricingJobs: "local:pricingJobs:v1",
 } as const;

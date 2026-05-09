@@ -14,6 +14,21 @@ export const DraftItemSchema = z.object({
   completed: z.boolean().default(false),
   kind: ItemKindSchema.default("unique"),
   base: z.string().optional(),
+  queryHash: z.string().optional(),
+  pricingStatus: z.enum(["pending", "priced", "unpriced", "failed", "skipped"]).optional(),
+  pricingError: z.string().optional(),
+  source: z
+    .object({
+      type: z.literal("pob"),
+      buildUrl: z.string(),
+      itemSetId: z.string().optional(),
+      itemSetName: z.string().optional(),
+      skillGroupId: z.string().optional(),
+      skillGroupName: z.string().optional(),
+      slot: z.string().optional(),
+      pobItemId: z.string().optional(),
+    })
+    .optional(),
   addedAt: z.number().int(),
 });
 export type DraftItem = z.infer<typeof DraftItemSchema>;

@@ -12,6 +12,7 @@
     "check": "vp check src wxt.config.ts"
   },
   "dependencies": {
+    "@max-arias/pob-codec": "github:max-arias/pob-codec#08ff4d9",
     "class-variance-authority": "^0.7.1",
     "lz-string": "^1.5.0",
     "pinia": "^2.2.6",

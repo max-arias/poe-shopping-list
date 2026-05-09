@@ -15,8 +15,17 @@ export default defineContentScript({
       SELECTORS,
     } = await import("@/trade-dom");
     const { onMessage, sendMessage } = await import("../utils/messages");
+    const { logDebug } = await import("../utils/debugLog");
     const { storage } = await import("wxt/utils/storage");
     const { injectFab, resetFabDismissedState } = await import("../utils/fab");
+
+    if (isPricingWorkerTab()) {
+      logDebug("trade.content", "worker:start", "Pricing worker tab content script started", {
+        url: window.location.href,
+      });
+      registerPricingCaptureHandler();
+      return;
+    }
 
     const drafts = (await storage.getItem<Draft[]>("local:drafts")) ?? [];
     const settingsItem = storage.defineItem<Settings>(STORAGE.settings, {
@@ -27,6 +36,10 @@ export default defineContentScript({
       : undefined;
     let lastTrackedVisitUrl: string | null = null;
     let isFabVisible = true;
+    logDebug("trade.content", "main:start", "Trade content script started", {
+      url: window.location.href,
+      isPricingWorkerTab: isPricingWorkerTab(),
+    });
 
     settingsItem.watch(async (value) => {
       const showFloatingActionButton = value?.showFloatingActionButton !== false;
@@ -46,8 +59,10 @@ export default defineContentScript({
     });
 
     injectSaveSearchButton();
-    reportStatus();
-    trackVisitIfNeeded();
+    if (!isPricingWorkerTab()) {
+      reportStatus();
+      trackVisitIfNeeded();
+    }
     listenForTravelToHideout();
     installHistoryListeners();
 
@@ -57,8 +72,10 @@ export default defineContentScript({
       new MutationObserver(() => {
         clearTimeout(observerTimer);
         observerTimer = setTimeout(() => {
-          reportStatus();
-          trackVisitIfNeeded();
+          if (!isPricingWorkerTab()) {
+            reportStatus();
+            trackVisitIfNeeded();
+          }
           injectSaveSearchButton();
         }, 200);
       }).observe(container, { childList: true, subtree: true });
@@ -66,6 +83,11 @@ export default defineContentScript({
 
     onMessage("csCaptureRead", () => {
       const capture = buildCapture(document, window.location.href);
+      logDebug("trade.content", "capture:manual", "Read capture on request", {
+        url: window.location.href,
+        sampleSize: capture?.aggregates.sampleSize ?? 0,
+        median: capture?.aggregates.median,
+      });
       return capture;
     });
 
@@ -82,6 +104,110 @@ export default defineContentScript({
     onMessage("csSearchFiltersRead", () => {
       return buildSearchFilterSnapshot(document, window.location.href);
     });
+
+    registerPricingCaptureHandler();
+
+    function registerPricingCaptureHandler() {
+      onMessage("csTradeCaptureWhenReady", async (message) => {
+        const expectedUrl = message.data.expectedUrl;
+        const deadline = Date.now() + message.data.timeoutMs;
+        logDebug("trade.content", "pricing-capture:start", "Worker capture requested", {
+          actualUrl: window.location.href,
+          expectedUrl,
+          timeoutMs: message.data.timeoutMs,
+          readyState: document.readyState,
+        });
+        let lastState = "start";
+        while (Date.now() < deadline) {
+          if (!sameTradeSearch(window.location.href, expectedUrl)) {
+            if (lastState !== "wrong-url") {
+              lastState = "wrong-url";
+              logDebug(
+                "trade.content",
+                "pricing-capture:waiting-url",
+                "Waiting for expected trade URL",
+                {
+                  actualUrl: window.location.href,
+                  expectedUrl,
+                },
+              );
+            }
+            await delay(250);
+            continue;
+          }
+          if (isCaptureable(document)) {
+            const capture = buildCapture(document, window.location.href);
+            logDebug(
+              "trade.content",
+              "pricing-capture:ready",
+              "Captured worker trade results",
+              {
+                url: window.location.href,
+                sampleSize: capture?.aggregates.sampleSize ?? 0,
+                median: capture?.aggregates.median,
+              },
+              "info",
+            );
+            return { capture };
+          }
+          if (document.body.textContent?.match(/rate limit|too many requests/i)) {
+            logDebug(
+              "trade.content",
+              "pricing-capture:blocked",
+              "Trade page appears blocked or rate limited",
+              {
+                url: window.location.href,
+              },
+              "warn",
+            );
+            return { capture: null, reason: "blocked" as const };
+          }
+          if (document.body.textContent?.match(/no results found/i)) {
+            logDebug(
+              "trade.content",
+              "pricing-capture:empty",
+              "Trade page returned no results",
+              {
+                url: window.location.href,
+              },
+              "info",
+            );
+            return { capture: null, reason: "empty" as const };
+          }
+          if (lastState !== "waiting-dom") {
+            lastState = "waiting-dom";
+            logDebug(
+              "trade.content",
+              "pricing-capture:waiting-dom",
+              "Waiting for trade rows or empty state",
+              {
+                url: window.location.href,
+                bodyTextLength: document.body.textContent?.length ?? 0,
+              },
+            );
+          }
+          await delay(250);
+        }
+        const capture = isCaptureable(document)
+          ? buildCapture(document, window.location.href)
+          : null;
+        logDebug(
+          "trade.content",
+          "pricing-capture:timeout",
+          "Timed out waiting for stable trade results",
+          {
+            url: window.location.href,
+            sampleSize: capture?.aggregates.sampleSize ?? 0,
+            readyState: document.readyState,
+          },
+          "warn",
+        );
+        return {
+          capture,
+          reason: "timeout" as const,
+        };
+      });
+    }
 
     onMessage("csFabVisibilitySet", (message) => {
       isFabVisible = message.data.visible;
@@ -121,6 +247,28 @@ export default defineContentScript({
       } catch {
         return false;
       }
+    }
+
+    function sameTradeSearch(actual: string, expected: string): boolean {
+      try {
+        const a = new URL(actual);
+        const e = new URL(expected);
+        return (
+          a.hostname.replace(/^www\./, "") === e.hostname.replace(/^www\./, "") &&
+          a.pathname === e.pathname &&
+          a.search === e.search
+        );
+      } catch {
+        return false;
+      }
+    }
+
+    function isPricingWorkerTab(): boolean {
+      return window.location.hash.includes("poe-sl-pricing");
+    }
+
+    function delay(ms: number): Promise<void> {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     function trackVisitIfNeeded() {

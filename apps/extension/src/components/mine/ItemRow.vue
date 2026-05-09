@@ -69,11 +69,23 @@ async function openTrade(url: string) {
 
     <!-- Price -->
     <span
-      v-if="item.capture"
+      v-if="item.capture && item.capture.aggregates.sampleSize > 0"
       class="mt-0.5 font-mono text-xs font-semibold text-accent-ink-str shrink-0"
     >
       ~{{ formatPrice(item.capture.aggregates.median) }}
       <span class="opacity-70 text-[10px]">{{ item.capture.aggregates.currency }}</span>
+    </span>
+    <span
+      v-else-if="item.pricingStatus === 'pending'"
+      class="mt-0.5 text-[10px] font-semibold text-ink-muted shrink-0"
+    >
+      Pricing…
+    </span>
+    <span
+      v-else-if="item.pricingStatus === 'unpriced' || item.pricingStatus === 'failed'"
+      class="mt-0.5 text-[10px] font-semibold text-ink-muted shrink-0"
+    >
+      Unpriced
     </span>
 
     <!-- Kebab -->

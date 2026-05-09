@@ -1,5 +1,13 @@
 import type { SearchFilterSnapshot, TradeCapture } from "@/trade-dom";
-import type { PurchaseHistoryItem, VisitHistoryItem } from "@/types";
+import type { DebugLogEntry } from "./debugLog";
+import type {
+  PobPricingStartRequest,
+  PobPricingStartResponse,
+  PurchaseHistoryItem,
+  TradeCaptureWhenReadyRequest,
+  TradeCaptureWhenReadyResponse,
+  VisitHistoryItem,
+} from "@/types";
 import { defineExtensionMessaging } from "@webext-core/messaging";
 
 /**
@@ -27,6 +35,10 @@ interface ProtocolMap {
   csSaveSearch(): void;
   /** Content script requests the sidepanel to open */
   csOpenSidepanel(): void;
+  /** Build-page content script starts an automated PoB pricing job */
+  csPobPricingStart(data: PobPricingStartRequest): PobPricingStartResponse;
+  /** Content script sends structured diagnostics to the service worker */
+  csDebugLog(data: DebugLogEntry): void;
 
   // ── Content Script handlers (SW relays to these with tabId) ──────────────
   /** Returns capture data from the content script's DOM */
@@ -37,6 +49,10 @@ interface ProtocolMap {
   csSearchBarGet(): { text: string };
   /** Returns active non-default PoE1 search filters from the current page */
   csSearchFiltersRead(): SearchFilterSnapshot | null;
+  /** Captures a specific trade tab after it reaches a stable result state */
+  csTradeCaptureWhenReady(
+    data: TradeCaptureWhenReadyRequest,
+  ): Promise<TradeCaptureWhenReadyResponse>;
 
   // ── Side Panel → Service Worker ──────────────────────────────────────────
   /** Sidepanel requests capture data (SW relays to active tab's CS) */
