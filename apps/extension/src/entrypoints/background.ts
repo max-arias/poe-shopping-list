@@ -167,10 +167,6 @@ export default defineBackground(() => {
         tradeUrl: item.tradeUrl,
       })),
     });
-    if (tabId) {
-      // @ts-expect-error — chrome.sidePanel is MV3-only
-      await chrome.sidePanel?.open?.({ tabId });
-    }
     const response = await startPobPricingJob(message.data);
     void runPobPricingJob(response.jobId);
     return response;

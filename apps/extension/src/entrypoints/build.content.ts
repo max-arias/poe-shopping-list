@@ -1,4 +1,4 @@
-import type { PobPricingPlanItem } from "@/types/pobPricing";
+import type { PobPricingJob, PobPricingPlanItem } from "@/types/pobPricing";
 import { storage } from "wxt/utils/storage";
 import { logDebug } from "../utils/debugLog";
 import { injectFab } from "../utils/fab";
@@ -121,6 +121,10 @@ async function openPricingModal(code: string) {
   logDebug("build.content", "stat-index:loaded", "Loaded bundled stat index");
   const settings =
     (await storage.getItem<typeof DEFAULT_SETTINGS>("local:settings:v1")) ?? DEFAULT_SETTINGS;
+  const buildName = getPobbBuildTitle() ?? parsed.title;
+  const pricingJobsItem = storage.defineItem<PobPricingJob[]>("local:pricingJobs:v1", {
+    fallback: [],
+  });
   const selectedItemSetIds = new Set(
     parsed.itemSets.filter((set) => set.active).map((set) => set.id),
   );
@@ -136,6 +140,9 @@ async function openPricingModal(code: string) {
   let expanded = new Set<string>();
   let plan: PobPricingPlanItem[] = [];
   let starting = false;
+  let pricingJobId: string | null = null;
+  let pricingDraftId: string | null = null;
+  let pricingStatus: PobPricingJob["status"] | null = null;
 
   const modal = createModal();
   document.body.appendChild(modal.host);
@@ -188,7 +195,7 @@ async function openPricingModal(code: string) {
     const gems = plan.filter((item) => item.kind === "gem");
     modal.body.innerHTML = `
       <div class="psl-head">
-        <div><h2 id="psl-title">Price this build</h2><p>${escapeHtml(parsed.title)} · ${plan.length} searches · ${parsed.itemSets.length} item sets, ${parsed.skillGroups.length} skill groups</p></div>
+        <div><h2 id="psl-title">Price this build</h2><p>${escapeHtml(buildName)} · ${plan.length} searches · ${parsed.itemSets.length} item sets, ${parsed.skillGroups.length} skill groups</p></div>
         <button class="psl-x" data-close aria-label="Close pricing modal">×</button>
       </div>
       <div class="psl-toolbar">
@@ -203,9 +210,45 @@ async function openPricingModal(code: string) {
         ${equipment.length ? `<section><h3>Equipment</h3>${equipment.map((item) => renderItem(item, included, expanded)).join("")}</section>` : ""}
         ${gems.length ? `<section><h3>Gems</h3>${gems.map((item) => renderItem(item, included, expanded)).join("")}</section>` : ""}
       </div>
-      <div class="psl-foot"><span>${included.size} selected</span><div><button data-close>Cancel</button><button class="primary" data-start ${starting ? "disabled" : ""}>${starting ? "Starting…" : "Start pricing"}</button></div></div>
+      <div class="psl-foot"><span>${renderFooterStatus()}</span><div><button data-close>Cancel</button><button class="primary" ${pricingStatus === "completed" || pricingStatus === "failed" ? "data-open-build" : "data-start"} ${starting || (pricingJobId && pricingStatus !== "completed" && pricingStatus !== "failed") ? "disabled" : ""}>${renderPrimaryAction()}</button></div></div>
     `;
   }
+
+  function renderFooterStatus(): string {
+    if (pricingStatus === "completed") return "Pricing complete";
+    if (pricingStatus === "failed") return "Pricing finished with errors";
+    if (pricingJobId) return "Pricing in background";
+    return `${included.size} selected`;
+  }
+
+  function renderPrimaryAction(): string {
+    if (pricingStatus === "completed") return "Build ready!";
+    if (pricingStatus === "failed") return "Open partial build";
+    if (pricingJobId) return "Pricing…";
+    return starting ? "Starting…" : "Start pricing";
+  }
+
+  const unwatchPricingJobs = pricingJobsItem.watch((jobs) => {
+    if (!pricingJobId) return;
+    const job = jobs?.find((entry) => entry.id === pricingJobId);
+    if (!job || job.status === pricingStatus) return;
+    pricingStatus = job.status;
+    logDebug(
+      "build.content",
+      "pricing:status",
+      "Pricing job status changed",
+      {
+        draftId: pricingDraftId,
+        jobId: pricingJobId,
+        status: job.status,
+        completed: job.completed,
+        total: job.total,
+        error: job.error,
+      },
+      job.status === "failed" ? "warn" : "info",
+    );
+    render();
+  });
 
   modal.body.addEventListener("change", async (event) => {
     const target = event.target as HTMLInputElement;
@@ -253,7 +296,27 @@ async function openPricingModal(code: string) {
 
   modal.body.addEventListener("click", async (event) => {
     const target = event.target as HTMLElement;
-    if (target.closest("[data-close]")) modal.host.remove();
+    if (target.closest("[data-close]")) {
+      closeModal();
+      return;
+    }
+    if (target.closest("[data-open-build]")) {
+      logDebug(
+        "build.content",
+        "pricing:open-build",
+        "Opening sidepanel for priced build",
+        {
+          draftId: pricingDraftId,
+          jobId: pricingJobId,
+          status: pricingStatus,
+        },
+        "info",
+      );
+      await sendMessage("csOpenSidepanel");
+      modal.host.remove();
+      unwatchPricingJobs();
+      return;
+    }
     const toggle = target.closest<HTMLElement>("[data-toggle-filters]");
     if (toggle?.dataset.toggleFilters) {
       const id = toggle.dataset.toggleFilters;
@@ -299,6 +362,7 @@ async function openPricingModal(code: string) {
       return;
     }
     if (target.closest("[data-start]")) {
+      if (pricingJobId) return;
       if (starting) return;
       starting = true;
       render();
@@ -316,7 +380,7 @@ async function openPricingModal(code: string) {
         {
           itemCount: items.length,
           league,
-          buildName: parsed.title,
+          buildName,
           buildUrl: location.href,
           firstItems: items
             .slice(0, 5)
@@ -324,24 +388,33 @@ async function openPricingModal(code: string) {
         },
         "info",
       );
-      await sendMessage("csPobPricingStart", {
+      const response = await sendMessage("csPobPricingStart", {
         buildUrl: location.href,
-        buildName: parsed.title,
+        buildName,
         league,
         items,
       });
+      pricingDraftId = response.draftId;
+      pricingJobId = response.jobId;
+      pricingStatus = "queued";
+      starting = false;
       logDebug(
         "build.content",
         "pricing:start:accepted",
         "Background accepted pricing job",
-        undefined,
+        { draftId: pricingDraftId, jobId: pricingJobId },
         "info",
       );
-      modal.host.remove();
+      render();
     }
   });
 
   await rebuildPlan();
+
+  function closeModal() {
+    unwatchPricingJobs();
+    modal.host.remove();
+  }
 }
 
 function renderItem(
@@ -403,6 +476,16 @@ function createModal() {
 
 function showErrorModal(error: unknown) {
   alert(error instanceof Error ? error.message : String(error));
+}
+
+function getPobbBuildTitle(): string | null {
+  const marker = document.querySelector<HTMLElement>("[data-marker-title]");
+  const title = marker?.textContent?.trim();
+  if (title) return title;
+
+  const heading = document.querySelector<HTMLHeadingElement>("h1");
+  const headingTitle = heading?.textContent?.replace(/\s+/g, " ").trim();
+  return headingTitle || null;
 }
 
 function escapeHtml(value: string): string {
