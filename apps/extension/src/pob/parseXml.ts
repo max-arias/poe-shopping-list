@@ -183,5 +183,6 @@ function parseOptionalInt(value: string | null): number | undefined {
 }
 
 function isFalse(value: string | null): boolean {
-  return value === "false" || value === "False" || value === "0";
+  const normalized = value?.trim().toLowerCase();
+  return normalized === "false" || normalized === "0";
 }

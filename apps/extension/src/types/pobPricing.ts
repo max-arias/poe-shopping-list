@@ -6,7 +6,7 @@ export interface PobPricingFilter {
   id: string;
   label: string;
   category: string;
-  value?: { min?: number; max?: number; option?: string };
+  value?: { min?: number; max?: number; option?: string | number; weight?: number };
   enabled: boolean;
 }
 

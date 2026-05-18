@@ -1,7 +1,7 @@
 import type { ItemKind } from "@/types";
 import type { PobPricingFilter } from "@/types/pobPricing";
 import type { ParsedPobItemText } from "../itemText";
-import { normalizeModText } from "../itemText";
+import { isRarity, normalizeModText } from "../itemText";
 import type { StatIndex } from "./statIndex";
 
 export interface BuiltTradeQuery {
@@ -15,27 +15,35 @@ export function buildItemTradeQuery(
   matchPercent: number,
 ): BuiltTradeQuery {
   const filters = buildStatFilters(item, statIndex, matchPercent);
-  const enabledFilters = filters.filter((filter) => filter.enabled);
+  const statFilters = filters.map(toTradeStatFilter).slice(0, 25);
+  const typeFilters: Record<string, unknown> = {};
+  const miscFilters: Record<string, unknown> = {
+    mirrored: { option: "false" },
+    corrupted: { option: item.corrupted ? "true" : "false" },
+  };
+  const category = inferTradeCategory(item);
+  if (category) typeFilters.category = { option: category };
+
   const query: Record<string, unknown> = {
     query: {
       status: { option: "securable" },
       filters: {
-        trade_filters: { filters: { sale_type: { option: "priced" } } },
-        misc_filters: { filters: { corrupted: { option: item.corrupted ? "true" : "false" } } },
+        type_filters: { filters: typeFilters, disabled: false },
+        misc_filters: { filters: miscFilters, disabled: false },
       },
-      stats: enabledFilters.length
-        ? [{ type: "and", filters: enabledFilters.map(({ id, value }) => ({ id, value })) }]
-        : [],
+      ...(statFilters.length
+        ? { stats: [{ type: "and", filters: statFilters, disabled: false }] }
+        : {}),
     },
     sort: { price: "asc" },
   };
 
-  if (item.rarity === "Unique") {
-    Object.assign(query.query as Record<string, unknown>, { name: item.name, type: item.base });
+  if (isRarity(item.rarity, "Unique")) {
+    assignUniqueName(query.query as Record<string, unknown>, item);
+    assignBaseType(query.query as Record<string, unknown>, item);
   } else {
-    Object.assign(query.query as Record<string, unknown>, { type: item.base });
-    const filtersObj = ((query.query as any).filters.misc_filters.filters ??= {});
-    filtersObj.rarity = { option: item.rarity === "Rare" ? "nonunique" : "nonunique" };
+    assignBaseType(query.query as Record<string, unknown>, item);
+    typeFilters.rarity = { option: inferRarityOption(item.rarity) };
   }
 
   return { query, filters };
@@ -78,11 +86,12 @@ export function buildGemTradeQuery(gem: {
         status: { option: "securable" },
         type: gem.name,
         filters: {
-          trade_filters: { filters: { sale_type: { option: "priced" } } },
-          type_filters: { filters: { category: { option: inferGemCategory(gem) } } },
-          misc_filters: { filters: misc },
+          type_filters: {
+            filters: { category: { option: inferGemCategory(gem) } },
+            disabled: false,
+          },
+          misc_filters: { filters: misc, disabled: false },
         },
-        stats: [],
       },
       sort: { price: "asc" },
     },
@@ -91,11 +100,15 @@ export function buildGemTradeQuery(gem: {
 
 export function withEnabledStatFilters(query: unknown, filters: PobPricingFilter[]): unknown {
   const cloned = JSON.parse(JSON.stringify(query)) as { query?: { stats?: unknown[] } };
-  const enabled = filters
-    .filter((filter) => filter.enabled && !filter.id.startsWith("misc."))
-    .map(({ id, value }) => ({ id, value }));
+  const statFilters = filters
+    .filter((filter) => !filter.id.startsWith("misc."))
+    .map(toTradeStatFilter);
   if (cloned.query) {
-    cloned.query.stats = enabled.length ? [{ type: "and", filters: enabled }] : [];
+    if (statFilters.length) {
+      cloned.query.stats = [{ type: "and", filters: statFilters.slice(0, 25), disabled: false }];
+    } else {
+      delete cloned.query.stats;
+    }
     const miscFilters = (cloned.query as any).filters?.misc_filters?.filters;
     if (miscFilters) {
       delete miscFilters.gem_level;
@@ -108,6 +121,30 @@ export function withEnabledStatFilters(query: unknown, filters: PobPricingFilter
     }
   }
   return cloned;
+}
+
+function toTradeStatFilter(filter: PobPricingFilter): Record<string, unknown> {
+  return {
+    id: filter.id,
+    ...(filter.value ? { value: filter.value } : {}),
+    disabled: !filter.enabled,
+  };
+}
+
+function assignUniqueName(query: Record<string, unknown>, item: ParsedPobItemText): void {
+  const name = item.name.trim();
+  if (name && name !== "Unknown item") query.name = name;
+}
+
+function assignBaseType(query: Record<string, unknown>, item: ParsedPobItemText): void {
+  if (!isReliableBaseType(item)) return;
+  query.type = item.base;
+}
+
+function isReliableBaseType(item: ParsedPobItemText): boolean {
+  if (!item.base || item.base === item.name) return false;
+  if (item.base === "Unknown item") return false;
+  return true;
 }
 
 function buildStatFilters(
@@ -139,15 +176,72 @@ function buildStatFilters(
 }
 
 function findStat(preferredCategory: string, mod: string, statIndex: StatIndex) {
-  const normalized = normalizeModText(mod);
+  const normalized = canonicalStatText(mod);
   const categories =
     preferredCategory === "implicit"
       ? ["implicit", "enchant", "explicit", "crafted", "fractured", "pseudo"]
       : ["explicit", "fractured", "crafted", "implicit", "enchant", "pseudo"];
   for (const category of categories) {
-    const found = statIndex.categories[category]?.find((entry) => entry.text === normalized);
+    const found = statIndex.categories[category]?.find(
+      (entry) => canonicalStatText(entry.text) === normalized,
+    );
     if (found) return found;
   }
+  return undefined;
+}
+
+function inferRarityOption(rarity: string): string {
+  if (isRarity(rarity, "Rare")) return "rare";
+  if (isRarity(rarity, "Magic")) return "magic";
+  return "nonunique";
+}
+
+function inferTradeCategory(item: ParsedPobItemText): string | undefined {
+  const slot = item.slot ?? "";
+  const base = item.base;
+  const itemClass = item.itemClass ?? "";
+  const fromClass = inferTradeCategoryFromItemClass(itemClass);
+  if (fromClass) return fromClass;
+
+  if (/Helmet/i.test(slot)) return "armour.helmet";
+  if (/Body Armour|Chest/i.test(slot)) return "armour.chest";
+  if (/Gloves/i.test(slot)) return "armour.gloves";
+  if (/Boots/i.test(slot)) return "armour.boots";
+  if (/Belt/i.test(slot)) return "accessory.belt";
+  if (/Amulet/i.test(slot)) return "accessory.amulet";
+  if (/Ring/i.test(slot)) return "accessory.ring";
+  if (/Flask/i.test(slot) || item.kind === "flask") return "flask";
+  if (/Cluster Jewel/i.test(base)) return "jewel.cluster";
+  if (/Ghastly|Hypnotic|Murderous|Searching Eye Jewel/i.test(base)) return "jewel.abyss";
+  if (/Jewel/i.test(slot) || item.kind === "jewel") return "jewel";
+  if (/Bow/i.test(base)) return "weapon.bow";
+  if (/Wand/i.test(base)) return "weapon.wand";
+  if (/Claw/i.test(base)) return "weapon.claw";
+  if (/Sceptre/i.test(base)) return "weapon.sceptre";
+  if (/Shield|Buckler|Spirit Shield/i.test(base)) return "armour.shield";
+  if (/Quiver/i.test(base)) return "armour.quiver";
+  return undefined;
+}
+
+function inferTradeCategoryFromItemClass(itemClass: string): string | undefined {
+  const normalized = itemClass.trim().toLowerCase().replace(/\s+/g, " ");
+  if (!normalized) return undefined;
+  if (normalized === "bows") return "weapon.bow";
+  if (normalized === "claws") return "weapon.claw";
+  if (normalized === "daggers") return "weapon.dagger";
+  if (normalized === "rune daggers") return "weapon.runedagger";
+  if (normalized === "one hand axes") return "weapon.oneaxe";
+  if (normalized === "two hand axes") return "weapon.twoaxe";
+  if (normalized === "one hand maces") return "weapon.onemace";
+  if (normalized === "two hand maces") return "weapon.twomace";
+  if (normalized === "sceptres") return "weapon.sceptre";
+  if (normalized === "staves") return "weapon.staff";
+  if (normalized === "warstaves") return "weapon.warstaff";
+  if (normalized === "one hand swords") return "weapon.onesword";
+  if (normalized === "two hand swords") return "weapon.twosword";
+  if (normalized === "wands") return "weapon.wand";
+  if (normalized === "quivers") return "armour.quiver";
+  if (normalized === "shields") return "armour.shield";
   return undefined;
 }
 
@@ -156,8 +250,12 @@ function extractFirstNumber(text: string): number | null {
   return match ? Number.parseFloat(match[1]!) : null;
 }
 
+function canonicalStatText(text: string): string {
+  return normalizeModText(text).toLowerCase();
+}
+
 function inferGemCategory(gem: { name: string; skillId?: string }): string {
-  return /support/i.test(gem.name) || /Support/i.test(gem.skillId ?? "")
+  return /support/i.test(gem.name) || /support/i.test(gem.skillId ?? "")
     ? "gem.supportgem"
     : "gem.activegem";
 }

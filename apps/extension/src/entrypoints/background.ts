@@ -8,11 +8,14 @@ import type {
   TradeCapture,
   VisitHistoryItem,
 } from "../types";
+import type { StatIndex } from "../pob/trade/statIndex";
 import type { DebugLogEntry, DebugLogLevel } from "../utils/debugLog";
 import { onMessage, sendMessage } from "../utils/messages";
 
 const DEBUG_LOG_STORAGE_KEY = "poeSlDebugLogs:v1";
+const TRADE_STATS_INDEX_STORAGE_KEY = "poeTradeStatsIndex:v1";
 const MAX_DEBUG_LOGS = 500;
+const TRADE_STATS_INDEX_TTL_MS = 12 * 60 * 60_000;
 const STALE_JOB_MS = 5 * 60_000;
 const runningPricingJobs = new Set<string>();
 
@@ -185,6 +188,10 @@ export default defineBackground(() => {
     });
   });
 
+  onMessage("csTradeStatsIndexGet", async (message) => {
+    return await getTradeStatsIndex({ forceRefresh: message.data?.forceRefresh });
+  });
+
   // ── Side Panel → Service Worker handlers (relay to Content Script) ──────
 
   // SP requests capture data → relay to active tab's CS
@@ -272,6 +279,52 @@ async function startPobPricingJob(request: PobPricingStartRequest) {
     league: request.league,
     itemCount: request.items.length,
   });
+  await writeDebugLog(
+    "background",
+    "job:trade-urls:generated",
+    "Generated PoB pricing trade URLs before worker-tab navigation",
+    {
+      draftId,
+      buildUrl: request.buildUrl,
+      buildName: request.buildName,
+      league: request.league,
+      itemCount: request.items.length,
+      items: request.items.map((item, index) => ({
+        index,
+        id: item.id,
+        name: item.name,
+        kind: item.kind,
+        base: item.base,
+        queryHash: item.queryHash,
+        source: item.source,
+        filters: item.filters,
+        tradeUrl: item.tradeUrl,
+        parsedTradeUrl: parseTradeUrlForDebug(item.tradeUrl),
+        tradeQuery: item.tradeQuery,
+      })),
+    },
+    "warn",
+  );
+  for (const [index, item] of request.items.entries()) {
+    await writeDebugLog(
+      "background",
+      "job:trade-url:generated",
+      "Generated PoB pricing trade URL for manual debugging",
+      {
+        draftId,
+        index,
+        id: item.id,
+        name: item.name,
+        kind: item.kind,
+        base: item.base,
+        queryHash: item.queryHash,
+        tradeUrl: item.tradeUrl,
+        parsedTradeUrl: parseTradeUrlForDebug(item.tradeUrl),
+        tradeQuery: item.tradeQuery,
+      },
+      "warn",
+    );
+  }
   const draftItems: DraftItem[] = request.items.map((item, index) => ({
     id: crypto.randomUUID(),
     position: index,
@@ -348,6 +401,26 @@ async function runPobPricingJob(jobId: string) {
     await patchJob(jobId, { status: "running" });
     const job = await getJob(jobId);
     if (!job) return;
+    await writeDebugLog(
+      "background",
+      "job:trade-urls:pre-open",
+      "Pricing job trade URLs before opening worker tab",
+      {
+        jobId,
+        draftId: job.draftId,
+        league: job.league,
+        total: job.total,
+        items: job.items.map((item, index) => ({
+          index,
+          draftItemId: item.draftItemId,
+          queryHash: item.queryHash,
+          status: item.status,
+          tradeUrl: item.tradeUrl,
+          parsedTradeUrl: parseTradeUrlForDebug(item.tradeUrl),
+        })),
+      },
+      "info",
+    );
     const tab = await browser.tabs.create({ url: TRADE_HOME_URL, active: false });
     workerTabId = tab.id;
     if (!workerTabId) throw new Error("Could not create background trade tab.");
@@ -569,6 +642,27 @@ function withPricingWorkerMarker(tradeUrl: string): string {
   return url.toString();
 }
 
+function parseTradeUrlForDebug(tradeUrl: string): Record<string, unknown> {
+  try {
+    const url = new URL(tradeUrl);
+    const queryParam = url.searchParams.get("q");
+    const pathParts = url.pathname.split("/").filter(Boolean);
+    const league = pathParts[2] ? decodeURIComponent(pathParts[2]) : undefined;
+    return {
+      origin: url.origin,
+      pathname: url.pathname,
+      league,
+      hasQueryParam: queryParam !== null,
+      queryParamLength: queryParam?.length ?? 0,
+      query: queryParam ? JSON.parse(queryParam) : null,
+    };
+  } catch (error) {
+    return {
+      parseError: errorToMessage(error),
+    };
+  }
+}
+
 async function resumeIncompletePricingJobs() {
   const jobs = await getStorageArray<PobPricingJob>("pricingJobs:v1");
   const now = Date.now();
@@ -744,6 +838,109 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+interface CachedTradeStatsIndex {
+  fetchedAt: number;
+  index: StatIndex;
+}
+
+interface TradeStatsResponseEntry {
+  id?: unknown;
+  text?: unknown;
+  type?: unknown;
+  option?: unknown;
+}
+
+interface TradeStatsResponseGroup {
+  id?: unknown;
+  label?: unknown;
+  entries?: unknown;
+}
+
+async function getTradeStatsIndex(options: { forceRefresh?: boolean } = {}): Promise<StatIndex> {
+  if (!options.forceRefresh) {
+    const cached = await readCachedTradeStatsIndex();
+    if (cached && Date.now() - cached.fetchedAt < TRADE_STATS_INDEX_TTL_MS) {
+      return cached.index;
+    }
+  }
+
+  try {
+    const index = await fetchLiveTradeStatsIndex();
+    await browser.storage.local.set({
+      [TRADE_STATS_INDEX_STORAGE_KEY]: { fetchedAt: index.fetchedAt ?? Date.now(), index },
+    });
+    return index;
+  } catch (error) {
+    await writeDebugLog(
+      "background",
+      "trade-stats:fetch-failed",
+      "Failed to refresh PoE trade stats; using cached/bundled fallback if available",
+      { error: errorToMessage(error) },
+      "warn",
+    );
+    const cached = await readCachedTradeStatsIndex();
+    if (cached) return cached.index;
+    throw error;
+  }
+}
+
+async function readCachedTradeStatsIndex(): Promise<CachedTradeStatsIndex | null> {
+  const stored = await browser.storage.local.get(TRADE_STATS_INDEX_STORAGE_KEY);
+  const cached = stored[TRADE_STATS_INDEX_STORAGE_KEY] as CachedTradeStatsIndex | undefined;
+  if (!cached || typeof cached.fetchedAt !== "number" || !isStatIndex(cached.index)) return null;
+  return cached;
+}
+
+async function fetchLiveTradeStatsIndex(): Promise<StatIndex> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8_000);
+  const response = await fetch("https://www.pathofexile.com/api/trade/data/stats", {
+    headers: { accept: "application/json" },
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timeout));
+  if (!response.ok) {
+    throw new Error(`PoE trade stats returned HTTP ${response.status}.`);
+  }
+  return tradeStatsResponseToIndex(await response.json());
+}
+
+function tradeStatsResponseToIndex(raw: unknown): StatIndex {
+  const categories: Record<string, { id: string; text: string; type?: string }[]> = {};
+  const groups = Array.isArray((raw as { result?: unknown })?.result)
+    ? ((raw as { result: TradeStatsResponseGroup[] }).result as TradeStatsResponseGroup[])
+    : [];
+
+  for (const group of groups) {
+    const groupId = typeof group.id === "string" ? group.id : undefined;
+    if (!groupId || !Array.isArray(group.entries)) continue;
+    categories[groupId] ??= [];
+    for (const entry of group.entries as TradeStatsResponseEntry[]) {
+      if (typeof entry.id !== "string" || typeof entry.text !== "string") continue;
+      categories[groupId].push({
+        id: entry.id,
+        text: entry.text,
+        ...(typeof entry.type === "string" ? { type: entry.type } : {}),
+        ...(entry.option && typeof entry.option === "object" ? { option: entry.option } : {}),
+      });
+    }
+  }
+
+  if (Object.keys(categories).length === 0) {
+    throw new Error("PoE trade stats response did not contain stat categories.");
+  }
+
+  return { categories, source: "live", fetchedAt: Date.now() };
+}
+
+function isStatIndex(value: unknown): value is StatIndex {
+  return Boolean(
+    value &&
+    typeof value === "object" &&
+    (value as StatIndex).categories &&
+    typeof (value as StatIndex).categories === "object",
+  );
+}
+
 async function writeDebugLog(
   source: string,
   step: string,
@@ -792,7 +989,7 @@ function sanitizeForLog(value: unknown): unknown {
   try {
     return JSON.parse(
       JSON.stringify(value, (_key, entry) => {
-        if (typeof entry === "string" && entry.length > 600) {
+        if (typeof entry === "string" && entry.length > 600 && shouldTruncateLogString(_key)) {
           return `${entry.slice(0, 600)}… (${entry.length} chars)`;
         }
         return entry;
@@ -801,6 +998,12 @@ function sanitizeForLog(value: unknown): unknown {
   } catch {
     return String(value);
   }
+}
+
+function shouldTruncateLogString(key: string): boolean {
+  return !["tradeUrl", "workerUrl", "expectedUrl", "senderUrl", "url", "q", "queryParam"].includes(
+    key,
+  );
 }
 
 function errorToMessage(error: unknown): string {

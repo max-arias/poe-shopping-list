@@ -8,6 +8,7 @@ import type {
   TradeCaptureWhenReadyResponse,
   VisitHistoryItem,
 } from "@/types";
+import type { StatIndex } from "@/pob/trade/statIndex";
 import { defineExtensionMessaging } from "@webext-core/messaging";
 
 /**
@@ -39,6 +40,8 @@ interface ProtocolMap {
   csPobPricingStart(data: PobPricingStartRequest): PobPricingStartResponse;
   /** Content script sends structured diagnostics to the service worker */
   csDebugLog(data: DebugLogEntry): void;
+  /** Content script requests the cached live PoE trade stat dictionary */
+  csTradeStatsIndexGet(data?: { forceRefresh?: boolean }): Promise<StatIndex>;
 
   // ── Content Script handlers (SW relays to these with tabId) ──────────────
   /** Returns capture data from the content script's DOM */

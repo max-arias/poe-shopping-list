@@ -1,5 +1,6 @@
 import type { PobPricingPlanItem } from "@/types/pobPricing";
-import { parsePobItemText } from "./itemText";
+import { sendMessage } from "@/utils/messages";
+import { isRarity, parsePobItemText } from "./itemText";
 import type { PobParsedBuild, PobRawEntry } from "./parseXml";
 import { buildGemTradeQuery, buildItemTradeQuery } from "./trade/buildQuery";
 import { buildTradeUrl, hashQuery } from "./trade/buildUrl";
@@ -58,11 +59,28 @@ async function buildPlanItem(
   if (!entry.itemText) return null;
   const parsed = parsePobItemText(entry.itemText, entry.slot);
   if (!parsed) return null;
+  sendMessage("csDebugLog", {
+    timestamp: Date.now(),
+    level: "warn",
+    source: "pob.pricingPlan",
+    step: "pob:item:parsed",
+    message: "Parsed PoB item text before trade-query generation",
+    data: {
+      entryId: entry.id,
+      entryType: entry.type,
+      slot: entry.slot,
+      itemSetId: entry.itemSetId,
+      itemSetName: entry.itemSetName,
+      pobItemId: entry.pobItemId,
+      parsed,
+      rawItemText: entry.itemText,
+    },
+  }).catch(() => {});
   const built = buildItemTradeQuery(parsed, statIndex, options.matchPercent);
   const queryHash = await hashQuery(built.query);
   return {
     id: entry.id,
-    name: parsed.rarity === "Unique" ? parsed.name : `${parsed.name} ${parsed.base}`,
+    name: isRarity(parsed.rarity, "Unique") ? parsed.name : `${parsed.name} ${parsed.base}`,
     kind: parsed.kind,
     base: parsed.base,
     tradeUrl: buildTradeUrl(options.league, built.query),

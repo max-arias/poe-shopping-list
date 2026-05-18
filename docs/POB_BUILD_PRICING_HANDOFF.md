@@ -26,7 +26,7 @@ Add a `Price this build` flow on `pobb.in` build pages:
 - **Build variants:** user can choose item sets and skill groups.
 - **Defaults:** active item set + enabled skill groups.
 - **Trade matching:** follow `docs/POB_TRADE_LINK_RESEARCH.md` / wanitzek behavior as baseline.
-- **Stat index:** bundled offline `stat-index.json` from `C:\Users\max\Downloads\stat-index.json`.
+- **Stat index:** fetched from `https://www.pathofexile.com/api/trade/data/stats` in the extension service worker, cached in `chrome.storage.local`, with bundled `stat-index.json` as a fallback.
 - **League:** app settings default, editable in modal.
 - **Match percent:** editable in modal, default `85%`.
 - **Filter toggles:** off means omit from generated query.
@@ -68,7 +68,7 @@ Current extension dependency is pinned to GitHub commit `08ff4d9` in `apps/exten
 
 ### Added
 
-- `apps/extension/public/stat-index.json`
+- `apps/extension/public/stat-index.json` fallback snapshot
   - bundled offline stat mapping
   - currently ~1.6 MB in built extension
 - `apps/extension/src/types/pobPricing.ts`
@@ -244,7 +244,7 @@ Worker trade tab URLs append `#poe-sl-pricing`. `trade.content.ts` uses this to 
 - Keep the service worker as the central hub. Do not send content script ↔ sidepanel messages directly.
 - Do not use existing `spCaptureRead` for automated pricing. It targets the active tab. Background pricing must use targeted `sendMessage(..., workerTabId)`.
 - Do not store empty `TradeCapture` objects for unpriced items unless UI is changed. Empty captures look like `0 chaos`; use `capture: null` + `pricingStatus: "unpriced"`.
-- `stat-index.json` is loaded through `browser.runtime.getURL("/stat-index.json")`, so it must remain web-accessible for content scripts.
+- Live stats are fetched by the service worker from `https://www.pathofexile.com/api/trade/data/stats`; `stat-index.json` remains web-accessible as a fallback for content scripts if the live request/cache is unavailable.
 
 ## Suggested next steps
 
