@@ -56,6 +56,6 @@ A browser extension for Path of Exile that lets players create, manage, and shar
 
 - Extension sidebar width: 380px fixed
 - Must work alongside the official pathofexile.com/trade layout without disrupting it
-- Chrome MV3 + Firefox MV2 from a single WXT codebase
+- Chrome MV3 side panel
 - All data in `browser.storage.local` — no server, no sync, no accounts
 - PoE1 first; PoE2 behind a feature flag

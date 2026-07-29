@@ -1,57 +1,38 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export type TabId = "mine" | "history";
-export type PanelView = { type: "tabs" } | { type: "detail"; draftId: string };
+export type PanelView = { type: "detail"; draftId: string };
 
 export const useUiStore = defineStore("ui", () => {
-  const activeTab = ref<TabId>("mine");
-  const currentView = ref<PanelView>({ type: "tabs" });
+  const currentView = ref<PanelView>({ type: "detail", draftId: "" });
+  const registerModalOpen = ref(false);
+  const registerListId = ref<string | null>(null);
+  const registerTitle = ref("");
   const settingsOpen = ref(false);
-  const saveModalOpen = ref(false);
-  const captureUnavailable = ref(false);
-  const kebabOpenItemId = ref<string | null>(null);
-  const pendingSaveName = ref("");
-  const editSheetItemId = ref<string | null>(null);
   const exportSheetOpen = ref(false);
   const importSheetOpen = ref(false);
-  const chooseListModalOpen = ref(false);
-
-  function setTab(tab: TabId) {
-    activeTab.value = tab;
-    currentView.value = { type: "tabs" };
-    kebabOpenItemId.value = null;
-  }
 
   function openDetail(draftId: string): void {
     currentView.value = { type: "detail", draftId };
   }
 
-  function closeDetail() {
-    currentView.value = { type: "tabs" };
+  function closeDetail() {}
+
+  function openRegisterModal(listId: string, title = "") {
+    registerListId.value = listId;
+    registerTitle.value = title;
+    registerModalOpen.value = true;
   }
 
+  function closeRegisterModal() {
+    registerModalOpen.value = false;
+    registerListId.value = null;
+    registerTitle.value = "";
+  }
+
+  // Retained as a small shared overlay hook for the existing settings component.
   function toggleSettings() {
     settingsOpen.value = !settingsOpen.value;
-  }
-
-  function openSaveModal(prefillName = "") {
-    pendingSaveName.value = prefillName;
-    saveModalOpen.value = true;
-  }
-
-  function closeSaveModal() {
-    saveModalOpen.value = false;
-    pendingSaveName.value = "";
-  }
-
-  function openEditSheet(itemId: string) {
-    editSheetItemId.value = itemId;
-    kebabOpenItemId.value = null;
-  }
-
-  function closeEditSheet() {
-    editSheetItemId.value = null;
   }
 
   function openImportSheet() {
@@ -70,45 +51,22 @@ export const useUiStore = defineStore("ui", () => {
     importSheetOpen.value = false;
   }
 
-  function toggleKebab(itemId: string) {
-    kebabOpenItemId.value = kebabOpenItemId.value === itemId ? null : itemId;
-  }
-
-  function closeKebab() {
-    kebabOpenItemId.value = null;
-  }
-
   return {
-    activeTab,
     currentView,
-    settingsOpen,
-    saveModalOpen,
-    captureUnavailable,
-    kebabOpenItemId,
-    pendingSaveName,
-    setTab,
     openDetail,
     closeDetail,
+    registerModalOpen,
+    registerListId,
+    registerTitle,
+    settingsOpen,
     toggleSettings,
-    openSaveModal,
-    closeSaveModal,
-    editSheetItemId,
-    openEditSheet,
-    closeEditSheet,
+    openRegisterModal,
+    closeRegisterModal,
     openExportSheet,
     closeExportSheet,
     openImportSheet,
     closeImportSheet,
-    toggleKebab,
-    closeKebab,
     exportSheetOpen,
     importSheetOpen,
-    chooseListModalOpen,
-    openChooseListModal() {
-      chooseListModalOpen.value = true;
-    },
-    closeChooseListModal() {
-      chooseListModalOpen.value = false;
-    },
   };
 });

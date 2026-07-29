@@ -1,100 +1,157 @@
 <script setup lang="ts">
+import { ref, watch } from "vue";
 import type { DraftItem } from "@/types";
-import { useDraftList } from "../../composables/useDraftList";
 import { useSettings } from "../../composables/useSettings";
-import { useUiStore } from "../../stores/ui";
-import SearchFilterSummary from "../shared/SearchFilterSummary.vue";
 
-const { item } = defineProps<{ item: DraftItem }>();
-
-const ui = useUiStore();
-const { setComplete } = useDraftList();
+const props = defineProps<{
+  item: DraftItem;
+  isFirst: boolean;
+  isLast: boolean;
+  editMode: boolean;
+}>();
+const emit = defineEmits<{
+  toggle: [completed: boolean];
+  move: [direction: "earlier" | "later"];
+  dragStart: [];
+  dragEnd: [];
+  drop: [];
+  update: [patch: { title?: string; tradeUrl?: string }];
+  remove: [];
+}>();
 const { settings } = useSettings();
+const editTitle = ref(props.item.title);
+const editTradeUrl = ref(props.item.tradeUrl);
 
-const formatPrice = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
+watch(
+  () => props.item,
+  (item) => {
+    editTitle.value = item.title;
+    editTradeUrl.value = item.tradeUrl;
+  },
+);
 
-async function openTrade(url: string) {
+async function toggle() {
+  emit("toggle", !props.item.completed);
+}
+
+async function openTrade() {
+  if (!props.item.tradeUrl) return;
   if (settings.value.openItemsInNewTab) {
-    browser.tabs.create({ url });
+    await browser.tabs.create({ url: props.item.tradeUrl });
   } else {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    if (tab?.id) browser.tabs.update(tab.id, { url });
+    if (tab?.id) await browser.tabs.update(tab.id, { url: props.item.tradeUrl });
   }
+}
+
+function saveEdit() {
+  const title = editTitle.value.trim();
+  const tradeUrl = editTradeUrl.value.trim();
+  if (!title) {
+    editTitle.value = props.item.title;
+    return;
+  }
+  if (title !== props.item.title || tradeUrl !== props.item.tradeUrl) {
+    emit("update", { title, tradeUrl });
+  }
+}
+
+function startDrag(event: DragEvent) {
+  event.dataTransfer?.setData("text/plain", props.item.id);
+  event.dataTransfer?.setDragImage(event.currentTarget as HTMLElement, 12, 12);
+  emit("dragStart");
 }
 </script>
 
 <template>
   <div
-    class="flex items-start gap-2.5 px-3 py-2.5 border-b border-stroke-soft"
-    :class="item.completed ? 'bg-accent-soft opacity-60' : ''"
+    class="flex min-h-12 items-center gap-2 border-b border-stroke-soft py-2"
+    @dragover.prevent
+    @drop.prevent="emit('drop')"
   >
-    <!-- Checkbox -->
     <button
-      @click="setComplete(item.id, !item.completed)"
+      type="button"
+      class="flex h-7 w-6 shrink-0 cursor-grab items-center justify-center bg-transparent text-sm text-ink-muted active:cursor-grabbing focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+      draggable="true"
+      aria-label="Drag to reorder item"
+      @dragstart="startDrag"
+      @dragend="emit('dragEnd')"
+    >
+      ⠿
+    </button>
+    <div
+      class="sr-only focus-within:not-sr-only flex shrink-0 gap-0.5"
+      aria-label="Keyboard reorder controls"
+    >
+      <button
+        type="button"
+        class="flex h-7 w-6 items-center justify-center bg-transparent text-sm text-ink-muted hover:bg-surface-hover disabled:opacity-30 focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+        :disabled="isFirst"
+        :aria-label="`Move ${item.title} earlier`"
+        @click="emit('move', 'earlier')"
+      >
+        ↑
+      </button>
+      <button
+        type="button"
+        class="flex h-7 w-6 items-center justify-center bg-transparent text-sm text-ink-muted hover:bg-surface-hover disabled:opacity-30 focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+        :disabled="isLast"
+        :aria-label="`Move ${item.title} later`"
+        @click="emit('move', 'later')"
+      >
+        ↓
+      </button>
+    </div>
+    <button
+      type="button"
       role="checkbox"
       :aria-checked="item.completed"
-      aria-label="Mark as acquired"
-      class="mt-1 w-3.5 h-3.5 shrink-0 rounded-sm border border-stroke flex items-center justify-center bg-transparent cursor-pointer"
-      :class="item.completed ? 'bg-accent border-accent-edge' : ''"
+      class="flex h-4 w-4 shrink-0 items-center justify-center border border-stroke bg-transparent text-[10px] text-good-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+      :class="item.completed ? 'border-good-edge bg-good' : ''"
+      :aria-label="item.completed ? `Mark ${item.title} incomplete` : `Mark ${item.title} complete`"
+      @click="toggle"
     >
-      <span
-        v-if="item.completed"
-        key="check"
-        class="text-accent-ink text-[10px] font-bold leading-none"
-      >
-        ✓
-      </span>
+      <span v-if="item.completed" aria-hidden="true">✓</span>
     </button>
-
-    <!-- Name -->
-    <div class="flex-1 min-w-0">
+    <template v-if="editMode">
+      <div class="min-w-0 flex-1 space-y-1">
+        <input
+          v-model="editTitle"
+          type="text"
+          maxlength="120"
+          aria-label="Item title"
+          class="h-8 w-full border border-stroke bg-bg px-2 text-[12px] text-ink outline-none focus:border-accent"
+          @blur="saveEdit"
+          @keydown.enter.prevent="saveEdit"
+        />
+        <input
+          v-model="editTradeUrl"
+          type="url"
+          aria-label="Trade URL"
+          placeholder="Trade URL"
+          class="h-7 w-full border border-stroke bg-bg px-2 text-[10px] text-ink outline-none focus:border-accent"
+          @blur="saveEdit"
+          @keydown.enter.prevent="saveEdit"
+        />
+      </div>
       <button
-        v-if="item.tradeUrl"
-        @click.stop="openTrade(item.tradeUrl!)"
-        :aria-label="item.name"
-        class="text-[13px] font-medium text-ink truncate hover:underline cursor-pointer text-left bg-transparent border-0 p-0 min-w-0 w-full"
-        :class="item.completed ? 'line-through' : ''"
+        type="button"
+        class="shrink-0 bg-transparent px-1 text-[10px] text-ink-muted underline hover:text-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+        aria-label="Remove item"
+        @click="emit('remove')"
       >
-        {{ item.name }}
+        Remove
       </button>
-      <span
-        v-else
-        class="text-[13px] font-medium text-ink truncate block"
-        :class="item.completed ? 'line-through' : ''"
-      >
-        {{ item.name }}
-      </span>
-      <SearchFilterSummary :filters="item.filters" />
-    </div>
-
-    <!-- Price -->
-    <span
-      v-if="item.capture && item.capture.aggregates.sampleSize > 0"
-      class="mt-0.5 font-mono text-xs font-semibold text-accent-ink-str shrink-0"
-    >
-      ~{{ formatPrice(item.capture.aggregates.median) }}
-      <span class="opacity-70 text-[10px]">{{ item.capture.aggregates.currency }}</span>
-    </span>
-    <span
-      v-else-if="item.pricingStatus === 'pending'"
-      class="mt-0.5 text-[10px] font-semibold text-ink-muted shrink-0"
-    >
-      Pricing…
-    </span>
-    <span
-      v-else-if="item.pricingStatus === 'unpriced' || item.pricingStatus === 'failed'"
-      class="mt-0.5 text-[10px] font-semibold text-ink-muted shrink-0"
-    >
-      Unpriced
-    </span>
-
-    <!-- Kebab -->
+    </template>
     <button
-      @click.stop="ui.toggleKebab(item.id)"
-      aria-label="Item actions"
-      class="mt-0.5 text-ink-muted text-sm cursor-pointer bg-transparent border-0 px-0.5 leading-none shrink-0"
+      v-else
+      type="button"
+      class="min-w-0 flex-1 truncate bg-transparent p-0 text-left text-[13px] font-semibold text-ink hover:underline focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+      :class="item.completed ? 'opacity-60 line-through' : ''"
+      :aria-label="`Open ${item.title} trade search`"
+      @click="openTrade"
     >
-      ⋯
+      {{ item.title }}
     </button>
   </div>
 </template>

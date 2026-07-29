@@ -1,173 +1,105 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useDraftList } from "../../composables/useDraftList";
-import { useFocusTrap } from "../../composables/useFocusTrap";
-import { useSettings } from "../../composables/useSettings";
 import { useUiStore } from "../../stores/ui";
-import { sendMessage } from "../../utils/messages";
+import { sendMessage, type TradePageInfo } from "../../utils/messages";
 import BtnAccent from "../shared/BtnAccent.vue";
 import BtnGhost from "../shared/BtnGhost.vue";
-import Pill from "../shared/Pill.vue";
 
 const ui = useUiStore();
-const { draft, addItem } = useDraftList();
-const { settings } = useSettings();
-
-const itemName = ref("");
+const { drafts, addItemToDraft } = useDraftList();
+const title = ref("");
+const page = ref<TradePageInfo | null>(null);
+const loading = ref(true);
+const loadError = ref(false);
 const saving = ref(false);
-const capture = ref<import("@/types").TradeCapture | null>(null);
-const filters = ref<import("@/types").SearchFilterSnapshot | null>(null);
-const loadingCapture = ref(false);
-
-const dialogRef = ref<HTMLElement | null>(null);
-const { activate, deactivate } = useFocusTrap(dialogRef);
-onMounted(activate);
-onBeforeUnmount(deactivate);
+const list = computed(() => drafts.value.find((draft) => draft.id === ui.registerListId) ?? null);
 
 onMounted(async () => {
-  itemName.value = ui.pendingSaveName;
-
-  if (!itemName.value) {
-    try {
-      const res = await sendMessage("spSearchBarGet");
-      console.log("[poe-sl] modal: spSearchBarGet =", res);
-      itemName.value = res?.text ?? "";
-    } catch (e) {
-      console.error("[poe-sl] modal: spSearchBarGet error:", e);
-    }
-  }
-
-  if (settings.value.autoCapturePrice) {
-    loadingCapture.value = true;
-    try {
-      const cap = await sendMessage("spCaptureRead");
-      console.log("[poe-sl] modal: spCaptureRead =", cap);
-      capture.value = cap ?? null;
-    } catch (e) {
-      console.error("[poe-sl] modal: spCaptureRead error:", e);
-      capture.value = null;
-    } finally {
-      loadingCapture.value = false;
-    }
-  }
-
   try {
-    filters.value = await sendMessage("spSearchFiltersRead");
+    page.value = await sendMessage("spTradePageInfo");
+    title.value = page.value.title;
   } catch {
-    filters.value = null;
+    loadError.value = true;
+  } finally {
+    loading.value = false;
   }
 });
 
 async function handleSave() {
-  if (!itemName.value.trim() || saving.value || !draft.value) return;
+  if (
+    !list.value ||
+    !page.value?.supported ||
+    !page.value.url ||
+    !title.value.trim() ||
+    saving.value
+  )
+    return;
   saving.value = true;
-  // Determine trade URL: use capture URL or current active tab URL
-  let tradeUrl = capture.value?.tradeUrl ?? "";
-  if (!tradeUrl) {
-    try {
-      const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-      tradeUrl = tab?.url ?? "";
-    } catch {}
+  try {
+    const item = await addItemToDraft(list.value.id, title.value.trim(), page.value.url);
+    if (item) ui.closeRegisterModal();
+  } finally {
+    saving.value = false;
   }
-  await addItem(itemName.value.trim(), tradeUrl, capture.value, filters.value);
-  saving.value = false;
-  ui.closeSaveModal();
 }
-
-const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
 </script>
 
 <template>
   <div
-    ref="dialogRef"
-    class="absolute inset-0 bg-black/50 flex items-end z-20"
+    class="absolute inset-0 z-20 flex items-end bg-black/50"
     role="dialog"
     aria-modal="true"
-    @keydown.escape="ui.closeSaveModal()"
-    @click.self="ui.closeSaveModal()"
+    aria-labelledby="register-title"
+    @keydown.escape="ui.closeRegisterModal()"
+    @click.self="ui.closeRegisterModal()"
   >
-    <div class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 shadow-panel">
-      <!-- Header -->
-      <div class="flex items-center">
-        <p class="text-[13px] font-semibold text-ink">Save Search</p>
-        <div class="flex-1" />
-        <button
-          @click="ui.closeSaveModal()"
-          class="text-ink-muted text-base cursor-pointer bg-transparent border-0 leading-none"
-        >
-          ✕
-        </button>
-      </div>
-
-      <!-- Name field -->
-      <div>
-        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Name</p>
-        <input
-          v-model="itemName"
-          maxlength="120"
-          @keydown.enter="handleSave"
-          placeholder="Item name…"
-          aria-label="Item name"
-          class="w-full h-9 px-2.5 text-[13px] border border-accent-edge rounded-sm text-ink"
-          autofocus
-        />
-        <p class="text-[10px] text-ink-muted mt-1">
-          Auto-filled from trade search bar · tap to edit
+    <form
+      class="w-full space-y-3 border-t-2 border-accent bg-bg p-3.5"
+      @submit.prevent="handleSave"
+    >
+      <p class="text-[10px] uppercase tracking-[0.12em] text-accent-ink-str">
+        Register current trade
+      </p>
+      <h2 id="register-title" class="text-[16px] font-semibold text-ink">
+        Save this trade to {{ list?.title }}
+      </h2>
+      <p v-if="loading" class="text-[11px] leading-relaxed text-ink-muted">
+        Checking the current page…
+      </p>
+      <p
+        v-else-if="loadError || !page?.supported"
+        class="border border-stroke bg-surface px-2.5 py-2 text-[11px] leading-relaxed text-ink-muted"
+      >
+        This page is not a supported trade page. Open a supported trade page to register it.
+      </p>
+      <template v-else>
+        <p class="text-[11px] leading-relaxed text-ink-muted">
+          Add this page as an incomplete List item. Nothing is captured or priced automatically.
         </p>
-      </div>
-
-      <!-- Save-to list -->
-      <div>
-        <p class="text-[10px] text-ink-muted uppercase tracking-[0.6px] mb-1">Save to</p>
         <div
-          class="flex items-center gap-1.5 h-9 px-2.5 border border-stroke rounded-sm text-[13px] text-ink"
+          class="break-all border border-stroke bg-surface px-2.5 py-2 font-mono text-[10px] text-ink-muted"
+          :title="page.url"
         >
-          <div class="w-2 h-2 rounded-full bg-accent shrink-0" />
-          <span class="flex-1 truncate">{{ draft?.name ?? "No active list" }}</span>
-          <Pill tone="accent">ACTIVE</Pill>
+          {{ page.url }}
         </div>
-      </div>
-
-      <!-- Price preview -->
-      <div v-if="loadingCapture" class="text-[11px] text-ink-muted text-center py-2">
-        Reading prices…
-      </div>
-      <div v-else-if="capture && capture.aggregates.sampleSize > 0">
-        <div class="border border-stroke rounded-sm p-2.5 grid grid-cols-3 gap-2 bg-surface">
-          <div
-            v-for="[label, val] in [
-              ['MIN', capture.aggregates.min],
-              ['MEDIAN', capture.aggregates.median],
-              ['AVG', capture.aggregates.avg],
-            ]"
-            :key="label"
-            class="flex flex-col gap-0.5"
-          >
-            <p class="text-[10px] text-ink-muted">{{ label }}</p>
-            <div class="flex items-baseline gap-1">
-              <span class="font-mono text-base font-semibold text-accent-ink-str">{{
-                fmt(val as number)
-              }}</span>
-              <span class="text-[10px] text-ink-muted">{{ capture.aggregates.currency }}</span>
-            </div>
-          </div>
-        </div>
-        <p class="text-[10px] text-ink-muted -mt-1">
-          {{ capture.aggregates.sampleSize }} listings captured · dominant currency:
-          {{ capture.aggregates.currency }}
-        </p>
-      </div>
-      <p v-else class="text-[10px] text-ink-muted">No price data — saving name only.</p>
-
-      <!-- Actions -->
-      <div class="flex gap-2 mt-1">
-        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeSaveModal()" />
-        <BtnAccent
-          label="Save"
-          :disabled="!itemName.trim() || !draft || saving"
+        <label class="block text-[10px] uppercase tracking-[0.06em] text-ink-muted"
+          >List Item title<input
+            v-model="title"
+            maxlength="120"
+            autofocus
+            class="mt-1 h-9 w-full border border-accent-edge bg-surface px-2.5 text-[13px] text-ink outline-none focus:border-accent"
+        /></label>
+      </template>
+      <div class="flex gap-2">
+        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeRegisterModal" /><BtnAccent
+          label="Save to List"
+          :full="true"
+          size="md"
+          :disabled="loading || loadError || !page?.supported || !title.trim() || saving"
           @click="handleSave"
         />
       </div>
-    </div>
+    </form>
   </div>
 </template>

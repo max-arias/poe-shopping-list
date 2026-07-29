@@ -7,13 +7,9 @@
   "scripts": {
     "ext": "vp run --filter @poe-sl/extension dev",
     "ext:build": "vp run --filter @poe-sl/extension build",
-    "ext:firefox": "vp run --filter @poe-sl/extension build:firefox",
     "ext:zip": "vp run --filter @poe-sl/extension zip",
-    "ext:zip:firefox": "vp run --filter @poe-sl/extension zip:firefox",
     "ext:check": "vp run --filter @poe-sl/extension check",
     "ext:typecheck": "vp run --filter @poe-sl/extension typecheck",
-    "e2e": "npm run ext:build && cd apps/e2e && npm test",
-    "e2e:ui": "npm run ext:build && cd apps/e2e && npm run test:ui",
     "lint": "vp lint",
     "format": "vp fmt",
     "check": "vp check",
@@ -23,7 +19,8 @@
     "@webext-core/messaging": "^2.3.0"
   },
   "devDependencies": {
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vite-plus": "0.2.6"
   },
   "packageManager": "pnpm@10.28.0"
 }

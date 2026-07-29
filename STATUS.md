@@ -1,85 +1,27 @@
 # PoE Shopping List — Implementation Status
 
-Last updated: 2026-05-04
+Last updated: 2026-07-29
 
-## Legend
+## v1 reset
 
-- ✅ Done — complete and working
-- 🔶 Partial — code exists, but incomplete or blocked
-- 🔴 Todo — not started or fully stubbed
-- ❌ Removed — stripped for local-only MVP
+The extension now targets a clean, local-only v1 model. Obsolete local data assumptions are not migrated. The only portable format is strict Shareable List v1 JSON; invalid or unsupported input is rejected.
 
----
+## Current implementation
 
-## Architecture Change (2026-05-04)
+| Area | Status | Notes |
+| --- | --- | --- |
+| Local draft storage | ✅ | Drafts, settings, and current UI state use local storage |
+| Shareable List v1 | ✅ | Strict JSON fields and rejection behavior are implemented |
+| Independent imports | ✅ | New local IDs; imported items start incomplete |
+| Local completion | ✅ | Completion is stored on the local Draft and is not exported |
+| Accordion side panel | ✅ | One List collection; selected content expands in place |
+| Register Current Trade | ✅ | Confirms the active supported Trade URL, accepts an editable title, and saves an incomplete local item |
+| Trade-page scope | ✅ | Side panel and content script are limited to Path of Exile Trade hosts |
 
-The project has been simplified to a **local-only extension MVP**. The API, website, and OAuth have been removed. Lists are shared via compressed text strings (import/export).
+## Testing
 
-### Removed
+The v1 contract suite and side-panel DOM workflow tests run with Vitest in jsdom, alongside extension typecheck and formatting/lint checks. Browser E2E and browser lifecycle coverage are intentionally not part of the test strategy.
 
-| Component              | Status | Notes                                               |
-| ---------------------- | ------ | --------------------------------------------------- |
-| `apps/api`             | ❌     | Cloudflare Worker + D1 — removed                    |
-| `apps/website`         | ❌     | Astro site — removed                                |
-| `packages/schema`      | ❌     | Inlined into `apps/extension/src/types/`            |
-| `packages/trade-dom`   | ❌     | Inlined into `apps/extension/src/trade-dom/`        |
-| `packages/tokens`      | ❌     | Inlined into `apps/extension/src/styles/tokens.css` |
-| `infra/`               | ❌     | D1 migrations — removed                             |
-| OAuth flow             | ❌     | Removed                                             |
-| Trending tab           | ❌     | Removed                                             |
-| Following tab          | ❌     | Removed                                             |
-| Recent purchases       | ❌     | Removed                                             |
-| Publish sheet          | ❌     | Removed                                             |
-| `ninja-poc.content.ts` | ❌     | POC removed                                         |
+## Release
 
----
-
-## Extension (`apps/extension`)
-
-### Infrastructure
-
-| Item                               | Status | Notes                                         |
-| ---------------------------------- | ------ | --------------------------------------------- |
-| Side panel opens on icon click     | ✅     | `setPanelBehavior` + enabled/disabled per tab |
-| Panel only on trade/build pages    | ✅     | `tabs.onActivated` + `tabs.onUpdated`         |
-| Content script (trade page)        | ✅     | Price capture relay, search bar text          |
-| Content script (build guide pages) | ✅     | pobb.in + maxroll.gg FAB injection            |
-| Background `open-sidepanel` msg    | ✅     | Content scripts can request panel open        |
-| Design tokens (light/dark)         | ✅     | Tailwind v4 `@theme inline` + `data-theme`    |
-
-### Features
-
-| Feature                                | Status | Notes                                 |
-| -------------------------------------- | ------ | ------------------------------------- |
-| Create draft list                      | ✅     | Name + build URL + creator            |
-| Save search as item                    | ✅     | SaveModal, price capture              |
-| Mark item complete                     | ✅     | Toggle in ItemRow                     |
-| Delete item / list                     | ✅     | KebabMenu + confirmation              |
-| Bulk unmark all items                  | ✅     | "More → Unmark all"                   |
-| Settings (theme, league, auto-capture) | ✅     | SettingsPopover                       |
-| Link build URL to draft                | ✅     | "More → Link build URL"               |
-| Auto-open draft on build page          | ✅     | App.vue checks URL on load            |
-| Capture unavailable banner             | ✅     | Shows when DOM selectors fail         |
-| FAB / ribbon on build pages            | ✅     | pobb.in + maxroll.gg                  |
-| **Export list**                        | ✅     | lz-string compressed, URI-safe string |
-| **Import list**                        | ✅     | Paste string, Zod-validated, new IDs  |
-| Divine rate display                    | ✅     | Fetched from poe.ninja                |
-
----
-
-## Tests
-
-| Area                  | Status | Notes                                         |
-| --------------------- | ------ | --------------------------------------------- |
-| `trade-dom` (inlined) | 🔴     | Tests need to be re-added for inlined version |
-| `apps/extension`      | 🔴     | No tests yet                                  |
-| `apps/e2e`            | 🔴     | Playwright setup exists, needs updating       |
-
----
-
-## Deployment
-
-| Target           | Status | Notes                                     |
-| ---------------- | ------ | ----------------------------------------- |
-| Chrome Web Store | 🔴     | Build works; not submitted                |
-| Firefox Add-ons  | 🔴     | `wxt zip -b firefox` ready; not submitted |
+The current manifest version is `0.1.0`. A Chrome Web Store release has not been submitted.

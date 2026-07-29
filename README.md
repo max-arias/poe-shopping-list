@@ -1,127 +1,73 @@
 # PoE Shopping List — Local-Only Extension
 
-A browser extension for Path of Exile that lets players create, manage, and share shopping lists of trade searches. **No account, no server, no API** — everything lives in your browser.
-
----
+A browser extension for Path of Exile that lets players create, manage, share, and use local shopping Lists of trade searches. There is no account, server, or remote synchronization.
 
 ## What it does
 
-1. **Create lists** — Name a list, optionally link it to a build guide URL
-2. **Save searches** — On `pathofexile.com/trade`, run a search and tap "Save This Search" to add it to your list
-3. **Track prices** — Prices are auto-captured from trade results (min, median, avg)
-4. **Share lists** — Export any list as a compressed text string; others can import it to recreate the list locally
-5. **Build-site integration** — A FAB/ribbon appears on pobb.in and maxroll.gg pages when you have a matching list
+- Create and edit Personal Drafts locally.
+- Import or export one strict, versioned Shareable List JSON format.
+- Open a List in the side panel's accordion and mark items complete locally.
+- Register the current supported trade search explicitly: review the URL, confirm or edit the List Item title, then save.
 
----
+Every import creates an independent local copy. Imported items start incomplete.
 
-## Features
+## Shareable List v1
 
-| Feature        | Description                                                   |
-| -------------- | ------------------------------------------------------------- |
-| Draft lists    | Create, rename, delete lists locally                          |
-| Save search    | Auto-fill item name from trade search bar, capture price data |
-| Mark complete  | Check off items as you acquire them                           |
-| Edit items     | Rename, change URL, refresh price                             |
-| Export/Import  | Share lists via lz-string compressed strings                  |
-| Build-site FAB | Injected button on pobb.in and maxroll.gg                     |
-| Theme          | Light, dark, or system-following                              |
-| Game/league    | Switch between PoE1 and PoE2 leagues                          |
+The portable contract is JSON:
 
----
+```json
+{
+  "format": "poe-shopping-list",
+  "version": 1,
+  "title": "Frostblade essentials",
+  "overview": "Weapon first, then solve resistances.",
+  "items": [
+    {
+      "title": "The Pandemonius",
+      "tradeUrl": "https://www.pathofexile.com/trade/search/Settlers?q=The%20Pandemonius",
+      "quantity": 1,
+      "variant": "optional variant or qualification",
+      "note": "Optional item guidance"
+    }
+  ]
+}
+```
+
+`format`, `version`, `title`, and `items` are required. `overview` is optional. Each item requires `title` and an HTTP(S) `tradeUrl`; `quantity`, `variant`, and `note` are optional. Unknown fields, unsupported versions, malformed JSON, and invalid values are rejected. Completion state, IDs, timestamps, account data, and synchronization metadata are not portable.
 
 ## Tech Stack
 
 | Concern             | Choice                                             |
 | ------------------- | -------------------------------------------------- |
-| Extension framework | [WXT](https://wxt.dev) (Chrome MV3 + Firefox)      |
+| Extension framework | [WXT](https://wxt.dev) (Chrome MV3)                |
 | UI                  | [Vue 3](https://vuejs.org) Composition API         |
 | State               | Pinia + `browser.storage.local`                    |
-| Compression         | [lz-string](https://github.com/pieroxy/lz-string/) |
 | Validation          | [Zod](https://zod.dev)                             |
 | Styling             | Tailwind v4 with PoE-themed design tokens          |
 | Toolchain           | [VitePlus (`vp`)](https://viteplus.dev)            |
 
----
-
 ## Developer Workflow
 
-### Prerequisites
-
-Install [VitePlus](https://viteplus.dev) globally:
-
-```powershell
-# Windows
-irm https://vite.plus/ps1 | iex
-
-# macOS / Linux
-curl -fsSL https://vite.plus | bash
-```
-
-### Setup
-
 ```bash
-vp install          # install dependencies
+vp install
+vp dev
+vp build
+vp check
+pnpm --filter @poe-sl/extension test
 ```
-
-### Development
-
-```bash
-vp dev               # start WXT dev server (Chrome)
-vp build             # production build (Chrome)
-vp check             # format + lint + typecheck
-```
-
-### Firefox
-
-```bash
-wxt build -b firefox  # Firefox-specific build
-wxt zip -b firefox    # package for Firefox Add-ons
-```
-
-### E2E Tests
-
-```bash
-npm run e2e           # build extension + run Playwright tests
-```
-
----
 
 ## Project Structure
 
 ```
 poe-shopping-list/
-├── apps/
-│   ├── extension/         # WXT + Vue (Chrome + Firefox)
-│   └── e2e/              # Playwright tests
-├── docs/                 # ARCHITECTURE.md, PRD.md, STATUS.md
-├── mockups/              # Extension sidebar wireframes
-├── package.json          # Root workspace
+├── apps/extension/         # WXT + Vue extension and Vitest DOM/contract tests
+├── docs/                   # Product and architecture documentation
+├── package.json            # Root workspace
 └── README.md
 ```
 
----
-
-## Import/Export Format
-
-Lists are exported as lz-string compressed, URI-safe strings. The portable format uses short keys to minimize size:
-
-```json
-{
-  "n": "RF Jugg",
-  "g": "poe1",
-  "l": "Mirage",
-  "i": [{ "n": "Kaom's Heart", "k": "unique", "u": "https://...", "b": "Vaal Regalia" }],
-  "bu": "https://pobb.in/abc",
-  "bc": "CreatorName"
-}
-```
-
-On import, new IDs and timestamps are generated, and the list is validated with Zod.
-
----
-
 ## Related Docs
 
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — Extension architecture, data model, content scripts
-- [PRD.md](docs/PRD.md) — Personas, user flows, feature specs
-- [STATUS.md](STATUS.md) — Implementation status tracker
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — Extension architecture and data model
+- [PRD.md](docs/PRD.md) — Product requirements and workflows
+- [STATUS.md](STATUS.md) — Implementation, test, and release status

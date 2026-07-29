@@ -20,14 +20,8 @@ export default defineConfig({
       48: "icons/icon48.png",
       128: "icons/icon128.png",
     },
-    permissions: ["storage", "sidePanel", "tabs"],
-    host_permissions: [
-      "https://www.pathofexile.com/*",
-      "https://pathofexile.com/*",
-      "https://pobb.in/*",
-      "https://maxroll.gg/*",
-      "https://poe.ninja/*",
-    ],
+    permissions: ["storage", "sidePanel"],
+    host_permissions: ["https://www.pathofexile.com/trade/*", "https://pathofexile.com/trade/*"],
     side_panel: {
       default_path: "sidepanel.html",
     },
@@ -39,16 +33,5 @@ export default defineConfig({
         128: "icons/icon128.png",
       },
     },
-    web_accessible_resources: [
-      {
-        resources: ["icons/*.png", "stat-index.json"],
-        matches: [
-          "https://www.pathofexile.com/*",
-          "https://pathofexile.com/*",
-          "https://pobb.in/*",
-          "https://maxroll.gg/*",
-        ],
-      },
-    ],
   },
 });

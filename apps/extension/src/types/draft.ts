@@ -1,47 +1,62 @@
 import { z } from "zod";
-import { GameSchema } from "./game";
-import { ItemKindSchema } from "./item";
-import { SearchFilterSnapshotSchema } from "./searchFilters";
-import { TradeCaptureSchema } from "./trade";
 
-export const DraftItemSchema = z.object({
-  id: z.string(),
-  position: z.number().int(),
-  name: z.string().min(1).max(120),
-  tradeUrl: z.string(),
-  capture: TradeCaptureSchema.nullable(),
-  filters: SearchFilterSnapshotSchema.optional(),
-  completed: z.boolean().default(false),
-  kind: ItemKindSchema.default("unique"),
-  base: z.string().optional(),
-  queryHash: z.string().optional(),
-  pricingStatus: z.enum(["pending", "priced", "unpriced", "failed", "skipped"]).optional(),
-  pricingError: z.string().optional(),
-  source: z
-    .object({
-      type: z.literal("pob"),
-      buildUrl: z.string(),
-      itemSetId: z.string().optional(),
-      itemSetName: z.string().optional(),
-      skillGroupId: z.string().optional(),
-      skillGroupName: z.string().optional(),
-      slot: z.string().optional(),
-      pobItemId: z.string().optional(),
-    })
-    .optional(),
-  addedAt: z.number().int(),
-});
+const TitleSchema = z
+  .string()
+  .min(1)
+  .refine((value) => value.trim().length > 0);
+
+const TradeUrlSchema = z
+  .string()
+  .url()
+  .refine(
+    (value) => value.startsWith("http://") || value.startsWith("https://"),
+    "tradeUrl must be an HTTP(S) URL",
+  );
+
+export const ShareableListItemSchema = z
+  .object({
+    title: TitleSchema,
+    tradeUrl: TradeUrlSchema,
+    quantity: z.number().int().positive().optional(),
+    variant: z.string().optional(),
+    note: z.string().optional(),
+  })
+  .strict();
+export type ShareableListItem = z.infer<typeof ShareableListItemSchema>;
+
+export const ShareableListSchema = z
+  .object({
+    format: z.literal("poe-shopping-list"),
+    version: z.literal(1),
+    title: TitleSchema,
+    overview: z.string().optional(),
+    items: z.array(ShareableListItemSchema),
+  })
+  .strict();
+export type ShareableList = z.infer<typeof ShareableListSchema>;
+
+export const DraftItemSchema = z
+  .object({
+    id: z.string(),
+    position: z.number().int(),
+    title: TitleSchema,
+    tradeUrl: TradeUrlSchema,
+    quantity: z.number().int().positive().optional(),
+    variant: z.string().optional(),
+    note: z.string().optional(),
+    completed: z.boolean(),
+    addedAt: z.number().int(),
+  })
+  .strict();
 export type DraftItem = z.infer<typeof DraftItemSchema>;
 
-export const DraftSchema = z.object({
-  id: z.string(),
-  name: z.string().min(1).max(80),
-  game: GameSchema.default("poe1"),
-  league: z.string(),
-  createdAt: z.number().int(),
-  items: z.array(DraftItemSchema),
-  buildUrl: z.string().url().optional(),
-  buildCreator: z.string().max(80).optional(),
-  associatedUrls: z.array(z.string().url()).optional(),
-});
+export const DraftSchema = z
+  .object({
+    id: z.string(),
+    title: TitleSchema,
+    overview: z.string().optional(),
+    createdAt: z.number().int(),
+    items: z.array(DraftItemSchema),
+  })
+  .strict();
 export type Draft = z.infer<typeof DraftSchema>;

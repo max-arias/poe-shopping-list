@@ -1,73 +1,54 @@
-# PoE Shopping List — Product Requirements (MVP)
+# PoE Shopping List — Product Requirements (v1)
 
 ## Vision
 
-A **local-only** browser extension for Path of Exile that lets players create, manage, and share shopping lists of trade searches. No account, no server, no API — everything lives in your browser.
+A local-only browser extension for Path of Exile. Players create, use, and share shopping Lists without an account, server, or remote synchronization.
 
-## Personas
+## Core flows
 
-| Persona  | Description                                                                |
-| -------- | -------------------------------------------------------------------------- |
-| **Alex** | Follows build guides, wants to quickly set up trade searches each league   |
-| **Sam**  | Creates build guides on pobb.in, wants to share a curated list of searches |
+### Create a List
 
-## Core Flows
+1. Open the side panel on a supported trade page.
+2. Select **New List** and enter a title and optional overview.
+3. The List is saved locally.
 
-### A. Create a draft list
+### Use a List
 
-1. Open side panel on any page
-2. Tap "+ New List", enter a name and optional build URL
-3. List is saved to `browser.storage.local`
+1. Lists appear together in one vertical accordion.
+2. Select a title band to expand it and collapse other List content.
+3. Expand or collapse the overview as needed.
+4. Click an item row to open its trade link, use the checkbox for local completion, and reorder rows with the drag handle.
 
-### B. Save a trade search to a list
+### Register Current Trade
 
-1. Navigate to `pathofexile.com/trade`
-2. Run a search for an item
-3. Tap "Save This Search" in the side panel
-4. Item name auto-filled from search bar, price data captured
-5. Item added to active draft list
+With a supported Path of Exile Trade search active, select **Register Current Trade** for the expanded List. The extension presents the current URL and a List Item title field. The user must review or edit the title and explicitly save; registration is never silent or automatic.
 
-### C. Export a list for sharing
+### Share a List
 
-1. Open a draft list, tap "More → Export list"
-2. A compressed string is generated
-3. Copy to clipboard and share (chat, forum, guide)
+1. Export a List as strict Shareable List v1 JSON.
+2. Share or paste the JSON through the import flow.
+3. A successful import creates an independent Personal Draft with new local IDs and all items incomplete.
 
-### D. Import a shared list
+## Shareable List v1 contract
 
-1. Tap "Import" or "More → Import list"
-2. Paste the compressed string
-3. List is recreated locally with new IDs and timestamps
+Required top-level fields: `format: "poe-shopping-list"`, `version: 1`, non-empty `title`, and `items`. Optional top-level field: `overview`.
 
-### E. Build-site integration
+Each item requires a non-empty `title` and HTTP(S) `tradeUrl`. Optional item fields are positive integer `quantity`, `variant`, and `note`. The object is strict: unknown fields, unsupported versions, malformed JSON, invalid URLs, and invalid field values are rejected rather than converted. The portable data contains no completion state, IDs, timestamps, account data, or synchronization metadata.
 
-1. Visit a pobb.in or maxroll.gg build guide
-2. If a local draft matches the URL, a ribbon shows matching lists
-3. If no match, a FAB button opens the side panel
+## Local state and reset
 
-## Features
+Completion is local draft state and is not included in exports. Imported Lists are independent copies; changes do not flow back to the source.
 
-| Feature                                      | Status | Notes                              |
-| -------------------------------------------- | ------ | ---------------------------------- |
-| Create draft list                            | ✅     | Name + build URL + creator         |
-| Save search to list                          | ✅     | Auto-capture name + price          |
-| Mark item complete                           | ✅     | Checkbox toggle                    |
-| Edit item (name, URL, price refresh)         | ✅     | Edit sheet                         |
-| Delete item / list                           | ✅     | With confirmation                  |
-| Bulk unmark all                              | ✅     | Clears completed + captures        |
-| Settings (game, league, theme, auto-capture) | ✅     | Persisted in browser.storage       |
-| Export list as compressed string             | ✅     | lz-string, URI-safe                |
-| Import list from compressed string           | ✅     | Zod-validated, new IDs             |
-| Build-site FAB (pobb.in, maxroll.gg)         | ✅     | Matches local drafts by URL        |
-| Trade page price capture                     | ✅     | DOM extraction, aggregates         |
-| Divine rate display                          | ✅     | Fetched from poe.ninja API         |
-| Chrome + Firefox                             | ✅     | WXT handles both from one codebase |
+The v1 reset discards obsolete local state and format assumptions. Storage is limited to the current draft, settings, and UI-position keys; old data shapes are not accepted or restored.
 
-## Out of Scope (Future)
+## Scope exclusions
 
-- OAuth / account system
-- Server-side list publishing
-- Trending / catalog browsing
-- Following other users' lists
-- Recent purchases tracking
-- Website for browsing lists
+The extension does not provide accounts, server persistence, cloud sync, collaboration, analytics, recommendations, or additional portable formats.
+
+## Acceptance status
+
+The current source contains the v1 schemas, strict JSON import/export, local draft completion, accordion workflow, narrowed trade-page permissions, and the explicit registration modal. The registration runtime signal and its save path remain incomplete in the current implementation.
+
+## Test strategy
+
+The v1 contract and side-panel workflows are verified with Vitest: pure contracts run in Node and Vue side-panel components run in jsdom. Browser E2E and browser lifecycle tests are not part of release validation.
