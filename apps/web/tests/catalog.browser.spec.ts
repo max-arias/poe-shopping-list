@@ -17,16 +17,9 @@ const shareable = {
 
 test.describe("populated test-only catalog", () => {
   test.beforeEach(async ({ page }) => {
+    // This project serves the explicit fixture build, whose loader supplies
+    // only the deterministic files under tests/fixtures/content.
     await page.goto("/");
-    // Production taxonomy is intentionally empty. In explicit fixture mode,
-    // seed the controls with the same taxonomy resolved by the test loader.
-    await page.evaluate(() => {
-      for (const [id, values] of [["category", ["mercenaries", "guardian"]], ["tag", ["league-start", "defense"]]] as const) {
-        const select = document.querySelector<HTMLSelectElement>(`#${id}`)!;
-        select.replaceChildren(...values.map((value) => new Option(value, value)));
-        select.disabled = false;
-      }
-    });
   });
 
   test("uses URL-backed taxonomy filters and local-only search", async ({ page }) => {

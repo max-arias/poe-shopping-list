@@ -1,9 +1,5 @@
-/**
- * The editorial taxonomy is deliberately empty until a reviewed content PR
- * adds values. Lists must reference these arrays; there is no fallback or
- * invented taxonomy in the web application.
- */
+/** Taxonomy values used by the published catalog and its editorial filters. */
 export const taxonomy = {
-  categories: [] as string[],
-  tags: [] as string[],
+  categories: ["mercenaries", "guardian", "defense"] as string[],
+  tags: ["league-start", "defense", "budget"] as string[],
 } as const;

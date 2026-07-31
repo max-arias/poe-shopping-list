@@ -79,8 +79,8 @@ describe("Published List contract", () => {
   it("keeps fixtures outside the collectable content path", () => {
     expect(resolve("src/domain/fixtures.ts").startsWith(`${publishablePath}/`)).toBe(false);
     expect(resolve("src/domain/contracts.test.ts").startsWith(`${publishablePath}/`)).toBe(false);
-    expect(taxonomy.categories).toEqual([]);
-    expect(taxonomy.tags).toEqual([]);
+    expect(taxonomy.categories).toEqual(["mercenaries", "guardian", "defense"]);
+    expect(taxonomy.tags).toEqual(["league-start", "defense", "budget"]);
   });
 
   it("rejects a copied raw test fixture at the collection boundary", async () => {
