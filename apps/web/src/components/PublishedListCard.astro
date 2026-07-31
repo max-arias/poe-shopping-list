@@ -1,0 +1,63 @@
+---
+import type { PublishedList, ShareableList } from "../domain/schemas";
+
+interface Props {
+  id: string;
+  list: PublishedList;
+  exportData: ShareableList;
+}
+
+const { id, list, exportData } = Astro.props;
+const remainingId = `remaining-${id.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+const initialItems = list.items.slice(0, 3);
+const remainingItems = list.items.slice(3);
+const leagueLabel = list.applicability.evergreen ? "Evergreen" : list.applicability.league;
+const taxonomyText = ["Path of Exile 1", leagueLabel, list.category, ...list.tags].filter(Boolean).join(" ");
+const searchText = [list.title, list.overview, taxonomyText, ...list.items.map((item) => item.title)].filter(Boolean).join(" ");
+---
+
+<article
+  class="list-card"
+  data-game={list.applicability.game}
+  data-league={list.applicability.evergreen ? "evergreen" : list.applicability.league}
+  data-category={list.category}
+  data-tags={list.tags.join(" ")}
+  data-search={searchText}
+  data-export={JSON.stringify(exportData)}
+>
+  <header class="card-header">
+    <div class="card-heading">
+      <h2>{list.title}</h2>
+      <p class="taxonomy" aria-label="List applicability and taxonomy">
+        <span>Path of Exile 1</span><span>{leagueLabel}</span><span>{list.category}</span>{list.tags.map((tag) => <span>{tag}</span>)}
+      </p>
+    </div>
+    <div class="card-actions" aria-label={`${list.title} actions`}>
+      <button class="icon-button" type="button" data-download aria-label={`Download ${list.title} as Shareable List v1 JSON`} title="Download Shareable List v1 JSON">↓<span class="visually-hidden">Download</span></button>
+      <button class="icon-button" type="button" data-copy aria-label={`Copy ${list.title} as Shareable List v1 JSON`} title="Copy Shareable List v1 JSON">⧉<span class="visually-hidden">Copy</span></button>
+    </div>
+  </header>
+
+  {list.overview && <p class="list-overview">{list.overview}</p>}
+
+  <ol class="item-list" aria-label={`${list.title} items`}>
+    {initialItems.map((item, index) => <li class="list-item">
+      <span class="item-order" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+      <span class="item-title"><a href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="external-link" aria-hidden="true">↗</span><span class="visually-hidden"> (external Trade link)</span></a></span>
+      {(item.quantity !== undefined || item.variant) && <span class="item-variant">{item.quantity !== undefined && `×${item.quantity}`}{item.quantity !== undefined && item.variant && " · "}{item.variant}</span>}
+      {item.rationale && <details class="item-rationale"><summary>Why</summary><p>{item.rationale}</p></details>}
+    </li>)}
+  </ol>
+
+  {remainingItems.length > 0 && <>
+    <button class="expand-button" type="button" aria-expanded="false" aria-controls={remainingId} data-expand>Show remaining items <span aria-hidden="true">＋</span></button>
+    <ol id={remainingId} class="item-list remaining-items" start="4" hidden aria-label={`${list.title} remaining items`}>
+      {remainingItems.map((item, index) => <li class="list-item">
+        <span class="item-order" aria-hidden="true">{String(index + 4).padStart(2, "0")}</span>
+        <span class="item-title"><a href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="external-link" aria-hidden="true">↗</span><span class="visually-hidden"> (external Trade link)</span></a></span>
+        {(item.quantity !== undefined || item.variant) && <span class="item-variant">{item.quantity !== undefined && `×${item.quantity}`}{item.quantity !== undefined && item.variant && " · "}{item.variant}</span>}
+        {item.rationale && <details class="item-rationale"><summary>Why</summary><p>{item.rationale}</p></details>}
+      </li>)}
+    </ol>
+  </>}
+</article>

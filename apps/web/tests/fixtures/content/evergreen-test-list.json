@@ -1,0 +1,14 @@
+{
+  "testOnly": true,
+  "title": "Browser fixture: Evergreen guardian",
+  "category": "guardian",
+  "tags": [],
+  "applicability": { "game": "poe1", "evergreen": true },
+  "items": [
+    {
+      "title": "Evergreen ordered recommendation",
+      "tradeUrl": "https://www.pathofexile.com/trade/search/Standard?q=evergreen",
+      "variant": "Any"
+    }
+  ]
+}

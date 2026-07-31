@@ -1,0 +1,41 @@
+<aside class="dev-tweaks" aria-label="Development only tweaks">
+  <strong>Development only · not production</strong>
+  <label>Font scale <input id="dev-font-scale" type="range" min="90" max="115" value="100" /><output id="dev-font-output">100%</output></label>
+  <label>Card spacing <input id="dev-card-gap" type="range" min="8" max="20" value="12" /><output id="dev-gap-output">12px</output></label>
+  <label>Accent <select id="dev-accent"><option value="#d5a83e">Amber</option><option value="#c98242">Copper</option><option value="#b7a65a">Ochre</option></select></label>
+</aside>
+
+<script>
+  const root = document.documentElement;
+  const font = document.querySelector<HTMLInputElement>("#dev-font-scale")!;
+  const gap = document.querySelector<HTMLInputElement>("#dev-card-gap")!;
+  const accent = document.querySelector<HTMLSelectElement>("#dev-accent")!;
+  const fontOutput = document.querySelector<HTMLOutputElement>("#dev-font-output")!;
+  const gapOutput = document.querySelector<HTMLOutputElement>("#dev-gap-output")!;
+
+  document.body.classList.add("dev-tweaks-active");
+  font.addEventListener("input", () => {
+    root.style.fontSize = `${font.value}%`;
+    fontOutput.value = `${font.value}%`;
+  });
+  gap.addEventListener("input", () => {
+    root.style.setProperty("--card-gap", `${gap.value}px`);
+    gapOutput.value = `${gap.value}px`;
+  });
+  accent.addEventListener("change", () => root.style.setProperty("--accent", accent.value));
+</script>
+
+<style is:inline>
+  body.dev-tweaks-active { padding-bottom: 64px; }
+  .dev-tweaks { position: fixed; right: 0; bottom: 0; left: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 9px 16px; padding: 9px 4vw; border-top: 2px solid var(--accent); background: #111215; color: var(--muted); }
+  .dev-tweaks strong { color: var(--accent); font: 10px var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+  .dev-tweaks label { display: flex; align-items: center; gap: 6px; font: 10px var(--mono); }
+  .dev-tweaks input[type="range"] { width: 105px; accent-color: var(--accent); }
+  .dev-tweaks select { width: auto; min-height: 27px; padding: 4px 6px; border: 1px solid var(--warm-line); border-radius: 2px; background: #0f1012; color: var(--text); font: 10px var(--mono); }
+  .dev-tweaks output { min-width: 26px; color: var(--text); }
+  @media (max-width: 560px) {
+    body.dev-tweaks-active { padding-bottom: 120px; }
+    .dev-tweaks { align-items: start; }
+    .dev-tweaks strong { flex-basis: 100%; }
+  }
+</style>

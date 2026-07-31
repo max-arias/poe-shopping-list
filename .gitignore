@@ -12,6 +12,9 @@ build/
 
 # Astro
 .astro/
+/apps/web/dist-test/
+/apps/web/test-results/
+/apps/web/.playwright-build-ready
 
 # WXT / extension artifacts
 *.zip
@@ -32,6 +35,9 @@ web-ext-artifacts/
 .turbo/
 .vp-cache/
 *.tsbuildinfo
+
+# Local deepwork state
+.slim/deepwork/
 
 # Editor
 .vscode/

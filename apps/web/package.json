@@ -1,0 +1,40 @@
+{
+  "name": "@poe-sl/web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "astro sync",
+    "check": "astro check",
+    "content:validate": "tsx src/domain/validate-content.ts",
+    "test": "vitest run",
+    "test:focused": "vitest run",
+    "build": "astro build",
+    "preview": "astro preview",
+    "output:check": "node scripts/check-output.mjs dist",
+    "links:check": "node scripts/check-links.mjs dist",
+    "build:test-fixtures": "POE_WEB_TEST_MODE=1 astro build --outDir ./dist-test",
+    "output:check:test-fixtures": "node scripts/check-output.mjs dist-test",
+    "links:check:test-fixtures": "node scripts/check-links.mjs dist-test",
+    "preview:test-fixtures": "POE_WEB_TEST_MODE=1 astro preview --outDir ./dist-test",
+    "test:browser": "playwright test",
+    "test:axe": "playwright test tests/catalog.browser.spec.ts --grep axe",
+    "smoke": "node scripts/smoke.mjs",
+    "wrangler:validate": "wrangler deploy --dry-run --config wrangler.jsonc"
+  },
+  "dependencies": {
+    "astro": "5.13.5",
+    "yaml": "2.8.3",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.4",
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.52.0",
+    "@types/node": "25.0.3",
+    "tsx": "4.19.2",
+    "typescript": "5.7.2",
+    "vitest": "4.1.10",
+    "wrangler": "4.20.0"
+  }
+}

@@ -1,0 +1,205 @@
+---
+import { getCollection } from "astro:content";
+import PublishedListCard from "../components/PublishedListCard.astro";
+import DevTweaks from "../components/DevTweaks.astro";
+import { serializeShareableList } from "../domain/serialize";
+import { taxonomy } from "../domain/taxonomy";
+import "../styles/catalog.css";
+
+const entries = (await getCollection("lists")).sort((a, b) => a.data.title.localeCompare(b.data.title));
+const leagues = [...new Set(entries.map((entry) => entry.data.applicability.evergreen ? "evergreen" : entry.data.applicability.league).filter((value): value is string => Boolean(value)))].sort();
+// Keep the canonical route host-relative because no production hostname is configured yet.
+const canonicalUrl = "/";
+const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : value;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Published List Catalog</title>
+    <meta name="description" content="Browse Published Lists for Path of Exile." />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href={canonicalUrl} />
+  </head>
+  <body>
+    <aside class="site-notice"><strong>CATALOG</strong> · Published Lists are read-only recommendations for Path of Exile.</aside>
+    <header class="site-header">
+      <h1>Published Lists</h1>
+    </header>
+
+    <main class="catalog-main">
+      <form class="filter-toolbar" id="catalog-filters" aria-label="Catalog filters">
+        <div class="filter-field search-field">
+          <label for="search">Search <span>(local only)</span></label>
+          <input id="search" name="search" type="search" autocomplete="off" placeholder="Search visible Lists" />
+        </div>
+        <div class="filter-field">
+          <label for="game">Game <span>(shareable)</span></label>
+          <select id="game" name="game">
+            <option value="">All games</option>
+            <option value="poe1">Path of Exile 1</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="league">League <span>(shareable)</span></label>
+          <select id="league" name="league">
+            <option value="">All leagues</option>
+            <option value="evergreen">Evergreen</option>
+            {leagues.filter((league) => league !== "evergreen").map((league) => <option value={league}>{optionLabel(league)}</option>)}
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="category">Categories <span>(shareable)</span></label>
+          <select id="category" name="category" multiple size={taxonomy.categories.length > 0 ? Math.min(taxonomy.categories.length, 3) : 1} disabled={taxonomy.categories.length === 0}>
+            {taxonomy.categories.length > 0 ? taxonomy.categories.map((category) => <option value={category}>{category}</option>) : <option>No categories available yet</option>}
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="tag">Tags <span>(shareable)</span></label>
+          <select id="tag" name="tag" multiple size={taxonomy.tags.length > 0 ? Math.min(taxonomy.tags.length, 3) : 1} disabled={taxonomy.tags.length === 0}>
+            {taxonomy.tags.length > 0 ? taxonomy.tags.map((tag) => <option value={tag}>{tag}</option>) : <option>No tags available yet</option>}
+          </select>
+        </div>
+        <button class="reset-button" id="reset-filters" type="button" hidden>Reset all filters</button>
+        <p class="filter-note"><b>Search</b> stays in this browser · game, league, categories, and tags are shareable URL state</p>
+      </form>
+
+      <p class="result-status" id="result-status" role="status" aria-live="polite">{entries.length === 0 ? "No Published Lists are available yet." : ""}</p>
+
+      <section class="card-grid" id="list-grid" aria-label="Published Lists">
+        {entries.map((entry) => <PublishedListCard id={entry.id} list={entry.data} exportData={serializeShareableList(entry.data)} />)}
+        <div class="empty-state" id="empty-state" hidden={entries.length > 0}>
+          <p id="empty-message">No Published Lists are available yet.</p>
+          <button class="reset-button" type="button" data-empty-reset>Reset all filters</button>
+        </div>
+      </section>
+      <p id="action-feedback" class="action-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+    </main>
+
+    {import.meta.env.DEV && <DevTweaks />}
+
+    <script>
+      const filterForm = document.querySelector<HTMLFormElement>("#catalog-filters")!;
+      const search = document.querySelector<HTMLInputElement>("#search")!;
+      const game = document.querySelector<HTMLSelectElement>("#game")!;
+      const league = document.querySelector<HTMLSelectElement>("#league")!;
+      const category = document.querySelector<HTMLSelectElement>("#category")!;
+      const tag = document.querySelector<HTMLSelectElement>("#tag")!;
+      const reset = document.querySelector<HTMLButtonElement>("#reset-filters")!;
+      const status = document.querySelector<HTMLElement>("#result-status")!;
+      const emptyState = document.querySelector<HTMLElement>("#empty-state")!;
+      const emptyMessage = document.querySelector<HTMLElement>("#empty-message")!;
+      const cards = [...document.querySelectorAll<HTMLElement>(".list-card")];
+      const getSelected = (select: HTMLSelectElement): string[] => [...select.selectedOptions].map((option) => option.value);
+      const setSelected = (select: HTMLSelectElement, values: string[]) => [...select.options].forEach((option) => { option.selected = values.includes(option.value); });
+      const params = new URLSearchParams(window.location.search);
+
+      function readUrlState() {
+        game.value = params.get("game") || "";
+        league.value = params.get("league") || "";
+        setSelected(category, params.getAll("category"));
+        setSelected(tag, params.getAll("tag"));
+      }
+
+      function writeUrlState() {
+        const next = new URLSearchParams();
+        if (game.value) next.set("game", game.value);
+        if (league.value) next.set("league", league.value);
+        getSelected(category).forEach((value) => next.append("category", value));
+        getSelected(tag).forEach((value) => next.append("tag", value));
+        const url = `${window.location.pathname}${next.toString() ? `?${next.toString()}` : ""}`;
+        window.history.replaceState({}, "", url);
+      }
+
+      function hasActiveFilters() {
+        return Boolean(game.value || league.value || getSelected(category).length || getSelected(tag).length || search.value.trim());
+      }
+
+      function applyFilters() {
+        const query = search.value.trim().toLocaleLowerCase();
+        const selectedCategories = getSelected(category);
+        const selectedTags = getSelected(tag);
+        let visible = 0;
+        cards.forEach((card) => {
+          const matches = (!game.value || card.dataset.game === game.value)
+            && (!league.value || card.dataset.league === league.value)
+            && (!selectedCategories.length || selectedCategories.includes(card.dataset.category || ""))
+            && (!selectedTags.length || selectedTags.every((value) => (card.dataset.tags || "").split(" ").includes(value)))
+            && (!query || (card.dataset.search || "").toLocaleLowerCase().includes(query));
+          card.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        const hasCatalog = cards.length > 0;
+        emptyState.hidden = hasCatalog && visible > 0;
+        emptyMessage.textContent = hasCatalog && hasActiveFilters() ? "No Lists match filters." : "No Published Lists are available yet.";
+        reset.hidden = !hasActiveFilters();
+        status.textContent = hasCatalog ? `${visible} ${visible === 1 ? "Published List" : "Published Lists"} shown.` : "No Published Lists are available yet.";
+      }
+
+      function resetFilters() {
+        game.value = "";
+        league.value = "";
+        setSelected(category, []);
+        setSelected(tag, []);
+        search.value = "";
+        writeUrlState();
+        applyFilters();
+        search.focus({ preventScroll: true });
+      }
+
+      [game, league, category, tag].forEach((control) => control.addEventListener("change", () => { writeUrlState(); applyFilters(); }));
+      search.addEventListener("input", applyFilters);
+      filterForm.addEventListener("submit", (event) => event.preventDefault());
+      reset.addEventListener("click", resetFilters);
+      document.querySelector<HTMLButtonElement>("[data-empty-reset]")!.addEventListener("click", resetFilters);
+
+      document.querySelectorAll("[data-expand]").forEach((button) => button.addEventListener("click", () => {
+        const targetId = button.getAttribute("aria-controls");
+        if (!targetId) return;
+        const target = document.getElementById(targetId);
+        if (!target) return;
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", String(!expanded));
+        button.innerHTML = expanded ? "Show remaining items <span aria-hidden=\"true\">＋</span>" : "Hide remaining items <span aria-hidden=\"true\">−</span>";
+        target.hidden = expanded;
+      }));
+
+      const feedback = document.querySelector<HTMLElement>("#action-feedback")!;
+      let feedbackTimer: number | undefined;
+      const report = (message: string) => {
+        if (feedbackTimer) window.clearTimeout(feedbackTimer);
+        feedback.textContent = message;
+        feedback.hidden = false;
+        feedbackTimer = window.setTimeout(() => { feedback.hidden = true; }, 4500);
+      };
+      const getExportText = (card: HTMLElement) => `${JSON.stringify(JSON.parse(card.dataset.export || "{}"), null, 2)}\n`;
+      document.querySelectorAll<HTMLElement>(".list-card").forEach((card) => {
+        const title = card.querySelector<HTMLHeadingElement>("h2")!;
+        const titleText = title.textContent?.trim() || "Published List";
+        const safeTitle = titleText.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list";
+        card.querySelector("[data-download]")?.addEventListener("click", () => {
+          const blob = new Blob([getExportText(card)], { type: "application/json" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = `${safeTitle}-shareable-list-v1.json`;
+          link.click();
+          URL.revokeObjectURL(link.href);
+          report(`Download prepared for ${titleText}.`);
+        });
+        card.querySelector("[data-copy]")?.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(getExportText(card));
+            report(`${titleText} copied as Shareable List v1 JSON.`);
+          } catch {
+            report(`Copy failed for ${titleText}.`);
+          }
+        });
+      });
+
+      readUrlState();
+      applyFilters();
+    </script>
+  </body>
+</html>

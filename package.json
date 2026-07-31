@@ -13,7 +13,17 @@
     "lint": "vp lint",
     "format": "vp fmt",
     "check": "vp check",
-    "typecheck": "npm run ext:typecheck"
+    "typecheck": "npm run ext:typecheck",
+    "web:sync": "pnpm --filter @poe-sl/web sync",
+    "web:check": "pnpm --filter @poe-sl/web check",
+    "web:content:validate": "pnpm --filter @poe-sl/web content:validate",
+    "web:test": "pnpm --filter @poe-sl/web test:focused",
+    "web:build": "pnpm --filter @poe-sl/web build",
+    "web:preview": "pnpm --filter @poe-sl/web preview",
+    "web:output:check": "pnpm --filter @poe-sl/web output:check",
+    "web:links:check": "pnpm --filter @poe-sl/web links:check",
+    "web:test:fixtures:build": "pnpm --filter @poe-sl/web build:test-fixtures",
+    "web:test:browser": "pnpm --filter @poe-sl/web test:browser"
   },
   "dependencies": {
     "@webext-core/messaging": "^2.3.0"

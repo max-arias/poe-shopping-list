@@ -1,0 +1,358 @@
+name: Public site
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      preview_action:
+        description: "Deploy or delete a bounded requested preview"
+        required: true
+        type: choice
+        options: [deploy, cleanup]
+        default: deploy
+      artifact_run_id:
+        description: "Successful same-repository push/main validation run ID"
+        required: false
+        type: string
+      artifact_name:
+        description: "Exact artifact name from that validation run"
+        required: false
+        type: string
+      preview_worker_name:
+        description: "Worker name to delete (cleanup only; deploy derives one from run ID)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  NODE_VERSION: "22"
+  PNPM_VERSION: "10.28.0"
+
+jobs:
+  validate:
+    name: Validate and package public site
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Enable Corepack
+        run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: corepack pnpm --dir apps/web exec playwright install --with-deps chromium
+      - name: Validate and build the production output used by browser tests
+        run: |
+          set -euo pipefail
+          corepack pnpm --dir apps/web sync
+          corepack pnpm --dir apps/web check
+          corepack pnpm --dir apps/web content:validate
+          corepack pnpm --dir apps/web test:focused
+          corepack pnpm --dir apps/web build
+      - name: Run browser and axe tests against isolated fixture output
+        run: corepack pnpm --dir apps/web test:browser
+      - name: Validate the exact browser-tested production output
+        run: |
+          corepack pnpm --dir apps/web output:check
+          corepack pnpm --dir apps/web links:check
+          corepack pnpm --dir apps/web wrangler:validate
+      - name: Create manifest and verified production artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          mkdir -p artifact-bundle
+          corepack pnpm --dir apps/web exec node scripts/create-content-manifest.mjs dist ../../artifact-bundle/content-manifest.txt
+          tar -czf artifact-bundle/dist.tar.gz -C apps/web dist
+          (cd artifact-bundle && sha256sum dist.tar.gz > dist.tar.gz.sha256)
+      - name: Create successful validation evidence report
+        if: success()
+        run: |
+          mkdir -p validation-evidence
+          printf '{\n  "sourceSha": "%s",\n  "runId": "%s",\n  "artifactName": "%s",\n  "status": "passed",\n  "browserEvidence": "apps/web/test-results",\n  "manualAccessibilityEvidence": "protected environment record required at deployment"\n}\n' \
+            "$GITHUB_SHA" "$GITHUB_RUN_ID" "public-site-production-${GITHUB_SHA}" > validation-evidence/validation-report.json
+          cp -R apps/web/test-results validation-evidence/ 2>/dev/null || true
+      - name: Upload successful validation evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-site-validation-${{ github.run_id }}
+          path: validation-evidence
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload exactly one verified production artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-site-production-${{ github.sha }}
+          path: artifact-bundle
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload browser and validation evidence on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-site-validation-failure-${{ github.run_id }}
+          path: |
+            apps/web/test-results
+            apps/web/dist-test
+            apps/web/dist
+          if-no-files-found: ignore
+          retention-days: 14
+
+  deploy-production:
+    name: Deploy verified production artifact
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Enable Corepack and install deployment tooling
+        run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate && corepack pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: public-site-production-${{ github.sha }}
+          path: deployment-artifact
+      - name: Resolve artifact identity and merged PR reference
+        id: metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          artifact_json="$(curl --fail --silent --show-error -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts?name=public-site-production-${GITHUB_SHA}")"
+          echo "artifact_id=$(jq -r '.artifacts | map(select(.workflow_run.head_sha == env.GITHUB_SHA)) | if length > 0 then .[0].id else "unavailable" end' <<<"$artifact_json")" >> "$GITHUB_OUTPUT"
+          validation_json="$(curl --fail --silent --show-error -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts?name=public-site-validation-${GITHUB_RUN_ID}")"
+          echo "validation_artifact_id=$(jq -r '.artifacts | if length > 0 then .[0].id else "unavailable" end' <<<"$validation_json")" >> "$GITHUB_OUTPUT"
+          prs="$(curl --fail --silent --show-error -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls")"
+          echo "merged_pr=$(jq -r 'if length > 0 then map("#" + (.number|tostring)) | join(", ") else "unavailable" end' <<<"$prs")" >> "$GITHUB_OUTPUT"
+      - name: Require protected production configuration
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          DEPLOYMENT_APPROVER: ${{ vars.DEPLOYMENT_APPROVER }}
+          MANUAL_ACCESSIBILITY_EVIDENCE: ${{ vars.MANUAL_ACCESSIBILITY_EVIDENCE }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "Missing protected configuration: production CLOUDFLARE_API_TOKEN."; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Missing protected configuration: production CLOUDFLARE_ACCOUNT_ID."; exit 1; }
+          test -n "$PUBLIC_SITE_URL" || { echo "Missing protected configuration: production PUBLIC_SITE_URL."; exit 1; }
+          test -n "$DEPLOYMENT_APPROVER" || { echo "Launch blocker: protected production DEPLOYMENT_APPROVER is not configured."; exit 1; }
+          test -n "$MANUAL_ACCESSIBILITY_EVIDENCE" || { echo "Launch blocker: protected production MANUAL_ACCESSIBILITY_EVIDENCE is not configured."; exit 1; }
+      - name: Verify artifact checksum and content manifest
+        run: |
+          set -euo pipefail
+          (cd deployment-artifact && sha256sum --check dist.tar.gz.sha256)
+          tar -xzf deployment-artifact/dist.tar.gz -C apps/web
+          corepack pnpm --dir apps/web exec node scripts/verify-content-manifest.mjs dist ../../deployment-artifact/content-manifest.txt
+      - name: Deploy without rebuilding
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        working-directory: apps/web
+        run: corepack pnpm exec wrangler deploy --config wrangler.jsonc | tee ../../wrangler-deploy-output.txt
+      - name: Start deployment evidence immediately after deploy
+        if: success()
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+          MERGED_PR_REFERENCE: ${{ steps.metadata.outputs.merged_pr }}
+          ARTIFACT_NAME: public-site-production-${{ github.sha }}
+          ARTIFACT_ID: ${{ steps.metadata.outputs.artifact_id }}
+          VALIDATION_ARTIFACT_ID: ${{ steps.metadata.outputs.validation_artifact_id }}
+          ARTIFACT_CHECKSUM: ${{ '' }}
+          CONTENT_MANIFEST: content-manifest.txt
+          DEPLOYMENT_ACTOR: ${{ github.actor }}
+          DEPLOYMENT_APPROVER: ${{ vars.DEPLOYMENT_APPROVER }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          DEPLOYMENT_ENVIRONMENT: production
+          CANONICAL_HOST: ${{ vars.PUBLIC_SITE_URL }}
+          NODE_VERSION: ${{ env.NODE_VERSION }}
+          ASTRO_VERSION: 5.13.5
+          PNPM_VERSION: ${{ env.PNPM_VERSION }}
+          WRANGLER_VERSION: ${{ '' }}
+          WRANGLER_DEPLOY_OUTPUT: wrangler-deploy-output.txt
+          VALIDATION_EVIDENCE: public-site-validation-${{ github.run_id }}
+          MANUAL_ACCESSIBILITY_EVIDENCE: ${{ vars.MANUAL_ACCESSIBILITY_EVIDENCE }}
+          VALIDATION_RUN_ID: ${{ github.run_id }}
+          SMOKE_STATUS: pending
+        run: |
+          mkdir -p deployment-evidence
+          export ARTIFACT_CHECKSUM="$(cut -d ' ' -f 1 deployment-artifact/dist.tar.gz.sha256)"
+          export WRANGLER_VERSION="$(corepack pnpm --dir apps/web exec wrangler --version)"
+          cp deployment-artifact/content-manifest.txt deployment-evidence/content-manifest.txt
+          corepack pnpm --dir apps/web exec node scripts/create-deployment-record.mjs deployment-evidence/deployment-record.json
+      - name: Run production smoke check
+        id: smoke
+        if: success()
+        continue-on-error: true
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          CONTENT_MANIFEST_PATH: deployment-artifact/content-manifest.txt
+        run: |
+          status=0
+          if corepack pnpm --dir apps/web smoke > smoke-output.txt 2>&1; then echo passed > smoke-status.txt; else echo failed > smoke-status.txt; status=1; fi
+          cat smoke-output.txt
+          exit "$status"
+      - name: Update and archive deployment evidence
+        if: always() && needs.validate.result == 'success'
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+          MERGED_PR_REFERENCE: ${{ steps.metadata.outputs.merged_pr }}
+          ARTIFACT_NAME: public-site-production-${{ github.sha }}
+          ARTIFACT_ID: ${{ steps.metadata.outputs.artifact_id }}
+          VALIDATION_ARTIFACT_ID: ${{ steps.metadata.outputs.validation_artifact_id }}
+          DEPLOYMENT_ACTOR: ${{ github.actor }}
+          DEPLOYMENT_APPROVER: ${{ vars.DEPLOYMENT_APPROVER }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
+          DEPLOYMENT_ENVIRONMENT: production
+          CANONICAL_HOST: ${{ vars.PUBLIC_SITE_URL }}
+          NODE_VERSION: ${{ env.NODE_VERSION }}
+          ASTRO_VERSION: 5.13.5
+          PNPM_VERSION: ${{ env.PNPM_VERSION }}
+          WRANGLER_DEPLOY_OUTPUT: wrangler-deploy-output.txt
+          CONTENT_MANIFEST: deployment-evidence/content-manifest.txt
+          VALIDATION_EVIDENCE: public-site-validation-${{ github.run_id }}
+          MANUAL_ACCESSIBILITY_EVIDENCE: ${{ vars.MANUAL_ACCESSIBILITY_EVIDENCE }}
+          VALIDATION_RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p deployment-evidence
+          export ARTIFACT_CHECKSUM="$(cut -d ' ' -f 1 deployment-artifact/dist.tar.gz.sha256)"
+          export WRANGLER_VERSION="$(corepack pnpm --dir apps/web exec wrangler --version)"
+          export SMOKE_STATUS="$(test -f smoke-status.txt && tr -d '\n' < smoke-status.txt || printf 'unavailable')"
+          export SMOKE_DETAILS="$(test -f smoke-output.txt && tr '\n' ' ' < smoke-output.txt || printf 'smoke did not run')"
+          export SMOKE_TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          corepack pnpm --dir apps/web exec node scripts/create-deployment-record.mjs deployment-evidence/deployment-record.json
+          cp deployment-artifact/dist.tar.gz.sha256 deployment-evidence/
+      - name: Upload deployment evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-site-deployment-evidence-${{ github.run_id }}
+          path: deployment-evidence
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Fail deployment when smoke failed
+        if: steps.smoke.outcome == 'failure'
+        run: exit 1
+
+  requested-preview:
+    name: Maintainer-requested preview
+    if: github.event_name == 'workflow_dispatch' && inputs.preview_action == 'deploy'
+    runs-on: ubuntu-latest
+    environment: public-site-preview
+    steps:
+      - name: Validate trusted run and exact artifact through GitHub API
+        id: trusted
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.artifact_run_id }}
+          ARTIFACT_NAME: ${{ inputs.artifact_name }}
+        run: |
+          set -euo pipefail
+          test -n "$RUN_ID" && test -n "$ARTIFACT_NAME" || { echo "Preview requires artifact_run_id and artifact_name inputs."; exit 1; }
+          case "$ARTIFACT_NAME" in public-site-production-*) ;; *) echo "Preview requires the trusted production validation artifact name."; exit 1 ;; esac
+          run_json="$(curl --fail --silent --show-error -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}")"
+          test "$(jq -r '.head_repository.full_name' <<<"$run_json")" = "$GITHUB_REPOSITORY" || { echo "Preview rejected: run is not from this repository."; exit 1; }
+          test "$(jq -r '.head_branch' <<<"$run_json")" = main && test "$(jq -r '.event' <<<"$run_json")" = push || { echo "Preview requires a same-repository push on main."; exit 1; }
+          jobs_json="$(curl --fail --silent --show-error -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/jobs?per_page=100")"
+          test "$(jq -r '[.jobs[] | select(.name == "Validate and package public site" and .conclusion == "success")] | length' <<<"$jobs_json")" = 1 || { echo "Preview requires the successful Validate and package public site job in the selected run; the overall workflow conclusion is not sufficient."; exit 1; }
+          sha="$(jq -r '.head_sha' <<<"$run_json")"
+          artifact_json="$(curl --fail --silent --show-error -H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts")"
+          artifact_id="$(jq -r --arg n "$ARTIFACT_NAME" '.artifacts[] | select(.name == $n and .expired == false) | .id' <<<"$artifact_json" | head -n 1)"
+          test -n "$artifact_id" || { echo "Preview artifact not found, expired, or not owned by the requested run."; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "worker_name=poe-site-preview-${RUN_ID}" >> "$GITHUB_OUTPUT"
+          echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.trusted.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install deployment tooling
+        run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate && corepack pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.artifact_run_id }}
+          name: ${{ inputs.artifact_name }}
+          path: preview-artifact
+      - name: Verify and extract exact trusted artifact
+        run: |
+          set -euo pipefail
+          (cd preview-artifact && sha256sum --check dist.tar.gz.sha256)
+          tar -xzf preview-artifact/dist.tar.gz -C apps/web
+          corepack pnpm --dir apps/web exec node scripts/verify-content-manifest.mjs dist ../../preview-artifact/content-manifest.txt
+      - name: Deploy explicitly non-production preview Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.PREVIEW_CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.PREVIEW_CLOUDFLARE_ACCOUNT_ID }}
+          PREVIEW_WORKER_NAME: ${{ steps.trusted.outputs.worker_name }}
+          PREVIEW_SITE_URL: ${{ vars.PREVIEW_SITE_URL }}
+        working-directory: apps/web
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "Missing protected configuration: preview token."; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Missing protected configuration: preview account."; exit 1; }
+          test -n "$PREVIEW_SITE_URL" || { echo "Launch blocker: protected preview PREVIEW_SITE_URL is not configured; preview smoke is required."; exit 1; }
+          case "$PREVIEW_WORKER_NAME" in poe-shopping-list-catalog|poe-shopping-list-catalog-*) echo "Refusing production Worker name."; exit 1;; esac
+          corepack pnpm exec wrangler deploy --config wrangler.jsonc --name "$PREVIEW_WORKER_NAME"
+      - name: Preview smoke when protected URL is configured
+        env:
+          PUBLIC_SITE_URL: ${{ vars.PREVIEW_SITE_URL }}
+          CONTENT_MANIFEST_PATH: preview-artifact/content-manifest.txt
+        run: |
+          test -n "$PUBLIC_SITE_URL" || { echo "Launch blocker: protected preview PREVIEW_SITE_URL is not configured; preview smoke is required."; exit 1; }
+          corepack pnpm --dir apps/web smoke
+      - name: Report bounded preview lifetime
+        env:
+          PREVIEW_URL: ${{ vars.PREVIEW_SITE_URL }}
+        run: |
+          echo "Preview Worker ${{ steps.trusted.outputs.worker_name }} URL: ${PREVIEW_URL:-unavailable}"
+          echo "Preview Worker ${{ steps.trusted.outputs.worker_name }} is non-production and must be deleted within 72 hours via workflow_dispatch cleanup."
+
+  cleanup-preview:
+    name: Delete requested preview
+    if: github.event_name == 'workflow_dispatch' && inputs.preview_action == 'cleanup'
+    runs-on: ubuntu-latest
+    environment: public-site-preview
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Enable Corepack and install Wrangler
+        run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate && corepack pnpm install --frozen-lockfile
+      - name: Delete named non-production preview Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.PREVIEW_CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.PREVIEW_CLOUDFLARE_ACCOUNT_ID }}
+          PREVIEW_WORKER_NAME: ${{ inputs.preview_worker_name }}
+        working-directory: apps/web
+        run: |
+          test -n "$PREVIEW_WORKER_NAME" || { echo "Cleanup requires preview_worker_name."; exit 1; }
+          case "$PREVIEW_WORKER_NAME" in poe-site-preview-*) ;; *) echo "Cleanup accepts only derived poe-site-preview-* names."; exit 1;; esac
+          corepack pnpm exec wrangler delete --name "$PREVIEW_WORKER_NAME" --force
