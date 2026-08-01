@@ -15,3 +15,5 @@
 - **Tag** — an editorially managed faceted classification applied to Published Lists for flexible discovery.
 - **League Applicability** — the Path of Exile game and named league(s), or evergreen status, for which a Published List is intended.
 - **Editorial Team** — the maintainers who review and merge content pull requests to publish Published Lists.
+- **Catalog** — the public site's single searchable and filterable page of Published List Cards. Its selected taxonomy filters are shareable URL state; free-text search is local to the visitor.
+- **Published List Card** — the compact, read-only Catalog representation of a Published List. It exposes optional author guidance, ordered Trade links with in-card expansion, and download/copy import actions.

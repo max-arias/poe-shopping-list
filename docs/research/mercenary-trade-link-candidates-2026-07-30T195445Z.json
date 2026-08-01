@@ -1,0 +1,1327 @@
+{
+  "artifact_type": "trade_link_candidates",
+  "fetched_at": "2026-07-30T19:54:45.993249+00:00",
+  "note": "Discovery uses daily paginated post searches over five context terms and full comment trees for matched posts; it is not exhaustive of comment-only matches. Trade-query validation is required; URL paths alone do not establish a Mercenary Warrant listing.",
+  "posts": [
+    {
+      "discovered_via": [
+        "post_search"
+      ],
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "p00maij",
+              "source": "comment"
+            },
+            {
+              "comment_id": "p00ncxh",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/LgO009R7un"
+        }
+      ],
+      "post": {
+        "author": "Gulruon",
+        "created_utc": "2026-07-26T15:08:54+00:00",
+        "id": "1v76gza",
+        "permalink": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v76gza/",
+        "title": "The Luminary alternative to Flame Link no one talks about"
+      }
+    },
+    {
+      "discovered_via": [
+        "post_search"
+      ],
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "ozyjebo",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/nrPnW9YlC0"
+        }
+      ],
+      "post": {
+        "author": "MAYY29",
+        "created_utc": "2026-07-26T22:18:56+00:00",
+        "id": "1v7hzr9",
+        "permalink": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v7hzr9/",
+        "title": "Any potential in these two mercs?"
+      }
+    },
+    {
+      "discovered_via": [
+        "post_search"
+      ],
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "p0ccwhf",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/7nRZR702S5"
+        },
+        {
+          "locations": [
+            {
+              "comment_id": "p01bycc",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/X3dnKKkJCP"
+        }
+      ],
+      "post": {
+        "author": "New-Independent-1481",
+        "created_utc": "2026-07-27T09:52:56+00:00",
+        "id": "1v7vu6t",
+        "permalink": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v7vu6t/",
+        "title": "Tips and tricks for Mercs from a solo Link/Aurabot enjoyer. My 3-4 div investment Luminary had 4.1 mil pinnacle DPS by end of day 2. If you got baited by a 70 div flame link build presented as a league starter, enquire within."
+      }
+    },
+    {
+      "discovered_via": [
+        "post_search"
+      ],
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "p03yb0i",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/eR5VqRrbFL"
+        }
+      ],
+      "post": {
+        "author": "Captain__Incognito",
+        "created_utc": "2026-07-27T16:51:59+00:00",
+        "id": "1v85zup",
+        "permalink": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v85zup/",
+        "title": "Luminary + Dancing Dervish"
+      }
+    },
+    {
+      "discovered_via": [
+        "post_search"
+      ],
+      "links": [
+        {
+          "locations": [
+            {
+              "source": "post"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/D6OgDXkBT5"
+        }
+      ],
+      "post": {
+        "author": "doxi91",
+        "created_utc": "2026-07-28T05:02:50+00:00",
+        "id": "1v8oe1x",
+        "permalink": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v8oe1x/",
+        "title": "A short diary entry on my experience league starting flame link luminary, as a gamer dad"
+      }
+    },
+    {
+      "discovered_via": [
+        "post_search"
+      ],
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "p08y1cf",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/Z6E6g5v0tQ"
+        },
+        {
+          "locations": [
+            {
+              "source": "post"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/q97Vrr6vCg"
+        }
+      ],
+      "post": {
+        "author": "Left_Biscotti_5335",
+        "created_utc": "2026-07-28T11:59:58+00:00",
+        "id": "1v8weps",
+        "permalink": "https://www.reddit.com/r/pathofexile/comments/1v8weps/",
+        "title": "Search for MERC Support Gems in Trade"
+      }
+    },
+    {
+      "discovered_via": [
+        "post_search"
+      ],
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "p0nveq6",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/2KYZmQ3eIk"
+        }
+      ],
+      "post": {
+        "author": "ILOVEURSA",
+        "created_utc": "2026-07-30T12:50:14+00:00",
+        "id": "1vasr9u",
+        "permalink": "https://www.reddit.com/r/pathofexile/comments/1vasr9u/",
+        "title": "How to properly search for mercenary skills on the site?"
+      }
+    }
+  ],
+  "query_coverage": {
+    "comment_only_matches": "not searched",
+    "comment_search_included": false,
+    "comments": [],
+    "discovery_scope": "daily paginated post searches over all five context terms, plus full comment trees for matched posts",
+    "posts": [
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 6,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 7,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 13,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 2,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 3,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 10,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 2,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784836485",
+          "before": "1784922885",
+          "end": "2026-07-24T19:54:45.993249+00:00",
+          "start": "2026-07-23T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 10,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 12,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 2,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 33,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 4,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 10,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1784922885",
+          "before": "1785009285",
+          "end": "2026-07-25T19:54:45.993249+00:00",
+          "start": "2026-07-24T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 7,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 9,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 2,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 26,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 3,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 3,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 10,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785009285",
+          "before": "1785095685",
+          "end": "2026-07-26T19:54:45.993249+00:00",
+          "start": "2026-07-25T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 6,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 9,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 2,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 35,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 2,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 15,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785095685",
+          "before": "1785182085",
+          "end": "2026-07-27T19:54:45.993249+00:00",
+          "start": "2026-07-26T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 8,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 6,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 18,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 2,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 9,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 3,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 14,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785182085",
+          "before": "1785268485",
+          "end": "2026-07-28T19:54:45.993249+00:00",
+          "start": "2026-07-27T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 1,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 9,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 5,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 17,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 8,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": false,
+        "error": "Request failed after 4 attempts. Endpoint=/api/posts/search, params={'subreddit': 'PathOfExileBuilds', 'after': '1785268485', 'before': '1785354885', 'limit': 25, 'sort': 'desc', 'query': 'mercenaries', 'md2html': 'false', 'fields': 'id,title,selftext,created_utc,author,subreddit'}",
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 0,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 0,
+        "status": "error",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 17,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785268485",
+          "before": "1785354885",
+          "end": "2026-07-29T19:54:45.993249+00:00",
+          "start": "2026-07-28T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 12,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 5,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 11,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 3,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 2,
+        "status": "ok",
+        "subreddit": "pathofexile"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenary",
+        "returned": 2,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "mercenaries",
+        "returned": 3,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "merc",
+        "returned": 16,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrant",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      },
+      {
+        "complete": true,
+        "interval": {
+          "after": "1785354885",
+          "before": "1785441285",
+          "end": "2026-07-30T19:54:45.993249+00:00",
+          "start": "2026-07-29T19:54:45.993249+00:00"
+        },
+        "limit_per_page": 25,
+        "pages": 1,
+        "pagination_truncated": false,
+        "query": "warrants",
+        "returned": 0,
+        "status": "ok",
+        "subreddit": "PathOfExileBuilds"
+      }
+    ]
+  },
+  "summary": {
+    "comment_errors": 0,
+    "comment_post_resolution_error": null,
+    "qualifying_posts": 7,
+    "unique_posts": 339
+  },
+  "window": {
+    "end": "2026-07-30T19:54:45.993249+00:00",
+    "start": "2026-07-23T19:54:45.993249+00:00"
+  }
+}

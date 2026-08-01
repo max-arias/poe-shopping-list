@@ -1,0 +1,562 @@
+{
+  "fetched_at": "2026-07-30T19:06:32.124507+00:00",
+  "posts": [
+    {
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "p03yb0i",
+              "source": "comment"
+            },
+            {
+              "comment_id": "p03yb0i",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/eR5VqRrbFL"
+        }
+      ],
+      "post": {
+        "author": "Captain__Incognito",
+        "created_utc": "2026-07-27T16:51:59+00:00",
+        "id": "1v85zup",
+        "permalink": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v85zup/",
+        "title": "Luminary + Dancing Dervish"
+      }
+    },
+    {
+      "links": [
+        {
+          "locations": [
+            {
+              "source": "post"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/D6OgDXkBT5"
+        }
+      ],
+      "post": {
+        "author": "doxi91",
+        "created_utc": "2026-07-28T05:02:50+00:00",
+        "id": "1v8oe1x",
+        "permalink": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v8oe1x/",
+        "title": "A short diary entry on my experience league starting flame link luminary, as a gamer dad"
+      }
+    },
+    {
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "p08y1cf",
+              "source": "comment"
+            },
+            {
+              "comment_id": "p08y1cf",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/Z6E6g5v0tQ"
+        },
+        {
+          "locations": [
+            {
+              "source": "post"
+            },
+            {
+              "source": "post"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/q97Vrr6vCg"
+        }
+      ],
+      "post": {
+        "author": "Left_Biscotti_5335",
+        "created_utc": "2026-07-28T11:59:58+00:00",
+        "id": "1v8weps",
+        "permalink": "https://www.reddit.com/r/pathofexile/comments/1v8weps/",
+        "title": "Search for MERC Support Gems in Trade"
+      }
+    },
+    {
+      "links": [
+        {
+          "locations": [
+            {
+              "comment_id": "p0nveq6",
+              "source": "comment"
+            }
+          ],
+          "url": "https://www.pathofexile.com/trade/search/Allflame/2KYZmQ3eIk"
+        }
+      ],
+      "post": {
+        "author": "ILOVEURSA",
+        "created_utc": "2026-07-30T12:50:14+00:00",
+        "id": "1vasr9u",
+        "permalink": "https://www.reddit.com/r/pathofexile/comments/1vasr9u/",
+        "title": "How to properly search for mercenary skills on the site?"
+      }
+    }
+  ],
+  "query_coverage": [
+    {
+      "complete": true,
+      "interval": {
+        "after": "1784833592",
+        "before": "1784919992",
+        "end": "2026-07-24T19:06:32.124507+00:00",
+        "start": "2026-07-23T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 6,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1784833592",
+        "before": "1784919992",
+        "end": "2026-07-24T19:06:32.124507+00:00",
+        "start": "2026-07-23T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 6,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1784833592",
+        "before": "1784919992",
+        "end": "2026-07-24T19:06:32.124507+00:00",
+        "start": "2026-07-23T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 2,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1784833592",
+        "before": "1784919992",
+        "end": "2026-07-24T19:06:32.124507+00:00",
+        "start": "2026-07-23T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 3,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1784919992",
+        "before": "1785006392",
+        "end": "2026-07-25T19:06:32.124507+00:00",
+        "start": "2026-07-24T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 9,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1784919992",
+        "before": "1785006392",
+        "end": "2026-07-25T19:06:32.124507+00:00",
+        "start": "2026-07-24T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 13,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1784919992",
+        "before": "1785006392",
+        "end": "2026-07-25T19:06:32.124507+00:00",
+        "start": "2026-07-24T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 1,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1784919992",
+        "before": "1785006392",
+        "end": "2026-07-25T19:06:32.124507+00:00",
+        "start": "2026-07-24T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 1,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785006392",
+        "before": "1785092792",
+        "end": "2026-07-26T19:06:32.124507+00:00",
+        "start": "2026-07-25T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 8,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785006392",
+        "before": "1785092792",
+        "end": "2026-07-26T19:06:32.124507+00:00",
+        "start": "2026-07-25T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 9,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785006392",
+        "before": "1785092792",
+        "end": "2026-07-26T19:06:32.124507+00:00",
+        "start": "2026-07-25T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 0,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785006392",
+        "before": "1785092792",
+        "end": "2026-07-26T19:06:32.124507+00:00",
+        "start": "2026-07-25T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 0,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785092792",
+        "before": "1785179192",
+        "end": "2026-07-27T19:06:32.124507+00:00",
+        "start": "2026-07-26T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 6,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785092792",
+        "before": "1785179192",
+        "end": "2026-07-27T19:06:32.124507+00:00",
+        "start": "2026-07-26T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 9,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785092792",
+        "before": "1785179192",
+        "end": "2026-07-27T19:06:32.124507+00:00",
+        "start": "2026-07-26T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 2,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785092792",
+        "before": "1785179192",
+        "end": "2026-07-27T19:06:32.124507+00:00",
+        "start": "2026-07-26T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 1,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785179192",
+        "before": "1785265592",
+        "end": "2026-07-28T19:06:32.124507+00:00",
+        "start": "2026-07-27T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 8,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785179192",
+        "before": "1785265592",
+        "end": "2026-07-28T19:06:32.124507+00:00",
+        "start": "2026-07-27T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 5,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785179192",
+        "before": "1785265592",
+        "end": "2026-07-28T19:06:32.124507+00:00",
+        "start": "2026-07-27T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 9,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785179192",
+        "before": "1785265592",
+        "end": "2026-07-28T19:06:32.124507+00:00",
+        "start": "2026-07-27T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 3,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785265592",
+        "before": "1785351992",
+        "end": "2026-07-29T19:06:32.124507+00:00",
+        "start": "2026-07-28T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 9,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785265592",
+        "before": "1785351992",
+        "end": "2026-07-29T19:06:32.124507+00:00",
+        "start": "2026-07-28T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 6,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785265592",
+        "before": "1785351992",
+        "end": "2026-07-29T19:06:32.124507+00:00",
+        "start": "2026-07-28T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 7,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785265592",
+        "before": "1785351992",
+        "end": "2026-07-29T19:06:32.124507+00:00",
+        "start": "2026-07-28T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 1,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785351992",
+        "before": "1785438392",
+        "end": "2026-07-30T19:06:32.124507+00:00",
+        "start": "2026-07-29T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 11,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785351992",
+        "before": "1785438392",
+        "end": "2026-07-30T19:06:32.124507+00:00",
+        "start": "2026-07-29T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 5,
+      "status": "ok",
+      "subreddit": "pathofexile"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785351992",
+        "before": "1785438392",
+        "end": "2026-07-30T19:06:32.124507+00:00",
+        "start": "2026-07-29T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenary",
+      "returned": 3,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    },
+    {
+      "complete": true,
+      "interval": {
+        "after": "1785351992",
+        "before": "1785438392",
+        "end": "2026-07-30T19:06:32.124507+00:00",
+        "start": "2026-07-29T19:06:32.124507+00:00"
+      },
+      "limit_per_page": 25,
+      "pages": 1,
+      "pagination_truncated": false,
+      "query": "mercenaries",
+      "returned": 4,
+      "status": "ok",
+      "subreddit": "PathOfExileBuilds"
+    }
+  ],
+  "summary": {
+    "comment_errors": 0,
+    "qualifying_posts": 4,
+    "unique_posts": 127
+  },
+  "window": {
+    "end": "2026-07-30T19:06:32.124507+00:00",
+    "start": "2026-07-23T19:06:32.124507+00:00"
+  }
+}

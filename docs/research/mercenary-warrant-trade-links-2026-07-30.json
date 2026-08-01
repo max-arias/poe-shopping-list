@@ -1,0 +1,55 @@
+{
+  "scope": {
+    "subreddits": ["pathofexile", "PathOfExileBuilds"],
+    "window_end": "2026-07-30T19:54:45.993249+00:00",
+    "window_start": "2026-07-23T19:54:45.993249+00:00",
+    "post_search_windows": 70,
+    "replayed_rate_limited_window": "r/PathOfExileBuilds: mercenaries, 2026-07-28T19:54:45Z to 2026-07-29T19:54:45Z; no additional trade links"
+  },
+  "qualification": "The decoded official trade query contains at least one mercenary.* filter.",
+  "posts": [
+    {
+      "title": "The Luminary alternative to Flame Link no one talks about",
+      "reddit_url": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v76gza/",
+      "author": "Gulruon",
+      "created_utc": "2026-07-26T15:08:54+00:00",
+      "links": [{"url": "https://www.pathofexile.com/trade/search/Allflame/LgO009R7un", "locations": [{"source": "comment", "comment_id": "p00maij"}, {"source": "comment", "comment_id": "p00ncxh"}]}]
+    },
+    {
+      "title": "Any potential in these two mercs?",
+      "reddit_url": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v7hzr9/",
+      "author": "MAYY29",
+      "created_utc": "2026-07-26T22:18:56+00:00",
+      "links": [{"url": "https://www.pathofexile.com/trade/search/Allflame/nrPnW9YlC0", "locations": [{"source": "comment", "comment_id": "ozyjebo"}]}]
+    },
+    {
+      "title": "Tips and tricks for Mercs from a solo Link/Aurabot enjoyer",
+      "reddit_url": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v7vu6t/",
+      "author": "New-Independent-1481",
+      "created_utc": "2026-07-27T09:52:56+00:00",
+      "links": [{"url": "https://www.pathofexile.com/trade/search/Allflame/7nRZR702S5", "locations": [{"source": "comment", "comment_id": "p0ccwhf"}]}, {"url": "https://www.pathofexile.com/trade/search/Allflame/X3dnKKkJCP", "locations": [{"source": "comment", "comment_id": "p01bycc"}]}]
+    },
+    {
+      "title": "A short diary entry on my experience league starting flame link luminary, as a gamer dad",
+      "reddit_url": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v8oe1x/",
+      "author": "doxi91",
+      "created_utc": "2026-07-28T05:02:50+00:00",
+      "links": [{"url": "https://www.pathofexile.com/trade/search/Allflame/D6OgDXkBT5", "locations": [{"source": "post"}]}]
+    },
+    {
+      "title": "Search for MERC Support Gems in Trade",
+      "reddit_url": "https://www.reddit.com/r/pathofexile/comments/1v8weps/",
+      "author": "Left_Biscotti_5335",
+      "created_utc": "2026-07-28T11:59:58+00:00",
+      "links": [{"url": "https://www.pathofexile.com/trade/search/Allflame/Z6E6g5v0tQ", "locations": [{"source": "comment", "comment_id": "p08y1cf"}]}, {"url": "https://www.pathofexile.com/trade/search/Allflame/q97Vrr6vCg", "locations": [{"source": "post"}]}]
+    },
+    {
+      "title": "How to properly search for mercenary skills on the site?",
+      "reddit_url": "https://www.reddit.com/r/pathofexile/comments/1vasr9u/",
+      "author": "ILOVEURSA",
+      "created_utc": "2026-07-30T12:50:14+00:00",
+      "links": [{"url": "https://www.pathofexile.com/trade/search/Allflame/2KYZmQ3eIk", "locations": [{"source": "comment", "comment_id": "p0nveq6"}]}]
+    }
+  ],
+  "excluded": [{"reddit_url": "https://www.reddit.com/r/PathOfExileBuilds/comments/1v85zup/", "url": "https://www.pathofexile.com/trade/search/Allflame/eR5VqRrbFL", "reason": "Decoded query has no mercenary.* filter."}]
+}

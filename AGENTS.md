@@ -11,3 +11,14 @@ The triage vocabulary is `needs-triage`, `needs-info`, `ready-for-agent`, `ready
 ### Domain docs
 
 This is a single-context repository. See `docs/agents/domain.md`.
+
+### UI design workflow
+
+For every user-facing UI design or redesign, use a high-taste bespoke design process before implementation:
+
+1. Produce five distinct design directions, each naming its aesthetic family, reference rationale, and proposed hero or primary-page composition.
+2. Avoid generic AI patterns: no purple/blue gradients, Inter, generic card-grid treatment, 3D blobs, or templated SaaS styling unless the maintainer explicitly chooses an exception.
+3. State the direction's guard rails (prohibited patterns and mandatory visual requirements) and wait for the maintainer to select a direction.
+4. After selection, produce three concrete layout variants for that direction, high-fidelity image prompts where imagery is appropriate, and a development tweaks bar for real-time font, spacing, and color adjustment.
+
+Use the `designer` agent and the relevant frontend-design skill for this work. Preserve the chosen visual intent through implementation.
