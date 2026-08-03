@@ -40,18 +40,44 @@ test.describe("populated test-only catalog", () => {
     await expect(page.locator(".list-card:visible h2")).toHaveText("Browser fixture: Mercenary essentials");
   });
 
+  test("groups cards by category and hides empty groups while filtering", async ({ page }) => {
+    await expect(page.locator(".category-section")).toHaveCount(2);
+    await expect(page.locator(".category-heading h2")).toHaveText(["guardian", "mercenaries"]);
+    await expect(page.locator('.list-card [data-taxonomy-filter="category"]')).toHaveCount(0);
+
+    const guardian = page.locator(".category-section").filter({ hasText: "guardian" });
+    const mercenaries = page.locator(".category-section").filter({ hasText: "mercenaries" });
+    await page.locator("#search").fill("Mercenary");
+    await expect(guardian).toBeHidden();
+    await expect(mercenaries).toBeVisible();
+    await expect(mercenaries.locator(".list-card:visible")).toHaveCount(1);
+  });
+
+  test("category headings toggle the existing category filter", async ({ page }) => {
+    const heading = page.getByRole("button", { name: "Filter by category: mercenaries" });
+    await heading.click();
+    await expect(heading).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator('[data-filter-summary="category"]')).toHaveText("mercenaries");
+    expect(new URL(page.url()).searchParams.getAll("category")).toEqual(["mercenaries"]);
+    await expect(page.locator(".category-section").filter({ hasText: "guardian" })).toBeHidden();
+
+    await page.getByRole("button", { name: "Remove category: mercenaries" }).click();
+    await expect(page.locator('[data-filter-summary="category"]')).toHaveText("All categories");
+    expect(new URL(page.url()).search).toBe("");
+    await expect(page.locator(".category-section:visible")).toHaveCount(2);
+  });
+
   test("clickable taxonomy badges configure filters and preserve selected taxonomy", async ({ page }) => {
     const mercenary = page.locator(".list-card").filter({ hasText: "Mercenary essentials" });
     await mercenary.getByRole("button", { name: "Filter by game: Path of Exile 1" }).click();
     await mercenary.getByRole("button", { name: "Filter by league: Browser Test League" }).click();
     await mercenary.getByRole("button", { name: "Filter by tag: league-start" }).click();
-    await mercenary.getByRole("button", { name: "Filter by category: mercenaries" }).click();
     await mercenary.getByRole("button", { name: "Filter by tag: defense" }).click();
 
     const url = new URL(page.url());
     expect(url.searchParams.get("game")).toBe("poe1");
     expect(url.searchParams.get("league")).toBe("Browser Test League");
-    expect(url.searchParams.getAll("category")).toEqual(["mercenaries"]);
+    expect(url.searchParams.getAll("category")).toEqual([]);
     expect(url.searchParams.getAll("tag")).toEqual(["league-start", "defense"]);
     await expect(page.locator(".list-card:visible")).toHaveCount(1);
     await expect(page.locator(".list-card:visible h2")).toHaveText("Browser fixture: Mercenary essentials");

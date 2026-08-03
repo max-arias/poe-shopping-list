@@ -6,10 +6,15 @@ import { taxonomy } from "../domain/taxonomy";
 import "../styles/catalog.css";
 
 const entries = (await getCollection("lists")).sort((a, b) => a.data.title.localeCompare(b.data.title));
+const categoryGroups = [...new Set(entries.map((entry) => entry.data.category))].map((category) => ({
+  category,
+  entries: entries.filter((entry) => entry.data.category === category),
+}));
 const leagues = [...new Set(entries.map((entry) => entry.data.applicability.evergreen ? "evergreen" : entry.data.applicability.league).filter((value): value is string => Boolean(value)))].sort();
 // Keep the canonical route host-relative because no production hostname is configured yet.
 const canonicalUrl = "/";
 const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : value;
+const categoryId = (category: string) => `category-${category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
 ---
 
 <!doctype html>
@@ -83,15 +88,23 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
         <button class="reset-button btn btn-ghost btn-sm" id="reset-filters" type="button" hidden>Reset all filters</button>
       </form>
 
-      <p class="result-status" id="result-status" role="status" aria-live="polite">{entries.length === 0 ? "No Published Lists are available yet." : ""}</p>
-
-      <section class="card-grid" id="list-grid" aria-label="Published Lists">
-        {entries.map((entry) => <PublishedListCard id={entry.id} list={entry.data} exportData={serializeShareableList(entry.data)} />)}
+      <div id="list-grid" aria-label="Published Lists">
+        {categoryGroups.map(({ category, entries: groupEntries }) => (
+          <section class="category-section" data-category-section={category} aria-labelledby={`${categoryId(category)}-heading`}>
+            <div class="category-heading">
+              <h2 id={`${categoryId(category)}-heading`}><button class="category-filter" type="button" data-category-filter={category} aria-label={`Filter by category: ${category}`} aria-pressed="false">{category}</button></h2>
+              <span class="category-divider" aria-hidden="true"></span>
+            </div>
+            <div class="card-grid" aria-label={`${category} Published Lists`}>
+              {groupEntries.map((entry) => <PublishedListCard id={entry.id} list={entry.data} exportData={serializeShareableList(entry.data)} />)}
+            </div>
+          </section>
+        ))}
         <div class="empty-state" id="empty-state" hidden={entries.length > 0}>
           <p id="empty-message">No Published Lists are available yet.</p>
           <button class="reset-button btn btn-ghost btn-sm" type="button" data-empty-reset>Reset all filters</button>
         </div>
-      </section>
+      </div>
       <p id="action-feedback" class="action-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     </main>
 
@@ -107,10 +120,11 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
       const categoryTrigger = categorySummary.closest("summary")!;
       const tagTrigger = tagSummary.closest("summary")!;
       const reset = document.querySelector<HTMLButtonElement>("#reset-filters")!;
-      const status = document.querySelector<HTMLElement>("#result-status")!;
       const emptyState = document.querySelector<HTMLElement>("#empty-state")!;
       const emptyMessage = document.querySelector<HTMLElement>("#empty-message")!;
       const cards = [...document.querySelectorAll<HTMLElement>(".list-card")];
+      const categorySections = [...document.querySelectorAll<HTMLElement>("[data-category-section]")];
+      const categoryControls = [...document.querySelectorAll<HTMLButtonElement>("[data-category-filter]")];
       const getSelected = (menu: HTMLElement): string[] => [...menu.querySelectorAll<HTMLInputElement>('input[type="checkbox"]:checked')].map((input) => input.value);
       const setSelected = (menu: HTMLElement, values: string[]) => menu.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((input) => { input.checked = values.includes(input.value); });
       const getSummary = (values: string[], emptyLabel: string, unit: string) => {
@@ -119,12 +133,20 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
         return values.length <= 2 && names.length <= 24 ? names : `${values.length} ${unit}`;
       };
       const updateSummary = () => {
-        const categoryText = getSummary(getSelected(category), "All categories", "categories");
+        const selectedCategories = getSelected(category);
+        const categoryText = getSummary(selectedCategories, "All categories", "categories");
         const tagText = getSummary(getSelected(tag), "All tags", "tags");
         categorySummary.textContent = categoryText;
         tagSummary.textContent = tagText;
         categoryTrigger.setAttribute("aria-label", `Categories: ${categoryText}`);
         tagTrigger.setAttribute("aria-label", `Tags: ${tagText}`);
+        categoryControls.forEach((control) => {
+          const value = control.dataset.categoryFilter || "";
+          const selected = selectedCategories.includes(value);
+          control.setAttribute("aria-pressed", String(selected));
+          control.setAttribute("aria-label", `${selected ? "Remove" : "Filter by"} category: ${value}`);
+          control.classList.toggle("is-active", selected);
+        });
       };
       const params = new URLSearchParams(window.location.search);
 
@@ -163,11 +185,13 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
           card.hidden = !matches;
           if (matches) visible += 1;
         });
+        categorySections.forEach((section) => {
+          section.hidden = !section.querySelector(".list-card:not([hidden])");
+        });
         const hasCatalog = cards.length > 0;
         emptyState.hidden = hasCatalog && visible > 0;
         emptyMessage.textContent = hasCatalog && hasActiveFilters() ? "No Lists match filters." : "No Published Lists are available yet.";
         reset.hidden = !hasActiveFilters();
-        status.textContent = hasCatalog ? `${visible} ${visible === 1 ? "Published List" : "Published Lists"} shown.` : "No Published Lists are available yet.";
       }
 
       function configureTaxonomyFilter(control: HTMLButtonElement) {
@@ -201,6 +225,15 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
 
       [game, league].forEach((control) => control.addEventListener("change", () => { writeUrlState(); applyFilters(); }));
       [category, tag].forEach((menu) => menu.addEventListener("change", () => { updateSummary(); writeUrlState(); applyFilters(); }));
+      categoryControls.forEach((control) => control.addEventListener("click", () => {
+        const value = control.dataset.categoryFilter;
+        const input = value && [...category.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')].find((candidate) => candidate.value === value);
+        if (!input) return;
+        input.checked = !input.checked;
+        updateSummary();
+        writeUrlState();
+        applyFilters();
+      }));
       search.addEventListener("input", applyFilters);
       filterForm.addEventListener("submit", (event) => event.preventDefault());
       reset.addEventListener("click", resetFilters);

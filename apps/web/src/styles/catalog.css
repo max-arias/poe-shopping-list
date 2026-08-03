@@ -85,10 +85,19 @@ a { color: inherit; }
 .reset-button:hover { border-color: var(--rust); color: var(--rust); background: #fff8f1; }
 .reset-button[hidden] { display: none; }
 .list-card[hidden], .empty-state[hidden] { display: none; }
-.result-status { min-height: 24px; margin: 0; padding: 14px 1px 0; color: var(--muted); font: 10px var(--mono); }
 .filter-toolbar :where(summary, input, select, button):focus-visible { outline: 1px solid var(--rust); outline-offset: 2px; box-shadow: none; }
 .action-feedback { position: fixed; top: 16px; right: 4vw; z-index: 20; max-width: min(360px, 88vw); margin: 0; border: 1px solid var(--sage-line); border-radius: .4rem; padding: 10px 12px; background: var(--paper); color: var(--ink); font: 11px/1.35 var(--mono); }
 
+.category-section[hidden] { display: none; }
+.category-heading { display: flex; align-items: center; gap: 12px; margin: 30px 0 12px; }
+.category-heading h2 { margin: 0; color: var(--sage); font: 700 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; }
+.category-filter { position: relative; cursor: pointer; border: 0; padding: 3px 18px 3px 3px; background: transparent; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; }
+.category-filter::after { content: "＋"; position: absolute; right: 0; color: var(--rust); }
+.category-filter:hover, .category-filter:focus-visible { color: var(--rust); text-decoration: underline; text-underline-offset: 4px; }
+.category-filter:focus-visible { outline: 1px solid var(--rust); outline-offset: 2px; }
+.category-filter.is-active { color: var(--rust); }
+.category-filter.is-active::after { content: "−"; }
+.category-divider { width: 58px; border-top: 1px solid var(--rust); }
 .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--card-gap); align-items: start; }
 .list-card.card { min-width: 0; min-height: 0; border: 1px solid var(--sage-line); border-radius: .4rem; background: var(--paper); color: var(--ink); }
 .card-header { display: flex; min-width: 0; justify-content: space-between; align-items: start; gap: 12px; border-bottom: 1px solid var(--sage-line); padding: 17px 17px 13px; }
@@ -126,6 +135,7 @@ a { color: inherit; }
   .filter-toolbar { align-items: stretch; }
   .filter-field, .search-field, .compact-field, .multi-field { flex: 1 1 100%; min-width: 0; }
   .card-grid { grid-template-columns: minmax(0, 1fr); }
+  .category-heading { margin-top: 24px; }
   .card-header { padding: 14px 14px 12px; }
   .list-overview, .item-list { margin-left: 14px; margin-right: 14px; }
   .expand-button.btn { margin-left: 14px; margin-right: 14px; }
