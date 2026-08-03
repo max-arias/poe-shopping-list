@@ -11,6 +11,8 @@
     "test:focused": "vitest run",
     "build": "astro build",
     "preview": "astro preview",
+    "deploy": "wrangler deploy",
+    "deploy:preview": "wrangler versions upload",
     "output:check": "node scripts/check-output.mjs dist",
     "links:check": "node scripts/check-links.mjs dist",
     "build:test-fixtures": "POE_WEB_TEST_MODE=1 astro build --outDir ./dist-test",
