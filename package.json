@@ -23,7 +23,10 @@
     "web:output:check": "pnpm --filter @poe-sl/web output:check",
     "web:links:check": "pnpm --filter @poe-sl/web links:check",
     "web:test:fixtures:build": "pnpm --filter @poe-sl/web build:test-fixtures",
-    "web:test:browser": "pnpm --filter @poe-sl/web test:browser"
+    "web:test:browser": "pnpm --filter @poe-sl/web test:browser",
+    "cf:build": "pnpm --filter @poe-sl/web run build",
+    "cf:deploy": "pnpm --filter @poe-sl/web run deploy",
+    "cf:deploy:preview": "pnpm --filter @poe-sl/web run deploy:preview"
   },
   "dependencies": {
     "@webext-core/messaging": "^2.3.0"
