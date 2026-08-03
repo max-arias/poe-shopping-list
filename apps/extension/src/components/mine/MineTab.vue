@@ -152,7 +152,7 @@ async function deleteItem(listId: string, itemId: string) {
       <h1 class="family-display flex-1 text-[15px] font-normal tracking-tight text-ink">
         Field Guide
       </h1>
-      <span class="font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted"
+      <span class="font-sans text-[9px] uppercase tracking-[0.14em] text-ink-muted"
         >local notes</span
       >
     </header>
@@ -182,11 +182,11 @@ async function deleteItem(listId: string, itemId: string) {
             :aria-controls="`list-content-${draft.id}`"
             @click="selectList(draft.id)"
           >
-            <span class="font-mono text-[10px] text-accent" aria-hidden="true">§</span>
+            <span class="font-sans text-[10px] text-accent" aria-hidden="true">§</span>
             <span class="min-w-0 flex-1 truncate text-[14px] font-normal text-ink">{{
               draft.title
             }}</span>
-            <span class="font-mono text-[10px] text-ink-muted">{{ draft.items.length }}</span>
+            <span class="font-sans text-[10px] text-ink-muted">{{ draft.items.length }}</span>
             <span class="text-lg leading-none text-accent-ink-str" aria-hidden="true">{{
               expandedId === draft.id ? "⌄" : "›"
             }}</span>

@@ -66,7 +66,7 @@ async function copyToClipboard() {
         readonly
         :value="encoded"
         aria-label="Exported list string"
-        class="w-full h-24 px-2.5 py-2 text-[11px] font-mono border border-stroke rounded-sm text-ink bg-surface resize-none"
+        class="w-full h-24 px-2.5 py-2 text-[11px] font-sans border border-stroke rounded-sm text-ink bg-surface resize-none"
         @click="($event.target as HTMLTextAreaElement).select()"
       />
 

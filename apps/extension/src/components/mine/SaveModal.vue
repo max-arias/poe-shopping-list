@@ -78,7 +78,7 @@ async function handleSave() {
           Add this page as an incomplete List item. Nothing is captured or priced automatically.
         </p>
         <div
-          class="break-all border border-stroke bg-surface px-2.5 py-2 font-mono text-[10px] text-ink-muted"
+          class="break-all border border-stroke bg-surface px-2.5 py-2 font-sans text-[10px] text-ink-muted"
           :title="page.url"
         >
           {{ page.url }}

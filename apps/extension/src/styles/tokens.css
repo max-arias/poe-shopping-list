@@ -73,9 +73,8 @@
   --color-info: var(--poe-info);
   --color-info-ink: var(--poe-info-ink);
   --color-info-edge: var(--poe-info-edge);
-  --font-sans: Georgia, "Palatino Linotype", Palatino, serif;
-  --font-display: "Palatino Linotype", Palatino, Georgia, serif;
-  --font-mono: "SFMono-Regular", Consolas, monospace;
+  --font-sans: "Source Serif 4", Georgia, serif;
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
   --radius-sm: 3px;
   --radius-md: 4px;
   --radius-lg: 5px;
