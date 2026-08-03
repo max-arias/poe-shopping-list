@@ -38,7 +38,6 @@ The clean v1 reset does not read or migrate obsolete keys or data shapes. A Shar
   items: Array<{
     title: string,
     tradeUrl: string, // HTTP(S)
-    quantity?: number, // positive integer
     variant?: string,
     note?: string
   }>

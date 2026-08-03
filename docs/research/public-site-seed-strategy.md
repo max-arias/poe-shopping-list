@@ -16,7 +16,7 @@ The terms Published List, Catalog, Category, Tag, League Applicability, List Ite
 Readiness means the future implementation has:
 
 - Published List content schema/catalog behavior and canonical Category/Tag references;
-- authoring instructions for one category, zero or more tags, game/league applicability, ordered actionable items, direct official Trade URLs, quantity/variant, optional rationale/guidance, and no price/cache/query data;
+- authoring instructions for one category, zero or more tags, game/league applicability, ordered actionable items, direct official Trade URLs, variants, optional rationale/guidance, and no price/cache/query data;
 - schema and semantic validators plus deterministic fixtures that are clearly test-only;
 - contributor/review guidance and the intentional empty Catalog state; and
 - the Catalog's static build, link, browser, artifact, and deployment checks.

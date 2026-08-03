@@ -11,7 +11,6 @@ export function serializeShareableList(input: PublishedList): ShareableList {
     items: list.items.map((item) => ({
       title: item.title,
       tradeUrl: item.tradeUrl,
-      ...(item.quantity === undefined ? {} : { quantity: item.quantity }),
       ...(item.variant === undefined ? {} : { variant: item.variant }),
       ...(item.rationale === undefined ? {} : { note: item.rationale }),
     })),

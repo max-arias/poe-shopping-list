@@ -1,158 +1,66 @@
-/* ─────────────────────────────────────────────────────────────────
-   PoE Shopping List — design token layer for Tailwind v4
-   Import AFTER `@import "tailwindcss"` in each app entry CSS.
-
-   Palette: Path of Exile — Foundations + Loot Rarity + Atmosphere
-   ──────────────────────────────────────────────────────────────── */
-
-/* ── Raw palette: light ──────────────────────────────────────── */
+/* Wraeclast Field Guide — one light-only, warm field-note palette. */
 :root,
-[data-theme="light"] {
-  /* Foundations — Linen white palette */
-  --poe-bg: #f5f2ee;
-  --poe-frame: #4a4038;
-  --poe-chrome: #e2dace;
-  --poe-surface: #e8e0d5;
-  --poe-surface-tab: #ede8e0;
-  --poe-surface-hover: #ddd5c8;
-  --poe-ink: #4a4038;
-  --poe-ink-muted: #7d6e5c;
-  --poe-stroke: #cfc4b4;
-  --poe-stroke-soft: #d8d0c4;
-  --poe-line: #cfc4b4;
-  --poe-block: #e8e0d5;
+[data-theme="fieldguide"] {
+  color-scheme: light;
+  --poe-bg: #e8e3da;
+  --poe-frame: #29362f;
+  --poe-chrome: #e3eadf;
+  --poe-surface: #ffffff;
+  --poe-surface-tab: #f3f6f0;
+  --poe-surface-hover: #edf2ea;
+  --poe-ink: #29362f;
+  --poe-ink-muted: #64746b;
+  --poe-stroke: #cbd4c5;
+  --poe-stroke-soft: #dfe6db;
+  --poe-line: #cbd4c5;
+  --poe-block: #e3eadf;
   --poe-knob: #ffffff;
-
-  /* Accent — Unique (dusty amber) */
-  --poe-accent: #af6025;
-  --poe-accent-edge: #7a3f15;
+  --poe-accent: #52755e;
+  --poe-accent-edge: #3f604a;
   --poe-accent-ink: #ffffff;
-  --poe-accent-ink-str: #7a3f15;
-  --poe-accent-soft: #f0ddd0;
-
-  /* Destructive — Blood rose for delete/danger actions */
-  --poe-destructive: #a8432a;
+  --poe-accent-ink-str: #3f604a;
+  --poe-accent-soft: #e3eade;
+  --poe-destructive: #a74e36;
   --poe-destructive-ink: #ffffff;
-  --poe-destructive-soft: #f4e0dc;
-  --poe-destructive-edge: #a8432a40;
-
-  /* Semantic — Atmosphere mapping: Molten→warn, Skill gem→good, Blood→error, Cold→info */
-  --poe-warn: #fde8df;
-  --poe-warn-ink: #b84820;
-  --poe-warn-edge: #e89070;
-  --poe-good: #e0f0ee;
-  --poe-good-ink: #1a7a74;
-  --poe-good-edge: #6ec4be;
-  --poe-error: #fde8e8;
-  --poe-error-ink: #7a1212;
-  --poe-error-edge: #e8a0a0;
-  --poe-info: #e4f0f8;
-  --poe-info-ink: #2a6a8a;
-  --poe-info-edge: #90c4df;
-
-  /* Shadows */
-  --poe-shadow-panel: 0 -6px 20px rgba(0, 0, 0, 0.12);
-  --poe-shadow-popover: 0 6px 20px rgba(0, 0, 0, 0.12);
-  --poe-shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 0 rgba(0, 0, 0, 0.15);
-
-  /* Rarity — PoE item rarity colors (light variants) */
-  --poe-rarity-normal: #dcdcdc;
-  --poe-rarity-magic: #b8b4f0;
-  --poe-rarity-rare: #f0e88a;
-  --poe-rarity-unique: #d4956a;
-  --poe-rarity-skill: #6ec4be;
-  --poe-rarity-currency: #c8bfa0;
+  --poe-destructive-soft: #f6e7e1;
+  --poe-destructive-edge: #d6a392;
+  --poe-warn: #f4eadf;
+  --poe-warn-ink: #a74e36;
+  --poe-warn-edge: #d6a392;
+  --poe-good: #52755e;
+  --poe-good-ink: #ffffff;
+  --poe-good-edge: #3f604a;
+  --poe-error: #f6e7e1;
+  --poe-error-ink: #8d3828;
+  --poe-error-edge: #d6a392;
+  --poe-info: #e3eade;
+  --poe-info-ink: #3f604a;
+  --poe-info-edge: #a9bca9;
 }
 
-/* ── Raw palette: dark ─────────────────────────────────────────── */
-[data-theme="dark"] {
-  /* Foundations — Void black palette */
-  --poe-bg: #0d0b0e;
-  --poe-frame: #080608;
-  --poe-chrome: #2a2520;
-  --poe-surface: #1a1714;
-  --poe-surface-tab: #181510;
-  --poe-surface-hover: #221e1a;
-  --poe-ink: #c4b8a8;
-  --poe-ink-muted: #8c7b6a;
-  --poe-stroke: #504840;
-  --poe-stroke-soft: #3a3430;
-  --poe-line: #504840;
-  --poe-block: #2a2520;
-  --poe-knob: #f5f2ee;
-
-  /* Accent — Unique (amber) */
-  --poe-accent: #af6025;
-  --poe-accent-edge: #7a3f15;
-  --poe-accent-ink: #f5f2ee;
-  --poe-accent-ink-str: #d4956a;
-  --poe-accent-soft: #3a2010;
-
-  /* Destructive — Blood rose for delete/danger actions */
-  --poe-destructive: #a8432a;
-  --poe-destructive-ink: #ffffff;
-  --poe-destructive-soft: #2a1510;
-  --poe-destructive-edge: #a8432a40;
-
-  /* Semantic — Atmosphere mapping */
-  --poe-warn: #3a2010;
-  --poe-warn-ink: #e89070;
-  --poe-warn-edge: #7a4a20;
-  --poe-good: #1a2a24;
-  --poe-good-ink: #6ec4be;
-  --poe-good-edge: #3a6a5a;
-  --poe-error: #2a1010;
-  --poe-error-ink: #e8a0a0;
-  --poe-error-edge: #7a3030;
-  --poe-info: #102030;
-  --poe-info-ink: #90c4df;
-  --poe-info-edge: #3a5a7a;
-
-  /* Shadows */
-  --poe-shadow-panel: 0 -6px 20px rgba(0, 0, 0, 0.25);
-  --poe-shadow-popover: 0 6px 20px rgba(0, 0, 0, 0.18);
-  --poe-shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 0 rgba(0, 0, 0, 0.3);
-
-  /* Rarity — PoE item rarity colors (dark variants) */
-  --poe-rarity-normal: #c8c8c8;
-  --poe-rarity-magic: #8888ff;
-  --poe-rarity-rare: #ffff77;
-  --poe-rarity-unique: #af6025;
-  --poe-rarity-skill: #1ba29b;
-  --poe-rarity-currency: #aa9e82;
-}
-
-/* ── Tailwind v4 theme mapping ─────────────────────────────────── */
 @theme inline {
-  /* Foundations */
   --color-bg: var(--poe-bg);
   --color-frame: var(--poe-frame);
   --color-chrome: var(--poe-chrome);
   --color-surface: var(--poe-surface);
   --color-surface-tab: var(--poe-surface-tab);
+  --color-surface-hover: var(--poe-surface-hover);
   --color-ink: var(--poe-ink);
   --color-ink-muted: var(--poe-ink-muted);
   --color-stroke: var(--poe-stroke);
   --color-stroke-soft: var(--poe-stroke-soft);
   --color-line: var(--poe-line);
   --color-block: var(--poe-block);
-  --color-surface-hover: var(--poe-surface-hover);
   --color-knob: var(--poe-knob);
-
-  /* Accent (was gold — renamed to reflect Unique rarity color) */
   --color-accent: var(--poe-accent);
   --color-accent-edge: var(--poe-accent-edge);
   --color-accent-ink: var(--poe-accent-ink);
   --color-accent-ink-str: var(--poe-accent-ink-str);
   --color-accent-soft: var(--poe-accent-soft);
-
-  /* Destructive */
   --color-destructive: var(--poe-destructive);
   --color-destructive-ink: var(--poe-destructive-ink);
   --color-destructive-soft: var(--poe-destructive-soft);
   --color-destructive-edge: var(--poe-destructive-edge);
-
-  /* Semantic */
   --color-warn: var(--poe-warn);
   --color-warn-ink: var(--poe-warn-ink);
   --color-warn-edge: var(--poe-warn-edge);
@@ -165,30 +73,35 @@
   --color-info: var(--poe-info);
   --color-info-ink: var(--poe-info-ink);
   --color-info-edge: var(--poe-info-edge);
-
-  /* Rarity */
-  --color-rarity-normal: var(--poe-rarity-normal);
-  --color-rarity-magic: var(--poe-rarity-magic);
-  --color-rarity-rare: var(--poe-rarity-rare);
-  --color-rarity-unique: var(--poe-rarity-unique);
-  --color-rarity-skill: var(--poe-rarity-skill);
-  --color-rarity-currency: var(--poe-rarity-currency);
-
-  /* Shadows */
-  --shadow-panel: var(--poe-shadow-panel);
-  --shadow-popover: var(--poe-shadow-popover);
-  --shadow-btn: var(--poe-shadow-btn);
-
-  /* typography */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
-
-  /* radii — sharp corners throughout */
-  --radius-sm: 2px;
-  --radius-md: 3px;
-  --radius-lg: 4px;
-  --radius-full: 9999px;
+  --font-sans: Georgia, "Palatino Linotype", Palatino, serif;
+  --font-display: "Palatino Linotype", Palatino, Georgia, serif;
+  --font-mono: "SFMono-Regular", Consolas, monospace;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 5px;
 }
 
-/* ── Dark-mode variant (selector-based, not prefers-color-scheme) ─ */
-@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+/* DaisyUI 5 is the control foundation; the guide palette stays bespoke. */
+@plugin "daisyui" {
+  themes: fieldguide --default;
+}
+@plugin "daisyui/theme" {
+  name: "fieldguide";
+  default: true;
+  --color-base-100: #ffffff;
+  --color-base-200: #f3f6f0;
+  --color-base-300: #e3eadf;
+  --color-base-content: #29362f;
+  --color-primary: #52755e;
+  --color-primary-content: #ffffff;
+  --color-secondary: #a74e36;
+  --color-secondary-content: #ffffff;
+  --color-accent: #52755e;
+  --color-accent-content: #ffffff;
+  --color-neutral: #29362f;
+  --color-neutral-content: #ffffff;
+  --radius-selector: 3px;
+  --radius-field: 3px;
+  --radius-box: 5px;
+  --border: 1px;
+}

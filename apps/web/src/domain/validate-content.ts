@@ -38,12 +38,9 @@ export function validatePublishedList(
     }
   }
   const seenUrls = new Set<string>();
-  const seenTitles = new Set<string>();
   for (const [index, item] of list.items.entries()) {
     if (seenUrls.has(item.tradeUrl)) throw new ContentValidationError(sourceFile, `items.${index}.tradeUrl`, "duplicate trade URL");
-    if (seenTitles.has(item.title)) throw new ContentValidationError(sourceFile, `items.${index}.title`, "duplicate item title");
     seenUrls.add(item.tradeUrl);
-    seenTitles.add(item.title);
   }
   return list;
 }

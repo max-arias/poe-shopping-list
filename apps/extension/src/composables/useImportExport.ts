@@ -11,7 +11,6 @@ export function exportDraft(draft: Draft): string {
     items: draft.items.map((item) => ({
       title: item.title,
       tradeUrl: item.tradeUrl,
-      ...(item.quantity !== undefined ? { quantity: item.quantity } : {}),
       ...(item.variant !== undefined ? { variant: item.variant } : {}),
       ...(item.note !== undefined ? { note: item.note } : {}),
     })),
@@ -41,7 +40,6 @@ export function importDraft(json: string): Draft {
       title: item.title,
       tradeUrl: item.tradeUrl,
       completed: false,
-      ...(item.quantity !== undefined ? { quantity: item.quantity } : {}),
       ...(item.variant !== undefined ? { variant: item.variant } : {}),
       ...(item.note !== undefined ? { note: item.note } : {}),
       addedAt: now,

@@ -17,7 +17,7 @@ const searchText = [list.title, list.overview, taxonomyText, ...list.items.map((
 ---
 
 <article
-  class="list-card"
+  class="list-card card"
   data-game={list.applicability.game}
   data-league={list.applicability.evergreen ? "evergreen" : list.applicability.league}
   data-category={list.category}
@@ -29,12 +29,16 @@ const searchText = [list.title, list.overview, taxonomyText, ...list.items.map((
     <div class="card-heading">
       <h2>{list.title}</h2>
       <p class="taxonomy" aria-label="List applicability and taxonomy">
-        <span>Path of Exile 1</span><span>{leagueLabel}</span><span>{list.category}</span>{list.tags.map((tag) => <span>{tag}</span>)}
+        <button class="badge badge-sm badge-outline" type="button" data-taxonomy-filter="game" data-taxonomy-value={list.applicability.game} aria-label="Filter by game: Path of Exile 1">Path of Exile 1</button><button class="badge badge-sm badge-outline" type="button" data-taxonomy-filter="league" data-taxonomy-value={list.applicability.evergreen ? "evergreen" : list.applicability.league} aria-label={`Filter by league: ${leagueLabel}`}>{leagueLabel}</button><button class="badge badge-sm badge-outline" type="button" data-taxonomy-filter="category" data-taxonomy-value={list.category} aria-label={`Filter by category: ${list.category}`}>{list.category}</button>{list.tags.map((tag) => <button class="badge badge-sm badge-outline" type="button" data-taxonomy-filter="tag" data-taxonomy-value={tag} aria-label={`Filter by tag: ${tag}`}>{tag}</button>)}
       </p>
     </div>
     <div class="card-actions" aria-label={`${list.title} actions`}>
-      <button class="icon-button" type="button" data-download aria-label={`Download ${list.title} as Shareable List v1 JSON`} title="Download Shareable List v1 JSON">↓<span class="visually-hidden">Download</span></button>
-      <button class="icon-button" type="button" data-copy aria-label={`Copy ${list.title} as Shareable List v1 JSON`} title="Copy Shareable List v1 JSON">⧉<span class="visually-hidden">Copy</span></button>
+      <button class="icon-button btn btn-square btn-ghost btn-xs" type="button" data-download aria-label={`Download ${list.title} as Shareable List v1 JSON`} title="Download Shareable List v1 JSON">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="visually-hidden">Download</span>
+      </button>
+      <button class="icon-button btn btn-square btn-ghost btn-xs" type="button" data-copy aria-label={`Copy ${list.title} as Shareable List v1 JSON`} title="Copy Shareable List v1 JSON">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="1.5" /><path d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke-linecap="round" /></svg><span class="visually-hidden">Copy</span>
+      </button>
     </div>
   </header>
 
@@ -44,8 +48,8 @@ const searchText = [list.title, list.overview, taxonomyText, ...list.items.map((
     {initialItems.map((item, index) => <li class="list-item">
       <span class="item-order" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
       <span class="item-title"><a href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="external-link" aria-hidden="true">↗</span><span class="visually-hidden"> (external Trade link)</span></a></span>
-      {(item.quantity !== undefined || item.variant) && <span class="item-variant">{item.quantity !== undefined && `×${item.quantity}`}{item.quantity !== undefined && item.variant && " · "}{item.variant}</span>}
-      {item.rationale && <details class="item-rationale"><summary>Why</summary><p>{item.rationale}</p></details>}
+      {item.variant && <span class="item-variant">{item.variant}</span>}
+      {item.rationale && <details class="item-rationale"><summary>Why this item</summary><p>{item.rationale}</p></details>}
     </li>)}
   </ol>
 
@@ -55,8 +59,8 @@ const searchText = [list.title, list.overview, taxonomyText, ...list.items.map((
       {remainingItems.map((item, index) => <li class="list-item">
         <span class="item-order" aria-hidden="true">{String(index + 4).padStart(2, "0")}</span>
         <span class="item-title"><a href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="external-link" aria-hidden="true">↗</span><span class="visually-hidden"> (external Trade link)</span></a></span>
-        {(item.quantity !== undefined || item.variant) && <span class="item-variant">{item.quantity !== undefined && `×${item.quantity}`}{item.quantity !== undefined && item.variant && " · "}{item.variant}</span>}
-        {item.rationale && <details class="item-rationale"><summary>Why</summary><p>{item.rationale}</p></details>}
+        {item.variant && <span class="item-variant">{item.variant}</span>}
+        {item.rationale && <details class="item-rationale"><summary>Why this item</summary><p>{item.rationale}</p></details>}
       </li>)}
     </ol>
   </>}

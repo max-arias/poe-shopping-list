@@ -10,14 +10,18 @@ const settings = ref<Settings>({ ...DEFAULT_SETTINGS });
 const isLoaded = ref(false);
 let initialized = false;
 
+function normalizeSettings(value: unknown): Settings {
+  const parsed = SettingsSchema.safeParse(value);
+  return parsed.success ? parsed.data : DEFAULT_SETTINGS;
+}
+
 async function initializeSettings(): Promise<Settings> {
   await resetLegacyStorage((legacy, current) => {
     const currentSettings = SettingsSchema.safeParse(current);
     if (currentSettings.success) return currentSettings.data;
-    const legacySettings = SettingsSchema.safeParse(legacy);
-    return legacySettings.success ? legacySettings.data : DEFAULT_SETTINGS;
+    return normalizeSettings(legacy);
   });
-  return SettingsSchema.parse(await settingsItem.getValue());
+  return normalizeSettings(await settingsItem.getValue());
 }
 
 function ensureInitialized() {
@@ -30,7 +34,7 @@ function ensureInitialized() {
   });
 
   settingsItem.watch((value) => {
-    settings.value = SettingsSchema.parse(value);
+    settings.value = normalizeSettings(value);
     isLoaded.value = true;
   });
 }

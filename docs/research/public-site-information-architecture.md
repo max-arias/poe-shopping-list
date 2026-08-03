@@ -6,7 +6,7 @@ Decision record, updated 2026-07-30. This is planning for the future public stat
 
 - **V1 is one public static Catalog page.** It is not a homepage plus Published List detail pages. Published Lists never receive their own page.
 - The Catalog is a searchable, filterable collection of compact, read-only Published List Cards. This uses the domain terms in [`CONTEXT.md`](../../CONTEXT.md): Catalog, Published List Card, Category, Tag, League Applicability, List Item, List Overview, and Shareable List.
-- The content model follows [issue #2](https://github.com/max-arias/poe-shopping-list/issues/2): one primary Category, zero or more Tags, game/league applicability, ordered actionable items, and official direct Trade URLs with quantity/variant and optional rationale or qualitative guidance. It contains no price, cache, or query data.
+- The content model follows [issue #2](https://github.com/max-arias/poe-shopping-list/issues/2): one primary Category, zero or more Tags, game/league applicability, ordered actionable items, and official direct Trade URLs with variants and optional rationale or qualitative guidance. It contains no price, cache, or query data.
 - **Non-goals:** homepage content, Published List routes, cart or completion state, pricing, accounts, comments, transactions, images, generated summaries/social cards, direct browser-to-extension handoff, and a collection of indexable filter/detail pages.
 
 ## 2. Catalog behavior
@@ -20,7 +20,7 @@ The single Catalog page provides these taxonomy controls:
 
 Game, league, Category, and Tag selections are shareable URL state. Free-text search is local visitor state: it is not written to the URL and is not a shareable or indexable URL state. The page must make the active filters and their reset behavior clear. No filter combination creates a separately indexable page in V1.
 
-Each result is a compact, read-only Published List Card. The card may show its name, applicable taxonomy, optional author `List Overview`, and its ordered List Items. Trade links lead the card: the initial view shows a short set of ordered links, with an in-card expand control revealing the remainder. The full order must be preserved. Every item exposes its direct official Trade URL, quantity/variant, and optional rationale/guidance where supplied.
+Each result is a compact, read-only Published List Card. The card may show its name, applicable taxonomy, optional author `List Overview`, and its ordered List Items. Trade links lead the card: the initial view shows a short set of ordered links, with an in-card expand control revealing the remainder. The full order must be preserved. Every item exposes its direct official Trade URL, variant, and optional rationale/guidance where supplied.
 
 Author free text/summary remains optional. V1 does not add a required summary field and does not derive a generated summary when the author omits one.
 

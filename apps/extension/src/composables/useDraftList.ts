@@ -97,7 +97,7 @@ export function useDraftList() {
   async function deleteDraftById(id: string) {
     await saveAll(drafts.value.filter((value) => value.id !== id));
   }
-  type ItemDetails = Pick<DraftItem, "quantity" | "variant" | "note">;
+  type ItemDetails = Pick<DraftItem, "variant" | "note">;
   async function addItemToDraft(
     draftId: string,
     title: string,
@@ -156,7 +156,7 @@ export function useDraftList() {
   }
   async function updateItem(
     itemId: string,
-    patch: Partial<Pick<DraftItem, "title" | "tradeUrl" | "quantity" | "variant" | "note">>,
+    patch: Partial<Pick<DraftItem, "title" | "tradeUrl" | "variant" | "note">>,
   ) {
     if (draft.value)
       await saveDraft({

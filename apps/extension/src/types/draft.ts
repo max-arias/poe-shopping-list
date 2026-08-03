@@ -17,7 +17,6 @@ export const ShareableListItemSchema = z
   .object({
     title: TitleSchema,
     tradeUrl: TradeUrlSchema,
-    quantity: z.number().int().positive().optional(),
     variant: z.string().optional(),
     note: z.string().optional(),
   })
@@ -41,7 +40,6 @@ export const DraftItemSchema = z
     position: z.number().int(),
     title: TitleSchema,
     tradeUrl: TradeUrlSchema,
-    quantity: z.number().int().positive().optional(),
     variant: z.string().optional(),
     note: z.string().optional(),
     completed: z.boolean(),

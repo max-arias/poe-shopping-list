@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "astro dev",
     "sync": "astro sync",
     "check": "astro check",
     "content:validate": "tsx src/domain/validate-content.ts",
@@ -34,6 +35,9 @@
     "@axe-core/playwright": "4.10.2",
     "@playwright/test": "1.52.0",
     "@types/node": "25.0.3",
+    "@tailwindcss/vite": "^4.2.4",
+    "daisyui": "^5.0.0",
+    "tailwindcss": "^4.2.4",
     "tsx": "4.19.2",
     "typescript": "5.7.2",
     "vitest": "4.1.10",

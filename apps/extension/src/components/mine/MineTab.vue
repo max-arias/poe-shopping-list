@@ -148,9 +148,13 @@ async function deleteItem(listId: string, itemId: string) {
 <template>
   <div class="flex min-h-0 flex-1 flex-col overflow-hidden">
     <header class="flex shrink-0 items-center gap-2 border-b border-stroke bg-chrome px-3 py-2.5">
-      <span class="h-3.5 w-3.5 rotate-45 border border-accent-edge bg-accent" aria-hidden="true" />
-      <h1 class="flex-1 text-[12px] font-semibold tracking-wide text-ink">Shopping Lists</h1>
-      <span class="text-[10px] uppercase tracking-[0.12em] text-ink-muted">local</span>
+      <span class="h-3 w-3 border border-accent bg-accent" aria-hidden="true" />
+      <h1 class="family-display flex-1 text-[15px] font-normal tracking-tight text-ink">
+        Field Guide
+      </h1>
+      <span class="font-mono text-[9px] uppercase tracking-[0.14em] text-ink-muted"
+        >local notes</span
+      >
     </header>
 
     <main class="min-h-0 flex-1 overflow-auto px-3 py-3" aria-label="Shopping lists">
@@ -178,8 +182,8 @@ async function deleteItem(listId: string, itemId: string) {
             :aria-controls="`list-content-${draft.id}`"
             @click="selectList(draft.id)"
           >
-            <span class="h-2 w-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-            <span class="min-w-0 flex-1 truncate text-[13px] font-semibold text-ink">{{
+            <span class="font-mono text-[10px] text-accent" aria-hidden="true">§</span>
+            <span class="min-w-0 flex-1 truncate text-[14px] font-normal text-ink">{{
               draft.title
             }}</span>
             <span class="font-mono text-[10px] text-ink-muted">{{ draft.items.length }}</span>
@@ -191,13 +195,13 @@ async function deleteItem(listId: string, itemId: string) {
           <div
             v-if="expandedId === draft.id"
             :id="`list-content-${draft.id}`"
-            class="border-b border-accent-edge pl-3 shadow-[inset_2px_0_var(--poe-accent)]"
+            class="border-b border-accent-edge bg-white pl-3"
           >
-            <details class="border-b border-stroke-soft py-3 pr-2" :open="false">
+            <details class="border-b border-stroke-soft py-3 pr-2" open>
               <summary
                 class="cursor-pointer text-[12px] font-semibold text-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
               >
-                Overview
+                Field note
               </summary>
               <p v-if="draft.overview" class="mt-1.5 text-[11px] leading-relaxed text-ink-muted">
                 {{ draft.overview }}

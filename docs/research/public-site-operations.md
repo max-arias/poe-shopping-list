@@ -88,7 +88,7 @@ Perform a restore drill at launch and periodically thereafter: clone the mirror 
 
 At implementation time, add documentation for:
 
-- **Contributors:** content structure, Category/Tag taxonomy references, applicability, ordered actionable items, direct Trade URL and quantity/variant rules, optional rationale/guidance, prohibited price/cache/query fields, PR approval, and revert expectations.
+- **Contributors:** content structure, Category/Tag taxonomy references, applicability, ordered actionable items, direct Trade URL and variant rules, optional rationale/guidance, prohibited price/cache/query fields, PR approval, and revert expectations.
 - **Web setup:** prerequisites, install/lockfile commands, Content Collections/schema workflow, local build/preview, deterministic validation fixtures, and how to run the checks without Cloudflare credentials.
 - **Deploy/recovery:** production approval, artifact promotion, requested preview, Cloudflare environment/token boundaries, deployment evidence, smoke checks, cache purge, Worker rollback, Git-artifact recovery, and incident contacts.
 - **Ownership/evidence retention:** production and backup owners, domain/account ownership, protected environment ownership, artifact/log/report retention periods, manual accessibility evidence location, mirror schedule, and restore-drill schedule.

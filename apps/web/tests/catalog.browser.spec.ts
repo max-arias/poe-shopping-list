@@ -8,10 +8,10 @@ const shareable = {
   title: "Browser fixture: Mercenary essentials",
   overview: "Deterministic browser-only overview.",
   items: [
-    { title: "First ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=first", quantity: 2, variant: "Corrupted", note: "The first deterministic rationale." },
-    { title: "Second ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=second", quantity: 1 },
+    { title: "First ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=first", variant: "Corrupted", note: "The first deterministic rationale." },
+    { title: "Second ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=second", variant: "Any" },
     { title: "Third ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=third", variant: "Any" },
-    { title: "Fourth ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=fourth", quantity: 3, note: "A later item revealed by expansion." },
+    { title: "Fourth ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=fourth", variant: "Any", note: "A later item revealed by expansion." },
   ],
 };
 
@@ -27,8 +27,10 @@ test.describe("populated test-only catalog", () => {
     expect(new URL(page.url()).search).toBe("");
     await page.locator("#game").selectOption("poe1");
     await page.locator("#league").selectOption("Browser Test League");
-    await page.locator("#category").selectOption(["mercenaries", "guardian"]);
-    await page.locator("#tag").selectOption(["league-start", "defense"]);
+    await page.locator('[data-filter-menu="category"] input[value="mercenaries"]').check();
+    await page.locator('[data-filter-menu="category"] input[value="guardian"]').check();
+    await page.locator('[data-filter-menu="tag"] input[value="league-start"]').check();
+    await page.locator('[data-filter-menu="tag"] input[value="defense"]').check();
     const url = new URL(page.url());
     expect(url.searchParams.get("game")).toBe("poe1");
     expect(url.searchParams.get("league")).toBe("Browser Test League");
@@ -38,12 +40,30 @@ test.describe("populated test-only catalog", () => {
     await expect(page.locator(".list-card:visible h2")).toHaveText("Browser fixture: Mercenary essentials");
   });
 
-  test("preserves optional overview, ordering, quantities, variants, and expansion", async ({ page }) => {
+  test("clickable taxonomy badges configure filters and preserve selected taxonomy", async ({ page }) => {
+    const mercenary = page.locator(".list-card").filter({ hasText: "Mercenary essentials" });
+    await mercenary.getByRole("button", { name: "Filter by game: Path of Exile 1" }).click();
+    await mercenary.getByRole("button", { name: "Filter by league: Browser Test League" }).click();
+    await mercenary.getByRole("button", { name: "Filter by tag: league-start" }).click();
+    await mercenary.getByRole("button", { name: "Filter by category: mercenaries" }).click();
+    await mercenary.getByRole("button", { name: "Filter by tag: defense" }).click();
+
+    const url = new URL(page.url());
+    expect(url.searchParams.get("game")).toBe("poe1");
+    expect(url.searchParams.get("league")).toBe("Browser Test League");
+    expect(url.searchParams.getAll("category")).toEqual(["mercenaries"]);
+    expect(url.searchParams.getAll("tag")).toEqual(["league-start", "defense"]);
+    await expect(page.locator(".list-card:visible")).toHaveCount(1);
+    await expect(page.locator(".list-card:visible h2")).toHaveText("Browser fixture: Mercenary essentials");
+    await expect(page.locator("#search")).toHaveValue("");
+  });
+
+  test("preserves optional overview, ordering, variants, and expansion", async ({ page }) => {
     const mercenary = page.locator(".list-card").filter({ hasText: "Mercenary essentials" });
     await expect(mercenary.locator(".list-overview")).toHaveText("Deterministic browser-only overview.");
     await expect(mercenary.locator(".item-title")).toHaveCount(4);
     await expect(mercenary.locator(".item-title").nth(0)).toContainText("First ordered recommendation");
-    await expect(mercenary.locator(".item-variant").nth(0)).toHaveText("×2 · Corrupted");
+    await expect(mercenary.locator(".item-variant").nth(0)).toHaveText("Corrupted");
     await expect(mercenary.locator(".item-rationale").first()).toContainText("Why");
     await expect(mercenary.locator(".remaining-items")).toBeHidden();
     await mercenary.locator("[data-expand]").click();

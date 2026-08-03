@@ -55,7 +55,7 @@ async function handleSave() {
     @click.self="ui.closeRegisterModal()"
   >
     <form
-      class="w-full space-y-3 border-t-2 border-accent bg-bg p-3.5"
+      class="w-full space-y-3 border-t-2 border-accent bg-white p-3.5"
       @submit.prevent="handleSave"
     >
       <p class="text-[10px] uppercase tracking-[0.12em] text-accent-ink-str">

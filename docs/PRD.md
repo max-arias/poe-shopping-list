@@ -33,7 +33,7 @@ With a supported Path of Exile Trade search active, select **Register Current Tr
 
 Required top-level fields: `format: "poe-shopping-list"`, `version: 1`, non-empty `title`, and `items`. Optional top-level field: `overview`.
 
-Each item requires a non-empty `title` and HTTP(S) `tradeUrl`. Optional item fields are positive integer `quantity`, `variant`, and `note`. The object is strict: unknown fields, unsupported versions, malformed JSON, invalid URLs, and invalid field values are rejected rather than converted. The portable data contains no completion state, IDs, timestamps, account data, or synchronization metadata.
+Each item requires a non-empty `title` and HTTP(S) `tradeUrl`. Optional item fields are `variant` and `note`. The object is strict: unknown fields, unsupported versions, malformed JSON, invalid URLs, and invalid field values are rejected rather than converted. The portable data contains no completion state, IDs, timestamps, account data, or synchronization metadata.
 
 ## Local state and reset
 

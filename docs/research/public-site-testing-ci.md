@@ -21,9 +21,9 @@ The test catalog must be small, committed, deterministic, and representative of 
 - explicit Path of Exile game and league applicability;
 - a publication that receives an automatically generated last-reviewed timestamp;
 - flat, ordered, actionable items;
-- each item containing a direct PoE Trade URL and quantity/variant, with rationale and qualitative free-text guidance exercised as optional fields.
+- each item containing a direct PoE Trade URL and variant, with rationale and qualitative free-text guidance exercised as optional fields.
 
-Fixtures must also include invalid cases for missing or unresolved taxonomy references, missing applicability, malformed trade URLs, empty or reordered actionable items, invalid quantities/variants, and an author-supplied last-reviewed value that must not bypass the publication rule. Assertions must verify that no query-data, cache, or price fields are accepted or emitted. They should verify ordering explicitly rather than relying on filesystem or collection enumeration order.
+Fixtures must also include invalid cases for missing or unresolved taxonomy references, missing applicability, malformed trade URLs, empty or reordered actionable items, invalid variants, and an author-supplied last-reviewed value that must not bypass the publication rule. Assertions must verify that no query-data, cache, or price fields are accepted or emitted. They should verify ordering explicitly rather than relying on filesystem or collection enumeration order.
 
 Dynamic collection routes must use `getStaticPaths`, and collection ordering must use an explicit sort ([Astro route generation and ordering guidance](https://docs.astro.build/en/guides/content-collections/#generating-routes-from-content)). These are correctness checks, not assumptions encoded in a browser test.
 

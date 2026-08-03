@@ -1,15 +1,15 @@
 import { type VariantProps, cva } from "class-variance-authority";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-1.5 rounded-sm font-semibold cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed",
+  "btn inline-flex items-center justify-center gap-1.5 rounded-sm font-semibold cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
         accent:
-          "uppercase tracking-[0.4px] border border-accent-edge bg-accent text-accent-ink shadow-btn",
-        ghost: "bg-transparent border border-dashed border-stroke text-ink",
+          "btn-primary uppercase tracking-[0.4px] border border-accent-edge bg-accent text-accent-ink",
+        ghost: "btn-ghost bg-transparent border border-stroke text-ink",
         ghostAccent: "bg-transparent border border-solid border-accent-edge text-accent-ink-str",
-        destructive: "bg-destructive text-destructive-ink border border-transparent",
+        destructive: "btn-secondary bg-destructive text-destructive-ink border border-transparent",
         destructiveOutline:
           "text-destructive bg-transparent border border-destructive-edge hover:bg-destructive-soft",
         icon: "bg-transparent border border-transparent text-ink-muted hover:bg-surface hover:text-ink",

@@ -17,6 +17,7 @@
     background-color: var(--poe-bg);
     color: var(--poe-ink);
     -webkit-font-smoothing: antialiased;
+    color-scheme: light;
   }
 
   #app {
@@ -41,5 +42,29 @@
   textarea:focus {
     outline: none;
     border-color: var(--poe-accent) !important;
+  }
+
+  .btn {
+    min-height: 2rem;
+    border-radius: 3px;
+    box-shadow: none;
+  }
+  .card,
+  .alert,
+  .modal-box {
+    box-shadow: none;
+  }
+
+  .family-display {
+    font-family: var(--font-display);
+  }
+
+  .family-text {
+    color: var(--poe-ink-muted);
+  }
+
+  .item-row:has([aria-checked="true"]) .link {
+    color: var(--poe-ink-muted);
+    text-decoration: line-through;
   }
 }

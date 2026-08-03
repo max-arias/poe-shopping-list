@@ -15,7 +15,6 @@ const full = {
   items: [
     {
       ...minimal.items[0],
-      quantity: 2,
       variant: "Corrupted",
       note: "Buy this first",
     },

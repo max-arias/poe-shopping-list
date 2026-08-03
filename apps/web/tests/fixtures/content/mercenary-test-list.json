@@ -9,14 +9,13 @@
     {
       "title": "First ordered recommendation",
       "tradeUrl": "https://www.pathofexile.com/trade/search/BrowserTest?q=first",
-      "quantity": 2,
       "variant": "Corrupted",
       "rationale": "The first deterministic rationale."
     },
     {
       "title": "Second ordered recommendation",
       "tradeUrl": "https://www.pathofexile.com/trade/search/BrowserTest?q=second",
-      "quantity": 1
+      "variant": "Any"
     },
     {
       "title": "Third ordered recommendation",
@@ -26,7 +25,7 @@
     {
       "title": "Fourth ordered recommendation",
       "tradeUrl": "https://www.pathofexile.com/trade/search/BrowserTest?q=fourth",
-      "quantity": 3,
+      "variant": "Any",
       "rationale": "A later item revealed by expansion."
     }
   ]

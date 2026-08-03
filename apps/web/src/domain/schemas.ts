@@ -19,14 +19,9 @@ export const tradeUrlSchema = z.string().url().refine((value) => {
 export const publishedItemSchema = z.object({
   title: nonBlank,
   tradeUrl: tradeUrlSchema,
-  quantity: z.number().int().positive().optional(),
   variant: nonBlank.optional(),
   rationale: nonBlank.optional(),
-}).strict().superRefine((item, context) => {
-  if (item.quantity === undefined && item.variant === undefined) {
-    context.addIssue({ code: z.ZodIssueCode.custom, path: ["quantity"], message: "quantity or variant is required" });
-  }
-});
+}).strict();
 
 export const applicabilitySchema = z.object({
   game: z.literal("poe1"),
@@ -49,7 +44,6 @@ export const publishedListSchema = z.object({
 export const shareableListItemSchema = z.object({
   title: nonBlank,
   tradeUrl: z.string().url().refine((value) => value.startsWith("http://") || value.startsWith("https://")),
-  quantity: z.number().int().positive().optional(),
   variant: z.string().optional(),
   note: z.string().optional(),
 }).strict();

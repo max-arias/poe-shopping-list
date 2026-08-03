@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import PublishedListCard from "../components/PublishedListCard.astro";
-import DevTweaks from "../components/DevTweaks.astro";
 import { serializeShareableList } from "../domain/serialize";
 import { taxonomy } from "../domain/taxonomy";
 import "../styles/catalog.css";
@@ -14,7 +13,7 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -23,8 +22,7 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href={canonicalUrl} />
   </head>
-  <body>
-    <aside class="site-notice"><strong>CATALOG</strong> · Published Lists are read-only recommendations for Path of Exile.</aside>
+  <body class="font-body">
     <header class="site-header">
       <h1>Published Lists</h1>
     </header>
@@ -32,38 +30,57 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
     <main class="catalog-main">
       <form class="filter-toolbar" id="catalog-filters" aria-label="Catalog filters">
         <div class="filter-field search-field">
-          <label for="search">Search <span>(local only)</span></label>
-          <input id="search" name="search" type="search" autocomplete="off" placeholder="Search visible Lists" />
+          <label for="search">Search</label>
+          <input class="input input-sm" id="search" name="search" type="search" autocomplete="off" placeholder="Search visible Lists" />
         </div>
-        <div class="filter-field">
-          <label for="game">Game <span>(shareable)</span></label>
-          <select id="game" name="game">
+        <div class="filter-field compact-field">
+          <label for="game">Game</label>
+          <select class="select select-sm" id="game" name="game">
             <option value="">All games</option>
             <option value="poe1">Path of Exile 1</option>
           </select>
         </div>
-        <div class="filter-field">
-          <label for="league">League <span>(shareable)</span></label>
-          <select id="league" name="league">
+        <div class="filter-field compact-field">
+          <label for="league">League</label>
+          <select class="select select-sm" id="league" name="league">
             <option value="">All leagues</option>
             <option value="evergreen">Evergreen</option>
             {leagues.filter((league) => league !== "evergreen").map((league) => <option value={league}>{optionLabel(league)}</option>)}
           </select>
         </div>
-        <div class="filter-field">
-          <label for="category">Categories <span>(shareable)</span></label>
-          <select id="category" name="category" multiple size={taxonomy.categories.length > 0 ? Math.min(taxonomy.categories.length, 3) : 1} disabled={taxonomy.categories.length === 0}>
-            {taxonomy.categories.length > 0 ? taxonomy.categories.map((category) => <option value={category}>{category}</option>) : <option>No categories available yet</option>}
-          </select>
+        <div class="filter-field multi-field">
+          <span class="filter-label" id="category-label">Categories</span>
+          <details class="dropdown filter-dropdown">
+            <summary class="select select-sm filter-trigger" aria-label="Categories: All categories">
+              <span class="filter-summary" data-filter-summary="category">All categories</span>
+            </summary>
+            <div class="dropdown-content filter-menu" data-filter-menu="category" role="group" aria-labelledby="category-label">
+              {taxonomy.categories.length > 0 ? taxonomy.categories.map((category) => (
+                <label class="filter-option">
+                  <input class="checkbox checkbox-sm" type="checkbox" name="category" value={category} />
+                  <span>{category}</span>
+                </label>
+              )) : <span class="filter-empty">No categories available</span>}
+            </div>
+          </details>
         </div>
-        <div class="filter-field">
-          <label for="tag">Tags <span>(shareable)</span></label>
-          <select id="tag" name="tag" multiple size={taxonomy.tags.length > 0 ? Math.min(taxonomy.tags.length, 3) : 1} disabled={taxonomy.tags.length === 0}>
-            {taxonomy.tags.length > 0 ? taxonomy.tags.map((tag) => <option value={tag}>{tag}</option>) : <option>No tags available yet</option>}
-          </select>
+        <div class="filter-field multi-field">
+          <span class="filter-label" id="tag-label">Tags</span>
+          <details class="dropdown filter-dropdown">
+            <summary class="select select-sm filter-trigger" aria-label="Tags: All tags">
+              <span class="filter-summary" data-filter-summary="tag">All tags</span>
+            </summary>
+            <div class="dropdown-content filter-menu" data-filter-menu="tag" role="group" aria-labelledby="tag-label">
+              {taxonomy.tags.length > 0 ? taxonomy.tags.map((tag) => (
+                <label class="filter-option">
+                  <input class="checkbox checkbox-sm" type="checkbox" name="tag" value={tag} />
+                  <span>{tag}</span>
+                </label>
+              )) : <span class="filter-empty">No tags available</span>}
+            </div>
+          </details>
         </div>
-        <button class="reset-button" id="reset-filters" type="button" hidden>Reset all filters</button>
-        <p class="filter-note"><b>Search</b> stays in this browser · game, league, categories, and tags are shareable URL state</p>
+        <button class="reset-button btn btn-ghost btn-sm" id="reset-filters" type="button" hidden>Reset all filters</button>
       </form>
 
       <p class="result-status" id="result-status" role="status" aria-live="polite">{entries.length === 0 ? "No Published Lists are available yet." : ""}</p>
@@ -72,28 +89,43 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
         {entries.map((entry) => <PublishedListCard id={entry.id} list={entry.data} exportData={serializeShareableList(entry.data)} />)}
         <div class="empty-state" id="empty-state" hidden={entries.length > 0}>
           <p id="empty-message">No Published Lists are available yet.</p>
-          <button class="reset-button" type="button" data-empty-reset>Reset all filters</button>
+          <button class="reset-button btn btn-ghost btn-sm" type="button" data-empty-reset>Reset all filters</button>
         </div>
       </section>
       <p id="action-feedback" class="action-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     </main>
-
-    {import.meta.env.DEV && <DevTweaks />}
 
     <script>
       const filterForm = document.querySelector<HTMLFormElement>("#catalog-filters")!;
       const search = document.querySelector<HTMLInputElement>("#search")!;
       const game = document.querySelector<HTMLSelectElement>("#game")!;
       const league = document.querySelector<HTMLSelectElement>("#league")!;
-      const category = document.querySelector<HTMLSelectElement>("#category")!;
-      const tag = document.querySelector<HTMLSelectElement>("#tag")!;
+      const category = document.querySelector<HTMLElement>('[data-filter-menu="category"]')!;
+      const tag = document.querySelector<HTMLElement>('[data-filter-menu="tag"]')!;
+      const categorySummary = document.querySelector<HTMLElement>('[data-filter-summary="category"]')!;
+      const tagSummary = document.querySelector<HTMLElement>('[data-filter-summary="tag"]')!;
+      const categoryTrigger = categorySummary.closest("summary")!;
+      const tagTrigger = tagSummary.closest("summary")!;
       const reset = document.querySelector<HTMLButtonElement>("#reset-filters")!;
       const status = document.querySelector<HTMLElement>("#result-status")!;
       const emptyState = document.querySelector<HTMLElement>("#empty-state")!;
       const emptyMessage = document.querySelector<HTMLElement>("#empty-message")!;
       const cards = [...document.querySelectorAll<HTMLElement>(".list-card")];
-      const getSelected = (select: HTMLSelectElement): string[] => [...select.selectedOptions].map((option) => option.value);
-      const setSelected = (select: HTMLSelectElement, values: string[]) => [...select.options].forEach((option) => { option.selected = values.includes(option.value); });
+      const getSelected = (menu: HTMLElement): string[] => [...menu.querySelectorAll<HTMLInputElement>('input[type="checkbox"]:checked')].map((input) => input.value);
+      const setSelected = (menu: HTMLElement, values: string[]) => menu.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((input) => { input.checked = values.includes(input.value); });
+      const getSummary = (values: string[], emptyLabel: string, unit: string) => {
+        if (!values.length) return emptyLabel;
+        const names = values.join(", ");
+        return values.length <= 2 && names.length <= 24 ? names : `${values.length} ${unit}`;
+      };
+      const updateSummary = () => {
+        const categoryText = getSummary(getSelected(category), "All categories", "categories");
+        const tagText = getSummary(getSelected(tag), "All tags", "tags");
+        categorySummary.textContent = categoryText;
+        tagSummary.textContent = tagText;
+        categoryTrigger.setAttribute("aria-label", `Categories: ${categoryText}`);
+        tagTrigger.setAttribute("aria-label", `Tags: ${tagText}`);
+      };
       const params = new URLSearchParams(window.location.search);
 
       function readUrlState() {
@@ -138,22 +170,54 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
         status.textContent = hasCatalog ? `${visible} ${visible === 1 ? "Published List" : "Published Lists"} shown.` : "No Published Lists are available yet.";
       }
 
+      function configureTaxonomyFilter(control: HTMLButtonElement) {
+        const filter = control.dataset.taxonomyFilter;
+        const value = control.dataset.taxonomyValue;
+        if (!filter || !value) return;
+        if (filter === "game") game.value = value;
+        else if (filter === "league") league.value = value;
+        else {
+          const menu = filter === "category" ? category : filter === "tag" ? tag : null;
+          const input = menu && [...menu.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')].find((candidate) => candidate.value === value);
+          if (!input) return;
+          input.checked = true;
+        }
+        updateSummary();
+        writeUrlState();
+        applyFilters();
+      }
+
       function resetFilters() {
         game.value = "";
         league.value = "";
         setSelected(category, []);
         setSelected(tag, []);
+        updateSummary();
         search.value = "";
         writeUrlState();
         applyFilters();
         search.focus({ preventScroll: true });
       }
 
-      [game, league, category, tag].forEach((control) => control.addEventListener("change", () => { writeUrlState(); applyFilters(); }));
+      [game, league].forEach((control) => control.addEventListener("change", () => { writeUrlState(); applyFilters(); }));
+      [category, tag].forEach((menu) => menu.addEventListener("change", () => { updateSummary(); writeUrlState(); applyFilters(); }));
       search.addEventListener("input", applyFilters);
       filterForm.addEventListener("submit", (event) => event.preventDefault());
       reset.addEventListener("click", resetFilters);
       document.querySelector<HTMLButtonElement>("[data-empty-reset]")!.addEventListener("click", resetFilters);
+      document.querySelectorAll<HTMLButtonElement>("[data-taxonomy-filter]").forEach((control) => control.addEventListener("click", () => configureTaxonomyFilter(control)));
+      document.querySelectorAll<HTMLDetailsElement>(".filter-dropdown").forEach((dropdown) => {
+        dropdown.addEventListener("keydown", (event) => {
+          if (event.key !== "Escape") return;
+          dropdown.open = false;
+          dropdown.querySelector<HTMLElement>("summary")?.focus();
+        });
+      });
+      document.addEventListener("click", (event) => {
+        document.querySelectorAll<HTMLDetailsElement>(".filter-dropdown[open]").forEach((dropdown) => {
+          if (!dropdown.contains(event.target as Node)) dropdown.open = false;
+        });
+      });
 
       document.querySelectorAll("[data-expand]").forEach((button) => button.addEventListener("click", () => {
         const targetId = button.getAttribute("aria-controls");
@@ -199,6 +263,7 @@ const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : val
       });
 
       readUrlState();
+      updateSummary();
       applyFilters();
     </script>
   </body>

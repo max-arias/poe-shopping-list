@@ -10,7 +10,7 @@
 - **Register Current Trade** — the action that captures the active Path of Exile Trade search URL and requires confirmation or editing of the List Item title before saving it to the expanded List.
 - **Personal Shopping Companion** — the browser extension's focused role: let a player use a saved or imported List, follow its trade links, and track completion.
 - **List Overview** — optional free-text guidance attached to a Published List, including qualitative or price-related advice when a curator considers it useful.
-- **List Item** — one actionable recommendation in a Published List or Personal Draft, with a direct Path of Exile Trade URL, a quantity or variant, and optional curator rationale.
+- **List Item** — one actionable recommendation in a Published List or Personal Draft, with a direct Path of Exile Trade URL, a variant, and optional curator rationale.
 - **Category** — the one broad, editorially managed primary classification for a Published List, such as Mercenaries or Animate Guardian.
 - **Tag** — an editorially managed faceted classification applied to Published Lists for flexible discovery.
 - **League Applicability** — the Path of Exile game and named league(s), or evergreen status, for which a Published List is intended.

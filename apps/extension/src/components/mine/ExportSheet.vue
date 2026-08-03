@@ -44,7 +44,7 @@ async function copyToClipboard() {
     @click.self="ui.closeExportSheet()"
   >
     <div
-      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto shadow-panel"
+      class="w-full bg-bg border-t-2 border-accent flex flex-col gap-3 p-3.5 pb-3 max-h-[90%] overflow-auto"
     >
       <div class="flex items-center shrink-0">
         <p class="text-[13px] font-semibold text-ink">Export list</p>

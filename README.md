@@ -25,7 +25,6 @@ The portable contract is JSON:
     {
       "title": "The Pandemonius",
       "tradeUrl": "https://www.pathofexile.com/trade/search/Settlers?q=The%20Pandemonius",
-      "quantity": 1,
       "variant": "optional variant or qualification",
       "note": "Optional item guidance"
     }
@@ -33,7 +32,7 @@ The portable contract is JSON:
 }
 ```
 
-`format`, `version`, `title`, and `items` are required. `overview` is optional. Each item requires `title` and an HTTP(S) `tradeUrl`; `quantity`, `variant`, and `note` are optional. Unknown fields, unsupported versions, malformed JSON, and invalid values are rejected. Completion state, IDs, timestamps, account data, and synchronization metadata are not portable.
+`format`, `version`, `title`, and `items` are required. `overview` is optional. Each item requires `title` and an HTTP(S) `tradeUrl`; `variant` and `note` are optional. Unknown fields, unsupported versions, malformed JSON, and invalid values are rejected. Completion state, IDs, timestamps, account data, and synchronization metadata are not portable.
 
 ## Tech Stack
 

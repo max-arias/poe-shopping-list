@@ -48,7 +48,6 @@ The canonical version-1 shape is:
     {
       "title": "The Pandemonius",
       "tradeUrl": "https://www.pathofexile.com/trade/search/Settlers?q=The%20Pandemonius",
-      "quantity": 1,
       "variant": "optional variant or qualification",
       "note": "Optional item guidance"
     }
@@ -59,7 +58,7 @@ The canonical version-1 shape is:
 Contract rules:
 
 - `format`, `version`, `title`, and `items` are required; `overview` is optional.
-- Each item requires `title` and `tradeUrl`; `quantity`, `variant`, and `note` are optional.
+- Each item requires `title` and `tradeUrl`; `variant` and `note` are optional.
 - The contract contains no prices, price history, purchase history, completion state, generated IDs, timestamps, account data, or synchronization metadata.
 - Only the supported version and defined fields are accepted. Invalid or unsupported input is rejected rather than silently converted.
 - A successful import always creates a new local Personal Draft. All imported items start incomplete, regardless of any source state.

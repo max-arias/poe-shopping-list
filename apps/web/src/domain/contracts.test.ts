@@ -38,12 +38,9 @@ describe("Published List contract", () => {
     ["malformed URL", { items: [{ ...validPublishedList.items[0], tradeUrl: "https://example.com/trade" }] }, "items.0.tradeUrl"],
     ["empty items", { items: [] }, "items"],
     ["empty title", { title: "  " }, "title"],
-    ["zero quantity", { items: [{ ...validPublishedList.items[0], quantity: 0 }] }, "items.0.quantity"],
     ["empty variant", { items: [{ ...validPublishedList.items[0], variant: " " }] }, "items.0.variant"],
-    ["missing quantity and variant", { items: [{ title: "No detail", tradeUrl: validPublishedList.items[0].tradeUrl }] }, "items.0.quantity"],
     ["empty rationale", { items: [{ ...validPublishedList.items[0], rationale: " " }] }, "items.0.rationale"],
-    ["duplicate items", { items: [validPublishedList.items[0], validPublishedList.items[0]] }, "items.1.tradeUrl"],
-    ["duplicate item title", { items: [validPublishedList.items[0], { ...validPublishedList.items[1], title: validPublishedList.items[0].title }] }, "items.1.title"],
+    ["duplicate trade URL", { items: [validPublishedList.items[0], validPublishedList.items[0]] }, "items.1.tradeUrl"],
     ["invalid category slug", { category: "Not A Slug" }, "category"],
     ["price field", { price: 10 }, "price"],
     ["cache field", { cache: {} }, "cache"],
@@ -51,6 +48,17 @@ describe("Published List contract", () => {
     ["author timestamp", { lastReviewed: "2026-01-01T00:00:00.000Z" }, "lastReviewed"],
   ])("rejects %s", (_, patch, fieldPath) => {
     expectInvalid(patch, fieldPath);
+  });
+
+  it("accepts identical item titles when Trade URLs differ", () => {
+    const items = [
+      validPublishedList.items[0],
+      { ...validPublishedList.items[1], title: validPublishedList.items[0].title },
+    ];
+    expect(validatePublishedList({ ...validPublishedList, items }, references).items.map((item) => item.title)).toEqual([
+      "First item",
+      "First item",
+    ]);
   });
 
   it("requires exactly one league or evergreen applicability", () => {
@@ -61,11 +69,10 @@ describe("Published List contract", () => {
   it("exports only strict Shareable List v1 fields and source order", () => {
     const result = serializeShareableList({ ...validPublishedList, category: "future-category", tags: [] });
     expect(result).toEqual({ format: "poe-shopping-list", version: 1, title: validPublishedList.title, items: [
-      { title: "First item", tradeUrl: validPublishedList.items[0].tradeUrl, quantity: 2, variant: "Normal", note: "First rationale" },
+      { title: "First item", tradeUrl: validPublishedList.items[0].tradeUrl, variant: "Normal", note: "First rationale" },
       { title: "Second item", tradeUrl: validPublishedList.items[1].tradeUrl, variant: "Any" },
     ] });
     expect(() => shareableListSchema.parse({ ...result, category: "secret" })).toThrow();
-    expect(() => shareableListSchema.parse({ format: "poe-shopping-list", version: 1, title: "Quantity only", items: [{ title: "Item", tradeUrl: validPublishedList.items[0].tradeUrl, quantity: 1 }] })).not.toThrow();
     expect(() => shareableListSchema.parse({ format: "poe-shopping-list", version: 1, title: "Variant only", items: [{ title: "Item", tradeUrl: validPublishedList.items[0].tradeUrl, variant: "Any" }] })).not.toThrow();
   });
 

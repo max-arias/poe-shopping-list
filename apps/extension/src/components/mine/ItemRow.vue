@@ -65,7 +65,7 @@ function startDrag(event: DragEvent) {
 
 <template>
   <div
-    class="flex min-h-12 items-center gap-2 border-b border-stroke-soft py-2"
+    class="item-row flex min-h-12 items-center gap-2 border-b border-stroke-soft py-2"
     @dragover.prevent
     @drop.prevent="emit('drop')"
   >
@@ -106,8 +106,8 @@ function startDrag(event: DragEvent) {
       type="button"
       role="checkbox"
       :aria-checked="item.completed"
-      class="flex h-4 w-4 shrink-0 items-center justify-center border border-stroke bg-transparent text-[10px] text-good-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
-      :class="item.completed ? 'border-good-edge bg-good' : ''"
+      class="checkbox checkbox-sm shrink-0 border-[#8aa08f] bg-white text-[10px] text-white focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+      :class="item.completed ? 'border-accent bg-accent' : ''"
       :aria-label="item.completed ? `Mark ${item.title} incomplete` : `Mark ${item.title} complete`"
       @click="toggle"
     >
@@ -146,7 +146,7 @@ function startDrag(event: DragEvent) {
     <button
       v-else
       type="button"
-      class="min-w-0 flex-1 truncate bg-transparent p-0 text-left text-[13px] font-semibold text-ink hover:underline focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+      class="link link-hover min-w-0 flex-1 truncate bg-transparent p-0 text-left text-[13px] font-normal text-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
       :class="item.completed ? 'opacity-60 line-through' : ''"
       :aria-label="`Open ${item.title} trade search`"
       @click="openTrade"

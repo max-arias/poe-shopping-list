@@ -3,10 +3,10 @@
 <template>
   <div
     role="alert"
-    class="flex gap-2 px-3 py-2 bg-warn border-b border-warn-edge items-start shrink-0"
+    class="alert flex gap-2 rounded-none border-0 border-b border-warn-edge bg-warn px-3 py-2 items-start shrink-0"
   >
     <div
-      class="w-3.5 h-3.5 rounded-full bg-warn-ink text-bg text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
+      class="w-3.5 h-3.5 bg-warn-ink text-bg text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
     >
       !
     </div>
