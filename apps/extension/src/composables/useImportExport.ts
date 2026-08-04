@@ -1,9 +1,10 @@
-import { DraftSchema, ShareableListSchema } from "@/types";
+import { decodeShareableList, encodeShareableList } from "@poe-sl/shareable-list";
+import { DraftSchema } from "@/types";
 import type { Draft } from "@/types";
 
 /** Serialize only the strict, versioned Shareable List contract. */
 export function exportDraft(draft: Draft): string {
-  const portable = ShareableListSchema.parse({
+  const portable = {
     format: "poe-shopping-list",
     version: 1,
     title: draft.title,
@@ -14,20 +15,13 @@ export function exportDraft(draft: Draft): string {
       ...(item.variant !== undefined ? { variant: item.variant } : {}),
       ...(item.note !== undefined ? { note: item.note } : {}),
     })),
-  });
-  return JSON.stringify(portable);
+  } as const;
+  return encodeShareableList(portable);
 }
 
-/** Parse strict v1 JSON into a new independent local Personal Draft. */
-export function importDraft(json: string): Draft {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(json);
-  } catch {
-    throw new Error("Invalid import: not valid JSON");
-  }
-
-  const portable = ShareableListSchema.parse(parsed);
+/** Decode a strict v1 share token into a new independent local Personal Draft. */
+export function importDraft(token: string): Draft {
+  const portable = decodeShareableList(token);
   const now = Date.now();
   return DraftSchema.parse({
     id: crypto.randomUUID(),

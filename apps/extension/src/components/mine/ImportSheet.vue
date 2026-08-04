@@ -55,19 +55,20 @@ async function handleImport() {
         <button
           @click="ui.closeImportSheet()"
           class="text-ink-muted text-base cursor-pointer bg-transparent border-0"
+          aria-label="Close import list"
         >
           ✕
         </button>
       </div>
 
       <p class="text-[11px] text-ink-muted">
-        Paste the exported string from another user to import their list.
+        Paste a share code into the extension to import a list.
       </p>
 
       <textarea
         v-model="input"
-        placeholder="Paste exported list string here…"
-        aria-label="Import list string"
+        placeholder="Paste share code here…"
+        aria-label="List share code"
         class="w-full h-24 px-2.5 py-2 text-[11px] font-sans border border-stroke rounded-sm text-ink bg-bg resize-none placeholder:text-ink-muted"
         @keydown.enter.ctrl="handleImport"
       />

@@ -52,20 +52,21 @@ async function copyToClipboard() {
         <button
           @click="ui.closeExportSheet()"
           class="text-ink-muted text-base cursor-pointer bg-transparent border-0"
+          aria-label="Close export list"
         >
           ✕
         </button>
       </div>
 
       <p class="text-[11px] text-ink-muted">
-        Copy this string and share it. Others can import it to recreate your list.
+        Copy this share code and send it. Recipients can paste it into the extension to recreate your list.
       </p>
 
       <textarea
         data-export-textarea
         readonly
         :value="encoded"
-        aria-label="Exported list string"
+        aria-label="List share code"
         class="w-full h-24 px-2.5 py-2 text-[11px] font-sans border border-stroke rounded-sm text-ink bg-surface resize-none"
         @click="($event.target as HTMLTextAreaElement).select()"
       />

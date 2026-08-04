@@ -11,6 +11,7 @@
     "check": "vp check src wxt.config.ts"
   },
   "dependencies": {
+    "@poe-sl/shareable-list": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "pinia": "^2.2.6",
     "vue": "^3.5.40",

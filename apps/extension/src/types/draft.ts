@@ -1,3 +1,9 @@
+import {
+  ShareableListItemSchema,
+  ShareableListSchema,
+  type ShareableList,
+  type ShareableListItem,
+} from "@poe-sl/shareable-list";
 import { z } from "zod";
 
 const TitleSchema = z
@@ -13,26 +19,8 @@ const TradeUrlSchema = z
     "tradeUrl must be an HTTP(S) URL",
   );
 
-export const ShareableListItemSchema = z
-  .object({
-    title: TitleSchema,
-    tradeUrl: TradeUrlSchema,
-    variant: z.string().optional(),
-    note: z.string().optional(),
-  })
-  .strict();
-export type ShareableListItem = z.infer<typeof ShareableListItemSchema>;
-
-export const ShareableListSchema = z
-  .object({
-    format: z.literal("poe-shopping-list"),
-    version: z.literal(1),
-    title: TitleSchema,
-    overview: z.string().optional(),
-    items: z.array(ShareableListItemSchema),
-  })
-  .strict();
-export type ShareableList = z.infer<typeof ShareableListSchema>;
+export { ShareableListItemSchema, ShareableListSchema };
+export type { ShareableList, ShareableListItem };
 
 export const DraftItemSchema = z
   .object({

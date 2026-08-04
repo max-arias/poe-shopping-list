@@ -1,0 +1,11 @@
+---
+import { renderOverviewMarkdown } from "./overview-markdown";
+
+interface Props {
+  value: string;
+}
+
+const { value } = Astro.props;
+---
+
+<div class="list-overview" set:html={renderOverviewMarkdown(value)}></div>

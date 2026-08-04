@@ -22,8 +22,8 @@ const categoryId = (category: string) => `category-${category.toLowerCase().repl
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Published List Catalog</title>
-    <meta name="description" content="Browse Published Lists for Path of Exile." />
+    <title>Curated Path of Exile Lists</title>
+    <meta name="description" content="Browse curated Path of Exile shopping and checklist lists. Search and filter to find what you need." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -32,7 +32,8 @@ const categoryId = (category: string) => `category-${category.toLowerCase().repl
   </head>
   <body class="font-body">
     <header class="site-header">
-      <h1>Published Lists</h1>
+      <h1>Curated Path of Exile Lists</h1>
+      <p>Browse curated Path of Exile shopping and checklist lists—search or filter to find what you need.</p>
     </header>
 
     <main class="catalog-main">
@@ -254,17 +255,6 @@ const categoryId = (category: string) => `category-${category.toLowerCase().repl
           if (!dropdown.contains(event.target as Node)) dropdown.open = false;
         });
       });
-
-      document.querySelectorAll("[data-expand]").forEach((button) => button.addEventListener("click", () => {
-        const targetId = button.getAttribute("aria-controls");
-        if (!targetId) return;
-        const target = document.getElementById(targetId);
-        if (!target) return;
-        const expanded = button.getAttribute("aria-expanded") === "true";
-        button.setAttribute("aria-expanded", String(!expanded));
-        button.innerHTML = expanded ? "Show remaining items <span aria-hidden=\"true\">＋</span>" : "Hide remaining items <span aria-hidden=\"true\">−</span>";
-        target.hidden = expanded;
-      }));
 
       const feedback = document.querySelector<HTMLElement>("#action-feedback")!;
       let feedbackTimer: number | undefined;
