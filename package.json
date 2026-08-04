@@ -24,7 +24,6 @@
     "web:preview": "vp run --filter @poe-sl/web preview",
     "web:output:check": "vp run --filter @poe-sl/web output:check",
     "web:links:check": "vp run --filter @poe-sl/web links:check",
-    "web:test:fixtures:build": "vp run --filter @poe-sl/web build:test-fixtures",
     "web:test:browser": "vp run --filter @poe-sl/web test:browser",
     "cf:build": "vp run --filter @poe-sl/web build",
     "cf:deploy": "vp run --filter @poe-sl/web deploy",

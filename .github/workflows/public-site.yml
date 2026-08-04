@@ -105,7 +105,6 @@ jobs:
           name: public-site-validation-failure-${{ github.run_id }}
           path: |
             apps/web/test-results
-            apps/web/dist-test
             apps/web/dist
           if-no-files-found: ignore
           retention-days: 14

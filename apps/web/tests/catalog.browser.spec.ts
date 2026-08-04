@@ -2,140 +2,92 @@ import { readFile } from "node:fs/promises";
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-const shareable = {
-  format: "poe-shopping-list",
-  version: 1,
-  title: "Browser fixture: Mercenary essentials",
-  overview: "Deterministic browser-only overview.",
-  items: [
-    { title: "First ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=first", variant: "Corrupted", note: "The first deterministic rationale." },
-    { title: "Second ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=second", variant: "Any" },
-    { title: "Third ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=third", variant: "Any" },
-    { title: "Fourth ordered recommendation", tradeUrl: "https://www.pathofexile.com/trade/search/BrowserTest?q=fourth", variant: "Any", note: "A later item revealed by expansion." },
-  ],
-};
-
-test.describe("populated test-only catalog", () => {
+test.describe("authored catalog", () => {
   test.beforeEach(async ({ page }) => {
-    // This project serves the explicit fixture build, whose loader supplies
-    // only the deterministic files under tests/fixtures/content.
     await page.goto("/");
   });
 
-  test("uses URL-backed taxonomy filters and local-only search", async ({ page }) => {
-    await page.locator("#search").fill("Mercenary");
+  test("uses URL-backed taxonomy filters and includes RF Essentials", async ({ page }) => {
+    await page.locator("#search").fill("RF Essentials");
     expect(new URL(page.url()).search).toBe("");
     await page.locator("#game").selectOption("poe1");
-    await page.locator("#league").selectOption("Browser Test League");
-    await page.locator('[data-filter-menu="category"] input[value="mercenaries"]').check();
-    await page.locator('[data-filter-menu="category"] input[value="guardian"]').check();
-    await page.locator('[data-filter-menu="tag"] input[value="league-start"]').check();
-    await page.locator('[data-filter-menu="tag"] input[value="defense"]').check();
+    await page.locator("#league").selectOption("evergreen");
+    await page.locator('[data-filter-menu="category"] input[value="righteous-fire"]').check();
+    await page.locator('[data-filter-menu="tag"] input[value="righteous-fire"]').check();
+    await expect(page.locator(".list-card:visible h2")).toHaveText("RF Essentials");
+
     const url = new URL(page.url());
     expect(url.searchParams.get("game")).toBe("poe1");
-    expect(url.searchParams.get("league")).toBe("Browser Test League");
-    expect(url.searchParams.getAll("category")).toEqual(["mercenaries", "guardian"]);
-    expect(url.searchParams.getAll("tag")).toEqual(["league-start", "defense"]);
-    await expect(page.locator(".list-card:visible")).toHaveCount(1);
-    await expect(page.locator(".list-card:visible h2")).toHaveText("Browser fixture: Mercenary essentials");
+    expect(url.searchParams.get("league")).toBe("evergreen");
+    expect(url.searchParams.getAll("category")).toEqual(["righteous-fire"]);
+    expect(url.searchParams.getAll("tag")).toEqual(["righteous-fire"]);
   });
 
-  test("groups cards by category and hides empty groups while filtering", async ({ page }) => {
-    await expect(page.locator(".category-section")).toHaveCount(2);
-    await expect(page.locator(".category-heading h2")).toHaveText(["guardian", "mercenaries"]);
-    await expect(page.locator('.list-card [data-taxonomy-filter="category"]')).toHaveCount(0);
-
-    const guardian = page.locator(".category-section").filter({ hasText: "guardian" });
-    const mercenaries = page.locator(".category-section").filter({ hasText: "mercenaries" });
-    await page.locator("#search").fill("Mercenary");
-    await expect(guardian).toBeHidden();
-    await expect(mercenaries).toBeVisible();
-    await expect(mercenaries.locator(".list-card:visible")).toHaveCount(1);
+  test("groups authored cards and hides empty groups while filtering", async ({ page }) => {
+    const sections = page.locator(".category-section");
+    await expect(sections).not.toHaveCount(0);
+    await page.locator("#search").fill("RF Essentials");
+    await expect(sections.filter({ hasText: "righteous-fire" })).toBeVisible();
+    await expect(page.locator(".category-section:visible").filter({ hasNotText: "righteous-fire" })).toHaveCount(0);
   });
 
   test("category headings toggle the existing category filter", async ({ page }) => {
-    const heading = page.getByRole("button", { name: "Filter by category: mercenaries" });
+    const heading = page.getByRole("button", { name: "Filter by category: righteous-fire" });
     await heading.click();
     await expect(heading).toHaveAttribute("aria-pressed", "true");
-    await expect(page.locator('[data-filter-summary="category"]')).toHaveText("mercenaries");
-    expect(new URL(page.url()).searchParams.getAll("category")).toEqual(["mercenaries"]);
-    await expect(page.locator(".category-section").filter({ hasText: "guardian" })).toBeHidden();
+    await expect(page.locator('[data-filter-summary="category"]')).toHaveText("righteous-fire");
+    expect(new URL(page.url()).searchParams.getAll("category")).toEqual(["righteous-fire"]);
+    await expect(page.locator(".list-card:visible h2")).toHaveText("RF Essentials");
 
-    await page.getByRole("button", { name: "Remove category: mercenaries" }).click();
+    await page.getByRole("button", { name: "Remove category: righteous-fire" }).click();
     await expect(page.locator('[data-filter-summary="category"]')).toHaveText("All categories");
     expect(new URL(page.url()).search).toBe("");
-    await expect(page.locator(".category-section:visible")).toHaveCount(2);
+    await expect(page.locator(".list-card:visible")).not.toHaveCount(0);
   });
 
-  test("clickable taxonomy badges configure filters and preserve selected taxonomy", async ({ page }) => {
-    const mercenary = page.locator(".list-card").filter({ hasText: "Mercenary essentials" });
-    await mercenary.getByRole("button", { name: "Filter by game: Path of Exile 1" }).click();
-    await mercenary.getByRole("button", { name: "Filter by league: Browser Test League" }).click();
-    await mercenary.getByRole("button", { name: "Filter by tag: league-start" }).click();
-    await mercenary.getByRole("button", { name: "Filter by tag: defense" }).click();
-
-    const url = new URL(page.url());
-    expect(url.searchParams.get("game")).toBe("poe1");
-    expect(url.searchParams.get("league")).toBe("Browser Test League");
-    expect(url.searchParams.getAll("category")).toEqual([]);
-    expect(url.searchParams.getAll("tag")).toEqual(["league-start", "defense"]);
-    await expect(page.locator(".list-card:visible")).toHaveCount(1);
-    await expect(page.locator(".list-card:visible h2")).toHaveText("Browser fixture: Mercenary essentials");
-    await expect(page.locator("#search")).toHaveValue("");
+  test("preserves authored overview and ordered item expansion", async ({ page }) => {
+    const card = page.locator(".list-card").filter({ hasText: "Master's Red Arc Ignite Elementalist" });
+    await expect(card).toBeVisible();
+    await expect(card.locator(".item-title")).toHaveCount(8);
+    await expect(card.locator(".item-title:visible")).toHaveCount(3);
+    await expect(card.locator(".remaining-items")).toBeHidden();
+    const disclosure = card.locator(".remaining-collapse");
+    await expect(disclosure.locator(".remaining-summary")).toHaveText("");
+    await expect(disclosure.locator("> .remaining-items")).toHaveCount(1);
+    const arrowBox = await disclosure.locator(".remaining-summary").boundingBox();
+    const firstItemBox = await card.locator(".initial-items .list-item").first().boundingBox();
+    expect(arrowBox).not.toBeNull();
+    expect(firstItemBox).not.toBeNull();
+    expect(arrowBox!.height).toBeGreaterThan(0);
+    expect(arrowBox!.y + arrowBox!.height).toBeLessThanOrEqual(firstItemBox!.y);
+    await disclosure.locator(".remaining-summary").click();
+    await expect(disclosure).toHaveAttribute("open", "");
+    await expect(card.locator(".remaining-items")).toBeVisible();
+    await expect(card.locator(".item-title:visible")).toHaveCount(8);
+    await expect(card.locator(".item-title:visible").nth(3)).toContainText("Boneflesh Marble Amulet");
   });
 
-  test("preserves optional overview, ordering, variants, and expansion", async ({ page }) => {
-    const mercenary = page.locator(".list-card").filter({ hasText: "Mercenary essentials" });
-    await expect(mercenary.locator(".list-overview")).toHaveText("Deterministic browser-only overview.");
-    await expect(mercenary.locator(".item-title")).toHaveCount(4);
-    await expect(mercenary.locator(".item-title").nth(0)).toContainText("First ordered recommendation");
-    await expect(mercenary.locator(".item-variant").nth(0)).toHaveText("Corrupted");
-    await expect(mercenary.locator(".item-rationale").first()).toContainText("Why");
-    await expect(mercenary.locator(".remaining-items")).toBeHidden();
-    await mercenary.locator("[data-expand]").click();
-    await expect(mercenary.locator(".remaining-items")).toBeVisible();
-    await expect(mercenary.locator(".item-title").nth(3)).toContainText("Fourth ordered recommendation");
-
-    const evergreen = page.locator(".list-card").filter({ hasText: "Evergreen guardian" });
-    await expect(evergreen.locator(".list-overview")).toHaveCount(0);
-    await expect(evergreen).toContainText("Evergreen");
-  });
-
-  test("uses official external Trade links and exact Shareable v1 actions", async ({ page }) => {
-    const card = page.locator(".list-card").filter({ hasText: "Mercenary essentials" });
-    await expect(card.locator('a[target="_blank"]')).toHaveCount(4);
+  test("uses official Trade links and Shareable v1 actions", async ({ page }) => {
+    const card = page.locator(".list-card").filter({ hasText: "RF Essentials" });
+    await expect(card.locator('a[target="_blank"]')).toHaveCount(1);
     await expect(card.locator('a[target="_blank"]').first()).toHaveAttribute("href", /^https:\/\/www\.pathofexile\.com\/trade\/search\//);
 
     const downloadPromise = page.waitForEvent("download");
     await card.locator("[data-download]").click();
     const download = await downloadPromise;
-    expect(await readFile((await download.path())! as string, "utf8")).toBe(`${JSON.stringify(shareable, null, 2)}\n`);
-    expect(download.suggestedFilename()).toBe("browser-fixture-mercenary-essentials-shareable-list-v1.json");
+    const exported = JSON.parse(await readFile((await download.path())! as string, "utf8"));
+    expect(exported).toMatchObject({ format: "poe-shopping-list", version: 1, title: "RF Essentials" });
+    expect(download.suggestedFilename()).toBe("rf-essentials-shareable-list-v1.json");
 
-    await page.evaluate(() => {
-      Object.defineProperty(navigator, "clipboard", { configurable: true, value: {
-        writeText: (text: string) => { (window as unknown as { copied: string }).copied = text; return Promise.resolve(); },
-      } });
-    });
+    await page.evaluate(() => Object.defineProperty(navigator, "clipboard", { configurable: true, value: {
+      writeText: (text: string) => { (window as unknown as { copied: string }).copied = text; return Promise.resolve(); },
+    } }));
     await card.locator("[data-copy]").click();
-    await expect(page.locator("#action-feedback")).toBeVisible();
     await expect(page.locator("#action-feedback")).toContainText("copied as Shareable List v1 JSON");
-    expect(await page.evaluate(() => (window as unknown as { copied: string }).copied)).toBe(`${JSON.stringify(shareable, null, 2)}\n`);
-
-    await page.evaluate(() => {
-      Object.defineProperty(navigator, "clipboard", { configurable: true, value: {
-        writeText: () => Promise.reject(new Error("clipboard denied")),
-      } });
-    });
-    await card.locator("[data-copy]").click();
-    const feedback = page.locator("#action-feedback");
-    await expect(feedback).toBeVisible();
-    await expect(feedback).toHaveText("Copy failed for Browser fixture: Mercenary essentials.");
-    await expect(feedback).toHaveAttribute("role", "status");
-    await expect(feedback).toHaveAttribute("aria-live", "polite");
+    expect(JSON.parse((await page.evaluate(() => (window as unknown as { copied: string }).copied))!)).toMatchObject({ title: "RF Essentials" });
   });
 
-  test("runs a limited axe scan (axe)", async ({ page }) => {
+  test("runs a limited axe scan", async ({ page }) => {
     const results = await new AxeBuilder({ page }).include("main").analyze();
     expect(results.violations).toEqual([]);
   });

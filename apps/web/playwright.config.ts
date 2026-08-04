@@ -1,11 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Playwright starts webServer entries after loading this config. Prepare both
-// artifacts here so the preview processes only ever serve completed outputs.
-process.env.PLAYWRIGHT_BUILD_SESSION ??= `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-const { prepareBrowserBuilds } = await import("./scripts/prepare-browser-builds.mjs");
-await prepareBrowserBuilds();
-
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
@@ -16,6 +10,7 @@ export default defineConfig({
   outputDir: "test-results/artifacts",
   use: {
     ...devices["Desktop Chrome"],
+    baseURL: "http://127.0.0.1:45673",
     // Local verification may point at an already-installed Chrome. CI keeps
     // Playwright's bundled Chromium when this opt-in variable is unset.
     ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
@@ -25,28 +20,13 @@ export default defineConfig({
     trace: "retain-on-failure",
     video: "off",
   },
-  webServer: [
-    {
-      command: "mkdir -p test-results && corepack pnpm preview --host 127.0.0.1 --port 45671 > test-results/preview-production.log 2>&1",
-      url: "http://127.0.0.1:45671/",
-      cwd: ".",
-      timeout: 120_000,
-      reuseExistingServer: false,
-      stdout: "pipe",
-      stderr: "pipe",
-    },
-    {
-      command: "mkdir -p test-results && corepack pnpm preview:test-fixtures --host 127.0.0.1 --port 45672 > test-results/preview-fixtures.log 2>&1",
-      url: "http://127.0.0.1:45672/",
-      cwd: ".",
-      timeout: 120_000,
-      reuseExistingServer: false,
-      stdout: "pipe",
-      stderr: "pipe",
-    },
-  ],
-  projects: [
-    { name: "production", testMatch: /empty\.browser\.spec\.ts/, use: { baseURL: "http://127.0.0.1:45671" } },
-    { name: "fixtures", testMatch: /catalog\.browser\.spec\.ts/, use: { baseURL: "http://127.0.0.1:45672" } },
-  ],
+  webServer: {
+    command: "node_modules/.bin/astro build && node_modules/.bin/astro preview --host 127.0.0.1 --port 45673",
+    url: "http://127.0.0.1:45673/",
+    cwd: ".",
+    timeout: 120_000,
+    reuseExistingServer: false,
+    stdout: "pipe",
+    stderr: "pipe",
+  },
 });

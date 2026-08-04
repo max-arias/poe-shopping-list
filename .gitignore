@@ -12,7 +12,6 @@ build/
 
 # Astro
 .astro/
-/apps/web/dist-test/
 /apps/web/test-results/
 /apps/web/.playwright-build-ready
 

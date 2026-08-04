@@ -1,5 +1,6 @@
 ---
 import type { PublishedList, ShareableList } from "../domain/schemas";
+import OverviewMarkdown from "./OverviewMarkdown.astro";
 
 interface Props {
   id: string;
@@ -43,20 +44,10 @@ const searchText = [list.title, list.overview, taxonomyText, ...list.items.map((
   </header>
 
   <div class="card-content">
-    {list.overview && <p class="list-overview">{list.overview}</p>}
-
-    <ol class="item-list" aria-label={`${list.title} items`}>
-      {initialItems.map((item, index) => <li class="list-item">
-        <span class="item-order" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-        <span class="item-title"><a href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="external-link" aria-hidden="true">↗</span><span class="visually-hidden"> (external Trade link)</span></a></span>
-        {item.variant && <span class="item-variant">{item.variant}</span>}
-        {item.rationale && <details class="item-rationale"><summary>Why this item</summary><p>{item.rationale}</p></details>}
-      </li>)}
-    </ol>
+    {list.overview && <OverviewMarkdown value={list.overview} />}
 
     {remainingItems.length > 0 && <details class="remaining-collapse collapse collapse-arrow">
-      <summary class="remaining-summary collapse-title">Show remaining items</summary>
-      <div class="collapse-content remaining-content">
+      <summary class="remaining-summary collapse-title" aria-label={`Show remaining items for ${list.title}`}></summary>
       <ol id={remainingId} class="item-list remaining-items" start="4" aria-label={`${list.title} remaining items`}>
         {remainingItems.map((item, index) => <li class="list-item">
           <span class="item-order" aria-hidden="true">{String(index + 4).padStart(2, "0")}</span>
@@ -65,7 +56,16 @@ const searchText = [list.title, list.overview, taxonomyText, ...list.items.map((
           {item.rationale && <details class="item-rationale"><summary>Why this item</summary><p>{item.rationale}</p></details>}
         </li>)}
       </ol>
-      </div>
     </details>}
+
+    <ol class="item-list initial-items" aria-label={`${list.title} items`}>
+      {initialItems.map((item, index) => <li class="list-item">
+        <span class="item-order" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+        <span class="item-title"><a href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="external-link" aria-hidden="true">↗</span><span class="visually-hidden"> (external Trade link)</span></a></span>
+        {item.variant && <span class="item-variant">{item.variant}</span>}
+        {item.rationale && <details class="item-rationale"><summary>Why this item</summary><p>{item.rationale}</p></details>}
+      </li>)}
+    </ol>
+
   </div>
 </article>

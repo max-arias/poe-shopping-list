@@ -39,17 +39,6 @@ artifact. `output:check` verifies the expected static routes/content and
 `wrangler:validate` is a static-assets dry run. These commands require no
 Cloudflare credentials.
 
-For the isolated non-publishable browser fixture output, the equivalent checks
-are:
-
-```sh
-corepack pnpm --dir apps/web build:test-fixtures
-corepack pnpm --dir apps/web output:check:test-fixtures
-corepack pnpm --dir apps/web links:check:test-fixtures
-```
-
-Never copy `dist-test` into the production `dist` artifact.
-
 Before the browser test, install the Playwright Chromium browser (and Linux
 dependencies where applicable):
 
@@ -57,8 +46,8 @@ dependencies where applicable):
 corepack pnpm --dir apps/web exec playwright install --with-deps chromium
 ```
 
-Then run the fixture browser and limited axe checks. It builds isolated
-`dist-test` output and previews it; it does not publish fixtures:
+Then run the browser and limited axe checks against the same authored-content
+build used by the other validations:
 
 ```sh
 corepack pnpm --dir apps/web test:browser
@@ -70,10 +59,9 @@ For a local manual check after a successful build:
 corepack pnpm --dir apps/web preview
 ```
 
-The current repository intentionally contains no Published Lists and no
-canonical taxonomy values. A successful empty build is not evidence of
-published content. There are no seeds, fixtures, or migrations to run; any
-fixtures used by tests are not publishable.
+The repository includes authored Published Lists, including RF Essentials.
+Browser tests use that normal catalog directly; there is no fixture catalog or
+separate browser build to maintain.
 
 ## CI and artifact behavior
 
