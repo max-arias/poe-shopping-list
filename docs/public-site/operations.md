@@ -1,7 +1,7 @@
 # Public-site operations and recovery
 
 These procedures apply only to the static public site. They do not alter
-extension operations, credentials, store releases, or extension browser tests.
+extension operations, credentials, or store releases.
 
 ## Implemented delivery surface
 
@@ -27,10 +27,9 @@ blocker; do not substitute a guessed value.
 ## Production artifact and evidence
 
 The trusted `main` validation job runs the frozen install, `sync`, `check`,
-`content:validate`, focused tests, production `build`, and the fixture
-browser/axe suite (Chromium is installed first). It then runs `output:check`,
-`links:check`, and `wrangler:validate` against that exact browser-tested
-production `dist`, and packages it without rebuilding. The resulting artifact
+`content:validate`, production `build`, `output:check`, `links:check`, and
+`wrangler:validate` against one production `dist`, then packages it without
+rebuilding. The resulting artifact
 is named `public-site-production-<commit SHA>` and contains `dist.tar.gz`,
 `dist.tar.gz.sha256`, and the sorted per-file SHA-256/size
 `content-manifest.txt`. Successful validation evidence is named
@@ -138,7 +137,7 @@ manual prerequisites and are not configured here.
 Before first launch and after material template changes, a named maintainer
 must manually review and record keyboard traversal, visible focus,
 headings/landmarks, link names, 200% zoom/reflow, contrast in context, filter
-reset, card actions, and Trade-link behavior. Limited axe/browser checks do not
-replace this gate. Store the review alongside protected release evidence and
+reset, card actions, and Trade-link behavior. Automated checks do not replace
+this gate. Store the review alongside protected release evidence and
 record its location; reviewer and evidence location are currently unassigned,
 so launch is blocked.

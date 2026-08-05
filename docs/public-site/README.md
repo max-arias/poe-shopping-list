@@ -3,20 +3,20 @@
 The public site is a static, Git-authored Published List Catalog. V1 has one
 Catalog route and no runtime API, database, authentication, prices, or CMS.
 An empty Catalog is valid and must say that no Published Lists are available;
-seeds, migrations, sample content, and test fixtures are never publication
+seeds, migrations, sample content, and validation fixtures are never publication
 inputs.
 
-The implementation and CI surfaces now exist: `apps/web`,
+The implementation and publication surfaces now exist: `apps/web`,
 `.github/workflows/public-site.yml`, and asset-first `apps/web/wrangler.jsonc`.
-The workflow validates pull requests, tests and packages one exact `dist`
-artifact on trusted `main`, and promotes that artifact without rebuilding. It
+The workflow validates and packages one exact `dist` artifact on trusted `main`,
+and promotes that artifact without rebuilding. It
 also supports a maintainer-requested preview from a successful trusted main
 validation job. Cloudflare account/domain setup and the
 protected environments are not configured here; see [operations](./operations.md).
 
 Read [contributing](./contributing.md), [setup](./setup.md), and
 [operations](./operations.md). These procedures never change extension build,
-tests, release, store, browser-support, or credentials operations.
+release, store, browser-support, or credentials operations.
 
 ## Launch blockers (not configured)
 

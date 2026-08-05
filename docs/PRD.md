@@ -49,6 +49,9 @@ The extension does not provide accounts, server persistence, cloud sync, collabo
 
 The current source contains the v1 schemas, strict JSON import/export, local draft completion, accordion workflow, narrowed trade-page permissions, and the explicit registration modal. The registration runtime signal and its save path remain incomplete in the current implementation.
 
-## Test strategy
+## Validation
 
-The v1 contract and side-panel workflows are verified with Vitest: pure contracts run in Node and Vue side-panel components run in jsdom. Browser E2E and browser lifecycle tests are not part of release validation.
+This repository intentionally has no automated test suite. Validate the v1
+contract and side-panel workflows through type checking, formatting/linting,
+production builds, and manual review in supported browsers. Do not add test
+files, runners, dependencies, or CI without an explicit maintainer request.

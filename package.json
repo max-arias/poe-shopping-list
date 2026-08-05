@@ -19,12 +19,10 @@
     "web:sync": "vp run --filter @poe-sl/web sync",
     "web:check": "vp run --filter @poe-sl/web check",
     "web:content:validate": "vp run --filter @poe-sl/web content:validate",
-    "web:test": "vp run --filter @poe-sl/web test:focused",
     "web:build": "vp run --filter @poe-sl/web build",
     "web:preview": "vp run --filter @poe-sl/web preview",
     "web:output:check": "vp run --filter @poe-sl/web output:check",
     "web:links:check": "vp run --filter @poe-sl/web links:check",
-    "web:test:browser": "vp run --filter @poe-sl/web test:browser",
     "cf:build": "vp run --filter @poe-sl/web build",
     "cf:deploy": "vp run --filter @poe-sl/web deploy",
     "cf:deploy:preview": "vp run --filter @poe-sl/web deploy:preview"

@@ -12,8 +12,6 @@ build/
 
 # Astro
 .astro/
-/apps/web/test-results/
-/apps/web/.playwright-build-ready
 
 # WXT / extension artifacts
 *.zip

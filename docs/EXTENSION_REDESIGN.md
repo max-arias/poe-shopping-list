@@ -87,17 +87,17 @@ The reset is clean: obsolete local state and obsolete format assumptions are rem
 
 These tickets must not broaden the approved scope without a new decision record.
 
-### Testing next steps
+### Validation next steps
 
-1. Add contract tests for valid v1 JSON, unknown fields, unsupported versions, malformed URLs, and incomplete imports.
+1. Verify valid v1 JSON, unknown fields, unsupported versions, malformed URLs, and incomplete imports through the existing validation workflow.
 2. Verify every import produces an independent local copy with all items incomplete and no source-copy updates.
 3. Exercise the accordion with multiple Lists, default-collapsed overviews, selection changes, completion, row clicks, and reorder persistence.
-4. Test Register Current Trade on a supported trade page, including title confirmation/editing, cancel, save, and unsupported-page behavior.
+4. Manually verify Register Current Trade on a supported trade page, including title confirmation/editing, cancel, save, and unsupported-page behavior.
 5. Run accessibility and keyboard checks for title bands, item rows, reorder controls, dialogs, and focus states.
 
 ### Release next steps
 
 1. Implement the clean-reset storage migration and the single v1 contract.
 2. Implement the approved side-panel flow against the [visual reference](design/extension-side-panel.html), without adding excluded features.
-3. Complete unit, integration, and end-to-end checks above, then perform a manual release candidate pass in supported browsers.
+3. Complete the validation above, then perform a manual release candidate pass in supported browsers.
 4. Publish release notes that call out independent imports, incomplete imported items, the clean reset, and the removal of excluded legacy behavior.

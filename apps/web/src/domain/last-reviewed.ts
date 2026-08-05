@@ -6,8 +6,8 @@ export type GitTimestampLookup = (sourceFile: string) => string | Date | undefin
 /**
  * Git history is the publication record for a source file. The file must have
  * a commit; an absent history value is an error rather than a current-time
- * fallback. The lookup is injectable so tests never depend on wall-clock time
- * or the repository's current history.
+ * fallback. The lookup is injectable so callers can supply deterministic Git
+ * history without depending on wall-clock time.
  */
 export function deriveLastReviewed(getGitTimestamp: () => string | Date | undefined): string {
   const value = getGitTimestamp();

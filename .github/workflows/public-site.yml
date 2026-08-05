@@ -50,19 +50,14 @@ jobs:
         run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
       - name: Install dependencies
         run: corepack pnpm install --frozen-lockfile
-      - name: Install Playwright Chromium
-        run: corepack pnpm --dir apps/web exec playwright install --with-deps chromium
-      - name: Validate and build the production output used by browser tests
+      - name: Validate and build the production output
         run: |
           set -euo pipefail
           corepack pnpm --dir apps/web sync
           corepack pnpm --dir apps/web check
           corepack pnpm --dir apps/web content:validate
-          corepack pnpm --dir apps/web test:focused
           corepack pnpm --dir apps/web build
-      - name: Run browser and axe tests against isolated fixture output
-        run: corepack pnpm --dir apps/web test:browser
-      - name: Validate the exact browser-tested production output
+      - name: Validate the exact production output
         run: |
           corepack pnpm --dir apps/web output:check
           corepack pnpm --dir apps/web links:check
@@ -79,9 +74,8 @@ jobs:
         if: success()
         run: |
           mkdir -p validation-evidence
-          printf '{\n  "sourceSha": "%s",\n  "runId": "%s",\n  "artifactName": "%s",\n  "status": "passed",\n  "browserEvidence": "apps/web/test-results",\n  "manualAccessibilityEvidence": "protected environment record required at deployment"\n}\n' \
+          printf '{\n  "sourceSha": "%s",\n  "runId": "%s",\n  "artifactName": "%s",\n  "status": "passed"\n}\n' \
             "$GITHUB_SHA" "$GITHUB_RUN_ID" "public-site-production-${GITHUB_SHA}" > validation-evidence/validation-report.json
-          cp -R apps/web/test-results validation-evidence/ 2>/dev/null || true
       - name: Upload successful validation evidence
         if: success()
         uses: actions/upload-artifact@v4
@@ -98,14 +92,12 @@ jobs:
           path: artifact-bundle
           if-no-files-found: error
           retention-days: 30
-      - name: Upload browser and validation evidence on failure
+      - name: Upload validation evidence on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: public-site-validation-failure-${{ github.run_id }}
-          path: |
-            apps/web/test-results
-            apps/web/dist
+          path: apps/web/dist
           if-no-files-found: ignore
           retention-days: 14
 

@@ -4,6 +4,9 @@ import { join } from "node:path";
 const root = process.argv[2];
 if (!root) throw new Error("Usage: node scripts/check-links.mjs <dist-directory>");
 
+const permittedInternalRoutes = ["/", "/crafts/"];
+const permittedGoogleFontOrigins = ["https://fonts.googleapis.com", "https://fonts.gstatic.com"];
+const permittedCuratedExternalUrls = ["https://pohx.net/crafts/"];
 const htmlFiles = [];
 async function walk(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -22,12 +25,18 @@ for (const file of htmlFiles) {
     if (value.startsWith("/")) {
       const path = value.split(/[?#]/, 1)[0];
       if (path === "/_astro/" || path.startsWith("/_astro/")) continue;
-      if (path !== "/") throw new Error(`${file}: unexpected internal route ${value}`);
+      if (!permittedInternalRoutes.includes(path)) {
+        throw new Error(`${file}: unexpected internal route ${value}; permitted internal routes: ${permittedInternalRoutes.join(", ")}`);
+      }
       continue;
     }
-    if (!value.startsWith("https://www.pathofexile.com/trade/search/")) {
+    const isGoogleFontPreconnect = permittedGoogleFontOrigins.includes(value);
+    const isGoogleFontStylesheet = value.startsWith("https://fonts.googleapis.com/css2?");
+    const isOfficialTradeSearch = value.startsWith("https://www.pathofexile.com/trade/search/");
+    const isPermittedCuratedExternalUrl = permittedCuratedExternalUrls.includes(value);
+    if (!isGoogleFontPreconnect && !isGoogleFontStylesheet && !isOfficialTradeSearch && !isPermittedCuratedExternalUrl) {
       throw new Error(`${file}: unexpected external link ${value}`);
     }
   }
 }
-console.log(`Link check passed for ${htmlFiles.length} HTML file(s); external Trade links were checked without network access.`);
+console.log(`Link check passed for ${htmlFiles.length} HTML file(s); official Trade and approved Google Fonts links were checked without network access.`);

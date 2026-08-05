@@ -59,7 +59,6 @@ Fixed in `D:\dev\pob-codec`:
   - scoped package `check`/`format`/`lint` scripts to source/config/docs so generated dist files are not formatted by `vp check`
 - Validation in `pob-codec` passed:
   - `vp run check`
-  - `vp test`
   - `vp pack`
 
 Current extension dependency is pinned to GitHub commit `08ff4d9` in `apps/extension/package.json` / `pnpm-lock.yaml`.
@@ -131,7 +130,7 @@ On `https://pobb.in/FHoiVhtpPYwr`:
 5. Background opens the sidepanel immediately to satisfy Chrome's user-gesture requirement.
 6. Background creates a new draft and pricing job, then prices items in an inactive trade tab.
 
-## Bugs fixed during manual testing
+## Bugs fixed during manual verification
 
 ### 1. `Failed to fetch` on opening modal
 
@@ -248,7 +247,7 @@ Worker trade tab URLs append `#poe-sl-pricing`. `trade.content.ts` uses this to 
 
 ## Suggested next steps
 
-1. Manual test `https://pobb.in/FHoiVhtpPYwr` after reloading the extension.
+1. Manually verify `https://pobb.in/FHoiVhtpPYwr` after reloading the extension.
 2. Watch background service-worker console during pricing.
 3. Verify draft creation and item status updates in sidepanel.
 4. Compare generated trade URLs against `https://poe.wanitzek.com/` for the same build.

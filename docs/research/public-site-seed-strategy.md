@@ -17,20 +17,20 @@ Readiness means the future implementation has:
 
 - Published List content schema/catalog behavior and canonical Category/Tag references;
 - authoring instructions for one category, zero or more tags, game/league applicability, ordered actionable items, direct official Trade URLs, variants, optional rationale/guidance, and no price/cache/query data;
-- schema and semantic validators plus deterministic fixtures that are clearly test-only;
+- schema and semantic validators plus deterministic non-public fixtures;
 - contributor/review guidance and the intentional empty Catalog state; and
 - the Catalog's static build, link, browser, artifact, and deployment checks.
 
 Fixtures are validation inputs only. They must never be published or presented as Published Lists. Readiness does not include editorial content, an editorially selected topic list, or a migration compatibility layer.
 
-The initial content PR is the first production seed. It follows [issue #4](https://github.com/max-arias/poe-shopping-list/issues/4), [issue #6](https://github.com/max-arias/poe-shopping-list/issues/6), and [issue #16](https://github.com/max-arias/poe-shopping-list/issues/16): canonical taxonomy references resolve; schema/semantic checks, static build, link checks, and browser checks pass; maintainers review and approve; and the verified artifact is deployed without rebuilding. Every submitted Trade URL must be manually checked as current and valid during review. There is no special migration path and no legacy compatibility requirement.
+The initial content PR is the first production seed. It follows [issue #4](https://github.com/max-arias/poe-shopping-list/issues/4), [issue #6](https://github.com/max-arias/poe-shopping-list/issues/6), and [issue #16](https://github.com/max-arias/poe-shopping-list/issues/16): canonical taxonomy references resolve; schema/semantic checks, static build, and link checks pass; maintainers review and approve; and the verified artifact is deployed without rebuilding. Every submitted Trade URL must be manually checked as current and valid during review. There is no special migration path and no legacy compatibility requirement.
 
 ## 3. First-content PR sequence
 
 1. The Editorial Team chooses 3–5 newly authored List topics/titles, covering current-league and evergreen Path of Exile 1 needs across distinct Categories/Tags.
 2. Authors create the content through the normal Git workflow, using only canonical taxonomy slugs and the resolved Published List contract.
 3. Authors validate every Trade URL manually at review time and document any relevant qualitative guidance; no prices or generated sample content are added.
-4. Automated checks validate references, schema/semantics, fixtures, static output, links, browser behavior, and the empty/non-empty Catalog behavior.
+4. Static checks validate references, schema/semantics, static output, links, and the empty/non-empty Catalog behavior.
 5. Maintainers review the content and approve the PR. On merge, deploy the verified production artifact and run the post-deploy smoke checks.
 6. If content is wrong, use a reviewed revert PR; do not repair it through a migration or hidden seed mechanism.
 
@@ -46,15 +46,15 @@ These are planned surfaces, not current files or dependencies:
 
 - future `apps/web` static Astro Content Collections schema/catalog and empty-state implementation;
 - contributor and Editorial Team instructions for authoring, taxonomy references, manual Trade URL review, and approval;
-- semantic/reference validators and deterministic test-only fixtures, with an explicit guard that fixtures cannot enter published content;
+- semantic/reference validators and deterministic non-public fixtures, with an explicit guard that fixtures cannot enter published content;
 - checks and deployment surfaces governed by [issue #6](https://github.com/max-arias/poe-shopping-list/issues/6); and
-- focused tests for empty-state behavior, usable filters/search with zero results, valid initial content, URL validity evidence, and the Shareable List v1 export boundary.
+- manual review of empty-state behavior, usable filters/search with zero results, valid initial content, URL validity evidence, and the Shareable List v1 export boundary.
 
 ## 6. Ordered implementation plan and acceptance criteria
 
-1. Implement and document the content/catalog readiness contract, canonical references, validators, test-only fixtures, and truthful empty Catalog.
+1. Implement and document the content/catalog readiness contract, canonical references, validators, non-public fixtures, and truthful empty Catalog.
 2. Implement contributor/review guidance and the issue #2/#4/#6/#16 validation and deployment path without adding migration or legacy compatibility behavior.
 3. Have the Editorial Team author and submit the first 3–5 Lists from scratch, selecting topics/titles at that time.
-4. Review every Trade URL manually, complete automated checks and maintainer approval, deploy the verified artifact, and record smoke evidence.
+4. Review every Trade URL manually, complete static validation and maintainer approval, deploy the verified artifact, and record smoke evidence.
 
 **Acceptance criteria:** the system is useful and truthful with zero Published Lists; filters and search remain usable in that state; no fixture or fictional recommendation can publish; readiness exists without editorial content; the first PR contains 3–5 newly authored Lists covering selected current-league/evergreen needs and distinct taxonomy; every Trade URL is manually current/valid at review; issues #2/#4/#6/#16 checks and approval/deployment rules pass; no migration or legacy compatibility path is added; and Shareable List v1 remains optional visitor import without taxonomy/league/source metadata or direct browser handoff.

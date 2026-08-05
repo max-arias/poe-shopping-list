@@ -5,7 +5,7 @@ Decision record, updated 2026-07-30. This is an implementation-ready operations,
 ## 1. Scope and decision
 
 - **In scope:** operational ownership, Cloudflare delivery, production deployment, requested previews, domains/TLS, caching, observability, recovery, content backup, and contributor/operator documentation for the future public site.
-- **Explicitly out of scope:** extension operations. This record does not alter the extension's build, test, release, store, or browser-support procedures.
+- **Explicitly out of scope:** extension operations. This record does not alter the extension's build, validation, release, store, or browser-support procedures.
 - **Decision:** operate one production static site on Cloudflare Workers Static Assets. A preview may be created only when a maintainer requests it after review begins; no always-on staging service is required. Git is authoritative for content and source. Merged `main` publishes through the trusted process defined by issue #6; the verified immutable artifact is promoted without rebuilding.
 - **Runtime decision:** there is no runtime API, authentication, database, storage, admin app, price service, query service, or content-management service. The published catalog is Git-authored static Astro Content Collections content: one Category, zero or more Tags, league applicability, ordered actionable items with direct Trade URLs, and no price/cache/query data.
 
@@ -102,7 +102,7 @@ The following are recommended implementation surfaces, not current repository fa
 1. Replace the stale `.github/workflows/e2e.yml` with `.github/workflows/public-site.yml`; do not extend its references to absent `apps/e2e`, `packages/schema`, `packages/trade-dom`, or `packages/tokens`.
 2. Create `apps/web/astro.config.*`, Content Collections schema/configuration, static-site source, and `apps/web/package.json` scripts for local setup, validation, build, preview, and deploy handoff.
 3. Create a tracked `apps/web/wrangler.toml` or `wrangler.jsonc` (choose the format supported by the selected Wrangler version) with non-secret account/name/compatibility settings, `assets.directory`, asset-first routing, and no `run_worker_first` absent a documented need.
-4. Create the planned content-reference/semantic validation, deterministic fixtures, production output/link checks, and Playwright/preview checks described by `docs/research/public-site-testing-ci.md`.
+4. Create the planned content-reference/semantic validation, production output/link checks, and preview/smoke checks.
 5. Add the contributor, web setup, deploy/recovery, and ownership/evidence documentation in the documentation location selected when the site is implemented.
 6. Add deployment evidence/manifest generation and smoke-check configuration; keep Cloudflare tokens only in the protected GitHub environment, never in tracked configuration.
 
@@ -114,7 +114,7 @@ The following are recommended implementation surfaces, not current repository fa
 - No required staging service or automatic preview for every PR.
 - No broad cache purge as routine release behavior.
 - No Worker-first request routing or custom runtime solely to add speculative headers.
-- No extension deployment, browser testing, store release, or extension documentation changes.
+- No extension deployment, browser review, store release, or extension documentation changes.
 
 ## 11. Ordered implementation plan and acceptance criteria
 

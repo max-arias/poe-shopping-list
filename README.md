@@ -52,14 +52,18 @@ vp install
 vp dev
 vp build
 vp check
-pnpm --filter @poe-sl/extension test
 ```
+
+This repository intentionally has no automated test suite. Use the build and
+check commands above, plus the static-site validation documented in
+[`docs/public-site/setup.md`](docs/public-site/setup.md). Do not add test files,
+test runners/dependencies, or test CI without an explicit maintainer request.
 
 ## Project Structure
 
 ```
 poe-shopping-list/
-├── apps/extension/         # WXT + Vue extension and Vitest DOM/contract tests
+├── apps/extension/         # WXT + Vue extension
 ├── docs/                   # Product and architecture documentation
 ├── package.json            # Root workspace
 └── README.md
@@ -69,4 +73,4 @@ poe-shopping-list/
 
 - [ARCHITECTURE.md](docs/ARCHITECTURE.md) — Extension architecture and data model
 - [PRD.md](docs/PRD.md) — Product requirements and workflows
-- [STATUS.md](STATUS.md) — Implementation, test, and release status
+- [STATUS.md](STATUS.md) — Implementation and release status

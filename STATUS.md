@@ -18,9 +18,11 @@ The extension now targets a clean, local-only v1 model. Obsolete local data assu
 | Register Current Trade | ✅ | Confirms the active supported Trade URL, accepts an editable title, and saves an incomplete local item |
 | Trade-page scope | ✅ | Side panel and content script are limited to Path of Exile Trade hosts |
 
-## Testing
+## Validation
 
-The v1 contract suite and side-panel DOM workflow tests run with Vitest in jsdom, alongside extension typecheck and formatting/lint checks. Browser E2E and browser lifecycle coverage are intentionally not part of the test strategy.
+The repository intentionally has no automated test suite. Use type checking,
+formatting/lint checks, production builds, and the static public-site checks
+where applicable. Browser-store release has not been submitted.
 
 ## Release
 

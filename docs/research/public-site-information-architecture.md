@@ -4,10 +4,10 @@ Decision record, updated 2026-07-30. This is planning for the future public stat
 
 ## 1. Scope and decision
 
-- **V1 is one public static Catalog page.** It is not a homepage plus Published List detail pages. Published Lists never receive their own page.
+- **V1 is one public static Catalog page plus one standalone static `/crafts/` reference route.** This is not a homepage plus Published List detail pages. Published Lists never receive their own page. The Catalog links to `/crafts/`, and the reference route links back to the Catalog; no other public content routes are introduced by this exception.
 - The Catalog is a searchable, filterable collection of compact, read-only Published List Cards. This uses the domain terms in [`CONTEXT.md`](../../CONTEXT.md): Catalog, Published List Card, Category, Tag, League Applicability, List Item, List Overview, and Shareable List.
 - The content model follows [issue #2](https://github.com/max-arias/poe-shopping-list/issues/2): one primary Category, zero or more Tags, game/league applicability, ordered actionable items, and official direct Trade URLs with variants and optional rationale or qualitative guidance. It contains no price, cache, or query data.
-- **Non-goals:** homepage content, Published List routes, cart or completion state, pricing, accounts, comments, transactions, images, generated summaries/social cards, direct browser-to-extension handoff, and a collection of indexable filter/detail pages.
+- **Non-goals:** homepage content, Published List routes, cart or completion state, pricing, accounts, comments, transactions, images, generated summaries/social cards, direct browser-to-extension handoff, and a collection of indexable filter/detail pages. The `/crafts/` route is a curated static reference, not a Published List or a filter/detail route.
 
 ## 2. Catalog behavior
 
@@ -39,7 +39,7 @@ Direct browser-to-extension handoff is deferred. This is deliberate: [issue #13]
 
 ## 4. URL, discovery, and SEO
 
-Use one canonical Catalog URL. Apply basic site-level title, description, robots, and canonical metadata to that page. Do not add per-List social metadata, image metadata, or indexable filter/detail routes. Normal static sitemap and robots behavior applies only to the one public Catalog page until the route model grows.
+Use one canonical Catalog URL and one canonical `/crafts/` reference URL. Apply basic site-level title, description, robots, and canonical metadata to both static routes. Do not add per-List social metadata, image metadata, or indexable filter/detail routes. Normal static sitemap and robots behavior applies only to the Catalog and `/crafts/` routes.
 
 Taxonomy selections may be represented in shareable URL state for visitors, but those states are not a second SEO information architecture. Free-text search remains local and must not become a query-indexing mechanism.
 
@@ -51,15 +51,16 @@ Taxonomy selections may be represented in shareable URL state for visitors, but 
 - Download has a meaningful accessible name and a usable filename/content type. Copy-to-clipboard reports success and failure through visible and programmatically available feedback; it must not rely on color or a disappearing visual cue alone.
 - The Catalog, filter controls, Cards, links, and feedback must remain usable with keyboard navigation, zoom/reflow, and assistive technology. Manual accessibility review remains required; automated checks do not replace it.
 
-## 6. Intended future implementation, documentation, and test surfaces
+## 6. Intended future implementation and documentation surfaces
 
 These are planning surfaces, not claims about current files or dependencies:
 
-- A future `apps/web` Astro Content Collections schema/content surface for Published Lists, taxonomy references, and the single Catalog route.
+- A future `apps/web` Astro Content Collections schema/content surface for Published Lists, taxonomy references, the single Catalog route, and the standalone static `/crafts/` reference route.
+- The `/crafts/` route's significant guide copy and official Trade link are stable authored content. The Catalog must link to it, and it must provide a clear link back to the Catalog.
 - Catalog filter/search state, URL serialization, Card expansion, ordered Trade links, Shareable List JSON download, and clipboard behavior.
 - Contributor documentation describing the issue #2 content rules and the Shareable List v1 boundary; web documentation describing the one-page information architecture and URL rules.
-- Focused tests for taxonomy filtering, URL state, local search, stable item order, optional guidance, expansion, exact Shareable List JSON export, download, and clipboard success/failure.
-- Static output/browser checks for the Catalog, accessibility interaction expectations, canonical metadata, robots/sitemap scope, external links, and no unintended List/detail routes.
+- Manual review of taxonomy filtering, URL state, local search, stable item order, optional guidance, expansion, exact Shareable List JSON export, download, and clipboard success/failure.
+- Static output/link checks for the Catalog and `/crafts/`, accessibility interaction expectations, canonical metadata, robots/sitemap scope, external links, route navigation, and no unintended List/detail routes.
 
 ## 7. Ordered implementation sequence and acceptance criteria
 
@@ -67,6 +68,7 @@ These are planning surfaces, not claims about current files or dependencies:
 2. Implement the single Catalog page with game, league, Category, Tag, and local keyword-search behavior; serialize only taxonomy selections into shareable URL state.
 3. Implement compact read-only Cards with short initial Trade-link sets, in-card expansion, optional guidance, download, and clipboard actions.
 4. Add the one canonical Catalog metadata surface and verify that no per-List or filter/detail SEO routes are created.
-5. Add focused, browser, and manual accessibility validation for the interactions and route constraints above; document the import boundary and deferred handoff.
+5. Add the standalone `/crafts/` static reference route, link it from the Catalog, and provide a Catalog back link; keep its authored guide text and official Trade URL stable.
+6. Add focused, browser, and manual accessibility validation for the interactions and route constraints above; document the import boundary and deferred handoff.
 
-**Acceptance criteria:** V1 has exactly one public Catalog page and no Published List pages; all four taxonomy dimensions filter the Catalog; taxonomy selections share through URL state while keyword search stays local; Cards are compact/read-only with ordered direct Trade links and in-card expansion; optional author text is preserved without generated or required summaries; no images or in-site transaction features exist; download and clipboard export the same versioned Shareable List v1 JSON; imports remain independent incomplete Personal Drafts; direct handoff remains deferred without changing issue #13; and canonical/robots/sitemap behavior is limited to the single Catalog page.
+**Acceptance criteria:** V1 has exactly one public Catalog page, one standalone static `/crafts/` reference route linked from the Catalog and back to it, and no Published List pages; all four taxonomy dimensions filter the Catalog; taxonomy selections share through URL state while keyword search stays local; Cards are compact/read-only with ordered direct Trade links and in-card expansion; the `/crafts/` route preserves its exact significant guide text and official Trade link; optional author text is preserved without generated or required summaries; no images or in-site transaction features exist; download and clipboard export the same versioned Shareable List v1 JSON; imports remain independent incomplete Personal Drafts; direct handoff remains deferred without changing issue #13; and canonical/robots/sitemap behavior is limited to the Catalog and `/crafts/` routes.

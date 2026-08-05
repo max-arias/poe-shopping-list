@@ -12,6 +12,10 @@ The triage vocabulary is `needs-triage`, `needs-info`, `ready-for-agent`, `ready
 
 This is a single-context repository. See `docs/agents/domain.md`.
 
+### Validation policy
+
+This repository intentionally has no automated test suite. Do not add test files, test runners or dependencies, or test CI unless the maintainer explicitly requests them. Use the existing static and production validation instead: content validation, Astro check/build, generated-output and link checks, and smoke/manual review where applicable.
+
 ### UI design workflow
 
 For every user-facing UI design or redesign, use a high-taste bespoke design process before implementation:

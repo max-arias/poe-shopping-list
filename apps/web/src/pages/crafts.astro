@@ -1,0 +1,100 @@
+---
+import "../styles/catalog.css";
+import "../styles/crafts.css";
+
+const canonicalUrl = "/crafts/";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Crafting Guides | Curated Path of Exile Lists</title>
+    <meta name="description" content="Fast, reliable Path of Exile crafting guides for a Divine Life Flask and Large Elemental Cluster Jewel." />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" />
+  </head>
+  <body class="font-body">
+    <header class="craft-header">
+      <nav class="craft-nav" aria-label="Primary navigation">
+        <a class="craft-back-link" href="/">← Back to catalog</a>
+        <span class="craft-nav-label" aria-current="page">Crafts</span>
+      </nav>
+      <p class="craft-kicker">Path of Exile / Field notes</p>
+      <h1>Craft with intent.</h1>
+      <p class="craft-intro">Two practical recipes for turning the right base into a useful upgrade—without spending currency blindly.</p>
+    </header>
+
+    <main class="craft-main">
+      <article class="craft-guide" aria-labelledby="life-flask-title">
+        <header class="craft-section-heading">
+          <p class="craft-section-number">01</p>
+          <h2 id="life-flask-title">Divine Life Flask</h2>
+        </header>
+
+        <div class="craft-summary" aria-label="Divine Life Flask summary">
+          <span><strong>Cost</strong> 30c</span>
+          <span><strong>Method</strong> Magic spam</span>
+          <span><strong>Finish</strong> Beast craft</span>
+        </div>
+
+        <ol class="craft-steps">
+          <li>Spam the flask while it is Magic until it has <strong>instant recovery</strong> or <strong>instant recovery when on low life</strong>.</li>
+          <li>Use the Beast craft to grant <strong>immunity to bleeding</strong>.</li>
+        </ol>
+      </article>
+
+      <article class="craft-guide" aria-labelledby="cluster-title">
+        <header class="craft-section-heading">
+          <p class="craft-section-number">02</p>
+          <h2 id="cluster-title">Large Cluster Jewel</h2>
+        </header>
+
+        <p class="craft-action"><a class="craft-trade-link" href="https://www.pathofexile.com/trade/search/Allflame/3q6YbWRJt5" target="_blank" rel="noopener noreferrer">Open the official Large Cluster Jewel trade search <span aria-hidden="true">↗</span></a></p>
+
+        <div class="craft-block">
+          <h3>Start with the right base</h3>
+          <ul class="craft-list">
+            <li><strong>Item level 68+</strong></li>
+            <li><strong>Large Cluster Jewel</strong></li>
+            <li><strong>8 passives</strong></li>
+            <li><strong>Increased Elemental Damage</strong></li>
+          </ul>
+        </div>
+
+        <div class="craft-block">
+          <h3>Desirable notables</h3>
+          <p>Roll for one of these four: <strong>Disorienting Display</strong>, <strong>Doryani's Lesson</strong>, <strong>Prismatic Heart</strong>, or <strong>Sadist</strong>.</p>
+        </div>
+
+        <div class="craft-routes">
+          <section class="craft-route" aria-labelledby="two-mod-title">
+            <h3 id="two-mod-title">If you have two desirable mods while Magic</h3>
+            <ol class="craft-steps">
+              <li>Use the Allflame craft for <strong>Regal + Exalt</strong>.</li>
+              <li>Seek one of the two desirable notables still missing.</li>
+            </ol>
+          </section>
+
+          <section class="craft-route" aria-labelledby="one-mod-title">
+            <h3 id="one-mod-title">If you have one desirable mod while Magic</h3>
+            <ol class="craft-steps">
+              <li>Use a regular <strong>Regal</strong> and hope it adds the second desirable mod.</li>
+              <li>Use the Allflame <strong>Exalt</strong> and seek one of the two desirable notables still missing.</li>
+            </ol>
+          </section>
+        </div>
+
+        <p class="craft-skip"><strong>Skip:</strong> Widespread Destruction, Corrosive Elements, and Inspired Oppression.</p>
+        <aside class="craft-warning" aria-label="Large Cluster Jewel warnings">
+          <p><strong>Warning:</strong> This craft can take many Dead Coins.</p>
+          <p><strong>Check:</strong> Watch <strong>% Intangibility</strong> before committing more currency.</p>
+        </aside>
+      </article>
+    </main>
+  </body>
+</html>

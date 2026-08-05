@@ -38,7 +38,7 @@ there is intentionally nothing to reference.
    For a content defect, use a reviewed revert PR rather than a migration or
    hidden seed mechanism.
 
-Fixtures, if used by validators, are test-only inputs and must never be copied
+Validation fixtures, if used by validators, are non-public inputs and must never be copied
 into publishable content. There is no seed, fixture publication, database seed,
 or migration path, and no fixture should be added merely to populate the empty
 Catalog.

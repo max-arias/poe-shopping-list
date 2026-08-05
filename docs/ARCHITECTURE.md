@@ -61,4 +61,7 @@ The trade content script only reports supported `/trade/search/` pages. No other
 
 ## Validation and release state
 
-Vitest runs the pure v1 contract tests in Node and mounts the side-panel Vue components in jsdom for DOM workflow coverage. Browser E2E and browser lifecycle coverage are intentionally excluded. No release has been submitted to either browser store.
+The repository intentionally has no automated test suite. Validate extension
+changes with type checking, formatting/linting, production builds, and manual
+review in supported browsers. No release has been submitted to either browser
+store.
