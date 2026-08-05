@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-05T14:49:23Z",
+  "title": "The Field Manual",
+  "extensions": {
+    "colorMeta": {
+      "base-100": {
+        "role": "page background",
+        "displayName": "Base 100",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(100% 0 0)"]
+      },
+      "base-200": {
+        "role": "quiet operational surface",
+        "displayName": "Base 200",
+        "canonical": "oklch(97% 0 0)",
+        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(97% 0 0)"]
+      },
+      "base-300": {
+        "role": "hairline dividers and rules",
+        "displayName": "Base 300",
+        "canonical": "oklch(94% 0 0)",
+        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(94% 0 0)"]
+      },
+      "base-content": {
+        "role": "strongest text",
+        "displayName": "Base Content",
+        "canonical": "oklch(0% 0 0)",
+        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(100% 0 0)"]
+      },
+      "primary": {
+        "role": "direct actions and structural markers",
+        "displayName": "Primary",
+        "canonical": "oklch(15.906% 0 0)",
+        "tonalRamp": ["oklch(15.906% 0 0)", "oklch(25% 0 0)", "oklch(35% 0 0)", "oklch(45% 0 0)", "oklch(55% 0 0)", "oklch(65% 0 0)", "oklch(80% 0 0)", "oklch(95% 0 0)"]
+      },
+      "muted-content": {
+        "role": "supporting copy and metadata",
+        "displayName": "Muted Content",
+        "canonical": "oklch(38% 0 0)",
+        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(38% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(100% 0 0)"]
+      }
+    },
+    "typographyMeta": {
+      "body": { "displayName": "Body", "purpose": "Readable catalogue and craft prose", "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif", "fontSize": "15px", "fontWeight": 300, "lineHeight": 1.6 },
+      "display": { "displayName": "Display", "purpose": "Editorial route and page headings", "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif", "fontSize": "clamp(44px, 8vw, 86px)", "fontWeight": 600, "lineHeight": 0.92, "letterSpacing": "-0.06em" },
+      "mono": { "displayName": "Mono", "purpose": "Technical metadata, counts, and regex", "fontFamily": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace", "fontSize": "12px", "fontWeight": 300, "lineHeight": 1.45 },
+      "navigation": { "displayName": "Navigation", "purpose": "Quiet uppercase route labels", "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif", "fontSize": "10px", "fontWeight": 600, "lineHeight": 1, "letterSpacing": "0.1em" }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "smooth-scroll", "property": "scroll-behavior", "value": "smooth", "reducedMotion": "auto" },
+      { "name": "reduced-motion", "media": "prefers-reduced-motion: reduce", "value": "disable or reduce transitions and animations" }
+    ],
+    "breakpoints": [
+      { "name": "catalog-stack", "value": "700px" },
+      { "name": "craft-compact", "value": "560px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Text action",
+      "kind": "button",
+      "refersTo": "components.text-action",
+      "description": "Direct text-first actions such as Download JSON, Copy JSON, and Copy regex.",
+      "html": "<button class=\"ds-text-action\" type=\"button\">Copy JSON</button>",
+      "css": ".ds-text-action { border: 0; padding: 0; background: transparent; color: #1A1A1A; cursor: pointer; font: inherit; text-align: left; text-decoration: underline; text-underline-offset: 3px; } .ds-text-action:hover { color: #000000; } .ds-text-action:focus-visible { outline: 2px solid #1A1A1A; outline-offset: 4px; }"
+    },
+    {
+      "name": "Navigation link",
+      "kind": "nav",
+      "refersTo": "components.navigation-link",
+      "description": "A direct route link in the primary navigation.",
+      "html": "<a class=\"ds-navigation-link\" href=\"/crafts/\">Craft notes</a>",
+      "css": ".ds-navigation-link { color: #1A1A1A; font: 600 10px/1 Outfit, \"Noto Sans\", ui-sans-serif, system-ui, sans-serif; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; } .ds-navigation-link:hover { text-decoration: underline; text-underline-offset: 4px; } .ds-navigation-link:focus-visible { outline: 2px solid #1A1A1A; outline-offset: 4px; }"
+    },
+    {
+      "name": "Manual-entry list row",
+      "kind": "custom",
+      "refersTo": "components.manual-entry",
+      "description": "The open editorial row containing a published list, its context, Trade link, and text actions.",
+      "html": "<article class=\"ds-manual-entry\"><div><header><span aria-hidden=\"true\">—</span><h3>Example list</h3></header><p>Evergreen · Example tag</p><a class=\"ds-manual-entry__trade\" href=\"https://www.pathofexile.com/trade/\">Open official Trade search ↗</a></div><aside><button class=\"ds-text-action\" type=\"button\">Copy JSON</button></aside></article>",
+      "css": ".ds-manual-entry { display: grid; grid-template-columns: minmax(0, 1fr) 185px; gap: 42px; border-top: 1px solid #EFEFEF; padding: 27px 0 14px; color: #000000; font: 300 15px/1.6 Outfit, \"Noto Sans\", ui-sans-serif, system-ui, sans-serif; } .ds-manual-entry header { display: flex; align-items: baseline; gap: 15px; } .ds-manual-entry h3 { margin: 0; font-size: clamp(23px, 3vw, 31px); font-weight: 600; letter-spacing: -.025em; line-height: 1.05; } .ds-manual-entry p { color: #595959; font: 300 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; } .ds-manual-entry__trade { color: #1A1A1A; text-underline-offset: 3px; } .ds-manual-entry__trade:hover { color: #000000; } .ds-manual-entry__trade:focus-visible, .ds-manual-entry .ds-text-action:focus-visible { outline: 2px solid #1A1A1A; outline-offset: 4px; } @media (max-width: 700px) { .ds-manual-entry { grid-template-columns: 1fr; gap: 6px; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Field Manual",
+    "overview": "The catalogue leads with the action and keeps reasoning visible. White and near-white surfaces, asymmetric whitespace, editorial rules, a near-black primary, and direct text links create orientation without spectacle.",
+    "keyCharacteristics": ["Minimal technical reference", "Clean technical mono", "Flat with hairline rules", "Quietly operational"],
+    "rules": [
+      { "name": "Functional Color", "body": "Color is functional, not atmospheric decoration.", "section": "colors" },
+      { "name": "Field Manual Type", "body": "Use Outfit with the Noto Sans/system sans fallback for prose and headings.", "section": "typography" },
+      { "name": "Flat With Hairline Rules", "body": "The system is flat. Do not use shadows, gradients, floating cards, glass, or decorative depth.", "section": "elevation" },
+      { "name": "Components Present", "body": "Document only the components present in the catalogue.", "section": "components" }
+    ],
+    "dos": [
+      "Do lead with the official Trade search or practical craft step, then show concise reasoning and cheaper alternatives where they exist.",
+      "Do keep links, export actions, and context visible on the page; use descriptive labels and semantic landmarks.",
+      "Do use clean technical mono cues: monospace for numbers, regex, and metadata; Outfit/Noto Sans for prose and headings.",
+      "Do use white/near-white surfaces, hairline rules, asymmetrical whitespace, direct text actions, and the near-black primary.",
+      "Do preserve strong contrast, keyboard focus, readable zoom behavior, and the existing 700px/560px responsive changes.",
+      "Do respect `prefers-reduced-motion`; motion must never reveal instructions or copy a Trade query."
+    ],
+    "donts": [
+      "Don’t make build-guide pages that bury Trade links beneath ads, video embeds, or broad aspirational advice.",
+      "Don’t use slick SaaS patterns, marketing CTAs, or decorative dashboard metrics.",
+      "Don’t use loot-splash spectacle, artificial urgency, or exaggerated rarity effects.",
+      "Don’t make opaque recommendations that name an item without the actual search, context, or a cheaper alternative.",
+      "Don’t invent inputs, cards, chips, pills, dashboards, shadows, gradients, or promotional hero treatments for this catalogue.",
+      "Don’t replace direct text actions with filled controls or obscure the operational result behind animation."
+    ]
+  }
+}

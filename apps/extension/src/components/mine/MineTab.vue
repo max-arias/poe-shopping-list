@@ -15,6 +15,7 @@ const {
   createDraft,
   updateDraftOverview,
   reorderDraftItems,
+  renameGroup,
   renameDraft,
   deleteDraftById,
   setComplete,
@@ -100,13 +101,15 @@ async function toggleItem(listId: string, itemId: string, complete: boolean) {
 async function moveItem(listId: string, itemId: string, direction: "earlier" | "later") {
   const list = drafts.value.find((draft) => draft.id === listId);
   if (!list) return;
-  const items = list.items.slice().sort((a, b) => a.position - b.position);
+  const group = list.groups.find((candidate) => candidate.items.some((item) => item.id === itemId));
+  if (!group) return;
+  const items = group.items.slice().sort((a, b) => a.position - b.position);
   const index = items.findIndex((item) => item.id === itemId);
   const nextIndex = direction === "earlier" ? index - 1 : index + 1;
   if (index < 0 || nextIndex < 0 || nextIndex >= items.length) return;
   [items[index], items[nextIndex]] = [items[nextIndex], items[index]];
   await reorderDraftItems(
-    listId,
+    listId, group.id,
     items.map((item) => item.id),
   );
 }
@@ -117,7 +120,9 @@ async function dropItem(listId: string, targetItemId: string) {
   if (!sourceItemId || sourceItemId === targetItemId) return;
   const list = drafts.value.find((draft) => draft.id === listId);
   if (!list) return;
-  const items = list.items.slice().sort((a, b) => a.position - b.position);
+  const group = list.groups.find((candidate) => candidate.items.some((item) => item.id === sourceItemId));
+  if (!group) return;
+  const items = group.items.slice().sort((a, b) => a.position - b.position);
   const sourceIndex = items.findIndex((item) => item.id === sourceItemId);
   if (sourceIndex < 0) return;
   const [source] = items.splice(sourceIndex, 1);
@@ -125,9 +130,13 @@ async function dropItem(listId: string, targetItemId: string) {
   if (targetIndex < 0) return;
   items.splice(targetIndex, 0, source);
   await reorderDraftItems(
-    listId,
+    listId, group.id,
     items.map((item) => item.id),
   );
+}
+
+async function editGroup(listId: string, groupId: string, title: string) {
+  await renameGroup(listId, groupId, title);
 }
 
 async function editItem(
@@ -186,7 +195,7 @@ async function deleteItem(listId: string, itemId: string) {
             <span class="min-w-0 flex-1 truncate text-[14px] font-normal text-ink">{{
               draft.title
             }}</span>
-            <span class="font-sans text-[10px] text-ink-muted">{{ draft.items.length }}</span>
+            <span class="font-sans text-[10px] text-ink-muted">{{ draft.groups.reduce((n, group) => n + group.items.length, 0) }}</span>
             <span class="text-lg leading-none text-accent-ink-str" aria-hidden="true">{{
               expandedId === draft.id ? "⌄" : "›"
             }}</span>
@@ -209,28 +218,21 @@ async function deleteItem(listId: string, itemId: string) {
               <p v-else class="mt-1.5 text-[11px] text-ink-muted">No overview added.</p>
             </details>
 
-            <div v-if="draft.items.length" class="pr-2" role="region" aria-label="List items">
-              <ItemRow
-                v-for="(item, itemIndex) in draft.items
-                  .slice()
-                  .sort((a, b) => a.position - b.position)"
-                :key="item.id"
-                :item="item"
-                :is-first="itemIndex === 0"
-                :is-last="itemIndex === draft.items.length - 1"
-                :edit-mode="editingListId === draft.id"
-                @toggle="toggleItem(draft.id, item.id, $event)"
-                @move="moveItem(draft.id, item.id, $event)"
-                @drag-start="draggedItemId = item.id"
-                @drag-end="draggedItemId = null"
-                @drop="dropItem(draft.id, item.id)"
-                @update="editItem(draft.id, item.id, $event)"
-                @remove="deleteItem(draft.id, item.id)"
-              />
+            <div class="pr-2" role="region" aria-label="List sections">
+              <section v-for="group in draft.groups.slice().sort((a, b) => a.position - b.position)" :key="group.id" class="border-b border-stroke-soft last:border-0">
+                <input v-if="editingListId === draft.id" :value="group.title ?? ''" placeholder="Untitled section" aria-label="Section title" class="my-2 h-7 w-full border border-stroke bg-bg px-2 text-[11px] font-semibold text-ink outline-none focus:border-accent" @change="editGroup(draft.id, group.id, ($event.target as HTMLInputElement).value)" />
+                <h2 v-else class="py-2 text-[11px] font-semibold text-ink">{{ group.title || 'Untitled section' }}</h2>
+                <ItemRow
+                  v-for="(item, itemIndex) in group.items.slice().sort((a, b) => a.position - b.position)"
+                  :key="item.id" :item="item" :is-first="itemIndex === 0" :is-last="itemIndex === group.items.length - 1"
+                  :edit-mode="editingListId === draft.id" @toggle="toggleItem(draft.id, item.id, $event)"
+                  @move="moveItem(draft.id, item.id, $event)" @drag-start="draggedItemId = item.id"
+                  @drag-end="draggedItemId = null" @drop="dropItem(draft.id, item.id)"
+                  @update="editItem(draft.id, item.id, $event)" @remove="deleteItem(draft.id, item.id)"
+                />
+                <p v-if="!group.items.length" class="py-3 text-[11px] text-ink-muted">No items in this section yet.</p>
+              </section>
             </div>
-            <p v-else class="py-5 pr-2 text-center text-[11px] text-ink-muted">
-              No items in this List yet.
-            </p>
 
             <div class="grid gap-2 py-3 pr-2">
               <BtnGhost

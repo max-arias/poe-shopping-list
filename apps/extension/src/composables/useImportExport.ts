@@ -9,11 +9,20 @@ export function exportDraft(draft: Draft): string {
     version: 1,
     title: draft.title,
     ...(draft.overview ? { overview: draft.overview } : {}),
-    items: draft.items.map((item) => ({
-      title: item.title,
-      tradeUrl: item.tradeUrl,
-      ...(item.variant !== undefined ? { variant: item.variant } : {}),
-      ...(item.note !== undefined ? { note: item.note } : {}),
+    groups: draft.groups
+      .slice()
+      .sort((a, b) => a.position - b.position)
+      .map((group) => ({
+      ...(group.title !== undefined ? { title: group.title } : {}),
+      items: group.items
+        .slice()
+        .sort((a, b) => a.position - b.position)
+        .map((item) => ({
+          title: item.title,
+          tradeUrl: item.tradeUrl,
+          ...(item.variant !== undefined ? { variant: item.variant } : {}),
+          ...(item.note !== undefined ? { note: item.note } : {}),
+        })),
     })),
   } as const;
   return encodeShareableList(portable);
@@ -28,15 +37,17 @@ export function importDraft(token: string): Draft {
     title: portable.title,
     ...(portable.overview !== undefined ? { overview: portable.overview } : {}),
     createdAt: now,
-    items: portable.items.map((item, position) => ({
+    groups: portable.groups.map((group, groupPosition) => ({
       id: crypto.randomUUID(),
-      position,
-      title: item.title,
-      tradeUrl: item.tradeUrl,
-      completed: false,
-      ...(item.variant !== undefined ? { variant: item.variant } : {}),
-      ...(item.note !== undefined ? { note: item.note } : {}),
-      addedAt: now,
+      position: groupPosition,
+      ...(group.title !== undefined ? { title: group.title } : {}),
+      items: group.items.map((item, position) => ({
+        id: crypto.randomUUID(), position, title: item.title, tradeUrl: item.tradeUrl,
+        completed: false,
+        ...(item.variant !== undefined ? { variant: item.variant } : {}),
+        ...(item.note !== undefined ? { note: item.note } : {}),
+        addedAt: now,
+      })),
     })),
   });
 }

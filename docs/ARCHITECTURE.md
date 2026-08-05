@@ -35,14 +35,18 @@ The clean v1 reset does not read or migrate obsolete keys or data shapes. A Shar
   version: 1,
   title: string,
   overview?: string,
-  items: Array<{
-    title: string,
-    tradeUrl: string, // HTTP(S)
-    variant?: string,
-    note?: string
-  }>
+  items: Array<{ title: string, tradeUrl: string, variant?: string, note?: string }>
+  // or, for grouped authored content:
+  groups: Array<{ title?: string, items: Array<{ title: string, tradeUrl: string, variant?: string, note?: string }> }>
 }
 ```
+
+Published content may be authored as flat `items` or ordered `groups`, but the
+portable contract is always groups-only. Group and item order is preserved.
+Duplicate Trade URLs are rejected within each group, while the same URL may
+occur in separate groups. The web page normalizes flat authored lists only for
+rendering and export conversion; it never exports a flat `items` array.
+Web Download/Copy actions use the canonical `psl1.` encoded transport.
 
 The top-level and item objects are strict. JSON parse errors and schema failures reject the import. Import generates new local IDs and timestamps and forces `completed: false` for every item.
 

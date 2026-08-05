@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Three Field Manual layout variants for the PoE Shopping List public site.">
+  <title>PoE Shopping List — Field Manual variants</title>
+  <style>
+    :root {
+      --paper: #f2ede2;
+      --paper-deep: #e8e0d5;
+      --ink: #332d28;
+      --muted: #766e65;
+      --quiet: #9a8e82;
+      --rust: #9d4f32;
+      --line: #c9bdad;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Trebuchet MS", "Segoe UI", sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --scale: 1;
+      --density: 1;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: calc(15px * var(--scale))/1.6 var(--serif); }
+    a { color: inherit; }
+    a:hover { color: var(--rust); }
+    a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+    button, input { font: inherit; }
+
+    .topbar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 11px 19px; padding: 10px clamp(16px, 4vw, 50px); background: var(--ink); color: var(--paper); font: 11px/1.2 var(--mono); }
+    .topbar strong { color: #e8b38d; font-weight: 500; letter-spacing: .08em; }
+    .topbar a { color: var(--paper); text-decoration: none; opacity: .78; }
+    .topbar a:hover { color: #e8b38d; opacity: 1; }
+    .tweaks { display: flex; flex: 1 1 520px; flex-wrap: wrap; align-items: center; gap: 7px 12px; margin-left: auto; color: #cbbfb2; }
+    .tweaks-label { color: #e8b38d; }
+    .tweaks label { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .tweaks input[type="range"] { width: 66px; accent-color: #e8b38d; }
+    .tweaks button { border: 1px solid #746459; padding: 3px 7px; background: transparent; color: inherit; cursor: pointer; font: 10px var(--mono); }
+    .tweaks button[aria-pressed="true"] { border-color: #e8b38d; color: #fff8ed; }
+    .tweaks output { min-width: 29px; color: #fff8ed; }
+    .prototype { min-height: 920px; padding: clamp(48px, 8vw, 94px) clamp(18px, 7vw, 110px); scroll-margin-top: 56px; }
+    .prototype + .prototype { border-top: 1px solid var(--line); }
+    .preview { max-width: 890px; margin: 0 auto; }
+    .eyebrow { margin: 0 0 14px; color: var(--rust); font: 700 11px/1.2 var(--mono); letter-spacing: .11em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h2 { max-width: 720px; margin-bottom: 17px; font: 500 calc(clamp(37px, 7vw, 76px) * var(--scale))/.94 var(--sans); letter-spacing: -.06em; }
+    h3 { margin-bottom: 7px; font: 500 calc(25px * var(--scale))/1.05 var(--sans); letter-spacing: -.025em; }
+    .lede { max-width: 54ch; margin-bottom: 52px; color: var(--muted); font-size: calc(18px * var(--scale)); }
+    .section-mark { display: flex; align-items: center; gap: 12px; margin: 37px 0 10px; color: var(--rust); font: 700 11px/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+    .section-mark::after { content: ""; width: 42px; border-top: 1px solid var(--rust); }
+    .list-title { display: flex; gap: 15px; align-items: baseline; border-top: 1px solid var(--line); padding-top: calc(24px * var(--density)); }
+    .list-title h3 { margin: 0; }
+    .list-number { flex: 0 0 auto; color: var(--rust); font: 700 12px var(--mono); }
+    .context { margin: 7px 0 calc(14px * var(--density)) 40px; color: var(--muted); font-size: 13px; }
+    .items { margin: 0 0 calc(30px * var(--density)) 40px; padding: 0; list-style: none; }
+    .items li { display: flex; gap: 14px; padding: calc(5px * var(--density)) 0; }
+    .items li + li { border-top: 1px solid color-mix(in srgb, var(--line) 42%, transparent); }
+    .item-number { flex: 0 0 2.3em; color: var(--quiet); font: 11px var(--mono); }
+    .items a { text-underline-offset: 3px; }
+    .variant { color: var(--muted); font-size: 12px; }
+    .footnote { color: var(--muted); font-size: 13px; }
+
+    /* Variant A: reading ledger */
+    #reading-ledger { background: var(--paper); }
+    #reading-ledger .preview { max-width: 790px; }
+    #reading-ledger h2 { max-width: 570px; }
+    #reading-ledger .ledger-intro { max-width: 58ch; margin: -24px 0 46px; color: var(--muted); }
+
+    /* Variant B: margin notes */
+    #margin-notes { background: #eee7da; }
+    #margin-notes .preview { max-width: 1050px; }
+    #margin-notes .intro-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(170px, .5fr); gap: 60px; align-items: end; margin-bottom: 55px; }
+    #margin-notes .lede { margin: 0; }
+    .note { border-top: 2px solid var(--rust); padding-top: 11px; color: var(--muted); font-size: 13px; }
+    .note strong { display: block; margin-bottom: 4px; color: var(--ink); font: 700 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    #margin-notes .manual-entry { display: grid; grid-template-columns: minmax(0, 1fr) 185px; gap: 40px; border-top: 1px solid var(--line); padding: calc(25px * var(--density)) 0 calc(11px * var(--density)); }
+    #margin-notes .list-title { border: 0; padding: 0; }
+    #margin-notes .context, #margin-notes .items { margin-left: 40px; }
+    #margin-notes .margin-copy { padding-top: 4px; color: var(--muted); font-size: 13px; }
+    #margin-notes .margin-copy p { margin: 0 0 15px; }
+    #margin-notes .margin-copy a { color: var(--rust); text-underline-offset: 3px; }
+
+    /* Variant C: continuous index */
+    #continuous-index { background: #f5f0e7; }
+    #continuous-index .preview { max-width: 940px; }
+    #continuous-index h2 { max-width: 690px; }
+    .index-head { display: grid; grid-template-columns: 60px minmax(0, 1fr) 160px; gap: 15px; margin-bottom: 9px; color: var(--quiet); font: 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .index-entry { display: grid; grid-template-columns: 60px minmax(0, 1fr) 160px; gap: 15px; border-top: 1px solid var(--line); padding: calc(17px * var(--density)) 0; }
+    .entry-code { color: var(--rust); font: 11px var(--mono); }
+    .entry-name { min-width: 0; }
+    .entry-name a { font: 500 calc(18px * var(--scale))/1.2 var(--sans); text-underline-offset: 3px; }
+    .entry-meta { color: var(--muted); font-size: 12px; }
+    .entry-items { margin: 13px 0 0; padding: 0; list-style: none; }
+    .entry-items li { display: inline; color: var(--muted); font-size: 13px; }
+    .entry-items li:not(:last-child)::after { content: "  ·  "; color: var(--rust); }
+    .entry-items a { text-underline-offset: 3px; }
+    .entry-aside { color: var(--muted); font: 11px/1.5 var(--mono); }
+    .craft-line { margin-top: 44px; border-top: 2px solid var(--rust); padding-top: 15px; }
+    .craft-line h3 { display: inline; }
+    .craft-line p { display: inline; margin-left: 12px; color: var(--muted); }
+    .omission { max-width: 890px; margin: 0 auto; padding: 18px clamp(18px, 7vw, 110px); background: var(--paper-deep); color: var(--muted); font-size: 12px; }
+    .omission strong { color: var(--ink); }
+
+    @media (max-width: 700px) {
+      .tweaks { flex-basis: 100%; margin-left: 0; }
+      .prototype { min-height: 760px; padding-top: 56px; }
+      .items, .context { margin-left: 0; }
+      #margin-notes .intro-grid, #margin-notes .manual-entry { grid-template-columns: 1fr; gap: 18px; }
+      #margin-notes .context, #margin-notes .items { margin-left: 0; }
+      .index-head { display: none; }
+      .index-entry { grid-template-columns: 48px minmax(0, 1fr); gap: 10px; }
+      .entry-aside { grid-column: 2; }
+      .entry-items { grid-column: 2; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <nav class="topbar" aria-label="Prototype contents and local development tweaks">
+    <strong>FIELD MANUAL / COMPARE</strong>
+    <a href="#reading-ledger">A · Reading ledger</a>
+    <a href="#margin-notes">B · Margin notes</a>
+    <a href="#continuous-index">C · Continuous index</a>
+    <div class="tweaks">
+      <span class="tweaks-label">TWEAKS</span>
+      <label for="font-scale">font <input id="font-scale" type="range" min="0.9" max="1.15" step="0.05" value="1"><output id="font-output">100%</output></label>
+      <label for="density">space <input id="density" type="range" min="0.7" max="1.35" step="0.05" value="1"><output id="density-output">100%</output></label>
+      <button type="button" data-palette="paper" aria-pressed="true">paper</button>
+      <button type="button" data-palette="stone" aria-pressed="false">stone</button>
+      <button type="button" data-palette="night" aria-pressed="false">night</button>
+    </div>
+  </nav>
+
+  <div class="omission"><strong>Imagery intentionally omitted.</strong> These previews are text-first field references; artwork would add weight without helping a player scan and open trade searches.</div>
+
+  <main>
+    <section id="reading-ledger" class="prototype" aria-labelledby="ledger-title">
+      <div class="preview">
+        <p class="eyebrow">Variant A / Reading ledger</p>
+        <h2 id="ledger-title">Field Manual</h2>
+        <p class="ledger-intro">A calm, linear reading experience. Every list is a short chapter; every trade search stays in view.</p>
+
+        <p class="section-mark">Shopping lists</p>
+        <article>
+          <header class="list-title"><span class="list-number">01</span><h3>Penance Brand Ignite Elementalist</h3></header>
+          <p class="context">Evergreen · league-start · defense · six searches</p>
+          <ol class="items">
+            <li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-01">Aegis Aurora Champion Kite Shield ↗</a></li>
+            <li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-02">Focused Amulet ↗</a></li>
+            <li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-03">Sacred Chainmail ↗</a></li>
+            <li><span class="item-number">04</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-04">Penance Brand ↗</a></li>
+            <li><span class="item-number">05</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-05">Enlighten Support ↗</a></li>
+            <li><span class="item-number">06</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-06">Grace of the Goddess Prophecy Wand ↗</a></li>
+          </ol>
+        </article>
+        <article>
+          <header class="list-title"><span class="list-number">02</span><h3>RF Essentials</h3></header>
+          <p class="context">Evergreen · righteous-fire · crafting · one search</p>
+          <ol class="items"><li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Allflame/PPalmbnDIL">Recomb Sceptre ↗</a></li></ol>
+        </article>
+        <article>
+          <header class="list-title"><span class="list-number">03</span><h3>[3.28] Master’s Red Arc Ignite Elementalist</h3></header>
+          <p class="context">3.28 · league-start · defense · eight searches</p>
+          <ol class="items">
+            <li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-01">Ralakesh’s Impatience Riveted Boots ↗</a></li>
+            <li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-02">The Dark Monarch Lich’s Circlet - +2 Minion ↗</a></li>
+            <li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-03">The Tides of Time Vanguard Belt ↗</a></li>
+            <li><span class="item-number">04</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-04">Boneflesh Marble Amulet ↗</a></li>
+            <li><span class="item-number">05</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-05">Oriath’s End Bismuth Flask ↗</a></li>
+            <li><span class="item-number">06</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-06">Taste of Hate Sapphire Flask ↗</a></li>
+            <li><span class="item-number">07</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-07">Berek’s Respite Two-Stone Ring ↗</a></li>
+            <li><span class="item-number">08</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-08">Ralakesh’s Impatience Riveted Boots Endurance ↗</a></li>
+          </ol>
+        </article>
+        <article>
+          <header class="list-title"><span class="list-number">04</span><h3>Minion Pact Giga AoE BV</h3></header>
+          <p class="context">Evergreen · budget · guardian · three searches</p>
+          <ol class="items">
+            <li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-01">Impossible Escape Viridian Jewel ↗</a></li>
+            <li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-02">Large Cluster Jewel ↗</a></li>
+            <li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-03">Medium Cluster Jewel ↗</a></li>
+          </ol>
+        </article>
+        <article>
+          <header class="list-title"><span class="list-number">05</span><h3>Animate Guardian of Smiting Guardian</h3></header>
+          <p class="context">Evergreen · defense · twenty searches</p>
+          <ol class="items">
+            <li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-01">The Grey Wind Spectral Axe ↗</a></li>
+            <li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-02">Crown of Eyes Hubris Circlet ↗</a></li>
+            <li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-03">Rathpith Globe Titanium Spirit Shield ↗</a></li>
+            <li><span class="item-number">04</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-04">Garb of the Ephemeral Savant’s Robe ↗</a></li>
+            <li><span class="item-number">05</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-05">Voidwalker Murder Boots ↗</a></li>
+            <li><span class="item-number">06</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-06">Gloves - AG - Cheap ↗</a></li>
+            <li><span class="item-number">07</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-07">Gloves - for AG ↗</a></li>
+            <li><span class="item-number">08</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-08">Claw - Player ↗</a></li>
+            <li><span class="item-number">09</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-09">The Hallowed Monarch Faithful Helmet ↗</a></li>
+            <li><span class="item-number">10</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-10">The Squire Elegant Round Shield ↗</a></li>
+            <li><span class="item-number">11</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-11">Defiance of Destiny Paua Amulet ↗</a></li>
+            <li><span class="item-number">12</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-12">Kaom’s Heart Glorious Plate ↗</a></li>
+            <li><span class="item-number">13</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-13">Screams of the Desiccated Leather Belt ↗</a></li>
+            <li><span class="item-number">14</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-14">Large Cluster Jewel ↗</a></li>
+            <li><span class="item-number">15</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-15">Melding of the Flesh Cobalt Jewel ↗</a></li>
+            <li><span class="item-number">16</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-16">The Red Dream Crimson Jewel ↗</a></li>
+            <li><span class="item-number">17</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-17">Watcher’s Eye Prismatic Jewel ↗</a></li>
+            <li><span class="item-number">18</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-18">Watcher’s Eye Prismatic Jewel ↗</a></li>
+            <li><span class="item-number">19</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-19">Any One-Handed Sword ↗</a></li>
+            <li><span class="item-number">20</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-20">Nightmare Map ↗</a></li>
+          </ol>
+        </article>
+        <article>
+          <header class="list-title"><span class="list-number">06</span><h3>LuminaryMercBot</h3></header>
+          <p class="context">Mercenaries · league-start · defense · thirty-four searches</p>
+          <ol class="items">
+            <li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-01">Leer Cast Festival Mask ↗</a></li>
+            <li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-02">Belt of the Deceiver Heavy Belt ↗</a></li>
+            <li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-03">Nycta’s Lantern Crystal Sceptre ↗</a></li>
+            <li><span class="item-number">04</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-04">Kaom’s Heart Glorious Plate ↗</a></li>
+            <li><span class="item-number">05</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-05">Ceinture of Benevolence Cloth Belt ↗</a></li>
+            <li><span class="item-number">06</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-06">Redblade Banner Painted Tower Shield ↗</a></li>
+            <li><span class="item-number">07</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-07">Lori’s Lantern Prismatic Ring ↗</a></li>
+            <li><span class="item-number">08</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-08">Voll’s Vision Praetor Crown ↗</a></li>
+            <li><span class="item-number">09</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-09">Player Rare Ring (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">10</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-10">Player Rare Helmet (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">11</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-11">Player Rare Gloves (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">12</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-12">Player Rare Boots (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">13</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-13">Belly of the Beast Full Wyrmscale ↗</a></li>
+            <li><span class="item-number">14</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-14">Player Rare One Hand (+1lvl + Light Radius) ↗</a></li>
+            <li><span class="item-number">15</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-15">Player Rare Amulet (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">16</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-16">Player Rare Shield (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">17</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-17">Merc Rare Ring (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">18</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-18">Merc Rare Amulet (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">19</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-19">Merc Rare Helmet (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">20</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-20">Merc Rare Gloves (Adjust to Upgrade) ↗</a></li>
+            <li><span class="item-number">21</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-21">Merc Rare Boots (Onslaught Movespeed Craft When You Can) ↗</a></li>
+            <li><span class="item-number">22</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-22">Merc Rare Belt (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">23</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-23">Merc Rare Body Armour (Adjust to Upgrade) ↗</a></li>
+            <li><span class="item-number">24</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-24">Merc Rare Wand (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">25</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-25">Merc Rare One Hand Sword (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">26</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-26">Merc Rare Bow (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">27</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-27">Merc Rare Shield (Adjust Weight to Upgrade) ↗</a></li>
+            <li><span class="item-number">28</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-28">The Hallowed Monarch Faithful Helmet ↗</a></li>
+            <li><span class="item-number">29</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-29">Enmity’s Embrace Vermillion Ring ↗</a></li>
+            <li><span class="item-number">30</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-30">The Untouched Soul Gold Amulet ↗</a></li>
+            <li><span class="item-number">31</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-31">The Dark Seer Shadow Sceptre ↗</a></li>
+            <li><span class="item-number">32</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-32">The Taming Prismatic Ring ↗</a></li>
+            <li><span class="item-number">33</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-33">Foulborn Red Dream ↗</a></li>
+            <li><span class="item-number">34</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-34">The Adorned Crimson Jewel ↗</a></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <section id="margin-notes" class="prototype" aria-labelledby="notes-title">
+      <div class="preview">
+        <div class="intro-grid">
+          <div><p class="eyebrow">Variant B / Margin notes</p><h2 id="notes-title">Field Manual</h2><p class="lede">The same complete inventory, with the useful context kept in a quiet margin.</p></div>
+          <aside class="note"><strong>Reading rule</strong> Titles open official Trade searches. No list is hidden behind a control.</aside>
+        </div>
+        <p class="section-mark">Shopping lists / six files</p>
+        <article class="manual-entry">
+          <div><header class="list-title"><span class="list-number">01</span><h3>Penance Brand Ignite Elementalist</h3></header><p class="context">Evergreen · league-start · defense</p><ol class="items">
+            <li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-01">Aegis Aurora Champion Kite Shield ↗</a></li><li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-02">Focused Amulet ↗</a></li><li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-03">Sacred Chainmail ↗</a></li><li><span class="item-number">04</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-04">Penance Brand ↗</a></li><li><span class="item-number">05</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-05">Enlighten Support ↗</a></li><li><span class="item-number">06</span><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-06">Grace of the Goddess Prophecy Wand ↗</a></li>
+          </ol></div><aside class="margin-copy"><p><strong>Use for</strong><br>Defensive evergreen setup.</p><a href="#margin-notes">Copy list data</a></aside>
+        </article>
+        <article class="manual-entry"><div><header class="list-title"><span class="list-number">02</span><h3>RF Essentials</h3></header><p class="context">Evergreen · righteous-fire · crafting</p><ol class="items"><li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Allflame/PPalmbnDIL">Recomb Sceptre ↗</a></li></ol></div><aside class="margin-copy"><p><strong>Source</strong><br>Pohx craft notes.</p><a href="#margin-notes">Copy list data</a></aside></article>
+        <article class="manual-entry"><div><header class="list-title"><span class="list-number">03</span><h3>[3.28] Master’s Red Arc Ignite Elementalist</h3></header><p class="context">3.28 · league-start · defense</p><ol class="items"><li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-01">Ralakesh’s Impatience Riveted Boots ↗</a></li><li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-02">The Dark Monarch Lich’s Circlet - +2 Minion ↗</a></li><li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-03">The Tides of Time Vanguard Belt ↗</a></li><li><span class="item-number">04</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-04">Boneflesh Marble Amulet ↗</a></li><li><span class="item-number">05</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-05">Oriath’s End Bismuth Flask ↗</a></li><li><span class="item-number">06</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-06">Taste of Hate Sapphire Flask ↗</a></li><li><span class="item-number">07</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-07">Berek’s Respite Two-Stone Ring ↗</a></li><li><span class="item-number">08</span><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-08">Ralakesh’s Impatience Riveted Boots Endurance ↗</a></li></ol></div><aside class="margin-copy"><p><strong>Use for</strong><br>League-start defense path.</p><a href="#margin-notes">Copy list data</a></aside></article>
+        <article class="manual-entry"><div><header class="list-title"><span class="list-number">04</span><h3>Minion Pact Giga AoE BV</h3></header><p class="context">Evergreen · budget · guardian</p><ol class="items"><li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-01">Impossible Escape Viridian Jewel ↗</a></li><li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-02">Large Cluster Jewel ↗</a></li><li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-03">Medium Cluster Jewel ↗</a></li></ol></div><aside class="margin-copy"><p><strong>Budget</strong><br>Three-item starting point.</p><a href="#margin-notes">Copy list data</a></aside></article>
+        <article class="manual-entry"><div><header class="list-title"><span class="list-number">05</span><h3>Animate Guardian of Smiting Guardian</h3></header><p class="context">Evergreen · defense · guardian</p><ol class="items"><li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-01">The Grey Wind Spectral Axe ↗</a></li><li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-02">Crown of Eyes Hubris Circlet ↗</a></li><li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-03">Rathpith Globe Titanium Spirit Shield ↗</a></li><li><span class="item-number">04</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-04">Garb of the Ephemeral Savant’s Robe ↗</a></li><li><span class="item-number">05</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-05">Voidwalker Murder Boots ↗</a></li><li><span class="item-number">06</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-06">Gloves - AG - Cheap ↗</a></li><li><span class="item-number">07</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-07">Gloves - for AG ↗</a></li><li><span class="item-number">08</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-08">Claw - Player ↗</a></li><li><span class="item-number">09</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-09">The Hallowed Monarch Faithful Helmet ↗</a></li><li><span class="item-number">10</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-10">The Squire Elegant Round Shield ↗</a></li><li><span class="item-number">11</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-11">Defiance of Destiny Paua Amulet ↗</a></li><li><span class="item-number">12</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-12">Kaom’s Heart Glorious Plate ↗</a></li><li><span class="item-number">13</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-13">Screams of the Desiccated Leather Belt ↗</a></li><li><span class="item-number">14</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-14">Large Cluster Jewel ↗</a></li><li><span class="item-number">15</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-15">Melding of the Flesh Cobalt Jewel ↗</a></li><li><span class="item-number">16</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-16">The Red Dream Crimson Jewel ↗</a></li><li><span class="item-number">17</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-17">Watcher’s Eye Prismatic Jewel ↗</a></li><li><span class="item-number">18</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-18">Watcher’s Eye Prismatic Jewel ↗</a></li><li><span class="item-number">19</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-19">Any One-Handed Sword ↗</a></li><li><span class="item-number">20</span><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-20">Nightmare Map ↗</a></li></ol></div><aside class="margin-copy"><p><strong>Scale</strong><br>Long inventory, kept open.</p><a href="#margin-notes">Copy list data</a></aside></article>
+        <article class="manual-entry"><div><header class="list-title"><span class="list-number">06</span><h3>LuminaryMercBot</h3></header><p class="context">Mercenaries · league-start · defense</p><ol class="items">
+          <li><span class="item-number">01</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-01">Leer Cast Festival Mask ↗</a></li><li><span class="item-number">02</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-02">Belt of the Deceiver Heavy Belt ↗</a></li><li><span class="item-number">03</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-03">Nycta’s Lantern Crystal Sceptre ↗</a></li><li><span class="item-number">04</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-04">Kaom’s Heart Glorious Plate ↗</a></li><li><span class="item-number">05</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-05">Ceinture of Benevolence Cloth Belt ↗</a></li><li><span class="item-number">06</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-06">Redblade Banner Painted Tower Shield ↗</a></li><li><span class="item-number">07</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-07">Lori’s Lantern Prismatic Ring ↗</a></li><li><span class="item-number">08</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-08">Voll’s Vision Praetor Crown ↗</a></li><li><span class="item-number">09</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-09">Player Rare Ring (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">10</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-10">Player Rare Helmet (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">11</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-11">Player Rare Gloves (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">12</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-12">Player Rare Boots (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">13</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-13">Belly of the Beast Full Wyrmscale ↗</a></li><li><span class="item-number">14</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-14">Player Rare One Hand (+1lvl + Light Radius) ↗</a></li><li><span class="item-number">15</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-15">Player Rare Amulet (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">16</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-16">Player Rare Shield (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">17</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-17">Merc Rare Ring (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">18</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-18">Merc Rare Amulet (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">19</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-19">Merc Rare Helmet (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">20</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-20">Merc Rare Gloves (Adjust to Upgrade) ↗</a></li><li><span class="item-number">21</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-21">Merc Rare Boots (Onslaught Movespeed Craft When You Can) ↗</a></li><li><span class="item-number">22</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-22">Merc Rare Belt (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">23</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-23">Merc Rare Body Armour (Adjust to Upgrade) ↗</a></li><li><span class="item-number">24</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-24">Merc Rare Wand (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">25</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-25">Merc Rare One Hand Sword (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">26</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-26">Merc Rare Bow (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">27</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-27">Merc Rare Shield (Adjust Weight to Upgrade) ↗</a></li><li><span class="item-number">28</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-28">The Hallowed Monarch Faithful Helmet ↗</a></li><li><span class="item-number">29</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-29">Enmity’s Embrace Vermillion Ring ↗</a></li><li><span class="item-number">30</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-30">The Untouched Soul Gold Amulet ↗</a></li><li><span class="item-number">31</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-31">The Dark Seer Shadow Sceptre ↗</a></li><li><span class="item-number">32</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-32">The Taming Prismatic Ring ↗</a></li><li><span class="item-number">33</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-33">Foulborn Red Dream ↗</a></li><li><span class="item-number">34</span><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-34">The Adorned Crimson Jewel ↗</a></li>
+        </ol></div><aside class="margin-copy"><p><strong>Scale</strong><br>Long inventory, kept open.</p></aside></article>
+      </div>
+    </section>
+
+    <section id="continuous-index" class="prototype" aria-labelledby="index-title">
+      <div class="preview">
+        <p class="eyebrow">Variant C / Continuous index</p>
+        <h2 id="index-title">Field Manual</h2>
+        <p class="lede">One uninterrupted index: lists, context, and every trade search flow down the page without cards or nested controls.</p>
+        <div class="index-head"><span>file</span><span>list / trade searches</span><span>scope</span></div>
+        <article class="index-entry"><span class="entry-code">001</span><div class="entry-name"><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-01">Penance Brand Ignite Elementalist ↗</a><div class="entry-meta">Evergreen · league-start · defense</div><ol class="entry-items"><li><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-01">Aegis Aurora Champion Kite Shield</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-02">Focused Amulet</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-03">Sacred Chainmail</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-04">Penance Brand</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-05">Enlighten Support</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=penance-brand-06">Grace of the Goddess Prophecy Wand</a></li></ol></div><span class="entry-aside">06 items<br>official trade</span></article>
+        <article class="index-entry"><span class="entry-code">002</span><div class="entry-name"><a href="https://www.pathofexile.com/trade/search/Allflame/PPalmbnDIL">RF Essentials ↗</a><div class="entry-meta">Evergreen · righteous-fire · crafting</div><ol class="entry-items"><li><a href="https://www.pathofexile.com/trade/search/Allflame/PPalmbnDIL">Recomb Sceptre</a></li></ol></div><span class="entry-aside">01 item<br>official trade</span></article>
+        <article class="index-entry"><span class="entry-code">003</span><div class="entry-name"><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-01">Master’s Red Arc Ignite Elementalist ↗</a><div class="entry-meta">3.28 · league-start · defense</div><ol class="entry-items"><li><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-01">Ralakesh’s Impatience Riveted Boots</a></li><li><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-02">The Dark Monarch Lich’s Circlet - +2 Minion</a></li><li><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-03">The Tides of Time Vanguard Belt</a></li><li><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-04">Boneflesh Marble Amulet</a></li><li><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-05">Oriath’s End Bismuth Flask</a></li><li><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-06">Taste of Hate Sapphire Flask</a></li><li><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-07">Berek’s Respite Two-Stone Ring</a></li><li><a href="https://www.pathofexile.com/trade/search/3.28?q=masters-red-arc-08">Ralakesh’s Impatience Riveted Boots Endurance</a></li></ol></div><span class="entry-aside">08 items<br>league 3.28</span></article>
+        <article class="index-entry"><span class="entry-code">004</span><div class="entry-name"><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-01">Minion Pact Giga AoE BV ↗</a><div class="entry-meta">Evergreen · budget · guardian</div><ol class="entry-items"><li><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-01">Impossible Escape Viridian Jewel</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-02">Large Cluster Jewel</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=minion-pact-03">Medium Cluster Jewel</a></li></ol></div><span class="entry-aside">03 items<br>budget</span></article>
+        <article class="index-entry"><span class="entry-code">005</span><div class="entry-name"><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-01">Animate Guardian of Smiting Guardian ↗</a><div class="entry-meta">Evergreen · defense · guardian</div><ol class="entry-items"><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-01">The Grey Wind Spectral Axe</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-02">Crown of Eyes Hubris Circlet</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-03">Rathpith Globe Titanium Spirit Shield</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-04">Garb of the Ephemeral Savant’s Robe</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-05">Voidwalker Murder Boots</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-06">Gloves - AG - Cheap</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-07">Gloves - for AG</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-08">Claw - Player</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-09">The Hallowed Monarch Faithful Helmet</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-10">The Squire Elegant Round Shield</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-11">Defiance of Destiny Paua Amulet</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-12">Kaom’s Heart Glorious Plate</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-13">Screams of the Desiccated Leather Belt</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-14">Large Cluster Jewel</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-15">Melding of the Flesh Cobalt Jewel</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-16">The Red Dream Crimson Jewel</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-17">Watcher’s Eye Prismatic Jewel</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-18">Watcher’s Eye Prismatic Jewel</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-19">Any One-Handed Sword</a></li><li><a href="https://www.pathofexile.com/trade/search/Standard?q=animate-guardian-20">Nightmare Map</a></li></ol></div><span class="entry-aside">20 items<br>long list</span></article>
+        <article class="index-entry"><span class="entry-code">006</span><div class="entry-name"><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-01">LuminaryMercBot ↗</a><div class="entry-meta">Mercenaries · league-start · defense</div><ol class="entry-items"><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-01">Leer Cast Festival Mask</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-02">Belt of the Deceiver Heavy Belt</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-03">Nycta’s Lantern Crystal Sceptre</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-04">Kaom’s Heart Glorious Plate</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-05">Ceinture of Benevolence Cloth Belt</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-06">Redblade Banner Painted Tower Shield</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-07">Lori’s Lantern Prismatic Ring</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-08">Voll’s Vision Praetor Crown</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-09">Player Rare Ring (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-10">Player Rare Helmet (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-11">Player Rare Gloves (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-12">Player Rare Boots (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-13">Belly of the Beast Full Wyrmscale</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-14">Player Rare One Hand (+1lvl + Light Radius)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-15">Player Rare Amulet (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-16">Player Rare Shield (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-17">Merc Rare Ring (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-18">Merc Rare Amulet (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-19">Merc Rare Helmet (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-20">Merc Rare Gloves (Adjust to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-21">Merc Rare Boots (Onslaught Movespeed Craft When You Can)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-22">Merc Rare Belt (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-23">Merc Rare Body Armour (Adjust to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-24">Merc Rare Wand (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-25">Merc Rare One Hand Sword (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-26">Merc Rare Bow (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-27">Merc Rare Shield (Adjust Weight to Upgrade)</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-28">The Hallowed Monarch Faithful Helmet</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-29">Enmity’s Embrace Vermillion Ring</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-30">The Untouched Soul Gold Amulet</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-31">The Dark Seer Shadow Sceptre</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-32">The Taming Prismatic Ring</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-33">Foulborn Red Dream</a></li><li><a href="https://www.pathofexile.com/trade/search/Mercenaries?q=luminary-mercbot-34">The Adorned Crimson Jewel</a></li></ol></div><span class="entry-aside">34 items<br>long list</span></article>
+        <div class="craft-line"><h3>Craft notes</h3><p><a href="#continuous-index">Divine Life Flask</a> · <a href="#continuous-index">Large Cluster Jewel</a> · practical routes without decoration.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const fontScale = document.querySelector('#font-scale');
+    const density = document.querySelector('#density');
+    const fontOutput = document.querySelector('#font-output');
+    const densityOutput = document.querySelector('#density-output');
+    const palettes = {
+      paper: { paper: '#f2ede2', 'paper-deep': '#e8e0d5', ink: '#332d28', muted: '#766e65', quiet: '#9a8e82', rust: '#9d4f32', line: '#c9bdad' },
+      stone: { paper: '#e5e0d5', 'paper-deep': '#d9d1c3', ink: '#2d332f', muted: '#68736b', quiet: '#8b958c', rust: '#8e4b35', line: '#b8c0b3' },
+      night: { paper: '#24211e', 'paper-deep': '#1b1917', ink: '#eee4d5', muted: '#b9aa98', quiet: '#8f8173', rust: '#d4956a', line: '#504840' }
+    };
+    function setScale() {
+      root.style.setProperty('--scale', fontScale.value);
+      fontOutput.value = `${Math.round(Number(fontScale.value) * 100)}%`;
+      fontOutput.textContent = fontOutput.value;
+    }
+    function setDensity() {
+      root.style.setProperty('--density', density.value);
+      densityOutput.value = `${Math.round(Number(density.value) * 100)}%`;
+      densityOutput.textContent = densityOutput.value;
+    }
+    function setPalette(name) {
+      Object.entries(palettes[name]).forEach(([key, value]) => root.style.setProperty(`--${key}`, value));
+      document.querySelectorAll('[data-palette]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.palette === name)));
+    }
+    fontScale.addEventListener('input', setScale);
+    density.addEventListener('input', setDensity);
+    document.querySelectorAll('[data-palette]').forEach((button) => button.addEventListener('click', () => setPalette(button.dataset.palette)));
+    setScale();
+    setDensity();
+  </script>
+</body>
+</html>

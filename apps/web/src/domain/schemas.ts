@@ -1,4 +1,10 @@
 import { z } from "astro/zod";
+import {
+  shareableListGroupSchema,
+  shareableListItemSchema,
+  shareableListSchema,
+  type ShareableList,
+} from "@poe-sl/shareable-list";
 
 const nonBlank = z.string().min(1).refine((value) => value.trim().length > 0);
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "must be a lowercase slug");
@@ -23,6 +29,11 @@ export const publishedItemSchema = z.object({
   rationale: nonBlank.optional(),
 }).strict();
 
+export const publishedListGroupSchema = z.object({
+  title: nonBlank,
+  items: z.array(publishedItemSchema).min(1),
+}).strict();
+
 export const applicabilitySchema = z.object({
   game: z.literal("poe1"),
   league: nonBlank.optional(),
@@ -32,30 +43,22 @@ export const applicabilitySchema = z.object({
   "applicability must specify exactly one league or evergreen",
 );
 
-export const publishedListSchema = z.object({
+const publishedListMetadataSchema = z.object({
   title: nonBlank,
   overview: nonBlank.optional(),
   category: slug,
   tags: z.array(slug),
   applicability: applicabilitySchema,
-  items: z.array(publishedItemSchema).min(1),
 }).strict();
 
-export const shareableListItemSchema = z.object({
-  title: nonBlank,
-  tradeUrl: z.string().url().refine((value) => value.startsWith("http://") || value.startsWith("https://")),
-  variant: z.string().optional(),
-  note: z.string().optional(),
-}).strict();
+export const publishedListSchema = z.union([
+  publishedListMetadataSchema.extend({ items: z.array(publishedItemSchema).min(1) }).strict(),
+  publishedListMetadataSchema.extend({ groups: z.array(publishedListGroupSchema).min(1) }).strict(),
+]);
 
-export const shareableListSchema = z.object({
-  format: z.literal("poe-shopping-list"),
-  version: z.literal(1),
-  title: nonBlank,
-  overview: z.string().optional(),
-  items: z.array(shareableListItemSchema),
-}).strict();
+export { shareableListGroupSchema, shareableListItemSchema, shareableListSchema };
 
 export type PublishedList = z.infer<typeof publishedListSchema>;
 export type PublishedItem = z.infer<typeof publishedItemSchema>;
-export type ShareableList = z.infer<typeof shareableListSchema>;
+export type PublishedListGroup = z.infer<typeof publishedListGroupSchema>;
+export type { ShareableList };

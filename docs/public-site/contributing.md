@@ -13,7 +13,8 @@ Each Published List has:
 - exactly one canonical primary Category;
 - zero or more canonical Tags;
 - explicit Path of Exile game and league applicability (or evergreen);
-- ordered, actionable List Items;
+- either ordered, actionable List Items or ordered Groups, each with a title and
+  nested actionable List Items (never both);
 - a direct official Path of Exile Trade URL for every item; and
 - a variant for every item, plus optional item rationale and List
   Overview.
@@ -45,8 +46,11 @@ Catalog.
 
 ## Export and extension boundary
 
-Download and copy use only the strict, pricing-free Shareable List v1 JSON:
-`{ format, version, title, overview?, items[] }`. Items may contain only
+Download and copy use only the strict, pricing-free Shareable List v1
+groups-only contract, encoded as the canonical `psl1.` transport. Flat
+authored lists are normalized to one group for export and are never exported
+with an `items` array. Group titles are optional in the portable contract.
+Items may contain only
 `title`, `tradeUrl`, `variant?`, and `note?`. Published List
 Category, Tags, league, source, timestamps, and other catalog metadata must
 not be exported. Import creates a new independent Personal Draft with every

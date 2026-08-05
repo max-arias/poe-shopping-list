@@ -34,7 +34,8 @@ for (const file of htmlFiles) {
     const isGoogleFontStylesheet = value.startsWith("https://fonts.googleapis.com/css2?");
     const isOfficialTradeSearch = value.startsWith("https://www.pathofexile.com/trade/search/");
     const isPermittedCuratedExternalUrl = permittedCuratedExternalUrls.includes(value);
-    if (!isGoogleFontPreconnect && !isGoogleFontStylesheet && !isOfficialTradeSearch && !isPermittedCuratedExternalUrl) {
+    const isShareableJsonDataUrl = value.startsWith("data:application/json;charset=utf-8,");
+    if (!isGoogleFontPreconnect && !isGoogleFontStylesheet && !isOfficialTradeSearch && !isPermittedCuratedExternalUrl && !isShareableJsonDataUrl) {
       throw new Error(`${file}: unexpected external link ${value}`);
     }
   }

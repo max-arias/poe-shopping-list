@@ -1,71 +1,86 @@
 ---
-import type { PublishedList, ShareableList } from "../domain/schemas";
+import type { PublishedItem, PublishedList } from "../domain/schemas";
 import OverviewMarkdown from "./OverviewMarkdown.astro";
 
 interface Props {
   id: string;
   list: PublishedList;
-  exportData: ShareableList;
+  exportToken: string;
+  lastReviewed?: string;
 }
 
-const { id, list, exportData } = Astro.props;
-const remainingId = `remaining-${id.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
-const initialItems = list.items.slice(0, 3);
-const remainingItems = list.items.slice(3);
+interface RawSection {
+  title?: unknown;
+  name?: unknown;
+  label?: unknown;
+  items?: unknown;
+}
+
+interface NormalizedSection {
+  title: string;
+  items: PublishedItem[];
+}
+
+const { id, list, exportToken, lastReviewed } = Astro.props;
 const leagueLabel = list.applicability.evergreen ? "Evergreen" : list.applicability.league;
-const taxonomyText = ["Path of Exile 1", leagueLabel, list.category, ...list.tags].filter(Boolean).join(" ");
-const searchText = [list.title, list.overview, taxonomyText, ...list.items.map((item) => item.title)].filter(Boolean).join(" ");
+const exportText = `${exportToken}\n`;
+
+// Published content may arrive as either ordered sections or a flat item list.
+// Keeping this boundary here lets the renderer stay simple while old flat lists
+// continue to have the same appearance.
+const rawSections: RawSection[] | undefined = "groups" in list ? list.groups as RawSection[] : undefined;
+const flatItems = "items" in list ? list.items : [];
+
+const sections: NormalizedSection[] = rawSections
+  ? rawSections
+      .map((section) => ({
+        title: typeof section.title === "string" ? section.title : typeof section.name === "string" ? section.name : typeof section.label === "string" ? section.label : "",
+        items: Array.isArray(section.items) ? section.items as PublishedItem[] : [],
+      }))
+      .filter((section) => section.items.length > 0)
+  : [{ title: "", items: flatItems }];
+
+const hasMultipleSections = sections.length > 1;
+const totalItems = sections.reduce((total, section) => total + section.items.length, 0);
+const sectionLabel = (section: NormalizedSection, index: number) => section.title || `Section ${index + 1}`;
 ---
 
-<article
-  class="list-card card"
-  data-game={list.applicability.game}
-  data-league={list.applicability.evergreen ? "evergreen" : list.applicability.league}
-  data-category={list.category}
-  data-tags={list.tags.join(" ")}
-  data-search={searchText}
-  data-export={JSON.stringify(exportData)}
->
-  <header class="card-header">
-    <div class="card-heading">
-      <h2>{list.title}</h2>
-      <p class="taxonomy" aria-label="List applicability and taxonomy">
-        <button class="badge badge-sm badge-outline" type="button" data-taxonomy-filter="game" data-taxonomy-value={list.applicability.game} aria-label="Filter by game: Path of Exile 1">Path of Exile 1</button><button class="badge badge-sm badge-outline" type="button" data-taxonomy-filter="league" data-taxonomy-value={list.applicability.evergreen ? "evergreen" : list.applicability.league} aria-label={`Filter by league: ${leagueLabel}`}>{leagueLabel}</button>{list.tags.map((tag) => <button class="badge badge-sm badge-outline" type="button" data-taxonomy-filter="tag" data-taxonomy-value={tag} aria-label={`Filter by tag: ${tag}`}>{tag}</button>)}
-      </p>
-    </div>
-    <div class="card-actions" aria-label={`${list.title} actions`}>
-      <button class="icon-button btn btn-square btn-ghost btn-xs" type="button" data-download aria-label={`Download ${list.title} as Shareable List v1 JSON`} title="Download Shareable List v1 JSON">
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="visually-hidden">Download</span>
-      </button>
-      <button class="icon-button btn btn-square btn-ghost btn-xs" type="button" data-copy aria-label={`Copy ${list.title} as Shareable List v1 JSON`} title="Copy Shareable List v1 JSON">
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="1.5" /><path d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1" stroke-linecap="round" /></svg><span class="visually-hidden">Copy</span>
-      </button>
-    </div>
+<article id={`list-${id}`} class="manual-entry" data-export={exportToken}>
+  <header class="list-title">
+    <span class="list-number" aria-hidden="true">—</span>
+    <h4>{list.title}</h4>
   </header>
+  <p class="list-meta" aria-label={lastReviewed ? "List scope, Trade search count, and last reviewed" : "List scope and Trade search count"}>
+    {leagueLabel} · {totalItems} {totalItems === 1 ? "Trade search" : "Trade searches"}{lastReviewed && <> · Last reviewed: <time datetime={lastReviewed}>{new Intl.DateTimeFormat("en", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(lastReviewed))}</time></>}
+  </p>
+  {list.overview && <OverviewMarkdown value={list.overview} />}
 
-  <div class="card-content">
-    {list.overview && <OverviewMarkdown value={list.overview} />}
-
-    {remainingItems.length > 0 && <details class="remaining-collapse collapse collapse-arrow">
-      <summary class="remaining-summary collapse-title" aria-label={`Show remaining items for ${list.title}`}></summary>
-      <ol id={remainingId} class="item-list remaining-items" start="4" aria-label={`${list.title} remaining items`}>
-        {remainingItems.map((item, index) => <li class="list-item">
-          <span class="item-order" aria-hidden="true">{String(index + 4).padStart(2, "0")}</span>
-          <span class="item-title"><a href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="external-link" aria-hidden="true">↗</span><span class="visually-hidden"> (external Trade link)</span></a></span>
-          {item.variant && <span class="item-variant">{item.variant}</span>}
-          {item.rationale && <details class="item-rationale"><summary>Why this item</summary><p>{item.rationale}</p></details>}
+  <div class="groups" aria-label={`${list.title} groups`}>
+    {sections.map((section, sectionIndex) => <section class="list-group">
+      {(hasMultipleSections || section.title) && <header class="group-heading">
+        <span class="group-number" aria-hidden="true">{String(sectionIndex + 1).padStart(2, "0")}</span>
+        <h5>{sectionLabel(section, sectionIndex)}</h5>
+        <span class="group-count">{section.items.length} {section.items.length === 1 ? "item" : "items"}</span>
+      </header>}
+      <ol class="items" aria-label={`${section.title || list.title} items`}>
+        {section.items.map((item, itemIndex) => <li>
+          <span class="item-number" aria-hidden="true">{String(itemIndex + 1).padStart(2, "0")}</span>
+          <span class="item-copy">
+            <span class="item-title">{item.title}</span>
+            {item.variant && <span class="variant">{item.variant}</span>}
+          </span>
+          <a class="trade-action" href={item.tradeUrl} target="_blank" rel="noopener noreferrer">Trade <span aria-hidden="true">↗</span><span class="visually-hidden"> {item.title} on Path of Exile Trade</span></a>
         </li>)}
       </ol>
-    </details>}
-
-    <ol class="item-list initial-items" aria-label={`${list.title} items`}>
-      {initialItems.map((item, index) => <li class="list-item">
-        <span class="item-order" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-        <span class="item-title"><a href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="external-link" aria-hidden="true">↗</span><span class="visually-hidden"> (external Trade link)</span></a></span>
-        {item.variant && <span class="item-variant">{item.variant}</span>}
-        {item.rationale && <details class="item-rationale"><summary>Why this item</summary><p>{item.rationale}</p></details>}
-      </li>)}
-    </ol>
-
+    </section>)}
   </div>
+
+  <div class="list-actions" aria-label={`${list.title} export actions`}>
+    <a href={`data:application/json;charset=utf-8,${encodeURIComponent(exportText)}`} download={`${list.title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list"}-shareable-list-v1.json`} data-download aria-label={`Download ${list.title} as JSON`}>Download JSON</a>
+    <button type="button" data-copy aria-label={`Copy ${list.title} as JSON`}>Copy JSON</button>
+  </div>
+  <details class="export-fallback" data-export-fallback>
+    <summary>Show JSON to copy manually</summary>
+    <textarea readonly aria-label={`JSON to copy manually for ${list.title}`}>{exportText}</textarea>
+  </details>
 </article>

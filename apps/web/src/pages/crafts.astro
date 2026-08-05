@@ -1,12 +1,12 @@
 ---
-import "../styles/catalog.css";
+import "../styles/theme.css";
 import "../styles/crafts.css";
 
 const canonicalUrl = "/crafts/";
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="lofi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -16,20 +16,21 @@ const canonicalUrl = "/crafts/";
     <link rel="canonical" href={canonicalUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" />
   </head>
-  <body class="font-body">
+  <body class="font-sans">
     <header class="craft-header">
       <nav class="craft-nav" aria-label="Primary navigation">
-        <a class="craft-back-link" href="/">← Back to catalog</a>
-        <span class="craft-nav-label" aria-current="page">Crafts</span>
+        <a class="craft-back-link" href="/">← Shopping lists</a>
+        <span class="craft-nav-label" aria-current="page">Field notes</span>
       </nav>
-      <p class="craft-kicker">Path of Exile / Field notes</p>
+      <p class="craft-note">Recipes tested for useful upgrades, with a clear point to stop spending.</p>
       <h1>Craft with intent.</h1>
-      <p class="craft-intro">Two practical recipes for turning the right base into a useful upgrade—without spending currency blindly.</p>
+      <p class="craft-intro">Practical recipes for turning the right base into a useful upgrade—without spending currency blindly.</p>
     </header>
 
-    <main class="craft-main">
+    <a class="skip-link" href="#craft-main">Skip to the craft notes</a>
+    <main id="craft-main" class="craft-main">
       <article class="craft-guide" aria-labelledby="life-flask-title">
         <header class="craft-section-heading">
           <p class="craft-section-number">01</p>
@@ -54,7 +55,7 @@ const canonicalUrl = "/crafts/";
           <h2 id="cluster-title">Large Cluster Jewel</h2>
         </header>
 
-        <p class="craft-action"><a class="craft-trade-link" href="https://www.pathofexile.com/trade/search/Allflame/3q6YbWRJt5" target="_blank" rel="noopener noreferrer">Open the official Large Cluster Jewel trade search <span aria-hidden="true">↗</span></a></p>
+        <p class="craft-action"><a class="craft-trade-link" href="https://www.pathofexile.com/trade/search/Allflame/2Kzk6yVVIk" target="_blank" rel="noopener noreferrer">Open the official Large Cluster Jewel trade search <span aria-hidden="true">↗</span></a></p>
 
         <div class="craft-block">
           <h3>Start with the right base</h3>
@@ -69,6 +70,14 @@ const canonicalUrl = "/crafts/";
         <div class="craft-block">
           <h3>Desirable notables</h3>
           <p>Roll for one of these four: <strong>Disorienting Display</strong>, <strong>Doryani's Lesson</strong>, <strong>Prismatic Heart</strong>, or <strong>Sadist</strong>.</p>
+          <div class="regex-helper" aria-labelledby="regex-helper-title">
+            <p id="regex-helper-title"><strong>Inventory / stash search</strong> Paste this into PoE’s search with regex mode enabled.</p>
+            <div class="regex-line">
+              <code id="cluster-regex">Disorienting Display|Doryani's Lesson|Prismatic Heart|Sadist</code>
+              <button type="button" data-copy-regex aria-describedby="regex-status">Copy regex</button>
+            </div>
+            <span id="regex-status" class="regex-status" role="status" aria-live="polite"></span>
+          </div>
         </div>
 
         <div class="craft-routes">
@@ -96,5 +105,31 @@ const canonicalUrl = "/crafts/";
         </aside>
       </article>
     </main>
-  </body>
+    <script>
+      const regexButton = document.querySelector<HTMLButtonElement>("[data-copy-regex]");
+      const regex = document.querySelector<HTMLElement>("#cluster-regex");
+      const regexStatus = document.querySelector<HTMLElement>("#regex-status");
+      regexButton?.addEventListener("click", async () => {
+        if (!regex || !regexStatus) return;
+        const value = regex.textContent || "";
+        try {
+          if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+          await navigator.clipboard.writeText(value);
+          regexButton.textContent = "Copied";
+          regexStatus.textContent = "Regex copied.";
+        } catch {
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(regex);
+          selection?.removeAllRanges();
+          selection?.addRange(range);
+          regexButton.textContent = "Select and copy";
+          regexStatus.textContent = "Copy failed. Select the expression and copy it manually.";
+        }
+      });
+    </script>
+  <!-- impeccable-live-start -->
+<script is:inline src="http://localhost:8400/live.js"></script>
+<!-- impeccable-live-end -->
+</body>
 </html>

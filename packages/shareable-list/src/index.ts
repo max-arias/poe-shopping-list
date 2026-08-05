@@ -2,6 +2,7 @@ import { Gunzip, gzipSync } from "fflate";
 import { z } from "zod";
 
 export const MAX_ITEMS = 500;
+export const MAX_GROUPS = 100;
 export const MAX_COMPRESSED_BYTES = 256 * 1024;
 export const MAX_DECOMPRESSED_BYTES = 1024 * 1024;
 export const SHAREABLE_LIST_PREFIX = "psl1.";
@@ -21,20 +22,32 @@ export const shareableListItemSchema = z
   })
   .strict();
 
+export const shareableListGroupSchema = z
+  .object({
+    title: titleSchema.optional(),
+    items: z.array(shareableListItemSchema).max(MAX_ITEMS),
+  })
+  .strict();
+
 export const shareableListSchema = z
   .object({
     format: z.literal("poe-shopping-list"),
     version: z.literal(1),
     title: titleSchema,
     overview: z.string().optional(),
-    items: z.array(shareableListItemSchema).max(MAX_ITEMS),
+    groups: z.array(shareableListGroupSchema).max(MAX_GROUPS).refine(
+      (groups) => groups.reduce((count, group) => count + group.items.length, 0) <= MAX_ITEMS,
+      `A list may contain at most ${MAX_ITEMS} items`,
+    ),
   })
   .strict();
 
 export type ShareableListItem = z.infer<typeof shareableListItemSchema>;
+export type ShareableListGroup = z.infer<typeof shareableListGroupSchema>;
 export type ShareableList = z.infer<typeof shareableListSchema>;
 // Uppercase aliases keep the schema names familiar to existing TypeScript consumers.
 export const ShareableListItemSchema = shareableListItemSchema;
+export const ShareableListGroupSchema = shareableListGroupSchema;
 export const ShareableListSchema = shareableListSchema;
 
 export class ShareableListTransportError extends Error {

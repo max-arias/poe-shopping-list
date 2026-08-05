@@ -52,7 +52,7 @@ export function useDraftList() {
       title: trimmedTitle,
       ...(overview?.trim() ? { overview: overview.trim() } : {}),
       createdAt: Date.now(),
-      items: [],
+      groups: [{ id: crypto.randomUUID(), position: 0, items: [] }],
     };
     await saveAll([...drafts.value, created]);
     return created;
@@ -72,20 +72,30 @@ export function useDraftList() {
     await saveDraft(updated);
     return true;
   }
-  async function reorderDraftItems(draftId: string, orderedItemIds: string[]) {
+  async function reorderDraftItems(draftId: string, groupId: string, orderedItemIds: string[]) {
     const target = drafts.value.find((value) => value.id === draftId);
-    if (!target || !Array.isArray(orderedItemIds) || orderedItemIds.length !== target.items.length)
+    const group = target?.groups.find((value) => value.id === groupId);
+    if (!target || !group || !Array.isArray(orderedItemIds) || orderedItemIds.length !== group.items.length)
       return false;
 
-    const itemIds = new Set(target.items.map((item) => item.id));
+    const itemIds = new Set(group.items.map((item) => item.id));
     const isCompletePermutation =
       orderedItemIds.every((id) => itemIds.has(id)) &&
       new Set(orderedItemIds).size === itemIds.size;
     if (!isCompletePermutation) return false;
 
-    const itemsById = new Map(target.items.map((item) => [item.id, item]));
+    const itemsById = new Map(group.items.map((item) => [item.id, item]));
     const items = orderedItemIds.map((id, position) => ({ ...itemsById.get(id)!, position }));
-    await saveDraft({ ...target, items });
+    await saveDraft({ ...target, groups: target.groups.map((value) => value.id === groupId ? { ...value, items } : value) });
+    return true;
+  }
+  async function renameGroup(draftId: string, groupId: string, title: string) {
+    const target = drafts.value.find((value) => value.id === draftId);
+    const group = target?.groups.find((value) => value.id === groupId);
+    if (!target || !group) return false;
+    const trimmed = title.trim();
+    const updatedGroup = trimmed ? { ...group, title: trimmed } : (() => { const { title: _, ...rest } = group; return rest; })();
+    await saveDraft({ ...target, groups: target.groups.map((value) => value.id === groupId ? updatedGroup : value) });
     return true;
   }
   async function renameDraft(title: string) {
@@ -110,7 +120,7 @@ export function useDraftList() {
     if (!target) return null;
     const item: DraftItem = {
       id: crypto.randomUUID(),
-      position: target.items.length,
+      position: target.groups[0]?.items.length ?? 0,
       title: trimmedTitle,
       tradeUrl,
       ...details,
@@ -119,7 +129,7 @@ export function useDraftList() {
     };
     await saveAll(
       drafts.value.map((value) =>
-        value.id === draftId ? { ...value, items: [...value.items, item] } : value,
+        value.id === draftId ? { ...value, groups: value.groups.length ? value.groups.map((group, index) => index === 0 ? { ...group, items: [...group.items, item] } : group) : [{ id: crypto.randomUUID(), position: 0, items: [item] }] } : value,
       ),
     );
     return item;
@@ -131,27 +141,23 @@ export function useDraftList() {
     if (draft.value)
       await saveDraft({
         ...draft.value,
-        items: draft.value.items
+        groups: draft.value.groups.map((group) => ({ ...group, items: group.items
           .filter((item) => item.id !== itemId)
-          .map((item, position) => ({ ...item, position })),
+          .map((item, position) => ({ ...item, position })) })),
       });
   }
   async function setComplete(itemId: string, completed: boolean) {
     if (draft.value)
       await saveDraft({
         ...draft.value,
-        items: draft.value.items.map((item) =>
-          item.id === itemId ? { ...item, completed } : item,
-        ),
+        groups: draft.value.groups.map((group) => ({ ...group, items: group.items.map((item) => item.id === itemId ? { ...item, completed } : item) })),
       });
   }
   async function renameItem(itemId: string, title: string) {
     if (draft.value)
       await saveDraft({
         ...draft.value,
-        items: draft.value.items.map((item) =>
-          item.id === itemId ? { ...item, title: title.trim() } : item,
-        ),
+        groups: draft.value.groups.map((group) => ({ ...group, items: group.items.map((item) => item.id === itemId ? { ...item, title: title.trim() } : item) })),
       });
   }
   async function updateItem(
@@ -161,14 +167,14 @@ export function useDraftList() {
     if (draft.value)
       await saveDraft({
         ...draft.value,
-        items: draft.value.items.map((item) => (item.id === itemId ? { ...item, ...patch } : item)),
+        groups: draft.value.groups.map((group) => ({ ...group, items: group.items.map((item) => item.id === itemId ? { ...item, ...patch } : item) })),
       });
   }
   async function unmarkAll() {
     if (draft.value)
       await saveDraft({
         ...draft.value,
-        items: draft.value.items.map((item) => ({ ...item, completed: false })),
+        groups: draft.value.groups.map((group) => ({ ...group, items: group.items.map((item) => ({ ...item, completed: false })) })),
       });
   }
   return {
@@ -179,6 +185,7 @@ export function useDraftList() {
     addDraft,
     updateDraftOverview,
     reorderDraftItems,
+    renameGroup,
     renameDraft,
     deleteDraft,
     deleteDraftById,

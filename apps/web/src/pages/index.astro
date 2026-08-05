@@ -1,264 +1,70 @@
 ---
 import { getCollection } from "astro:content";
+import { relative, resolve } from "node:path";
 import PublishedListCard from "../components/PublishedListCard.astro";
+import { encodeShareableList } from "@poe-sl/shareable-list";
 import { serializeShareableList } from "../domain/serialize";
-import { taxonomy } from "../domain/taxonomy";
+import { gitLastReviewed } from "../domain/last-reviewed";
+import { validateContentDirectory, validatePublishedList } from "../domain/validate-content";
 import "../styles/catalog.css";
 
 const entries = (await getCollection("lists")).sort((a, b) => a.data.title.localeCompare(b.data.title));
-const categoryGroups = [...new Set(entries.map((entry) => entry.data.category))].map((category) => ({
-  category,
-  entries: entries.filter((entry) => entry.data.category === category),
-}));
-const leagues = [...new Set(entries.map((entry) => entry.data.applicability.evergreen ? "evergreen" : entry.data.applicability.league).filter((value): value is string => Boolean(value)))].sort();
+const projectRoot = process.cwd();
+const contentRoot = resolve(projectRoot, "src/content/lists");
+const sourceIdentity = (sourceFile: string) => relative(contentRoot, sourceFile).replaceAll("\\", "/").replace(/\.[^.]+$/, "");
+const publishedEntries = import.meta.env.DEV
+  ? entries.map((entry) => {
+      validatePublishedList(entry.data, undefined, entry.id);
+      return { entry, lastReviewed: undefined };
+    })
+  : await (async () => {
+      const validatedRecords = await validateContentDirectory(contentRoot, undefined, (sourceFile) => gitLastReviewed(sourceFile, projectRoot));
+      const lastReviewedBySource = new Map(validatedRecords.map((record) => [sourceIdentity(record.sourceFile), record.lastReviewed]));
+      return entries.map((entry) => {
+        const lastReviewed = lastReviewedBySource.get(entry.id.replace(/\.[^.]+$/, ""));
+        if (!lastReviewed) throw new Error(`Missing review record for published list source '${entry.id}'`);
+        return { entry, lastReviewed };
+      });
+    })();
 // Keep the canonical route host-relative because no production hostname is configured yet.
 const canonicalUrl = "/";
-const optionLabel = (value: string) => value === "evergreen" ? "Evergreen" : value;
-const categoryId = (category: string) => `category-${category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="lofi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Curated Path of Exile Lists</title>
-    <meta name="description" content="Browse curated Path of Exile shopping and checklist lists. Search and filter to find what you need." />
+    <meta name="description" content="Curated Path of Exile shopping lists and practical field notes, with every official Trade search visible." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,500;12..96,75..100,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" />
   </head>
-  <body class="font-body">
+  <body class="font-sans">
     <header class="site-header">
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="/crafts/">Crafts</a>
+      <nav class="site-nav site-nav--split" aria-label="Primary navigation">
+        <a href="/">Shopping lists</a>
+        <a href="/crafts/">Craft notes</a>
       </nav>
-      <h1>Curated Path of Exile Lists</h1>
-      <p>Browse curated Path of Exile shopping and checklist lists—search or filter to find what you need.</p>
+      <h1>Buy with intent.</h1>
+      <p>Curated official Trade searches and practical low-cost craft notes for Path of Exile builds. Every list is open on the page.</p>
     </header>
 
     <main class="catalog-main">
-      <form class="filter-toolbar" id="catalog-filters" aria-label="Catalog filters">
-        <div class="filter-field search-field">
-          <label for="search">Search</label>
-          <input class="input input-sm" id="search" name="search" type="search" autocomplete="off" placeholder="Search visible Lists" />
-        </div>
-        <div class="filter-field compact-field">
-          <label for="game">Game</label>
-          <select class="select select-sm" id="game" name="game">
-            <option value="">All games</option>
-            <option value="poe1">Path of Exile 1</option>
-          </select>
-        </div>
-        <div class="filter-field compact-field">
-          <label for="league">League</label>
-          <select class="select select-sm" id="league" name="league">
-            <option value="">All leagues</option>
-            <option value="evergreen">Evergreen</option>
-            {leagues.filter((league) => league !== "evergreen").map((league) => <option value={league}>{optionLabel(league)}</option>)}
-          </select>
-        </div>
-        <div class="filter-field multi-field">
-          <span class="filter-label" id="category-label">Categories</span>
-          <details class="dropdown filter-dropdown">
-            <summary class="select select-sm filter-trigger" aria-label="Categories: All categories">
-              <span class="filter-summary" data-filter-summary="category">All categories</span>
-            </summary>
-            <div class="dropdown-content filter-menu" data-filter-menu="category" role="group" aria-labelledby="category-label">
-              {taxonomy.categories.length > 0 ? taxonomy.categories.map((category) => (
-                <label class="filter-option">
-                  <input class="checkbox checkbox-sm" type="checkbox" name="category" value={category} />
-                  <span>{category}</span>
-                </label>
-              )) : <span class="filter-empty">No categories available</span>}
-            </div>
-          </details>
-        </div>
-        <div class="filter-field multi-field">
-          <span class="filter-label" id="tag-label">Tags</span>
-          <details class="dropdown filter-dropdown">
-            <summary class="select select-sm filter-trigger" aria-label="Tags: All tags">
-              <span class="filter-summary" data-filter-summary="tag">All tags</span>
-            </summary>
-            <div class="dropdown-content filter-menu" data-filter-menu="tag" role="group" aria-labelledby="tag-label">
-              {taxonomy.tags.length > 0 ? taxonomy.tags.map((tag) => (
-                <label class="filter-option">
-                  <input class="checkbox checkbox-sm" type="checkbox" name="tag" value={tag} />
-                  <span>{tag}</span>
-                </label>
-              )) : <span class="filter-empty">No tags available</span>}
-            </div>
-          </details>
-        </div>
-        <button class="reset-button btn btn-ghost btn-sm" id="reset-filters" type="button" hidden>Reset all filters</button>
-      </form>
-
-      <div id="list-grid" aria-label="Published Lists">
-        {categoryGroups.map(({ category, entries: groupEntries }) => (
-          <section class="category-section" data-category-section={category} aria-labelledby={`${categoryId(category)}-heading`}>
-            <div class="category-heading">
-              <h2 id={`${categoryId(category)}-heading`}><button class="category-filter" type="button" data-category-filter={category} aria-label={`Filter by category: ${category}`} aria-pressed="false">{category}</button></h2>
-              <span class="category-divider" aria-hidden="true"></span>
-            </div>
-            <div class="card-grid" aria-label={`${category} Published Lists`}>
-              {groupEntries.map((entry) => <PublishedListCard id={entry.id} list={entry.data} exportData={serializeShareableList(entry.data)} />)}
-            </div>
-          </section>
-        ))}
-        <div class="empty-state" id="empty-state" hidden={entries.length > 0}>
-          <p id="empty-message">No Published Lists are available yet.</p>
-          <button class="reset-button btn btn-ghost btn-sm" type="button" data-empty-reset>Reset all filters</button>
-        </div>
-      </div>
+      <a class="skip-link" href="#list-index">Skip to shopping lists</a>
+      {entries.length > 0 ? <div id="list-index" aria-label="Published lists">
+        {publishedEntries.map(({ entry, lastReviewed }) => <PublishedListCard id={entry.id} list={entry.data} exportToken={encodeShareableList(serializeShareableList(entry.data))} lastReviewed={lastReviewed} />)}
+      </div> : <section class="empty-archive" aria-labelledby="empty-archive-title">
+        <h3 id="empty-archive-title">No published lists yet.</h3>
+        <p>Check back after the next archive update.</p>
+      </section>}
       <p id="action-feedback" class="action-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
     </main>
 
     <script>
-      const filterForm = document.querySelector<HTMLFormElement>("#catalog-filters")!;
-      const search = document.querySelector<HTMLInputElement>("#search")!;
-      const game = document.querySelector<HTMLSelectElement>("#game")!;
-      const league = document.querySelector<HTMLSelectElement>("#league")!;
-      const category = document.querySelector<HTMLElement>('[data-filter-menu="category"]')!;
-      const tag = document.querySelector<HTMLElement>('[data-filter-menu="tag"]')!;
-      const categorySummary = document.querySelector<HTMLElement>('[data-filter-summary="category"]')!;
-      const tagSummary = document.querySelector<HTMLElement>('[data-filter-summary="tag"]')!;
-      const categoryTrigger = categorySummary.closest("summary")!;
-      const tagTrigger = tagSummary.closest("summary")!;
-      const reset = document.querySelector<HTMLButtonElement>("#reset-filters")!;
-      const emptyState = document.querySelector<HTMLElement>("#empty-state")!;
-      const emptyMessage = document.querySelector<HTMLElement>("#empty-message")!;
-      const cards = [...document.querySelectorAll<HTMLElement>(".list-card")];
-      const categorySections = [...document.querySelectorAll<HTMLElement>("[data-category-section]")];
-      const categoryControls = [...document.querySelectorAll<HTMLButtonElement>("[data-category-filter]")];
-      const getSelected = (menu: HTMLElement): string[] => [...menu.querySelectorAll<HTMLInputElement>('input[type="checkbox"]:checked')].map((input) => input.value);
-      const setSelected = (menu: HTMLElement, values: string[]) => menu.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((input) => { input.checked = values.includes(input.value); });
-      const getSummary = (values: string[], emptyLabel: string, unit: string) => {
-        if (!values.length) return emptyLabel;
-        const names = values.join(", ");
-        return values.length <= 2 && names.length <= 24 ? names : `${values.length} ${unit}`;
-      };
-      const updateSummary = () => {
-        const selectedCategories = getSelected(category);
-        const categoryText = getSummary(selectedCategories, "All categories", "categories");
-        const tagText = getSummary(getSelected(tag), "All tags", "tags");
-        categorySummary.textContent = categoryText;
-        tagSummary.textContent = tagText;
-        categoryTrigger.setAttribute("aria-label", `Categories: ${categoryText}`);
-        tagTrigger.setAttribute("aria-label", `Tags: ${tagText}`);
-        categoryControls.forEach((control) => {
-          const value = control.dataset.categoryFilter || "";
-          const selected = selectedCategories.includes(value);
-          control.setAttribute("aria-pressed", String(selected));
-          control.setAttribute("aria-label", `${selected ? "Remove" : "Filter by"} category: ${value}`);
-          control.classList.toggle("is-active", selected);
-        });
-      };
-      const params = new URLSearchParams(window.location.search);
-
-      function readUrlState() {
-        game.value = params.get("game") || "";
-        league.value = params.get("league") || "";
-        setSelected(category, params.getAll("category"));
-        setSelected(tag, params.getAll("tag"));
-      }
-
-      function writeUrlState() {
-        const next = new URLSearchParams();
-        if (game.value) next.set("game", game.value);
-        if (league.value) next.set("league", league.value);
-        getSelected(category).forEach((value) => next.append("category", value));
-        getSelected(tag).forEach((value) => next.append("tag", value));
-        const url = `${window.location.pathname}${next.toString() ? `?${next.toString()}` : ""}`;
-        window.history.replaceState({}, "", url);
-      }
-
-      function hasActiveFilters() {
-        return Boolean(game.value || league.value || getSelected(category).length || getSelected(tag).length || search.value.trim());
-      }
-
-      function applyFilters() {
-        const query = search.value.trim().toLocaleLowerCase();
-        const selectedCategories = getSelected(category);
-        const selectedTags = getSelected(tag);
-        let visible = 0;
-        cards.forEach((card) => {
-          const matches = (!game.value || card.dataset.game === game.value)
-            && (!league.value || card.dataset.league === league.value)
-            && (!selectedCategories.length || selectedCategories.includes(card.dataset.category || ""))
-            && (!selectedTags.length || selectedTags.every((value) => (card.dataset.tags || "").split(" ").includes(value)))
-            && (!query || (card.dataset.search || "").toLocaleLowerCase().includes(query));
-          card.hidden = !matches;
-          if (matches) visible += 1;
-        });
-        categorySections.forEach((section) => {
-          section.hidden = !section.querySelector(".list-card:not([hidden])");
-        });
-        const hasCatalog = cards.length > 0;
-        emptyState.hidden = hasCatalog && visible > 0;
-        emptyMessage.textContent = hasCatalog && hasActiveFilters() ? "No Lists match filters." : "No Published Lists are available yet.";
-        reset.hidden = !hasActiveFilters();
-      }
-
-      function configureTaxonomyFilter(control: HTMLButtonElement) {
-        const filter = control.dataset.taxonomyFilter;
-        const value = control.dataset.taxonomyValue;
-        if (!filter || !value) return;
-        if (filter === "game") game.value = value;
-        else if (filter === "league") league.value = value;
-        else {
-          const menu = filter === "category" ? category : filter === "tag" ? tag : null;
-          const input = menu && [...menu.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')].find((candidate) => candidate.value === value);
-          if (!input) return;
-          input.checked = true;
-        }
-        updateSummary();
-        writeUrlState();
-        applyFilters();
-      }
-
-      function resetFilters() {
-        game.value = "";
-        league.value = "";
-        setSelected(category, []);
-        setSelected(tag, []);
-        updateSummary();
-        search.value = "";
-        writeUrlState();
-        applyFilters();
-        search.focus({ preventScroll: true });
-      }
-
-      [game, league].forEach((control) => control.addEventListener("change", () => { writeUrlState(); applyFilters(); }));
-      [category, tag].forEach((menu) => menu.addEventListener("change", () => { updateSummary(); writeUrlState(); applyFilters(); }));
-      categoryControls.forEach((control) => control.addEventListener("click", () => {
-        const value = control.dataset.categoryFilter;
-        const input = value && [...category.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')].find((candidate) => candidate.value === value);
-        if (!input) return;
-        input.checked = !input.checked;
-        updateSummary();
-        writeUrlState();
-        applyFilters();
-      }));
-      search.addEventListener("input", applyFilters);
-      filterForm.addEventListener("submit", (event) => event.preventDefault());
-      reset.addEventListener("click", resetFilters);
-      document.querySelector<HTMLButtonElement>("[data-empty-reset]")!.addEventListener("click", resetFilters);
-      document.querySelectorAll<HTMLButtonElement>("[data-taxonomy-filter]").forEach((control) => control.addEventListener("click", () => configureTaxonomyFilter(control)));
-      document.querySelectorAll<HTMLDetailsElement>(".filter-dropdown").forEach((dropdown) => {
-        dropdown.addEventListener("keydown", (event) => {
-          if (event.key !== "Escape") return;
-          dropdown.open = false;
-          dropdown.querySelector<HTMLElement>("summary")?.focus();
-        });
-      });
-      document.addEventListener("click", (event) => {
-        document.querySelectorAll<HTMLDetailsElement>(".filter-dropdown[open]").forEach((dropdown) => {
-          if (!dropdown.contains(event.target as Node)) dropdown.open = false;
-        });
-      });
-
       const feedback = document.querySelector<HTMLElement>("#action-feedback")!;
       let feedbackTimer: number | undefined;
       const report = (message: string) => {
@@ -267,33 +73,49 @@ const categoryId = (category: string) => `category-${category.toLowerCase().repl
         feedback.hidden = false;
         feedbackTimer = window.setTimeout(() => { feedback.hidden = true; }, 4500);
       };
-      const getExportText = (card: HTMLElement) => `${JSON.stringify(JSON.parse(card.dataset.export || "{}"), null, 2)}\n`;
-      document.querySelectorAll<HTMLElement>(".list-card").forEach((card) => {
-        const title = card.querySelector<HTMLHeadingElement>("h2")!;
+      const getExportText = (card: HTMLElement) => {
+        const token = card.dataset.export;
+        if (!token?.startsWith("psl1.")) {
+          report("JSON export unavailable. Reload the page and try again.");
+          return null;
+        }
+        return `${token}\n`;
+      };
+      document.querySelectorAll<HTMLElement>(".manual-entry").forEach((card) => {
+        const title = card.querySelector<HTMLHeadingElement>(".list-title h4")!;
         const titleText = title.textContent?.trim() || "Published List";
         const safeTitle = titleText.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list";
-        card.querySelector("[data-download]")?.addEventListener("click", () => {
-          const blob = new Blob([getExportText(card)], { type: "application/json" });
+        card.querySelector("[data-download]")?.addEventListener("click", (event) => {
+          event.preventDefault();
+          const exportText = getExportText(card);
+          if (!exportText) return;
+          const blob = new Blob([exportText], { type: "application/json" });
           const link = document.createElement("a");
           link.href = URL.createObjectURL(blob);
           link.download = `${safeTitle}-shareable-list-v1.json`;
           link.click();
           URL.revokeObjectURL(link.href);
-          report(`Download prepared for ${titleText}.`);
+          report(`JSON downloaded for ${titleText}.`);
         });
         card.querySelector("[data-copy]")?.addEventListener("click", async () => {
+          const exportText = getExportText(card);
+          if (!exportText) return;
           try {
-            await navigator.clipboard.writeText(getExportText(card));
-            report(`${titleText} copied as Shareable List v1 JSON.`);
+            await navigator.clipboard.writeText(exportText);
+            report(`JSON copied for ${titleText}.`);
           } catch {
-            report(`Copy failed for ${titleText}.`);
+            const fallback = card.querySelector<HTMLDetailsElement>("[data-export-fallback]");
+            const textarea = fallback?.querySelector<HTMLTextAreaElement>("textarea");
+            if (fallback && textarea) {
+              fallback.open = true;
+              textarea.focus();
+              textarea.select();
+            }
+            report("Copy was blocked. Select the JSON below and copy it manually.");
           }
         });
       });
 
-      readUrlState();
-      updateSummary();
-      applyFilters();
     </script>
-  </body>
+</body>
 </html>

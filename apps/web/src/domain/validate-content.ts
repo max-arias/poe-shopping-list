@@ -37,10 +37,16 @@ export function validatePublishedList(
       throw new ContentValidationError(sourceFile, `tags.${index}`, `unknown tag '${tag}'`);
     }
   }
-  const seenUrls = new Set<string>();
-  for (const [index, item] of list.items.entries()) {
-    if (seenUrls.has(item.tradeUrl)) throw new ContentValidationError(sourceFile, `items.${index}.tradeUrl`, "duplicate trade URL");
-    seenUrls.add(item.tradeUrl);
+  const groups = "groups" in list ? list.groups : [{ title: list.title, items: list.items }];
+  for (const [groupIndex, group] of groups.entries()) {
+    const seenUrls = new Set<string>();
+    for (const [itemIndex, item] of group.items.entries()) {
+      if (seenUrls.has(item.tradeUrl)) {
+        const path = "groups" in list ? `groups.${groupIndex}.items.${itemIndex}.tradeUrl` : `items.${itemIndex}.tradeUrl`;
+        throw new ContentValidationError(sourceFile, path, "duplicate trade URL");
+      }
+      seenUrls.add(item.tradeUrl);
+    }
   }
   return list;
 }

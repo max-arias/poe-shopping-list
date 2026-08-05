@@ -8,4 +8,4 @@ interface Props {
 const { value } = Astro.props;
 ---
 
-<div class="list-overview" set:html={renderOverviewMarkdown(value)}></div>
+<div class="list-overview prose prose-sm" set:html={renderOverviewMarkdown(value)}></div>
