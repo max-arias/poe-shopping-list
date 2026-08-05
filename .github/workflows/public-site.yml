@@ -39,35 +39,36 @@ jobs:
     if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-      - name: Enable Corepack
-        run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
       - name: Install dependencies
-        run: corepack pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: Validate and build the production output
         run: |
           set -euo pipefail
-          corepack pnpm --dir apps/web sync
-          corepack pnpm --dir apps/web check
-          corepack pnpm --dir apps/web content:validate
-          corepack pnpm --dir apps/web build
+          pnpm --dir apps/web sync
+          pnpm --dir apps/web check
+          pnpm --dir apps/web content:validate
+          pnpm --dir apps/web build
       - name: Validate the exact production output
         run: |
-          corepack pnpm --dir apps/web output:check
-          corepack pnpm --dir apps/web links:check
-          corepack pnpm --dir apps/web wrangler:validate
+          pnpm --dir apps/web output:check
+          pnpm --dir apps/web links:check
+          pnpm --dir apps/web wrangler:validate
       - name: Create manifest and verified production artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           set -euo pipefail
           mkdir -p artifact-bundle
-          corepack pnpm --dir apps/web exec node scripts/create-content-manifest.mjs dist ../../artifact-bundle/content-manifest.txt
+          pnpm --dir apps/web exec node scripts/create-content-manifest.mjs dist ../../artifact-bundle/content-manifest.txt
           tar -czf artifact-bundle/dist.tar.gz -C apps/web dist
           (cd artifact-bundle && sha256sum dist.tar.gz > dist.tar.gz.sha256)
       - name: Create successful validation evidence report
@@ -78,7 +79,7 @@ jobs:
             "$GITHUB_SHA" "$GITHUB_RUN_ID" "public-site-production-${GITHUB_SHA}" > validation-evidence/validation-report.json
       - name: Upload successful validation evidence
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: public-site-validation-${{ github.run_id }}
           path: validation-evidence
@@ -86,7 +87,7 @@ jobs:
           retention-days: 30
       - name: Upload exactly one verified production artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: public-site-production-${{ github.sha }}
           path: artifact-bundle
@@ -94,7 +95,7 @@ jobs:
           retention-days: 30
       - name: Upload validation evidence on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: public-site-validation-failure-${{ github.run_id }}
           path: apps/web/dist
@@ -108,16 +109,19 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-      - name: Enable Corepack and install deployment tooling
-        run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate && corepack pnpm install --frozen-lockfile
-      - uses: actions/download-artifact@v4
+      - name: Install deployment tooling
+        run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v8
         with:
           name: public-site-production-${{ github.sha }}
           path: deployment-artifact
@@ -151,14 +155,14 @@ jobs:
           set -euo pipefail
           (cd deployment-artifact && sha256sum --check dist.tar.gz.sha256)
           tar -xzf deployment-artifact/dist.tar.gz -C apps/web
-          corepack pnpm --dir apps/web exec node scripts/verify-content-manifest.mjs dist ../../deployment-artifact/content-manifest.txt
+          pnpm --dir apps/web exec node scripts/verify-content-manifest.mjs dist ../../deployment-artifact/content-manifest.txt
       - name: Deploy without rebuilding
         id: deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         working-directory: apps/web
-        run: corepack pnpm exec wrangler deploy --config wrangler.jsonc | tee ../../wrangler-deploy-output.txt
+        run: pnpm exec wrangler deploy --config wrangler.jsonc | tee ../../wrangler-deploy-output.txt
       - name: Start deployment evidence immediately after deploy
         if: success()
         env:
@@ -187,9 +191,9 @@ jobs:
         run: |
           mkdir -p deployment-evidence
           export ARTIFACT_CHECKSUM="$(cut -d ' ' -f 1 deployment-artifact/dist.tar.gz.sha256)"
-          export WRANGLER_VERSION="$(corepack pnpm --dir apps/web exec wrangler --version)"
+          export WRANGLER_VERSION="$(pnpm --dir apps/web exec wrangler --version)"
           cp deployment-artifact/content-manifest.txt deployment-evidence/content-manifest.txt
-          corepack pnpm --dir apps/web exec node scripts/create-deployment-record.mjs deployment-evidence/deployment-record.json
+          pnpm --dir apps/web exec node scripts/create-deployment-record.mjs deployment-evidence/deployment-record.json
       - name: Run production smoke check
         id: smoke
         if: success()
@@ -199,7 +203,7 @@ jobs:
           CONTENT_MANIFEST_PATH: deployment-artifact/content-manifest.txt
         run: |
           status=0
-          if corepack pnpm --dir apps/web smoke > smoke-output.txt 2>&1; then echo passed > smoke-status.txt; else echo failed > smoke-status.txt; status=1; fi
+          if pnpm --dir apps/web smoke > smoke-output.txt 2>&1; then echo passed > smoke-status.txt; else echo failed > smoke-status.txt; status=1; fi
           cat smoke-output.txt
           exit "$status"
       - name: Update and archive deployment evidence
@@ -227,15 +231,15 @@ jobs:
         run: |
           mkdir -p deployment-evidence
           export ARTIFACT_CHECKSUM="$(cut -d ' ' -f 1 deployment-artifact/dist.tar.gz.sha256)"
-          export WRANGLER_VERSION="$(corepack pnpm --dir apps/web exec wrangler --version)"
+          export WRANGLER_VERSION="$(pnpm --dir apps/web exec wrangler --version)"
           export SMOKE_STATUS="$(test -f smoke-status.txt && tr -d '\n' < smoke-status.txt || printf 'unavailable')"
           export SMOKE_DETAILS="$(test -f smoke-output.txt && tr '\n' ' ' < smoke-output.txt || printf 'smoke did not run')"
           export SMOKE_TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          corepack pnpm --dir apps/web exec node scripts/create-deployment-record.mjs deployment-evidence/deployment-record.json
+          pnpm --dir apps/web exec node scripts/create-deployment-record.mjs deployment-evidence/deployment-record.json
           cp deployment-artifact/dist.tar.gz.sha256 deployment-evidence/
       - name: Upload deployment evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: public-site-deployment-evidence-${{ github.run_id }}
           path: deployment-evidence
@@ -273,17 +277,20 @@ jobs:
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
           echo "worker_name=poe-site-preview-${RUN_ID}" >> "$GITHUB_OUTPUT"
           echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ steps.trusted.outputs.sha }}
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
       - name: Install deployment tooling
-        run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate && corepack pnpm install --frozen-lockfile
-      - uses: actions/download-artifact@v4
+        run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v8
         with:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
@@ -295,7 +302,7 @@ jobs:
           set -euo pipefail
           (cd preview-artifact && sha256sum --check dist.tar.gz.sha256)
           tar -xzf preview-artifact/dist.tar.gz -C apps/web
-          corepack pnpm --dir apps/web exec node scripts/verify-content-manifest.mjs dist ../../preview-artifact/content-manifest.txt
+          pnpm --dir apps/web exec node scripts/verify-content-manifest.mjs dist ../../preview-artifact/content-manifest.txt
       - name: Deploy explicitly non-production preview Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.PREVIEW_CLOUDFLARE_API_TOKEN }}
@@ -308,14 +315,14 @@ jobs:
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Missing protected configuration: preview account."; exit 1; }
           test -n "$PREVIEW_SITE_URL" || { echo "Launch blocker: protected preview PREVIEW_SITE_URL is not configured; preview smoke is required."; exit 1; }
           case "$PREVIEW_WORKER_NAME" in poe-shopping-list-catalog|poe-shopping-list-catalog-*) echo "Refusing production Worker name."; exit 1;; esac
-          corepack pnpm exec wrangler deploy --config wrangler.jsonc --name "$PREVIEW_WORKER_NAME"
+          pnpm exec wrangler deploy --config wrangler.jsonc --name "$PREVIEW_WORKER_NAME"
       - name: Preview smoke when protected URL is configured
         env:
           PUBLIC_SITE_URL: ${{ vars.PREVIEW_SITE_URL }}
           CONTENT_MANIFEST_PATH: preview-artifact/content-manifest.txt
         run: |
           test -n "$PUBLIC_SITE_URL" || { echo "Launch blocker: protected preview PREVIEW_SITE_URL is not configured; preview smoke is required."; exit 1; }
-          corepack pnpm --dir apps/web smoke
+          pnpm --dir apps/web smoke
       - name: Report bounded preview lifetime
         env:
           PREVIEW_URL: ${{ vars.PREVIEW_SITE_URL }}
@@ -329,14 +336,17 @@ jobs:
     runs-on: ubuntu-latest
     environment: public-site-preview
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: Enable Corepack and install Wrangler
-        run: corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate && corepack pnpm install --frozen-lockfile
+      - name: Install Wrangler
+        run: pnpm install --frozen-lockfile
       - name: Delete named non-production preview Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.PREVIEW_CLOUDFLARE_API_TOKEN }}
@@ -346,4 +356,4 @@ jobs:
         run: |
           test -n "$PREVIEW_WORKER_NAME" || { echo "Cleanup requires preview_worker_name."; exit 1; }
           case "$PREVIEW_WORKER_NAME" in poe-site-preview-*) ;; *) echo "Cleanup accepts only derived poe-site-preview-* names."; exit 1;; esac
-          corepack pnpm exec wrangler delete --name "$PREVIEW_WORKER_NAME" --force
+          pnpm exec wrangler delete --name "$PREVIEW_WORKER_NAME" --force

@@ -6,7 +6,11 @@ if (!root) throw new Error("Usage: node scripts/check-links.mjs <dist-directory>
 
 const permittedInternalRoutes = ["/", "/crafts/"];
 const permittedGoogleFontOrigins = ["https://fonts.googleapis.com", "https://fonts.gstatic.com"];
-const permittedCuratedExternalUrls = ["https://pohx.net/crafts/"];
+const permittedCuratedExternalUrls = [
+  "https://pohx.net/crafts/",
+  "https://mobalytics.gg/poe/builds/cws-chieftain-emiracles#c81bc723-60d4-42bc-acf2-59b5ed7b2fe1-anytime-upgrades-9",
+  "https://pobb.in/8BVHxIIdtPg8",
+];
 const htmlFiles = [];
 async function walk(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
