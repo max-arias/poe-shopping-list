@@ -13,7 +13,11 @@
 .manual-entry { min-width: 0; border-top: 1px solid var(--field-line); padding: 27px 0 18px; }
 .list-title { display: flex; min-width: 0; gap: 15px; align-items: baseline; }
 .list-number { flex: 0 0 auto; color: var(--field-action); font: 600 var(--type-utility-size) var(--font-mono); font-variant-numeric: tabular-nums; }
-.list-title h4 { min-width: 0; margin: 0; color: var(--field-ink); font: 600 var(--type-list-size)/1.08 var(--font-sans); letter-spacing: -.025em; overflow-wrap: anywhere; text-wrap: balance; }
+.list-title h4 { min-width: 0; flex: 1 1 auto; margin: 0; color: var(--field-ink); font: 600 var(--type-list-size)/1.08 var(--font-sans); letter-spacing: -.025em; overflow-wrap: anywhere; text-wrap: balance; }
+.list-actions-inline { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; margin-left: auto; margin-right: calc(-1 * min(14px, 4vw)); }
+.list-actions-inline a, .list-actions-inline button { display: inline-flex; width: 44px; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; border: 0; padding: 0; background: transparent; color: var(--field-action); cursor: pointer; }
+.list-actions-inline a:hover, .list-actions-inline button:hover { color: var(--field-ink); }
+.list-actions-inline svg { display: block; width: 16px; height: 16px; }
 .list-meta { margin: 9px 0 15px 40px; color: var(--field-muted); font: 400 var(--type-meta-size)/1.45 var(--font-mono); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; text-wrap: pretty; }
 .list-overview { min-width: 0; margin: 0 0 17px 40px; max-width: 60ch; color: var(--field-muted); font-size: var(--type-body-size); overflow-wrap: anywhere; text-wrap: pretty; }
 .list-overview.prose { font-size: var(--type-body-size); line-height: 1.55; }
@@ -32,12 +36,6 @@
 .item-title { overflow-wrap: anywhere; }
 .variant { color: var(--field-muted); font-size: var(--type-meta-size); overflow-wrap: anywhere; }
 .trade-action { min-height: 32px; color: var(--field-action); font: 600 var(--type-utility-size) var(--font-sans); text-underline-offset: 3px; white-space: nowrap; }
-.list-actions { display: flex; flex-wrap: wrap; gap: 16px; margin: 0 0 14px 40px; }
-.list-actions a, .list-actions button { min-height: 44px; border: 0; padding: 10px 0; background: transparent; color: var(--field-action); cursor: pointer; font: inherit; text-align: left; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
-.list-actions a:hover, .list-actions button:hover { color: var(--field-ink); }
-.export-fallback { margin-left: 40px; font-size: var(--type-utility-size); }
-.export-fallback summary { color: var(--field-action); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
-.export-fallback textarea { display: block; width: 100%; min-height: 130px; margin-top: 8px; border: 1px solid var(--field-line); padding: 8px; background: var(--field-soft); color: var(--field-ink); font: .6875rem/1.4 var(--font-mono); resize: vertical; }
 .empty-archive { margin-top: 5px; border-top: 1px solid var(--field-line); padding: 27px 0 14px; }
 .empty-archive h3 { margin: 0; font: 600 var(--type-list-size)/1.05 var(--font-sans); overflow-wrap: anywhere; text-wrap: balance; }
 .empty-archive p { margin: 9px 0 0; color: var(--field-muted); text-wrap: pretty; }
@@ -47,7 +45,7 @@
   .site-header { padding-top: 24px; }
   .catalog-main { padding-top: 0; padding-bottom: max(110px, calc(110px + env(safe-area-inset-bottom))); }
   .manual-entry { padding-top: 23px; }
-  .groups, .items, .list-overview, .list-meta, .list-actions, .export-fallback { margin-left: 0; }
+  .groups, .items, .list-overview, .list-meta { margin-left: 0; }
   .items li { grid-template-columns: 2.3em minmax(0, 1fr) auto; gap: 9px; }
   .group-heading { gap: 9px; }
   .trade-action { min-height: 40px; display: inline-flex; align-items: center; }

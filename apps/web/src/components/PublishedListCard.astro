@@ -49,6 +49,19 @@ const sectionLabel = (section: NormalizedSection, index: number) => section.titl
   <header class="list-title">
     <span class="list-number" aria-hidden="true">—</span>
     <h4>{list.title}</h4>
+    <div class="list-actions-inline" aria-label={`${list.title} export actions`}>
+      <a href={`data:application/json;charset=utf-8,${encodeURIComponent(exportText)}`} download={`${list.title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list"}-shareable-list-v1.json`} data-download aria-label={`Download ${list.title} as JSON`}>
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <path d="M12 3v12m-5-5 5 5 5-5M5 21h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+      <button type="button" data-copy aria-label={`Copy ${list.title} as JSON`}>
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <rect x="9" y="9" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path d="M15 9V6a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
   </header>
   <p class="list-meta" aria-label={lastReviewed ? "List scope, Trade search count, and last reviewed" : "List scope and Trade search count"}>
     {leagueLabel} · {totalItems} {totalItems === 1 ? "Trade search" : "Trade searches"}{lastReviewed && <> · Last reviewed: <time datetime={lastReviewed}>{new Intl.DateTimeFormat("en", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(lastReviewed))}</time></>}
@@ -75,12 +88,4 @@ const sectionLabel = (section: NormalizedSection, index: number) => section.titl
     </section>)}
   </div>
 
-  <div class="list-actions" aria-label={`${list.title} export actions`}>
-    <a href={`data:application/json;charset=utf-8,${encodeURIComponent(exportText)}`} download={`${list.title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list"}-shareable-list-v1.json`} data-download aria-label={`Download ${list.title} as JSON`}>Download JSON</a>
-    <button type="button" data-copy aria-label={`Copy ${list.title} as JSON`}>Copy JSON</button>
-  </div>
-  <details class="export-fallback" data-export-fallback>
-    <summary>Show JSON to copy manually</summary>
-    <textarea readonly aria-label={`JSON to copy manually for ${list.title}`}>{exportText}</textarea>
-  </details>
 </article>

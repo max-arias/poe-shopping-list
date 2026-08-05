@@ -102,14 +102,7 @@ const canonicalUrl = "/";
             await navigator.clipboard.writeText(exportText);
             report(`JSON copied for ${titleText}.`);
           } catch {
-            const fallback = card.querySelector<HTMLDetailsElement>("[data-export-fallback]");
-            const textarea = fallback?.querySelector<HTMLTextAreaElement>("textarea");
-            if (fallback && textarea) {
-              fallback.open = true;
-              textarea.focus();
-              textarea.select();
-            }
-            report("Copy was blocked. Select the JSON below and copy it manually.");
+            report("Copy was blocked. Download the JSON instead.");
           }
         });
       });
