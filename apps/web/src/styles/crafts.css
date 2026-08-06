@@ -1,26 +1,26 @@
 .craft-header, .craft-main { max-width: 940px; margin: 0 auto; padding-left: 4vw; padding-right: 4vw; }
-.craft-header { padding-top: 34px; }
+.craft-header { padding-top: 18px; }
 .craft-nav { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--field-line); padding-bottom: 12px; }
 .craft-nav-label, .craft-back-link { min-height: 44px; display: inline-flex; align-items: center; color: var(--field-action); font-weight: 600; }
 .craft-back-link { text-underline-offset: 4px; }
 .craft-back-link:hover { color: var(--field-ink); }
-.craft-main { padding-top: 27px; padding-bottom: 90px; }
-.craft-guide + .craft-guide { margin-top: 52px; }
-.craft-section-heading { display: flex; align-items: baseline; gap: 15px; border-top: 2px solid var(--field-ink); padding-top: 18px; }
+.craft-main { padding-top: 18px; padding-bottom: 72px; }
+.craft-guide + .craft-guide { margin-top: 27px; }
+.craft-section-heading { display: flex; align-items: baseline; gap: 15px; border-top: 2px solid var(--field-ink); padding-top: 14px; }
 .craft-section-number { flex: none; color: var(--field-action); font: 600 12px var(--font-mono); }
 .craft-section-heading h2 { margin: 0; color: var(--field-ink); font: 600 clamp(27px, 4vw, 42px)/1 var(--font-sans); letter-spacing: -.035em; }
-.craft-summary { display: flex; flex-wrap: wrap; gap: 8px 26px; border-bottom: 1px solid var(--field-line); padding: 16px 0; color: var(--field-muted); font-size: 14px; }
+.craft-summary { display: flex; flex-wrap: wrap; gap: 8px 26px; border-bottom: 1px solid var(--field-line); padding: 12px 0; color: var(--field-muted); font-size: 14px; }
 .craft-summary strong { margin-right: 5px; color: var(--field-ink); font: 600 11px var(--font-sans); }
-.craft-steps { margin: 22px 0 0; padding-left: 26px; }
-.craft-steps li { padding-left: 8px; margin: 0 0 12px; }
+.craft-steps { margin: 14px 0 0; padding-left: 26px; }
+.craft-steps li { padding-left: 8px; margin: 0 0 8px; }
 .craft-steps li::marker { color: var(--field-action); font: 600 11px var(--font-mono); }
-.craft-action { margin: 22px 0 0; }
-.craft-trade-link { display: inline-flex; min-height: 44px; align-items: center; color: var(--field-action); font-weight: 600; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.craft-action { margin: 14px 0 0; }
+.craft-trade-link { display: inline-block; min-height: 44px; color: var(--field-action); font-weight: 600; text-underline-offset: 3px; overflow-wrap: anywhere; }
 .craft-trade-link:hover { color: var(--field-ink); }
-.craft-block { margin-top: 28px; border-top: 1px solid var(--field-line); padding-top: 18px; }
+.craft-block { margin-top: 18px; border-top: 1px solid var(--field-line); padding-top: 12px; }
 .craft-block h3, .craft-route h3 { margin: 0; color: var(--field-ink); font: 600 15px/1.3 var(--font-sans); }
-.craft-block p { max-width: 64ch; margin: 12px 0 0; }
-.regex-helper { max-width: 64ch; margin-top: 18px; border-top: 1px solid var(--field-line); padding-top: 13px; }
+.craft-block p { max-width: 64ch; margin: 8px 0 0; }
+.regex-helper { max-width: 64ch; margin-top: 14px; border-top: 1px solid var(--field-line); padding-top: 12px; }
 .regex-helper > p { margin: 0 0 9px; color: var(--field-muted); font-size: 13px; }
 .regex-helper > p strong { color: var(--field-ink); font-weight: 600; }
 .regex-line { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
@@ -30,20 +30,20 @@
 .regex-status { display: block; min-height: 1.45em; margin-top: 6px; color: var(--field-muted); font: 400 12px/1.45 var(--font-mono); }
 .craft-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 28px; margin: 14px 0 0; padding-left: 20px; }
 .craft-list li::marker { color: var(--field-action); }
-.craft-routes { margin-top: 30px; border-top: 1px solid var(--field-line); }
-.craft-route { padding: 20px 0 8px; }
+.craft-routes { margin-top: 18px; border-top: 1px solid var(--field-line); }
+.craft-route { padding: 14px 0 6px; }
 .craft-route + .craft-route { border-top: 1px dashed var(--field-line); }
 .craft-route .craft-steps { margin-top: 12px; }
-.craft-skip { margin: 28px 0 0; border-top: 2px solid var(--field-ink); padding-top: 16px; color: var(--field-muted); }
+.craft-skip { margin: 18px 0 0; border-top: 2px solid var(--field-ink); padding-top: 12px; color: var(--field-muted); }
 .craft-skip strong { font-weight: 600; }
-.craft-warning { margin-top: 22px; border-top: 2px solid var(--field-ink); padding-top: 12px; color: var(--field-muted); }
+.craft-warning { margin-top: 18px; border-top: 2px solid var(--field-ink); padding-top: 12px; color: var(--field-muted); }
 .craft-warning p { margin: 4px 0; }
 .craft-warning strong { color: var(--field-ink); font-weight: 600; }
 
 @media (max-width: 560px) {
-  .craft-header { padding-top: 24px; }
-  .craft-main { padding-top: 23px; padding-bottom: max(110px, calc(110px + env(safe-area-inset-bottom))); }
-  .craft-guide + .craft-guide { margin-top: 52px; }
+  .craft-header { padding-top: 18px; }
+  .craft-main { padding-top: 18px; padding-bottom: max(72px, calc(72px + env(safe-area-inset-bottom))); }
+  .craft-guide + .craft-guide { margin-top: 27px; }
   .craft-list { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .craft-summary { gap: 8px 16px; }
 }

@@ -29,8 +29,11 @@ html { background: var(--field-paper); color: var(--field-ink); color-scheme: li
 body { margin: 0; background: var(--field-paper); color: var(--field-ink); font: 400 var(--type-body-size)/var(--type-body-leading) var(--font-sans); font-kerning: normal; }
 button, input, select { font: inherit; }
 code, pre, kbd, samp { font-family: var(--font-mono); }
-a { color: inherit; }
+a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 a:hover { color: var(--field-action); }
+a[href^="http://"], a[href^="https://"] { position: relative; }
+a[href^="http://"]::after, a[href^="https://"]::after { content: "↗"; position: absolute; inset-inline-start: 100%; margin-inline-start: .25em; visibility: hidden; white-space: nowrap; }
+a[href^="http://"]:hover::after, a[href^="http://"]:focus-visible::after, a[href^="https://"]:hover::after, a[href^="https://"]:focus-visible::after { visibility: visible; }
 a:focus-visible, button:focus-visible, summary:focus-visible, textarea:focus-visible { outline: 2px solid var(--field-action); outline-offset: 4px; }
 .skip-link { position: absolute; top: 0; left: 4vw; transform: translateY(-140%); z-index: 10; border: 1px solid var(--field-action); padding: 8px 10px; background: var(--field-paper); color: var(--field-ink); }
 .skip-link:focus { transform: translateY(0); }

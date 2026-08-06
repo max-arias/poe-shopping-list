@@ -21,8 +21,7 @@ interface NormalizedSection {
   items: PublishedItem[];
 }
 
-const { id, list, exportToken, lastReviewed } = Astro.props;
-const leagueLabel = list.applicability.evergreen ? "Evergreen" : list.applicability.league;
+const { id, list, exportToken } = Astro.props;
 const exportText = `${exportToken}\n`;
 
 // Published content may arrive as either ordered sections or a flat item list.
@@ -41,7 +40,6 @@ const sections: NormalizedSection[] = rawSections
   : [{ title: "", items: flatItems }];
 
 const hasMultipleSections = sections.length > 1;
-const totalItems = sections.reduce((total, section) => total + section.items.length, 0);
 const sectionLabel = (section: NormalizedSection, index: number) => section.title || `Section ${index + 1}`;
 ---
 
@@ -63,26 +61,33 @@ const sectionLabel = (section: NormalizedSection, index: number) => section.titl
       </button>
     </div>
   </header>
-  <p class="list-meta" aria-label={lastReviewed ? "List scope, Trade search count, and last reviewed" : "List scope and Trade search count"}>
-    {leagueLabel} · {totalItems} {totalItems === 1 ? "Trade search" : "Trade searches"}{lastReviewed && <> · Last reviewed: <time datetime={lastReviewed}>{new Intl.DateTimeFormat("en", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(lastReviewed))}</time></>}
-  </p>
   {list.overview && <OverviewMarkdown value={list.overview} />}
 
   <div class="groups" aria-label={`${list.title} groups`}>
-    {sections.map((section, sectionIndex) => <section class="list-group">
-      {(hasMultipleSections || section.title) && <header class="group-heading">
+    {sections.map((section, sectionIndex) => (hasMultipleSections || section.title) ? <details class="list-group collapse collapse-arrow" open={sectionIndex === 0}>
+      <summary class="group-heading collapse-title">
         <span class="group-number" aria-hidden="true">{String(sectionIndex + 1).padStart(2, "0")}</span>
-        <h5>{sectionLabel(section, sectionIndex)}</h5>
-        <span class="group-count">{section.items.length} {section.items.length === 1 ? "item" : "items"}</span>
-      </header>}
+        <span role="heading" aria-level="5">{sectionLabel(section, sectionIndex)}</span>
+      </summary>
+      <div class="collapse-content">
+        <ol class="items" aria-label={`${section.title || list.title} items`}>
+          {section.items.map((item, itemIndex) => <li>
+            <span class="item-number" aria-hidden="true">{String(itemIndex + 1).padStart(2, "0")}</span>
+            <span class="item-copy">
+              <a class="item-title" href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="visually-hidden"> on Path of Exile Trade</span></a>
+              {item.variant && <span class="variant">{item.variant}</span>}
+            </span>
+          </li>)}
+        </ol>
+      </div>
+    </details> : <section class="list-group">
       <ol class="items" aria-label={`${section.title || list.title} items`}>
         {section.items.map((item, itemIndex) => <li>
           <span class="item-number" aria-hidden="true">{String(itemIndex + 1).padStart(2, "0")}</span>
           <span class="item-copy">
-            <span class="item-title">{item.title}</span>
+            <a class="item-title" href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="visually-hidden"> on Path of Exile Trade</span></a>
             {item.variant && <span class="variant">{item.variant}</span>}
           </span>
-          <a class="trade-action" href={item.tradeUrl} target="_blank" rel="noopener noreferrer">Trade <span aria-hidden="true">↗</span><span class="visually-hidden"> {item.title} on Path of Exile Trade</span></a>
         </li>)}
       </ol>
     </section>)}
