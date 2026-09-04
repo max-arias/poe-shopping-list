@@ -13,7 +13,8 @@ export function deriveLastReviewed(getGitTimestamp: () => string | Date | undefi
   const value = getGitTimestamp();
   if (value === undefined) throw new Error("Git history did not provide lastReviewed");
   const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) throw new Error("Git history did not provide a valid timestamp");
+  if (Number.isNaN(date.getTime()))
+    throw new Error("Git history did not provide a valid timestamp");
   return date.toISOString();
 }
 

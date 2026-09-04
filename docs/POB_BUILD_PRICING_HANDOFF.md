@@ -156,7 +156,7 @@ web_accessible_resources: [
       "https://maxroll.gg/*",
     ],
   },
-]
+];
 ```
 
 ### 2. `sidePanel.open()` user gesture error on Start pricing

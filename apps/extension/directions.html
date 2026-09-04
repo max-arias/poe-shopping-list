@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sidepanel direction comparison for PoE Shopping List" />
+    <title>Sidepanel direction comparison</title>
+  </head>
+  <body>
+    <main class="comparison-shell">
+      <header class="comparison-intro">
+        <p class="eyebrow">POE SHOPPING LIST / UI REVIEW</p>
+        <h1>Five ways to bring the catalogue into the sidepanel.</h1>
+        <p class="intro-copy">
+          Same list, same narrow browser surface, five readings of the existing website system. The
+          browser owns the chrome; every panel starts directly with list content.
+        </p>
+        <p class="intro-note">
+          <strong>Shared content:</strong> Mapping kit — Settlers · 3 items · Core upgrades
+        </p>
+      </header>
+
+      <section class="direction-grid" aria-label="Sidepanel design directions">
+        <article class="direction direction-cobalt">
+          <header class="direction-label">
+            <span>01</span>
+            <div>
+              <h2>Cobalt Catalogue</h2>
+              <p>Editorial utility panel</p>
+            </div>
+          </header>
+          <div class="panel" aria-label="Cobalt Catalogue sidepanel mockup">
+            <div class="panel-content">
+              <div class="route-label">
+                <span>YOUR LISTS</span><span class="mono">01 ACTIVE</span>
+              </div>
+              <div class="panel-tools">
+                <button
+                  class="prototype-button prototype-button-quiet prototype-button-small"
+                  type="button"
+                >
+                  ⌄ Collapse all</button
+                ><button
+                  class="prototype-button prototype-button-quiet prototype-button-small"
+                  type="button"
+                >
+                  ＋ New section
+                </button>
+              </div>
+              <div class="list-shell">
+                <div class="list-actions">
+                  <button
+                    type="button"
+                    class="prototype-button prototype-button-quiet prototype-button-small"
+                    aria-label="Mapping kit list actions"
+                  >
+                    •••
+                  </button>
+                  <ul tabindex="-1" class="action-menu">
+                    <li><a href="#">Rename list</a></li>
+                    <li><a href="#">Export JSON</a></li>
+                    <li><a href="#">Delete list</a></li>
+                  </ul>
+                </div>
+                <details class="list-entry list-entry" open>
+                  <summary class="list-trigger list-trigger">
+                    <span class="marker">—</span><strong>Mapping kit — Settlers</strong
+                    ><span class="chevron">⌄</span>
+                  </summary>
+                  <div class="list-content">
+                    <p class="overview">Finish the atlas setup before the weekend rotation.</p>
+                    <div class="section-heading">
+                      <span class="mono accent">01</span><strong>Core upgrades</strong>
+                    </div>
+                    <ol class="items">
+                      <li>
+                        <span class="mono item-no">01</span><a href="#">Righteous Fire Inquisitor</a
+                        ><small>Level 21 gem · 20% quality</small>
+                      </li>
+                      <li>
+                        <span class="mono item-no">02</span
+                        ><a href="#">Stygian Vise with life and resists</a>
+                      </li>
+                      <li class="is-done">
+                        <span class="mono item-no">03</span><a href="#">Eldritch currency bundle</a>
+                      </li>
+                    </ol>
+                    <div class="text-actions">
+                      <a href="#">Edit items</a><a href="#">Export JSON</a>
+                    </div>
+                    <button
+                      class="register-action prototype-button prototype-button-outline prototype-button-small"
+                      type="button"
+                    >
+                      Register current Trade
+                    </button>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <footer class="panel-footer">
+              <button class="prototype-button prototype-button-primary">+ New List</button
+              ><button class="prototype-button prototype-button-quiet">↓ Import</button>
+            </footer>
+          </div>
+          <p class="direction-caption">
+            The closest translation of the public catalogue: white field, cobalt actions, open ruled
+            content.
+          </p>
+        </article>
+
+        <article class="direction direction-ledger">
+          <header class="direction-label">
+            <span>02</span>
+            <div>
+              <h2>Noticeboard Ledger</h2>
+              <p>Dense practical reference</p>
+            </div>
+          </header>
+          <div class="panel" aria-label="Noticeboard Ledger sidepanel mockup">
+            <div class="panel-content">
+              <div class="ledger-route">
+                <span>LOCAL LISTS</span><span class="mono">03 ITEMS</span>
+              </div>
+              <div class="panel-tools">
+                <button
+                  class="prototype-button prototype-button-quiet prototype-button-small"
+                  type="button"
+                >
+                  ⌄ Collapse all</button
+                ><button
+                  class="prototype-button prototype-button-quiet prototype-button-small"
+                  type="button"
+                >
+                  ▣ Show archive
+                </button>
+              </div>
+              <div class="list-shell">
+                <div class="list-actions">
+                  <button
+                    type="button"
+                    class="prototype-button prototype-button-quiet prototype-button-small"
+                    aria-label="Mapping kit list actions"
+                  >
+                    •••
+                  </button>
+                  <ul tabindex="-1" class="action-menu">
+                    <li><a href="#">List actions</a></li>
+                    <li><a href="#">Export JSON</a></li>
+                    <li><a href="#">Delete list</a></li>
+                  </ul>
+                </div>
+                <details class="list-entry list-entry" open>
+                  <summary class="list-trigger list-trigger">
+                    <span class="marker">§</span><strong>Mapping kit — Settlers</strong
+                    ><span class="mono count">03</span><span class="chevron">⌄</span>
+                  </summary>
+                  <div class="list-content">
+                    <p class="overview">Finish the atlas setup before the weekend rotation.</p>
+                    <div class="ledger-heading">
+                      <span class="mono accent">01</span><strong>Core upgrades</strong
+                      ><span class="mono faint">TRADE</span>
+                    </div>
+                    <ol class="ledger-items">
+                      <li>
+                        <span class="mono item-no">01</span>
+                        <div>
+                          <a href="#">Righteous Fire Inquisitor</a
+                          ><small>Level 21 gem · 20% quality</small>
+                        </div>
+                        <a class="tiny-action" href="#">↗</a>
+                      </li>
+                      <li>
+                        <span class="mono item-no">02</span>
+                        <div><a href="#">Stygian Vise with life and resists</a></div>
+                        <a class="tiny-action" href="#">↗</a>
+                      </li>
+                      <li class="is-done">
+                        <span class="mono item-no">03</span>
+                        <div><a href="#">Eldritch currency bundle</a></div>
+                        <span class="done-mark">✓</span>
+                      </li>
+                    </ol>
+                    <div class="text-actions">
+                      <a href="#">List actions</a><a href="#">Export</a
+                      ><a class="danger" href="#">Delete</a>
+                    </div>
+                    <button
+                      class="register-action prototype-button prototype-button-outline prototype-button-small"
+                      type="button"
+                    >
+                      Register current Trade
+                    </button>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <footer class="panel-footer">
+              <button class="prototype-button prototype-button-primary">+ New List</button
+              ><button class="prototype-button prototype-button-quiet">↓ Import</button>
+            </footer>
+          </div>
+          <p class="direction-caption">
+            Numbers, rules, and small metadata do the orienting instead of a branded header.
+          </p>
+        </article>
+
+        <article class="direction direction-trade">
+          <header class="direction-label">
+            <span>03</span>
+            <div>
+              <h2>Quiet Trade Desk</h2>
+              <p>Action-first workspace</p>
+            </div>
+          </header>
+          <div class="panel" aria-label="Quiet Trade Desk sidepanel mockup">
+            <div class="panel-content trade-panel">
+              <div class="route-label"><span>SHOPPING LISTS</span><a href="#">Settings</a></div>
+              <div class="list-shell">
+                <div class="list-actions">
+                  <button
+                    type="button"
+                    class="prototype-button prototype-button-quiet prototype-button-small"
+                    aria-label="Mapping kit list actions"
+                  >
+                    •••
+                  </button>
+                  <ul tabindex="-1" class="action-menu">
+                    <li><a href="#">Open all Trade</a></li>
+                    <li><a href="#">Export JSON</a></li>
+                    <li><a href="#">Rename list</a></li>
+                  </ul>
+                </div>
+                <details class="list-entry list-entry" open>
+                  <summary class="list-trigger list-trigger">
+                    <span class="marker">—</span><strong>Mapping kit — Settlers</strong
+                    ><span class="chevron">⌄</span>
+                  </summary>
+                  <div class="list-content">
+                    <p class="overview">Finish the atlas setup before the weekend rotation.</p>
+                    <div class="section-heading">
+                      <span class="mono accent">01</span><strong>Core upgrades</strong>
+                    </div>
+                    <ol class="trade-items">
+                      <li>
+                        <input
+                          class="item-checkbox"
+                          type="checkbox"
+                          aria-label="Mark Righteous Fire Inquisitor complete"
+                        /><a href="#">Righteous Fire Inquisitor</a
+                        ><span class="trade-arrow">↗</span>
+                      </li>
+                      <li>
+                        <input
+                          class="item-checkbox"
+                          type="checkbox"
+                          aria-label="Mark Stygian Vise complete"
+                        /><a href="#">Stygian Vise with life and resists</a
+                        ><span class="trade-arrow">↗</span>
+                      </li>
+                      <li class="is-done">
+                        <input
+                          class="item-checkbox"
+                          type="checkbox"
+                          checked
+                          aria-label="Mark Eldritch currency bundle incomplete"
+                        /><a href="#">Eldritch currency bundle</a>
+                      </li>
+                    </ol>
+                    <button
+                      class="register-action prototype-button prototype-button-outline prototype-button-small"
+                      type="button"
+                    >
+                      Register current Trade
+                    </button>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <footer class="panel-footer">
+              <button class="prototype-button prototype-button-primary">+ New List</button
+              ><button class="prototype-button prototype-button-quiet">↓ Import</button>
+            </footer>
+          </div>
+          <p class="direction-caption">
+            Cobalt is reserved for the action users came to perform: opening Trade and moving
+            through items.
+          </p>
+        </article>
+
+        <article class="direction direction-notes">
+          <header class="direction-label">
+            <span>04</span>
+            <div>
+              <h2>Field Notes, Recast</h2>
+              <p>Continuity with the current extension</p>
+            </div>
+          </header>
+          <div class="panel" aria-label="Field Notes Recast sidepanel mockup">
+            <div class="panel-content notes-panel">
+              <div class="notes-route">
+                <span>LIST / SETTLERS</span><span class="mono">LOCAL</span>
+              </div>
+              <div class="panel-tools">
+                <button
+                  class="prototype-button prototype-button-quiet prototype-button-small"
+                  type="button"
+                >
+                  ⌄ Collapse all</button
+                ><button
+                  class="prototype-button prototype-button-quiet prototype-button-small"
+                  type="button"
+                >
+                  ＋ Add note
+                </button>
+              </div>
+              <div class="list-shell">
+                <div class="list-actions">
+                  <button
+                    type="button"
+                    class="prototype-button prototype-button-quiet prototype-button-small"
+                    aria-label="Mapping kit list actions"
+                  >
+                    •••
+                  </button>
+                  <ul tabindex="-1" class="action-menu">
+                    <li><a href="#">Add field note</a></li>
+                    <li><a href="#">Export JSON</a></li>
+                    <li><a href="#">Rename list</a></li>
+                  </ul>
+                </div>
+                <details class="list-entry list-entry" open>
+                  <summary class="list-trigger list-trigger">
+                    <span class="marker">—</span><strong>Mapping kit — Settlers</strong
+                    ><span class="chevron">⌄</span>
+                  </summary>
+                  <div class="list-content">
+                    <details class="field-note" open>
+                      <summary>Field note</summary>
+                      <p>Finish the atlas setup before the weekend rotation.</p>
+                    </details>
+                    <div class="section-heading">
+                      <span class="mono accent">01</span><strong>Core upgrades</strong>
+                    </div>
+                    <ol class="items compact-items">
+                      <li>
+                        <span class="mono item-no">01</span><a href="#">Righteous Fire Inquisitor</a
+                        ><small>Level 21 gem · 20% quality</small>
+                      </li>
+                      <li>
+                        <span class="mono item-no">02</span
+                        ><a href="#">Stygian Vise with life and resists</a>
+                      </li>
+                      <li class="is-done">
+                        <span class="mono item-no">03</span><a href="#">Eldritch currency bundle</a>
+                      </li>
+                    </ol>
+                    <div class="text-actions">
+                      <a href="#">Edit items</a><a href="#">Register trade</a>
+                    </div>
+                    <button
+                      class="register-action prototype-button prototype-button-outline prototype-button-small"
+                      type="button"
+                    >
+                      Register current Trade
+                    </button>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <footer class="panel-footer">
+              <button class="prototype-button prototype-button-primary">+ New List</button
+              ><button class="prototype-button prototype-button-quiet">↓ Import</button>
+            </footer>
+          </div>
+          <p class="direction-caption">
+            Keeps the existing extension’s compact editing flow, but recasts its green fieldguide
+            language in lofi.
+          </p>
+        </article>
+
+        <article class="direction direction-archive">
+          <header class="direction-label">
+            <span>05</span>
+            <div>
+              <h2>Archive Strip</h2>
+              <p>Narrow catalogue index</p>
+            </div>
+          </header>
+          <div class="panel" aria-label="Archive Strip sidepanel mockup">
+            <div class="panel-content archive-panel">
+              <div class="archive-title">
+                <span>SHOPPING LISTS</span><span class="mono">ARCHIVE / 01</span>
+              </div>
+              <div class="panel-tools">
+                <button
+                  class="prototype-button prototype-button-quiet prototype-button-small"
+                  type="button"
+                >
+                  ⌄ Collapse all</button
+                ><button
+                  class="prototype-button prototype-button-quiet prototype-button-small"
+                  type="button"
+                >
+                  ▣ Show archive
+                </button>
+              </div>
+              <div class="list-shell">
+                <div class="list-actions">
+                  <button
+                    type="button"
+                    class="prototype-button prototype-button-quiet prototype-button-small"
+                    aria-label="Mapping kit list actions"
+                  >
+                    •••
+                  </button>
+                  <ul tabindex="-1" class="action-menu">
+                    <li><a href="#">Show archive</a></li>
+                    <li><a href="#">Export JSON</a></li>
+                    <li><a href="#">Delete list</a></li>
+                  </ul>
+                </div>
+                <details class="list-entry list-entry" open>
+                  <summary class="list-trigger list-trigger">
+                    <span class="marker">—</span><strong>Mapping kit — Settlers</strong
+                    ><span class="chevron">⌄</span>
+                  </summary>
+                  <div class="list-content">
+                    <p class="overview">Finish the atlas setup before the weekend rotation.</p>
+                    <div class="archive-section">
+                      <div><span class="mono accent">01</span><strong>Core upgrades</strong></div>
+                      <span class="mono faint">3 ITEMS</span>
+                    </div>
+                    <ol class="archive-items">
+                      <li>
+                        <span class="mono item-no">01</span><a href="#">Righteous Fire Inquisitor</a
+                        ><span class="archive-link">TRADE ↗</span>
+                      </li>
+                      <li>
+                        <span class="mono item-no">02</span
+                        ><a href="#">Stygian Vise with life and resists</a
+                        ><span class="archive-link">TRADE ↗</span>
+                      </li>
+                      <li class="is-done">
+                        <span class="mono item-no">03</span><a href="#">Eldritch currency bundle</a
+                        ><span class="archive-link">DONE</span>
+                      </li>
+                    </ol>
+                    <div class="archive-actions">
+                      <a href="#">Export JSON</a><a href="#">Edit items</a>
+                    </div>
+                    <button
+                      class="register-action prototype-button prototype-button-outline prototype-button-small"
+                      type="button"
+                    >
+                      Register current Trade
+                    </button>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <footer class="panel-footer">
+              <button class="prototype-button prototype-button-primary">+ New List</button
+              ><button class="prototype-button prototype-button-quiet">↓ Import</button>
+            </footer>
+          </div>
+          <p class="direction-caption">
+            The strongest public-site resemblance: route label, archive entry, document flow, and
+            quiet utilities.
+          </p>
+        </article>
+      </section>
+    </main>
+    <script type="module" src="/prototype/directions.ts"></script>
+  </body>
+</html>

@@ -11,6 +11,7 @@ const permittedCuratedExternalUrls = [
   "https://mobalytics.gg/poe/builds/cws-chieftain-emiracles#c81bc723-60d4-42bc-acf2-59b5ed7b2fe1-anytime-upgrades-9",
   "https://pobb.in/8BVHxIIdtPg8",
 ];
+const permittedAttributionUrls = ["https://www.youtube.com/watch?v=ljaXlGLdyxM"];
 const htmlFiles = [];
 async function walk(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -30,7 +31,9 @@ for (const file of htmlFiles) {
       const path = value.split(/[?#]/, 1)[0];
       if (path === "/_astro/" || path.startsWith("/_astro/")) continue;
       if (!permittedInternalRoutes.includes(path)) {
-        throw new Error(`${file}: unexpected internal route ${value}; permitted internal routes: ${permittedInternalRoutes.join(", ")}`);
+        throw new Error(
+          `${file}: unexpected internal route ${value}; permitted internal routes: ${permittedInternalRoutes.join(", ")}`,
+        );
       }
       continue;
     }
@@ -38,10 +41,20 @@ for (const file of htmlFiles) {
     const isGoogleFontStylesheet = value.startsWith("https://fonts.googleapis.com/css2?");
     const isOfficialTradeSearch = value.startsWith("https://www.pathofexile.com/trade/search/");
     const isPermittedCuratedExternalUrl = permittedCuratedExternalUrls.includes(value);
+    const isPermittedAttributionUrl = permittedAttributionUrls.includes(value);
     const isShareableJsonDataUrl = value.startsWith("data:application/json;charset=utf-8,");
-    if (!isGoogleFontPreconnect && !isGoogleFontStylesheet && !isOfficialTradeSearch && !isPermittedCuratedExternalUrl && !isShareableJsonDataUrl) {
+    if (
+      !isGoogleFontPreconnect &&
+      !isGoogleFontStylesheet &&
+      !isOfficialTradeSearch &&
+      !isPermittedCuratedExternalUrl &&
+      !isPermittedAttributionUrl &&
+      !isShareableJsonDataUrl
+    ) {
       throw new Error(`${file}: unexpected external link ${value}`);
     }
   }
 }
-console.log(`Link check passed for ${htmlFiles.length} HTML file(s); official Trade and approved Google Fonts links were checked without network access.`);
+console.log(
+  `Link check passed for ${htmlFiles.length} HTML file(s); official Trade and approved Google Fonts links were checked without network access.`,
+);

@@ -3,8 +3,6 @@ import { computed, onMounted, ref } from "vue";
 import { useDraftList } from "../../composables/useDraftList";
 import { useUiStore } from "../../stores/ui";
 import { sendMessage, type TradePageInfo } from "../../utils/messages";
-import BtnAccent from "../shared/BtnAccent.vue";
-import BtnGhost from "../shared/BtnGhost.vue";
 
 const ui = useUiStore();
 const { drafts, addItemToDraft } = useDraftList();
@@ -18,7 +16,7 @@ const list = computed(() => drafts.value.find((draft) => draft.id === ui.registe
 onMounted(async () => {
   try {
     page.value = await sendMessage("spTradePageInfo");
-    title.value = page.value.title;
+    title.value = page.value.itemName;
   } catch {
     loadError.value = true;
   } finally {
@@ -55,7 +53,7 @@ async function handleSave() {
     @click.self="ui.closeRegisterModal()"
   >
     <form
-      class="w-full space-y-3 border-t-2 border-accent bg-white p-3.5"
+      class="w-full space-y-3 border-t-2 border-accent bg-bg p-3.5 text-ink"
       @submit.prevent="handleSave"
     >
       <p class="text-[10px] uppercase tracking-[0.12em] text-accent-ink-str">
@@ -78,23 +76,27 @@ async function handleSave() {
           Add this page as an incomplete List item. Nothing is captured or priced automatically.
         </p>
         <div
-          class="break-all border border-stroke bg-surface px-2.5 py-2 font-sans text-[10px] text-ink-muted"
+          class="break-all border border-stroke bg-surface px-2.5 py-2 font-mono text-[10px] text-ink-muted"
           :title="page.url"
         >
           {{ page.url }}
         </div>
-        <label class="block text-[10px] uppercase tracking-[0.06em] text-ink-muted"
-          >List Item title<input
-            v-model="title"
-            maxlength="120"
-            autofocus
-            class="mt-1 h-9 w-full border border-accent-edge bg-surface px-2.5 text-[13px] text-ink outline-none focus:border-accent"
-        /></label>
+        <UFormField label="List item title"
+          ><UInput v-model="title" maxlength="120" autofocus class="w-full"
+        /></UFormField>
       </template>
       <div class="flex gap-2">
-        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeRegisterModal" /><BtnAccent
+        <UButton
+          label="Cancel"
+          color="neutral"
+          variant="outline"
+          block
+          size="md"
+          @click="ui.closeRegisterModal"
+        /><UButton
           label="Save to List"
-          :full="true"
+          color="primary"
+          block
           size="md"
           :disabled="loading || loadError || !page?.supported || !title.trim() || saving"
           @click="handleSave"

@@ -14,10 +14,10 @@ without rebuilding. Forks have no Cloudflare credentials.
 
 The workflow's production environment names these exact protected values:
 
-| Environment | Secrets | Variables |
-| --- | --- | --- |
-| `production` | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | `PUBLIC_SITE_URL`, `DEPLOYMENT_APPROVER`, `MANUAL_ACCESSIBILITY_EVIDENCE` |
-| `public-site-preview` | `PREVIEW_CLOUDFLARE_API_TOKEN`, `PREVIEW_CLOUDFLARE_ACCOUNT_ID` | `PREVIEW_SITE_URL` |
+| Environment           | Secrets                                                         | Variables                                                                 |
+| --------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `production`          | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`                 | `PUBLIC_SITE_URL`, `DEPLOYMENT_APPROVER`, `MANUAL_ACCESSIBILITY_EVIDENCE` |
+| `public-site-preview` | `PREVIEW_CLOUDFLARE_API_TOKEN`, `PREVIEW_CLOUDFLARE_ACCOUNT_ID` | `PREVIEW_SITE_URL`                                                        |
 
 These environments, credentials, account values, and URL are **not configured**
 in this repository. The production URL must be canonical HTTPS. An unassigned
@@ -59,7 +59,7 @@ Run workflow** with exactly:
 
 - `preview_action`: `deploy`;
 - `artifact_run_id`: the run ID of a successful `Validate and package public
-  site` job from a same-repository `main` push;
+site` job from a same-repository `main` push;
 - `artifact_name`: the exact `public-site-production-<SHA>` artifact from that
   run;
 - leave `preview_worker_name` empty for deploy.

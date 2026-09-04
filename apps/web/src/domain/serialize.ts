@@ -1,4 +1,10 @@
-import { publishedListSchema, shareableListSchema, type PublishedItem, type PublishedList, type ShareableList } from "./schemas";
+import {
+  publishedListSchema,
+  shareableListSchema,
+  type PublishedItem,
+  type PublishedList,
+  type ShareableList,
+} from "./schemas";
 import { normalizePublishedListGroups } from "./groups";
 
 /** Convert a Published List to the sole portable v1 contract, in source order. */

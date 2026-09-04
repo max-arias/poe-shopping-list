@@ -9,5 +9,8 @@ applicability:
   game: poe1
   evergreen: true
 items:
-  - { title: "Recomb Sceptre", tradeUrl: "https://www.pathofexile.com/trade/search/Allflame/PPalmbnDIL" }
+  - {
+      title: "Recomb Sceptre",
+      tradeUrl: "https://www.pathofexile.com/trade/search/Allflame/PPalmbnDIL",
+    }
 ---

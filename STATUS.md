@@ -8,15 +8,15 @@ The extension now targets a clean, local-only v1 model. Obsolete local data assu
 
 ## Current implementation
 
-| Area | Status | Notes |
-| --- | --- | --- |
-| Local draft storage | ✅ | Drafts, settings, and current UI state use local storage |
-| Shareable List v1 | ✅ | Strict JSON fields and rejection behavior are implemented |
-| Independent imports | ✅ | New local IDs; imported items start incomplete |
-| Local completion | ✅ | Completion is stored on the local Draft and is not exported |
-| Accordion side panel | ✅ | One List collection; selected content expands in place |
-| Register Current Trade | ✅ | Confirms the active supported Trade URL, accepts an editable title, and saves an incomplete local item |
-| Trade-page scope | ✅ | Side panel and content script are limited to Path of Exile Trade hosts |
+| Area                   | Status | Notes                                                                                                  |
+| ---------------------- | ------ | ------------------------------------------------------------------------------------------------------ |
+| Local draft storage    | ✅     | Drafts, settings, and current UI state use local storage                                               |
+| Shareable List v1      | ✅     | Strict JSON fields and rejection behavior are implemented                                              |
+| Independent imports    | ✅     | New local IDs; imported items start incomplete                                                         |
+| Local completion       | ✅     | Completion is stored on the local Draft and is not exported                                            |
+| Accordion side panel   | ✅     | One List collection; selected content expands in place                                                 |
+| Register Current Trade | ✅     | Confirms the active supported Trade URL, accepts an editable title, and saves an incomplete local item |
+| Trade-page scope       | ✅     | Side panel and content script are limited to Path of Exile Trade hosts                                 |
 
 ## Validation
 

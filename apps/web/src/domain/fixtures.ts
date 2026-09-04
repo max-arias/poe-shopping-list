@@ -10,8 +10,17 @@ export const validPublishedListSource = {
   tags: ["future-tag"],
   applicability: { game: "poe1", league: "Test League" },
   items: [
-    { title: "First item", tradeUrl: "https://www.pathofexile.com/trade/search/Test?q=first", variant: "Normal", rationale: "First rationale" },
-    { title: "Second item", tradeUrl: "https://www.pathofexile.com/trade/search/Test?q=second", variant: "Any" },
+    {
+      title: "First item",
+      tradeUrl: "https://www.pathofexile.com/trade/search/Test?q=first",
+      variant: "Normal",
+      rationale: "First rationale",
+    },
+    {
+      title: "Second item",
+      tradeUrl: "https://www.pathofexile.com/trade/search/Test?q=second",
+      variant: "Any",
+    },
   ],
 } satisfies TestOnlyFixtureSource;
 
@@ -22,7 +31,12 @@ export const validZeroTagEvergreenListSource = {
   category: "future-category",
   tags: [],
   applicability: { game: "poe1", evergreen: true },
-  items: [{ title: "Evergreen item", tradeUrl: "https://www.pathofexile.com/trade/search/Standard?q=evergreen" }],
+  items: [
+    {
+      title: "Evergreen item",
+      tradeUrl: "https://www.pathofexile.com/trade/search/Standard?q=evergreen",
+    },
+  ],
 } satisfies TestOnlyFixtureSource;
 
 /** Test-only adapter: remove the marker, then apply the real domain schema. */

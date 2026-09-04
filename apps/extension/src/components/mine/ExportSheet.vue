@@ -4,8 +4,6 @@ import { useDraftList } from "../../composables/useDraftList";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { exportDraft } from "../../composables/useImportExport";
 import { useUiStore } from "../../stores/ui";
-import BtnAccent from "../shared/BtnAccent.vue";
-import BtnGhost from "../shared/BtnGhost.vue";
 
 const ui = useUiStore();
 const { draft } = useDraftList();
@@ -59,23 +57,33 @@ async function copyToClipboard() {
       </div>
 
       <p class="text-[11px] text-ink-muted">
-        Copy this share code and send it. Recipients can paste it into the extension to recreate your list.
+        Copy this share code and send it. Recipients can paste it into the extension to recreate
+        your list.
       </p>
 
-      <textarea
+      <UTextarea
         data-export-textarea
         readonly
         :value="encoded"
         aria-label="List share code"
-        class="w-full h-24 px-2.5 py-2 text-[11px] font-sans border border-stroke rounded-sm text-ink bg-surface resize-none"
+        class="w-full"
+        :rows="4"
         @click="($event.target as HTMLTextAreaElement).select()"
       />
 
       <div class="flex gap-2">
-        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeExportSheet()" />
-        <BtnAccent
+        <UButton
+          label="Cancel"
+          color="neutral"
+          variant="outline"
+          block
+          size="md"
+          @click="ui.closeExportSheet()"
+        />
+        <UButton
           :label="copied ? 'Copied!' : 'Copy to clipboard'"
-          :full="true"
+          color="primary"
+          block
           @click="copyToClipboard"
         />
       </div>

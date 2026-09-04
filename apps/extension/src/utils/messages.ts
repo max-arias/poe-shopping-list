@@ -3,7 +3,7 @@ import { defineExtensionMessaging } from "@webext-core/messaging";
 export interface TradePageInfo {
   supported: boolean;
   url: string;
-  title: string;
+  itemName: string;
 }
 
 interface ProtocolMap {

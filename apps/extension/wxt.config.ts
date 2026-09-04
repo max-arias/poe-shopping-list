@@ -1,4 +1,4 @@
-import tailwindcss from "@tailwindcss/vite";
+import nuxtUi from "@nuxt/ui/vite";
 import { defineConfig } from "wxt";
 
 export default defineConfig({
@@ -6,7 +6,15 @@ export default defineConfig({
   modules: ["@wxt-dev/module-vue"],
 
   vite: () => ({
-    plugins: [tailwindcss()],
+    // Nuxt UI's standalone-Vue plugin includes the Tailwind Vite plugin.
+    // Keep a single Tailwind instance to avoid duplicate processing.
+    plugins: [
+      nuxtUi({
+        router: false,
+        colorMode: false,
+        ui: { colors: { primary: "amber" } },
+      }),
+    ],
   }),
 
   manifest: {

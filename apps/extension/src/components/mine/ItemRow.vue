@@ -8,6 +8,8 @@ const props = defineProps<{
   isFirst: boolean;
   isLast: boolean;
   editMode: boolean;
+  currentGroupId?: string | null;
+  moveTargets?: { id: string; label: string }[];
 }>();
 const emit = defineEmits<{
   toggle: [completed: boolean];
@@ -17,6 +19,7 @@ const emit = defineEmits<{
   drop: [];
   update: [patch: { title?: string; tradeUrl?: string }];
   remove: [];
+  moveTo: [groupId: string | null];
 }>();
 const { settings } = useSettings();
 const editTitle = ref(props.item.title);
@@ -35,7 +38,7 @@ async function toggle() {
 }
 
 async function openTrade() {
-  if (!props.item.tradeUrl) return;
+  if (props.item.completed || !props.item.tradeUrl) return;
   if (settings.value.openItemsInNewTab) {
     await browser.tabs.create({ url: props.item.tradeUrl });
   } else {
@@ -61,6 +64,11 @@ function startDrag(event: DragEvent) {
   event.dataTransfer?.setDragImage(event.currentTarget as HTMLElement, 12, 12);
   emit("dragStart");
 }
+
+function moveTo(event: Event) {
+  const value = (event.target as HTMLSelectElement).value;
+  emit("moveTo", value || null);
+}
 </script>
 
 <template>
@@ -69,9 +77,15 @@ function startDrag(event: DragEvent) {
     @dragover.prevent
     @drop.prevent="emit('drop')"
   >
+    <UCheckbox
+      :model-value="item.completed"
+      class="item-checkbox shrink-0"
+      :aria-label="item.completed ? `Mark ${item.title} incomplete` : `Mark ${item.title} complete`"
+      @update:model-value="toggle"
+    />
     <button
       type="button"
-      class="flex h-7 w-6 shrink-0 cursor-grab items-center justify-center bg-transparent text-sm text-ink-muted active:cursor-grabbing focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+      class="drag-handle flex h-8 w-5 shrink-0 cursor-grab items-center justify-center bg-transparent text-sm text-ink-muted active:cursor-grabbing focus-visible:outline focus-visible:outline-1 focus-visible:outline-primary"
       draggable="true"
       aria-label="Drag to reorder item"
       @dragstart="startDrag"
@@ -102,17 +116,6 @@ function startDrag(event: DragEvent) {
         ↓
       </button>
     </div>
-    <button
-      type="button"
-      role="checkbox"
-      :aria-checked="item.completed"
-      class="checkbox checkbox-sm shrink-0 border-[#8aa08f] bg-white text-[10px] text-white focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
-      :class="item.completed ? 'border-accent bg-accent' : ''"
-      :aria-label="item.completed ? `Mark ${item.title} incomplete` : `Mark ${item.title} complete`"
-      @click="toggle"
-    >
-      <span v-if="item.completed" aria-hidden="true">✓</span>
-    </button>
     <template v-if="editMode">
       <div class="min-w-0 flex-1 space-y-1">
         <input
@@ -142,16 +145,36 @@ function startDrag(event: DragEvent) {
       >
         Remove
       </button>
+      <select
+        v-if="moveTargets?.length"
+        class="item-move-select h-7 max-w-[92px] shrink-0 border border-stroke bg-bg px-1 text-[10px] text-ink-muted outline-none focus:border-accent"
+        :value="currentGroupId ?? ''"
+        :aria-label="`Move ${item.title} to group`"
+        @change="moveTo"
+      >
+        <option value="">Flat list</option>
+        <option v-for="target in moveTargets" :key="target.id" :value="target.id">
+          {{ target.label }}
+        </option>
+      </select>
     </template>
     <button
       v-else
       type="button"
-      class="link link-hover min-w-0 flex-1 truncate bg-transparent p-0 text-left text-[13px] font-normal text-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
-      :class="item.completed ? 'opacity-60 line-through' : ''"
-      :aria-label="`Open ${item.title} trade search`"
+      class="item-trade-title min-w-0 flex-1 bg-transparent p-0 text-left text-[13px] font-normal text-ink focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
+      :class="item.completed ? 'opacity-60 line-through' : 'cursor-pointer hover:text-accent'"
+      :disabled="item.completed"
+      :aria-label="
+        item.completed
+          ? `${item.title}, completed. Mark incomplete to open its trade search.`
+          : `Open ${item.title} trade search`
+      "
       @click="openTrade"
     >
-      {{ item.title }}
+      <span class="item-copy">
+        <span class="item-title">{{ item.title }}</span>
+        <span v-if="item.variant" class="item-variant">{{ item.variant }}</span>
+      </span>
     </button>
   </div>
 </template>

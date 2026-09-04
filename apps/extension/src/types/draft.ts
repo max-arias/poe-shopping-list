@@ -22,7 +22,12 @@ const TradeUrlSchema = z
     "tradeUrl must be an HTTP(S) URL",
   );
 
-export { ShareableListItemSchema, shareableListGroupSchema, ShareableListGroupSchema, ShareableListSchema };
+export {
+  ShareableListItemSchema,
+  shareableListGroupSchema,
+  ShareableListGroupSchema,
+  ShareableListSchema,
+};
 export type { ShareableList, ShareableListItem, ShareableListGroup };
 
 export const DraftItemSchema = z
@@ -49,13 +54,22 @@ export const DraftGroupSchema = z
   .strict();
 export type DraftGroup = z.infer<typeof DraftGroupSchema>;
 
-export const DraftSchema = z
+const DraftShapeSchema = z
   .object({
     id: z.string(),
     title: TitleSchema,
     overview: z.string().optional(),
     createdAt: z.number().int(),
+    items: z.array(DraftItemSchema),
     groups: z.array(DraftGroupSchema),
   })
   .strict();
+// `items` was added after the first persisted format.  Normalize that format
+// here rather than making every consumer know about the migration.
+export const DraftSchema = z.preprocess((value) => {
+  if (value && typeof value === "object" && !Array.isArray(value) && !("items" in value)) {
+    return { ...value, items: [] };
+  }
+  return value;
+}, DraftShapeSchema);
 export type Draft = z.infer<typeof DraftSchema>;

@@ -80,8 +80,7 @@ const canonicalUrl = "/";
         return `${token}\n`;
       };
       document.querySelectorAll<HTMLElement>(".manual-entry").forEach((card) => {
-        const title = card.querySelector<HTMLHeadingElement>(".list-title h4")!;
-        const titleText = title.textContent?.trim() || "Published List";
+        const titleText = card.querySelector<HTMLElement>(".list-title [role='heading']")?.textContent?.trim() || "Published List";
         const safeTitle = titleText.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list";
         card.querySelector("[data-download]")?.addEventListener("click", (event) => {
           event.preventDefault();
@@ -95,11 +94,22 @@ const canonicalUrl = "/";
           URL.revokeObjectURL(link.href);
           report(`JSON downloaded for ${titleText}.`);
         });
-        card.querySelector("[data-copy]")?.addEventListener("click", async () => {
+        const copyButton = card.querySelector<HTMLButtonElement>("[data-copy]");
+        let copyResetTimer: number | undefined;
+        const resetCopyState = () => {
+          if (copyResetTimer) window.clearTimeout(copyResetTimer);
+          delete copyButton?.dataset.copySuccess;
+          copyButton?.setAttribute("aria-label", `Copy ${titleText} as JSON`);
+        };
+        copyButton?.addEventListener("click", async () => {
+          resetCopyState();
           const exportText = getExportText(card);
           if (!exportText) return;
           try {
             await navigator.clipboard.writeText(exportText);
+            copyButton!.dataset.copySuccess = "true";
+            copyButton!.setAttribute("aria-label", `Copied ${titleText} as JSON`);
+            copyResetTimer = window.setTimeout(resetCopyState, 1200);
             report(`JSON copied for ${titleText}.`);
           } catch {
             report("Copy was blocked. Download the JSON instead.");

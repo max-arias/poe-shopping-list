@@ -20,11 +20,15 @@ const actualHtmlRoutes = htmlFiles.map((path) => relative(root, path)).sort();
 const missingRoutes = expectedHtmlRoutes.filter((route) => !actualHtmlRoutes.includes(route));
 const unexpectedRoutes = actualHtmlRoutes.filter((route) => !expectedHtmlRoutes.includes(route));
 if (missingRoutes.length > 0 || unexpectedRoutes.length > 0) {
-  throw new Error([
-    `Expected exactly these canonical HTML routes: ${expectedHtmlRoutes.join(", ")}`,
-    missingRoutes.length > 0 ? `Missing: ${missingRoutes.join(", ")}` : "",
-    unexpectedRoutes.length > 0 ? `Unexpected: ${unexpectedRoutes.join(", ")}` : "",
-    `Found: ${actualHtmlRoutes.length > 0 ? actualHtmlRoutes.join(", ") : "none"}`,
-  ].filter(Boolean).join("\n"));
+  throw new Error(
+    [
+      `Expected exactly these canonical HTML routes: ${expectedHtmlRoutes.join(", ")}`,
+      missingRoutes.length > 0 ? `Missing: ${missingRoutes.join(", ")}` : "",
+      unexpectedRoutes.length > 0 ? `Unexpected: ${unexpectedRoutes.join(", ")}` : "",
+      `Found: ${actualHtmlRoutes.length > 0 ? actualHtmlRoutes.join(", ") : "none"}`,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  );
 }
 console.log(`Output route check passed: ${actualHtmlRoutes.join(", ")}`);

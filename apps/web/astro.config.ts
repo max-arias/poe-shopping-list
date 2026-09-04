@@ -11,12 +11,14 @@ export default defineConfig({
     plugins: [tailwindcss() as any],
   },
   build: { format: "directory" },
-  integrations: [{
-    name: "published-list-validation",
-    hooks: {
-      "astro:build:setup": async () => {
-        await validateContentDirectory();
+  integrations: [
+    {
+      name: "published-list-validation",
+      hooks: {
+        "astro:build:setup": async () => {
+          await validateContentDirectory();
+        },
       },
     },
-  }],
+  ],
 });

@@ -36,14 +36,14 @@ The portable contract is JSON:
 
 ## Tech Stack
 
-| Concern             | Choice                                             |
-| ------------------- | -------------------------------------------------- |
-| Extension framework | [WXT](https://wxt.dev) (Chrome MV3)                |
-| UI                  | [Vue 3](https://vuejs.org) Composition API         |
-| State               | Pinia + `browser.storage.local`                    |
-| Validation          | [Zod](https://zod.dev)                             |
-| Styling             | Tailwind v4 with PoE-themed design tokens          |
-| Toolchain           | [VitePlus (`vp`)](https://viteplus.dev)            |
+| Concern             | Choice                                     |
+| ------------------- | ------------------------------------------ |
+| Extension framework | [WXT](https://wxt.dev) (Chrome MV3)        |
+| UI                  | [Vue 3](https://vuejs.org) Composition API |
+| State               | Pinia + `browser.storage.local`            |
+| Validation          | [Zod](https://zod.dev)                     |
+| Styling             | Tailwind v4 with PoE-themed design tokens  |
+| Toolchain           | [VitePlus (`vp`)](https://viteplus.dev)    |
 
 ## Developer Workflow
 

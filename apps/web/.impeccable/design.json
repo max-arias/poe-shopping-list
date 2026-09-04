@@ -8,49 +8,142 @@
         "role": "page background",
         "displayName": "Base 100",
         "canonical": "oklch(100% 0 0)",
-        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(100% 0 0)"]
+        "tonalRamp": [
+          "oklch(0% 0 0)",
+          "oklch(15% 0 0)",
+          "oklch(30% 0 0)",
+          "oklch(45% 0 0)",
+          "oklch(60% 0 0)",
+          "oklch(75% 0 0)",
+          "oklch(88% 0 0)",
+          "oklch(100% 0 0)"
+        ]
       },
       "base-200": {
         "role": "quiet operational surface",
         "displayName": "Base 200",
         "canonical": "oklch(97% 0 0)",
-        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(97% 0 0)"]
+        "tonalRamp": [
+          "oklch(0% 0 0)",
+          "oklch(15% 0 0)",
+          "oklch(30% 0 0)",
+          "oklch(45% 0 0)",
+          "oklch(60% 0 0)",
+          "oklch(75% 0 0)",
+          "oklch(88% 0 0)",
+          "oklch(97% 0 0)"
+        ]
       },
       "base-300": {
         "role": "hairline dividers and rules",
         "displayName": "Base 300",
         "canonical": "oklch(94% 0 0)",
-        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(94% 0 0)"]
+        "tonalRamp": [
+          "oklch(0% 0 0)",
+          "oklch(15% 0 0)",
+          "oklch(30% 0 0)",
+          "oklch(45% 0 0)",
+          "oklch(60% 0 0)",
+          "oklch(75% 0 0)",
+          "oklch(88% 0 0)",
+          "oklch(94% 0 0)"
+        ]
       },
       "base-content": {
         "role": "strongest text",
         "displayName": "Base Content",
         "canonical": "oklch(0% 0 0)",
-        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(45% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(100% 0 0)"]
+        "tonalRamp": [
+          "oklch(0% 0 0)",
+          "oklch(15% 0 0)",
+          "oklch(30% 0 0)",
+          "oklch(45% 0 0)",
+          "oklch(60% 0 0)",
+          "oklch(75% 0 0)",
+          "oklch(88% 0 0)",
+          "oklch(100% 0 0)"
+        ]
       },
       "primary": {
         "role": "direct actions and structural markers",
         "displayName": "Primary",
         "canonical": "oklch(15.906% 0 0)",
-        "tonalRamp": ["oklch(15.906% 0 0)", "oklch(25% 0 0)", "oklch(35% 0 0)", "oklch(45% 0 0)", "oklch(55% 0 0)", "oklch(65% 0 0)", "oklch(80% 0 0)", "oklch(95% 0 0)"]
+        "tonalRamp": [
+          "oklch(15.906% 0 0)",
+          "oklch(25% 0 0)",
+          "oklch(35% 0 0)",
+          "oklch(45% 0 0)",
+          "oklch(55% 0 0)",
+          "oklch(65% 0 0)",
+          "oklch(80% 0 0)",
+          "oklch(95% 0 0)"
+        ]
       },
       "muted-content": {
         "role": "supporting copy and metadata",
         "displayName": "Muted Content",
         "canonical": "oklch(38% 0 0)",
-        "tonalRamp": ["oklch(0% 0 0)", "oklch(15% 0 0)", "oklch(30% 0 0)", "oklch(38% 0 0)", "oklch(60% 0 0)", "oklch(75% 0 0)", "oklch(88% 0 0)", "oklch(100% 0 0)"]
+        "tonalRamp": [
+          "oklch(0% 0 0)",
+          "oklch(15% 0 0)",
+          "oklch(30% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(60% 0 0)",
+          "oklch(75% 0 0)",
+          "oklch(88% 0 0)",
+          "oklch(100% 0 0)"
+        ]
       }
     },
     "typographyMeta": {
-      "body": { "displayName": "Body", "purpose": "Readable catalogue and craft prose", "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif", "fontSize": "15px", "fontWeight": 300, "lineHeight": 1.6 },
-      "display": { "displayName": "Display", "purpose": "Editorial route and page headings", "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif", "fontSize": "clamp(44px, 8vw, 86px)", "fontWeight": 600, "lineHeight": 0.92, "letterSpacing": "-0.06em" },
-      "mono": { "displayName": "Mono", "purpose": "Technical metadata, counts, and regex", "fontFamily": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace", "fontSize": "12px", "fontWeight": 300, "lineHeight": 1.45 },
-      "navigation": { "displayName": "Navigation", "purpose": "Quiet uppercase route labels", "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif", "fontSize": "10px", "fontWeight": 600, "lineHeight": 1, "letterSpacing": "0.1em" }
+      "body": {
+        "displayName": "Body",
+        "purpose": "Readable catalogue and craft prose",
+        "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "15px",
+        "fontWeight": 300,
+        "lineHeight": 1.6
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "Editorial route and page headings",
+        "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "clamp(44px, 8vw, 86px)",
+        "fontWeight": 600,
+        "lineHeight": 0.92,
+        "letterSpacing": "-0.06em"
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Technical metadata, counts, and regex",
+        "fontFamily": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+        "fontSize": "12px",
+        "fontWeight": 300,
+        "lineHeight": 1.45
+      },
+      "navigation": {
+        "displayName": "Navigation",
+        "purpose": "Quiet uppercase route labels",
+        "fontFamily": "Outfit, Noto Sans, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "10px",
+        "fontWeight": 600,
+        "lineHeight": 1,
+        "letterSpacing": "0.1em"
+      }
     },
     "shadows": [],
     "motion": [
-      { "name": "smooth-scroll", "property": "scroll-behavior", "value": "smooth", "reducedMotion": "auto" },
-      { "name": "reduced-motion", "media": "prefers-reduced-motion: reduce", "value": "disable or reduce transitions and animations" }
+      {
+        "name": "smooth-scroll",
+        "property": "scroll-behavior",
+        "value": "smooth",
+        "reducedMotion": "auto"
+      },
+      {
+        "name": "reduced-motion",
+        "media": "prefers-reduced-motion: reduce",
+        "value": "disable or reduce transitions and animations"
+      }
     ],
     "breakpoints": [
       { "name": "catalog-stack", "value": "700px" },
@@ -86,12 +179,33 @@
   "narrative": {
     "northStar": "The Field Manual",
     "overview": "The catalogue leads with the action and keeps reasoning visible. White and near-white surfaces, asymmetric whitespace, editorial rules, a near-black primary, and direct text links create orientation without spectacle.",
-    "keyCharacteristics": ["Minimal technical reference", "Clean technical mono", "Flat with hairline rules", "Quietly operational"],
+    "keyCharacteristics": [
+      "Minimal technical reference",
+      "Clean technical mono",
+      "Flat with hairline rules",
+      "Quietly operational"
+    ],
     "rules": [
-      { "name": "Functional Color", "body": "Color is functional, not atmospheric decoration.", "section": "colors" },
-      { "name": "Field Manual Type", "body": "Use Outfit with the Noto Sans/system sans fallback for prose and headings.", "section": "typography" },
-      { "name": "Flat With Hairline Rules", "body": "The system is flat. Do not use shadows, gradients, floating cards, glass, or decorative depth.", "section": "elevation" },
-      { "name": "Components Present", "body": "Document only the components present in the catalogue.", "section": "components" }
+      {
+        "name": "Functional Color",
+        "body": "Color is functional, not atmospheric decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "Field Manual Type",
+        "body": "Use Outfit with the Noto Sans/system sans fallback for prose and headings.",
+        "section": "typography"
+      },
+      {
+        "name": "Flat With Hairline Rules",
+        "body": "The system is flat. Do not use shadows, gradients, floating cards, glass, or decorative depth.",
+        "section": "elevation"
+      },
+      {
+        "name": "Components Present",
+        "body": "Document only the components present in the catalogue.",
+        "section": "components"
+      }
     ],
     "dos": [
       "Do lead with the official Trade search or practical craft step, then show concise reasoning and cheaper alternatives where they exist.",

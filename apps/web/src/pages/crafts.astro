@@ -19,40 +19,46 @@ const canonicalUrl = "/crafts/";
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" />
   </head>
   <body class="font-sans">
-    <header class="craft-header">
-      <nav class="craft-nav" aria-label="Primary navigation">
-        <a class="craft-back-link" href="/">← Shopping lists</a>
-        <span class="craft-nav-label" aria-current="page">Field notes</span>
+    <header class="site-header">
+      <nav class="site-nav site-nav--split" aria-label="Primary navigation">
+        <a href="/">Shopping lists</a>
+        <a href="/crafts/">Craft notes</a>
       </nav>
     </header>
 
     <a class="skip-link" href="#craft-main">Skip to the craft notes</a>
     <main id="craft-main" class="craft-main">
       <article class="craft-guide" aria-labelledby="life-flask-title">
-        <header class="craft-section-heading">
-          <p class="craft-section-number">01</p>
-          <h2 id="life-flask-title">Divine Life Flask</h2>
-        </header>
+        <details class="collapse collapse-arrow" open>
+          <summary class="craft-section-heading collapse-title">
+            <span class="craft-section-number">01</span>
+            <span id="life-flask-title" role="heading" aria-level="2">Divine Life Flask</span>
+          </summary>
 
-        <div class="craft-summary" aria-label="Divine Life Flask summary">
-          <span><strong>Cost</strong> 30c</span>
-          <span><strong>Method</strong> Magic spam</span>
-          <span><strong>Finish</strong> Beast craft</span>
-        </div>
+          <div class="collapse-content">
+            <div class="craft-summary" aria-label="Divine Life Flask summary">
+              <span><strong>Cost</strong> 30c</span>
+              <span><strong>Method</strong> Magic spam</span>
+              <span><strong>Finish</strong> Beast craft</span>
+            </div>
 
-        <ol class="craft-steps">
-          <li>Spam the flask while it is Magic until it has <strong>instant recovery</strong> or <strong>instant recovery when on low life</strong>.</li>
-          <li>Use the Beast craft to grant <strong>immunity to bleeding</strong>.</li>
-        </ol>
+            <ol class="craft-steps">
+              <li>Spam the flask while it is Magic until it has <strong>instant recovery</strong> or <strong>instant recovery when on low life</strong>.</li>
+              <li>Use the Beast craft to grant <strong>immunity to bleeding</strong>.</li>
+            </ol>
+          </div>
+        </details>
       </article>
 
       <article class="craft-guide" aria-labelledby="cluster-title">
-        <header class="craft-section-heading">
-          <p class="craft-section-number">02</p>
-          <h2 id="cluster-title">Large Cluster Jewel</h2>
-        </header>
+        <details class="collapse collapse-arrow" open>
+          <summary class="craft-section-heading collapse-title">
+            <span class="craft-section-number">02</span>
+            <span id="cluster-title" role="heading" aria-level="2">Large Cluster Jewel</span>
+          </summary>
 
-        <p class="craft-action"><a class="craft-trade-link" href="https://www.pathofexile.com/trade/search/Allflame/2Kzk6yVVIk" target="_blank" rel="noopener noreferrer">Open the official Large Cluster Jewel trade search</a></p>
+          <div class="collapse-content">
+            <p class="craft-action"><a class="craft-trade-link" href="https://www.pathofexile.com/trade/search/Allflame/2Kzk6yVVIk" target="_blank" rel="noopener noreferrer">Open the official Large Cluster Jewel trade search</a></p>
 
         <div class="craft-block">
           <h3>Start with the right base</h3>
@@ -96,10 +102,12 @@ const canonicalUrl = "/crafts/";
         </div>
 
         <p class="craft-skip"><strong>Skip:</strong> Widespread Destruction, Corrosive Elements, and Inspired Oppression.</p>
-        <aside class="craft-warning" aria-label="Large Cluster Jewel warnings">
-          <p><strong>Warning:</strong> This craft can take many Dead Coins.</p>
-          <p><strong>Check:</strong> Watch <strong>% Intangibility</strong> before committing more currency.</p>
-        </aside>
+            <aside class="craft-warning" aria-label="Large Cluster Jewel warnings">
+              <p><strong>Warning:</strong> This craft can take many Dead Coins.</p>
+              <p><strong>Check:</strong> Watch <strong>% Intangibility</strong> before committing more currency.</p>
+            </aside>
+          </div>
+        </details>
       </article>
     </main>
     <script>

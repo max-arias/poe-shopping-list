@@ -44,9 +44,11 @@ const sectionLabel = (section: NormalizedSection, index: number) => section.titl
 ---
 
 <article id={`list-${id}`} class="manual-entry" data-export={exportToken}>
-  <header class="list-title">
+  <details class="collapse collapse-arrow" open>
+    <summary class="list-title collapse-title">
     <span class="list-number" aria-hidden="true">—</span>
-    <h4>{list.title}</h4>
+    <span role="heading" aria-level="4">{list.title}</span>
+    </summary>
     <div class="list-actions-inline" aria-label={`${list.title} export actions`}>
       <a href={`data:application/json;charset=utf-8,${encodeURIComponent(exportText)}`} download={`${list.title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list"}-shareable-list-v1.json`} data-download aria-label={`Download ${list.title} as JSON`}>
         <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
@@ -54,13 +56,22 @@ const sectionLabel = (section: NormalizedSection, index: number) => section.titl
         </svg>
       </a>
       <button type="button" data-copy aria-label={`Copy ${list.title} as JSON`}>
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
-          <rect x="9" y="9" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.5" />
-          <path d="M15 9V6a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-        </svg>
+        <span class="copy-icon-stack" aria-hidden="true">
+          <span class="copy-icon copy-icon--default">
+            <svg viewBox="0 0 24 24" width="16" height="16" focusable="false">
+              <rect x="9" y="9" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.5" />
+              <path d="M15 9V6a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </span>
+          <span class="copy-icon copy-icon--success">
+            <svg viewBox="0 0 24 24" width="16" height="16" focusable="false">
+              <path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </span>
       </button>
     </div>
-  </header>
+    <div class="collapse-content">
   {list.overview && <OverviewMarkdown value={list.overview} />}
 
   <div class="groups" aria-label={`${list.title} groups`}>
@@ -92,5 +103,6 @@ const sectionLabel = (section: NormalizedSection, index: number) => section.titl
       </ol>
     </section>)}
   </div>
-
+    </div>
+  </details>
 </article>

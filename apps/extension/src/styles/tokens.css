@@ -1,41 +1,40 @@
-/* Wraeclast Field Guide — one light-only, warm field-note palette. */
-:root,
-[data-theme="fieldguide"] {
-  color-scheme: light;
-  --poe-bg: #e8e3da;
-  --poe-frame: #29362f;
-  --poe-chrome: #e3eadf;
-  --poe-surface: #ffffff;
-  --poe-surface-tab: #f3f6f0;
-  --poe-surface-hover: #edf2ea;
-  --poe-ink: #29362f;
-  --poe-ink-muted: #64746b;
-  --poe-stroke: #cbd4c5;
-  --poe-stroke-soft: #dfe6db;
-  --poe-line: #cbd4c5;
-  --poe-block: #e3eadf;
-  --poe-knob: #ffffff;
-  --poe-accent: #52755e;
-  --poe-accent-edge: #3f604a;
-  --poe-accent-ink: #ffffff;
-  --poe-accent-ink-str: #3f604a;
-  --poe-accent-soft: #e3eade;
-  --poe-destructive: #a74e36;
-  --poe-destructive-ink: #ffffff;
-  --poe-destructive-soft: #f6e7e1;
-  --poe-destructive-edge: #d6a392;
-  --poe-warn: #f4eadf;
-  --poe-warn-ink: #a74e36;
-  --poe-warn-edge: #d6a392;
-  --poe-good: #52755e;
-  --poe-good-ink: #ffffff;
-  --poe-good-edge: #3f604a;
-  --poe-error: #f6e7e1;
-  --poe-error-ink: #8d3828;
-  --poe-error-edge: #d6a392;
-  --poe-info: #e3eade;
-  --poe-info-ink: #3f604a;
-  --poe-info-edge: #a9bca9;
+/* Trade Bench: a quiet, dark ledger with one hot accent. */
+:root {
+  color-scheme: dark;
+  --poe-bg: #11100e;
+  --poe-frame: #0b0a09;
+  --poe-chrome: #171512;
+  --poe-surface: #191714;
+  --poe-surface-tab: #211e1a;
+  --poe-surface-hover: #24201b;
+  --poe-ink: #e9e0d2;
+  --poe-ink-muted: #988d7e;
+  --poe-stroke: #40392f;
+  --poe-stroke-soft: #2a2621;
+  --poe-line: #342e27;
+  --poe-block: #201c18;
+  --poe-knob: #e9e0d2;
+  --poe-accent: #e5a83b;
+  --poe-accent-edge: #bc7d1f;
+  --poe-accent-ink: #17110a;
+  --poe-accent-ink-str: #e5a83b;
+  --poe-accent-soft: #302515;
+  --poe-destructive: #d66f5e;
+  --poe-destructive-ink: #180d0a;
+  --poe-destructive-soft: #321b17;
+  --poe-destructive-edge: #804238;
+  --poe-warn: #332714;
+  --poe-warn-ink: #e5a83b;
+  --poe-warn-edge: #78531e;
+  --poe-good: #a9c28b;
+  --poe-good-ink: #11100e;
+  --poe-good-edge: #607c47;
+  --poe-error: #321b17;
+  --poe-error-ink: #f09a87;
+  --poe-error-edge: #804238;
+  --poe-info: #1e2930;
+  --poe-info-ink: #a8c4d1;
+  --poe-info-edge: #486272;
 }
 
 @theme inline {
@@ -67,40 +66,18 @@
   --color-good: var(--poe-good);
   --color-good-ink: var(--poe-good-ink);
   --color-good-edge: var(--poe-good-edge);
-  --color-error: var(--poe-error);
-  --color-error-ink: var(--poe-error-ink);
-  --color-error-edge: var(--poe-error-edge);
+  --color-error: var(--poe-destructive);
+  --color-error-content: var(--poe-destructive-ink);
+  --color-error-surface: var(--poe-error);
+  --color-error-surface-content: var(--poe-error-ink);
+  --color-error-surface-edge: var(--poe-error-edge);
   --color-info: var(--poe-info);
   --color-info-ink: var(--poe-info-ink);
   --color-info-edge: var(--poe-info-edge);
-  --font-sans: "Source Serif 4", Georgia, serif;
-  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
-  --radius-sm: 3px;
-  --radius-md: 4px;
-  --radius-lg: 5px;
-}
-
-/* DaisyUI 5 is the control foundation; the guide palette stays bespoke. */
-@plugin "daisyui" {
-  themes: fieldguide --default;
-}
-@plugin "daisyui/theme" {
-  name: "fieldguide";
-  default: true;
-  --color-base-100: #ffffff;
-  --color-base-200: #f3f6f0;
-  --color-base-300: #e3eadf;
-  --color-base-content: #29362f;
-  --color-primary: #52755e;
-  --color-primary-content: #ffffff;
-  --color-secondary: #a74e36;
-  --color-secondary-content: #ffffff;
-  --color-accent: #52755e;
-  --color-accent-content: #ffffff;
-  --color-neutral: #29362f;
-  --color-neutral-content: #ffffff;
-  --radius-selector: 3px;
-  --radius-field: 3px;
-  --radius-box: 5px;
-  --border: 1px;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-display: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
 }

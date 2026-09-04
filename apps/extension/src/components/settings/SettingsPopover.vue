@@ -45,25 +45,11 @@ function close() {
             <p class="text-[12px] text-ink">Open trade links in a new tab</p>
             <p class="text-[10px] text-ink-muted">Otherwise, use the current tab.</p>
           </div>
-          <button
-            type="button"
-            role="switch"
-            :aria-checked="settings.openItemsInNewTab"
+          <USwitch
+            :model-value="settings.openItemsInNewTab"
             aria-label="Open trade links in a new tab"
-            class="toggle toggle-sm shrink-0 border-stroke bg-surface focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent"
-            :class="
-              settings.openItemsInNewTab
-                ? 'border-accent-edge bg-accent'
-                : 'border-stroke bg-surface'
-            "
-            @click="updateSettings({ openItemsInNewTab: !settings.openItemsInNewTab })"
-          >
-            <span
-              class="h-3.5 w-3.5 rounded-sm bg-knob transition-transform"
-              :class="settings.openItemsInNewTab ? 'translate-x-4' : 'translate-x-0'"
-              aria-hidden="true"
-            />
-          </button>
+            @update:model-value="updateSettings({ openItemsInNewTab: $event })"
+          />
         </div>
       </div>
     </section>

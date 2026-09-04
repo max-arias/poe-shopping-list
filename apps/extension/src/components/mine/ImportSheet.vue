@@ -4,8 +4,6 @@ import { useDraftList } from "../../composables/useDraftList";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { importDraft } from "../../composables/useImportExport";
 import { useUiStore } from "../../stores/ui";
-import BtnAccent from "../shared/BtnAccent.vue";
-import BtnGhost from "../shared/BtnGhost.vue";
 
 const ui = useUiStore();
 const { addDraft } = useDraftList();
@@ -65,21 +63,30 @@ async function handleImport() {
         Paste a share code into the extension to import a list.
       </p>
 
-      <textarea
+      <UTextarea
         v-model="input"
         placeholder="Paste share code here…"
         aria-label="List share code"
-        class="w-full h-24 px-2.5 py-2 text-[11px] font-sans border border-stroke rounded-sm text-ink bg-bg resize-none placeholder:text-ink-muted"
+        class="w-full"
+        :rows="4"
         @keydown.enter.ctrl="handleImport"
       />
 
       <p v-if="error" class="text-[11px] text-destructive">{{ error }}</p>
 
-      <div class="flex gap-2">
-        <BtnGhost label="Cancel" :full="true" size="md" @click="ui.closeImportSheet()" />
-        <BtnAccent
+      <div class="import-actions flex gap-2">
+        <UButton
+          label="Cancel"
+          color="neutral"
+          variant="outline"
+          block
+          size="md"
+          @click="ui.closeImportSheet()"
+        />
+        <UButton
           label="Import"
-          :full="true"
+          color="primary"
+          block
           :disabled="!input.trim() || importing"
           @click="handleImport"
         />

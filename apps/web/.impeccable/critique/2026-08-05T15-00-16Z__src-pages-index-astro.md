@@ -6,23 +6,24 @@ p1_count: 2
 timestamp: 2026-08-05T15-00-16Z
 slug: src-pages-index-astro
 ---
+
 Method: dual-agent (A: des-1 · B: fix-3)
 
 ## Design Health Score
 
-| # | Heuristic | Score | Key Issue |
-|---|-----------|-------|-----------|
-| 1 | Visibility of System Status | 3/4 | Copy/download feedback exists, but freshness and trade environment are unclear. |
-| 2 | Match System / Real World | 2/4 | Categories and mixed environments do not explain what is safe or relevant to buy. |
-| 3 | User Control and Freedom | 3/4 | Direct links work, but there is no way to narrow or collapse the long catalog. |
-| 4 | Consistency and Standards | 3/4 | Visual language is coherent; navigation lacks current-location feedback. |
-| 5 | Error Prevention | 2/4 | No warning for stale, Standard-only, or league-specific searches. |
-| 6 | Recognition Rather Than Recall | 3/4 | Links are visible, but applicability and best-fit context require memory. |
-| 7 | Flexibility and Efficiency | 2/4 | No search or filtering by league, tag, budget, or slot. |
-| 8 | Aesthetic and Minimalist Design | 3/4 | Restrained system works, but hero space does not improve task completion. |
-| 9 | Error Recovery | 2/4 | Copy failure gives no fallback action; stale destinations are not surfaced. |
-| 10 | Help and Documentation | 2/4 | League, tags, price/budget, and buy-vs-craft choices lack short explanations. |
-| **Total** |  | **25/40** | **Acceptable — significant improvements needed** |
+| #         | Heuristic                       | Score     | Key Issue                                                                         |
+| --------- | ------------------------------- | --------- | --------------------------------------------------------------------------------- |
+| 1         | Visibility of System Status     | 3/4       | Copy/download feedback exists, but freshness and trade environment are unclear.   |
+| 2         | Match System / Real World       | 2/4       | Categories and mixed environments do not explain what is safe or relevant to buy. |
+| 3         | User Control and Freedom        | 3/4       | Direct links work, but there is no way to narrow or collapse the long catalog.    |
+| 4         | Consistency and Standards       | 3/4       | Visual language is coherent; navigation lacks current-location feedback.          |
+| 5         | Error Prevention                | 2/4       | No warning for stale, Standard-only, or league-specific searches.                 |
+| 6         | Recognition Rather Than Recall  | 3/4       | Links are visible, but applicability and best-fit context require memory.         |
+| 7         | Flexibility and Efficiency      | 2/4       | No search or filtering by league, tag, budget, or slot.                           |
+| 8         | Aesthetic and Minimalist Design | 3/4       | Restrained system works, but hero space does not improve task completion.         |
+| 9         | Error Recovery                  | 2/4       | Copy failure gives no fallback action; stale destinations are not surfaced.       |
+| 10        | Help and Documentation          | 2/4       | League, tags, price/budget, and buy-vs-craft choices lack short explanations.     |
+| **Total** |                                 | **25/40** | **Acceptable — significant improvements needed**                                  |
 
 ## Anti-Patterns Verdict
 

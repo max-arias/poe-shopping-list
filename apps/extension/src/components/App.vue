@@ -4,20 +4,21 @@ import ExportSheet from "./mine/ExportSheet.vue";
 import ImportSheet from "./mine/ImportSheet.vue";
 import MineTab from "./mine/MineTab.vue";
 import SaveModal from "./mine/SaveModal.vue";
+import SettingsPopover from "./settings/SettingsPopover.vue";
 
 const ui = useUiStore();
 </script>
 
 <template>
-  <div
-    class="h-full flex flex-col bg-bg text-ink font-sans overflow-hidden relative"
-    data-theme="fieldguide"
-  >
-    <MineTab />
+  <UApp>
+    <div class="relative flex h-full flex-col overflow-hidden bg-bg font-sans text-ink">
+      <MineTab />
 
-    <!-- Overlays -->
-    <ExportSheet v-if="ui.exportSheetOpen" key="export-sheet" />
-    <ImportSheet v-if="ui.importSheetOpen" key="import-sheet" />
-    <SaveModal v-if="ui.registerModalOpen" key="register-modal" />
-  </div>
+      <!-- Overlays -->
+      <SettingsPopover v-if="ui.settingsOpen" key="settings-popover" />
+      <ExportSheet v-if="ui.exportSheetOpen" key="export-sheet" />
+      <ImportSheet v-if="ui.importSheetOpen" key="import-sheet" />
+      <SaveModal v-if="ui.registerModalOpen" key="register-modal" />
+    </div>
+  </UApp>
 </template>

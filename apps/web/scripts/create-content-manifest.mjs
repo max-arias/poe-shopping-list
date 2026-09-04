@@ -3,7 +3,8 @@ import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 
 const [rootArgument, outputArgument] = process.argv.slice(2);
-if (!rootArgument || !outputArgument) throw new Error("Usage: node scripts/create-content-manifest.mjs <dist-directory> <output-file>");
+if (!rootArgument || !outputArgument)
+  throw new Error("Usage: node scripts/create-content-manifest.mjs <dist-directory> <output-file>");
 const root = resolve(rootArgument);
 const files = [];
 
@@ -19,7 +20,9 @@ await walk(root);
 files.sort();
 const lines = [];
 for (const file of files) {
-  const digest = createHash("sha256").update(await readFile(file)).digest("hex");
+  const digest = createHash("sha256")
+    .update(await readFile(file))
+    .digest("hex");
   lines.push(`${digest}  ${relative(root, file)}\t${(await stat(file)).size} bytes`);
 }
 await mkdir(resolve(outputArgument, ".."), { recursive: true });

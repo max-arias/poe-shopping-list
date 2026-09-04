@@ -4,9 +4,7 @@
   "note": "Discovery uses daily paginated post searches over five context terms and full comment trees for matched posts; it is not exhaustive of comment-only matches. Trade-query validation is required; URL paths alone do not establish a Mercenary Warrant listing.",
   "posts": [
     {
-      "discovered_via": [
-        "post_search"
-      ],
+      "discovered_via": ["post_search"],
       "links": [
         {
           "locations": [
@@ -31,9 +29,7 @@
       }
     },
     {
-      "discovered_via": [
-        "post_search"
-      ],
+      "discovered_via": ["post_search"],
       "links": [
         {
           "locations": [
@@ -54,9 +50,7 @@
       }
     },
     {
-      "discovered_via": [
-        "post_search"
-      ],
+      "discovered_via": ["post_search"],
       "links": [
         {
           "locations": [
@@ -86,9 +80,7 @@
       }
     },
     {
-      "discovered_via": [
-        "post_search"
-      ],
+      "discovered_via": ["post_search"],
       "links": [
         {
           "locations": [
@@ -109,9 +101,7 @@
       }
     },
     {
-      "discovered_via": [
-        "post_search"
-      ],
+      "discovered_via": ["post_search"],
       "links": [
         {
           "locations": [
@@ -131,9 +121,7 @@
       }
     },
     {
-      "discovered_via": [
-        "post_search"
-      ],
+      "discovered_via": ["post_search"],
       "links": [
         {
           "locations": [
@@ -162,9 +150,7 @@
       }
     },
     {
-      "discovered_via": [
-        "post_search"
-      ],
+      "discovered_via": ["post_search"],
       "links": [
         {
           "locations": [

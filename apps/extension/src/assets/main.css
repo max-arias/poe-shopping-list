@@ -1,5 +1,63 @@
 @import "tailwindcss";
+@import "@nuxt/ui";
 @import "../styles/tokens.css";
+
+/* Nuxt UI's primary palette is deliberately authored here rather than
+   falling back to its default green. The middle shades retain Trade Bench's
+   brass accent and the deep shades are safe on our warm dark surfaces. */
+@theme static {
+  --color-amber-50: #fff8e8;
+  --color-amber-100: #ffedbd;
+  --color-amber-200: #f9d98a;
+  --color-amber-300: #f0c15c;
+  --color-amber-400: #eab34b;
+  --color-amber-500: #e5a83b;
+  --color-amber-600: #bc7d1f;
+  --color-amber-700: #956116;
+  --color-amber-800: #70470f;
+  --color-amber-900: #4a2e0a;
+  --color-amber-950: #2b1905;
+}
+
+:root,
+.dark {
+  --ui-color-primary-50: var(--color-amber-50);
+  --ui-color-primary-100: var(--color-amber-100);
+  --ui-color-primary-200: var(--color-amber-200);
+  --ui-color-primary-300: var(--color-amber-300);
+  --ui-color-primary-400: var(--color-amber-400);
+  --ui-color-primary-500: var(--color-amber-500);
+  --ui-color-primary-600: var(--color-amber-600);
+  --ui-color-primary-700: var(--color-amber-700);
+  --ui-color-primary-800: var(--color-amber-800);
+  --ui-color-primary-900: var(--color-amber-900);
+  --ui-color-primary-950: var(--color-amber-950);
+  --ui-primary: var(--poe-accent);
+}
+
+/* Nuxt UI neutral semantics are mapped to the Trade Bench warm ramp so every
+   control, input, dialog, menu, and overlay inherits the dark ledger surfaces
+   instead of the library's cool gray defaults. */
+:root,
+.dark {
+  --ui-text: var(--poe-ink);
+  --ui-text-dimmed: var(--poe-ink-muted);
+  --ui-text-muted: var(--poe-ink-muted);
+  --ui-text-toned: var(--poe-ink);
+  --ui-text-highlighted: var(--poe-ink);
+  --ui-text-inverted: var(--poe-bg);
+  --ui-bg: var(--poe-bg);
+  --ui-bg-muted: var(--poe-block);
+  --ui-bg-elevated: var(--poe-surface);
+  --ui-bg-accented: var(--poe-surface-hover);
+  --ui-bg-inverted: var(--poe-ink);
+  --ui-border: var(--poe-stroke-soft);
+  --ui-border-muted: var(--poe-stroke-soft);
+  --ui-border-accented: var(--poe-stroke);
+  --ui-border-inverted: var(--poe-ink);
+  --ui-ring: var(--poe-accent);
+  --ui-radius: 0.125rem;
+}
 
 @font-face {
   font-family: "Bricolage Grotesque";
@@ -34,7 +92,7 @@
     background-color: var(--poe-bg);
     color: var(--poe-ink);
     -webkit-font-smoothing: antialiased;
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   #app {
@@ -68,17 +126,6 @@
     border-color: var(--poe-accent) !important;
   }
 
-  .btn {
-    min-height: 2rem;
-    border-radius: 3px;
-    box-shadow: none;
-  }
-  .card,
-  .alert,
-  .modal-box {
-    box-shadow: none;
-  }
-
   .family-display {
     font-family: var(--font-display);
   }
@@ -87,8 +134,283 @@
     color: var(--poe-ink-muted);
   }
 
-  .item-row:has([aria-checked="true"]) .link {
+  .item-row:has(input[type="checkbox"]:checked) .item-trade-title {
     color: var(--poe-ink-muted);
     text-decoration: line-through;
+  }
+}
+
+@layer components {
+  .trade-bench-loading {
+    display: grid;
+    gap: 8px;
+    padding: 2px 0;
+  }
+
+  .trade-bench-skeleton-row {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--poe-line);
+    padding: 0 10px;
+    background: color-mix(in srgb, var(--poe-surface) 72%, transparent);
+  }
+
+  .trade-bench-skeleton-dot,
+  .trade-bench-skeleton-line,
+  .trade-bench-skeleton-menu {
+    display: block;
+    background: var(--poe-stroke-soft);
+    animation: trade-bench-pulse 1.5s ease-in-out infinite;
+  }
+
+  .trade-bench-skeleton-dot {
+    width: 7px;
+    height: 7px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: var(--poe-accent-edge);
+    animation-delay: 100ms;
+  }
+
+  .trade-bench-skeleton-line {
+    width: 46%;
+    height: 8px;
+  }
+
+  .trade-bench-skeleton-menu {
+    width: 14px;
+    height: 3px;
+    margin-left: auto;
+    animation-delay: 200ms;
+  }
+
+  @keyframes trade-bench-pulse {
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+
+  .mine-scroll {
+    scrollbar-width: thin;
+    overflow-x: hidden;
+  }
+
+  .route-row {
+    display: flex;
+    min-height: 34px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--poe-line);
+    color: var(--poe-accent);
+  }
+
+  .route-label {
+    font: 600 10px/1 var(--font-sans);
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .route-settings {
+    min-height: 28px;
+    padding-inline: 6px;
+    color: var(--poe-ink-muted);
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .list-accordion {
+    position: relative;
+    overflow: visible;
+    border-bottom: 1px solid var(--poe-line);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .list-title-band {
+    min-height: 44px;
+    padding-right: 76px;
+    color: var(--poe-ink);
+  }
+
+  .list-title-meta {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .list-title-row {
+    min-width: 0;
+  }
+
+  .list-detail {
+    min-width: 0;
+    padding-inline: 0;
+    padding-top: 0;
+    box-shadow: none;
+  }
+
+  .group-collapse {
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .group-collapse > .collapse-title {
+    min-height: 36px;
+    padding: 8px 24px 8px 0;
+  }
+
+  .group-collapse > .collapse-content {
+    padding: 0;
+  }
+
+  .overview-collapse {
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .overview-collapse .collapse-title {
+    min-height: 34px;
+    padding: 8px 24px 5px 0;
+  }
+
+  .overview-collapse .collapse-content {
+    padding: 0 0 9px;
+  }
+
+  .notes-editor-input {
+    min-height: 62px;
+    border-radius: 2px;
+    transition:
+      border-color 120ms ease,
+      background-color 120ms ease;
+  }
+
+  .notes-editor-input::placeholder {
+    color: color-mix(in srgb, var(--poe-ink-muted) 72%, transparent);
+  }
+
+  .notes-saving-status {
+    color: var(--poe-accent-ink-strong);
+    white-space: nowrap;
+  }
+
+  .item-row {
+    min-width: 0;
+    min-height: 48px;
+    padding: 7px 4px;
+  }
+
+  .root-items {
+    background: var(--poe-surface);
+  }
+
+  .group-heading {
+    min-width: 0;
+  }
+
+  .group-remove-button {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--poe-ink-muted);
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .group-remove-button:hover {
+    border-color: var(--poe-stroke);
+    color: var(--poe-danger, #df7568);
+  }
+
+  .group-remove-button:focus-visible {
+    outline: 1px solid var(--poe-accent);
+    outline-offset: 1px;
+  }
+
+  .item-move-select {
+    max-width: 92px;
+    text-overflow: ellipsis;
+  }
+
+  .list-action-row > * {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
+  .list-action-row > .list-register-button {
+    flex: 1 1 auto;
+  }
+
+  .list-action-row > .list-edit-button {
+    flex: 0 0 auto;
+  }
+
+  .item-checkbox {
+    flex: 0 0 auto;
+  }
+
+  .item-trade-title:disabled {
+    cursor: default;
+  }
+
+  .drag-handle {
+    flex: 0 0 auto;
+    border: 0;
+  }
+
+  .item-trade-title {
+    min-width: 0;
+    line-height: 1.25;
+  }
+
+  .item-trade-title:hover .item-title {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .item-trade-title:disabled:hover .item-title {
+    text-decoration-line: none;
+  }
+
+  .item-copy {
+    display: flex;
+    min-width: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-title,
+  .item-variant {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .item-variant {
+    margin-top: 2px;
+    color: var(--poe-ink-muted);
+    font: 10px/1.3 var(--font-mono);
+  }
+
+  .import-actions > * {
+    min-width: 0;
+    flex: 1 1 0;
   }
 }

@@ -7,11 +7,17 @@ export const MAX_COMPRESSED_BYTES = 256 * 1024;
 export const MAX_DECOMPRESSED_BYTES = 1024 * 1024;
 export const SHAREABLE_LIST_PREFIX = "psl1.";
 
-const titleSchema = z.string().min(1).refine((value) => value.trim().length > 0);
+const titleSchema = z
+  .string()
+  .min(1)
+  .refine((value) => value.trim().length > 0);
 const tradeUrlSchema = z
   .string()
   .url()
-  .refine((value) => value.startsWith("http://") || value.startsWith("https://"), "tradeUrl must be an HTTP(S) URL");
+  .refine(
+    (value) => value.startsWith("http://") || value.startsWith("https://"),
+    "tradeUrl must be an HTTP(S) URL",
+  );
 
 export const shareableListItemSchema = z
   .object({
@@ -35,10 +41,13 @@ export const shareableListSchema = z
     version: z.literal(1),
     title: titleSchema,
     overview: z.string().optional(),
-    groups: z.array(shareableListGroupSchema).max(MAX_GROUPS).refine(
-      (groups) => groups.reduce((count, group) => count + group.items.length, 0) <= MAX_ITEMS,
-      `A list may contain at most ${MAX_ITEMS} items`,
-    ),
+    groups: z
+      .array(shareableListGroupSchema)
+      .max(MAX_GROUPS)
+      .refine(
+        (groups) => groups.reduce((count, group) => count + group.items.length, 0) <= MAX_ITEMS,
+        `A list may contain at most ${MAX_ITEMS} items`,
+      ),
   })
   .strict();
 
@@ -69,7 +78,8 @@ function base64UrlDecode(value: string): Uint8Array {
   if (value.length % 4 === 1 || !/^[A-Za-z0-9_-]*$/.test(value)) {
     throw new ShareableListTransportError("Invalid canonical base64url payload");
   }
-  const padded = value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - (value.length % 4)) % 4);
+  const padded =
+    value.replaceAll("-", "+").replaceAll("_", "/") + "=".repeat((4 - (value.length % 4)) % 4);
   let decoded: string;
   try {
     decoded = atob(padded);
@@ -77,19 +87,22 @@ function base64UrlDecode(value: string): Uint8Array {
     throw new ShareableListTransportError("Invalid base64url payload");
   }
   const bytes = Uint8Array.from(decoded, (character) => character.charCodeAt(0));
-  if (base64UrlEncode(bytes) !== value) throw new ShareableListTransportError("Non-canonical base64url payload");
+  if (base64UrlEncode(bytes) !== value)
+    throw new ShareableListTransportError("Non-canonical base64url payload");
   return bytes;
 }
 
 function decodeGzip(bytes: Uint8Array): Uint8Array {
-  if (bytes.length > MAX_COMPRESSED_BYTES) throw new ShareableListTransportError("Compressed payload is too large");
+  if (bytes.length > MAX_COMPRESSED_BYTES)
+    throw new ShareableListTransportError("Compressed payload is too large");
   const chunks: Uint8Array[] = [];
   let size = 0;
   let extraMember = false;
   try {
     const gunzip = new Gunzip((chunk, final) => {
       size += chunk.byteLength;
-      if (size > MAX_DECOMPRESSED_BYTES) throw new ShareableListTransportError("Decompressed payload is too large");
+      if (size > MAX_DECOMPRESSED_BYTES)
+        throw new ShareableListTransportError("Decompressed payload is too large");
       if (chunk.byteLength) chunks.push(chunk);
       if (final && size === 0) chunks.push(new Uint8Array());
     });
@@ -108,14 +121,24 @@ function decodeGzip(bytes: Uint8Array): Uint8Array {
     output.set(chunk, offset);
     offset += chunk.byteLength;
   }
-  if (bytes.length < 18 || readUint32(bytes, bytes.length - 8) !== crc32(output) || readUint32(bytes, bytes.length - 4) !== (output.length >>> 0)) {
+  if (
+    bytes.length < 18 ||
+    readUint32(bytes, bytes.length - 8) !== crc32(output) ||
+    readUint32(bytes, bytes.length - 4) !== output.length >>> 0
+  ) {
     throw new ShareableListTransportError("Invalid gzip checksum or footer");
   }
   return output;
 }
 
 function readUint32(bytes: Uint8Array, offset: number): number {
-  return (bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24)) >>> 0;
+  return (
+    (bytes[offset] |
+      (bytes[offset + 1] << 8) |
+      (bytes[offset + 2] << 16) |
+      (bytes[offset + 3] << 24)) >>>
+    0
+  );
 }
 
 function crc32(bytes: Uint8Array): number {
@@ -131,14 +154,16 @@ export function encodeShareableList(input: ShareableList): string {
   const list = shareableListSchema.parse(input);
   const json = JSON.stringify(list);
   const compressed = gzipSync(new TextEncoder().encode(json), { level: 6, mem: 8, mtime: 0 });
-  if (compressed.length > MAX_COMPRESSED_BYTES) throw new ShareableListTransportError("Compressed payload is too large");
+  if (compressed.length > MAX_COMPRESSED_BYTES)
+    throw new ShareableListTransportError("Compressed payload is too large");
   return SHAREABLE_LIST_PREFIX + base64UrlEncode(compressed);
 }
 
 export function decodeShareableList(token: string): ShareableList {
   if (typeof token !== "string") throw new ShareableListTransportError("Payload must be a string");
   const normalized = token.replace(ASCII_TRIM, "");
-  if (!normalized.startsWith(SHAREABLE_LIST_PREFIX)) throw new ShareableListTransportError("Invalid payload prefix");
+  if (!normalized.startsWith(SHAREABLE_LIST_PREFIX))
+    throw new ShareableListTransportError("Invalid payload prefix");
   const compressed = base64UrlDecode(normalized.slice(SHAREABLE_LIST_PREFIX.length));
   const jsonBytes = decodeGzip(compressed);
   let json: string;

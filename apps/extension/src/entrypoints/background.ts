@@ -30,11 +30,11 @@ export default defineBackground(() => {
 
   onMessage("spTradePageInfo", async (): Promise<TradePageInfo> => {
     const tabId = await getActiveTabId();
-    if (!tabId) return { supported: false, url: "", title: "" };
+    if (!tabId) return { supported: false, url: "", itemName: "" };
     try {
       return await sendMessage("csTradePageInfo", undefined, tabId);
     } catch {
-      return { supported: false, url: "", title: "" };
+      return { supported: false, url: "", itemName: "" };
     }
   });
 

@@ -21,11 +21,11 @@ PoE Shopping List is a local-only WXT browser extension for Path of Exile. Vue r
 
 Drafts are stored through WXT storage helpers using these current keys:
 
-| Key | Purpose |
-| --- | --- |
-| `local:drafts:v1` | Local `Draft[]`, including completion, IDs, positions, and timestamps |
-| `local:settings:v1` | Theme and item-opening preferences |
-| `local:fabPosition:v1` | Reserved local UI position state |
+| Key                    | Purpose                                                               |
+| ---------------------- | --------------------------------------------------------------------- |
+| `local:drafts:v1`      | Local `Draft[]`, including completion, IDs, positions, and timestamps |
+| `local:settings:v1`    | Theme and item-opening preferences                                    |
+| `local:fabPosition:v1` | Reserved local UI position state                                      |
 
 The clean v1 reset does not read or migrate obsolete keys or data shapes. A Shareable List is only the portable subset:
 
