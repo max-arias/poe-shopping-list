@@ -1,6 +1,7 @@
 import { DraftSchema, type Draft, type DraftGroup, type DraftItem } from "@/types";
 
 export type ItemDetails = Pick<DraftItem, "variant" | "note">;
+export type DraftAppearance = { iconId?: string; color?: string };
 
 export function validateDrafts(value: unknown): Draft[] {
   if (!Array.isArray(value)) return [];
@@ -19,6 +20,26 @@ export function updateOverview(draft: Draft, overview: string): Draft {
   if (trimmed) return { ...draft, overview: trimmed };
   const { overview: _overview, ...withoutOverview } = draft;
   return withoutOverview;
+}
+
+/**
+ * Apply the draft's mutually exclusive local appearance choice atomically.
+ * If both fields are supplied, iconId wins deterministically; callers should
+ * provide only one field. Invalid colors are rejected rather than persisted.
+ */
+export function updateAppearance(draft: Draft, appearance: DraftAppearance): Draft {
+  const iconId = appearance.iconId?.trim();
+  const rawColor = appearance.color?.trim();
+  const color = rawColor?.toLowerCase();
+
+  if (color && !/^#[0-9a-f]{6}$/.test(color)) {
+    throw new Error("Draft color must be a #RRGGBB hex color");
+  }
+
+  const { iconId: _iconId, color: _color, ...withoutAppearance } = draft;
+  if (iconId) return { ...withoutAppearance, iconId };
+  if (color) return { ...withoutAppearance, color };
+  return withoutAppearance;
 }
 
 export function reorderItems(draft: Draft, groupId: string, orderedIds: string[]): Draft | null {

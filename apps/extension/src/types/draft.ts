@@ -22,6 +22,8 @@ const TradeUrlSchema = z
     "tradeUrl must be an HTTP(S) URL",
   );
 
+const DraftColorSchema = z.string().regex(/^#[0-9a-fA-F]{6}$/, "color must be a #RRGGBB hex color");
+
 export {
   ShareableListItemSchema,
   shareableListGroupSchema,
@@ -59,11 +61,14 @@ const DraftShapeSchema = z
     id: z.string(),
     title: TitleSchema,
     overview: z.string().optional(),
+    iconId: z.string().optional(),
+    color: DraftColorSchema.optional(),
     createdAt: z.number().int(),
     items: z.array(DraftItemSchema),
     groups: z.array(DraftGroupSchema),
   })
-  .strict();
+  .strict()
+  .refine(({ iconId, color }) => !(iconId && color), "Draft appearance must use an icon or color");
 // `items` was added after the first persisted format.  Normalize that format
 // here rather than making every consumer know about the migration.
 export const DraftSchema = z.preprocess((value) => {

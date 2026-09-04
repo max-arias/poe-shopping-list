@@ -4,12 +4,21 @@ import { useDraftList } from "../../composables/useDraftList";
 import { useUiStore } from "../../stores/ui";
 import ItemRow from "./ItemRow.vue";
 import OverviewMarkdown from "./OverviewMarkdown.vue";
+import ListAppearancePicker, {
+  isSafeListColor,
+  type ListIconOption,
+} from "./ListAppearancePicker.vue";
+
+const props = withDefaults(defineProps<{ listIcons?: ListIconOption[] }>(), {
+  listIcons: () => [],
+});
 
 const {
   drafts,
   isLoaded,
   createDraft,
   updateDraftOverview,
+  updateDraftAppearance,
   reorderDraftItems,
   reorderRootDraftItems,
   createGroup,
@@ -29,6 +38,8 @@ const form = ref<"create" | "rename" | null>(null);
 const formListId = ref<string | null>(null);
 const title = ref("");
 const overview = ref("");
+const formIcon = ref<string | null>(null);
+const formColor = ref<string | null>(null);
 const deleteId = ref<string | null>(null);
 const saving = ref(false);
 const editingListId = ref<string | null>(null);
@@ -36,6 +47,8 @@ const notesDraft = ref("");
 const notesSaving = ref(false);
 const draggedItemId = ref<string | null>(null);
 const newGroupTitle = ref("");
+
+const listIconsById = computed(() => new Map(props.listIcons.map((icon) => [icon.id, icon])));
 
 const expanded = computed(
   () => drafts.value.find((draft) => draft.id === expandedId.value) ?? null,
@@ -98,6 +111,8 @@ function openCreate() {
   formListId.value = null;
   title.value = "";
   overview.value = "";
+  formIcon.value = null;
+  formColor.value = null;
 }
 
 function closeFooterMenu(event: Event) {
@@ -120,6 +135,8 @@ function openRename(draft: (typeof drafts.value)[number]) {
   formListId.value = draft.id;
   title.value = draft.title;
   overview.value = draft.overview ?? "";
+  formIcon.value = draft.iconId ?? null;
+  formColor.value = draft.color ?? null;
 }
 
 function listActions(draft: (typeof drafts.value)[number]) {
@@ -149,6 +166,23 @@ function closeForm() {
   formListId.value = null;
   title.value = "";
   overview.value = "";
+  formIcon.value = null;
+  formColor.value = null;
+}
+
+function selectFormIcon(iconId: string) {
+  formIcon.value = iconId;
+  formColor.value = null;
+}
+
+function selectFormColor(color: string) {
+  formColor.value = color;
+  formIcon.value = null;
+}
+
+function clearFormAppearance() {
+  formIcon.value = null;
+  formColor.value = null;
 }
 
 function handleFormOpen(open: boolean) {
@@ -163,13 +197,20 @@ async function saveForm() {
   if (!title.value.trim() || saving.value) return;
   saving.value = true;
   if (form.value === "create") {
-    const created = await createDraft(title.value, overview.value);
+    const created = await createDraft(title.value, overview.value, {
+      iconId: formIcon.value ?? undefined,
+      color: formColor.value ?? undefined,
+    });
     expandedId.value = created.id;
     ui.openDetail(created.id);
   } else if (formListId.value) {
     ui.openDetail(formListId.value);
     await renameDraft(title.value);
     await updateDraftOverview(formListId.value, overview.value);
+    await updateDraftAppearance(formListId.value, {
+      iconId: formIcon.value ?? undefined,
+      color: formColor.value ?? undefined,
+    });
   }
   saving.value = false;
   closeForm();
@@ -318,6 +359,19 @@ async function moveItemTo(listId: string, itemId: string, groupId: string | null
               :aria-controls="`list-content-${draft.id}`"
               @click="selectList(draft.id)"
             >
+              <span
+                v-if="isSafeListColor(draft.color)"
+                class="list-title-color"
+                :style="{ '--list-marker-color': draft.color }"
+                aria-hidden="true"
+              />
+              <img
+                v-else-if="draft.iconId && listIconsById.get(draft.iconId)"
+                :src="listIconsById.get(draft.iconId)?.src"
+                alt=""
+                aria-hidden="true"
+                class="list-title-icon"
+              />
               <span class="min-w-0 flex-1 truncate text-[14px] font-normal text-ink">{{
                 draft.title
               }}</span>
@@ -552,6 +606,14 @@ async function moveItemTo(listId: string, itemId: string, groupId: string | null
           <UFormField label="List title"
             ><UInput v-model="title" maxlength="80" autofocus class="w-full"
           /></UFormField>
+          <ListAppearancePicker
+            :icons="props.listIcons"
+            :icon-id="formIcon"
+            :color="formColor"
+            @select-icon="selectFormIcon"
+            @select-color="selectFormColor"
+            @clear="clearFormAppearance"
+          />
           <UFormField label="Notes"
             ><UTextarea v-model="overview" :rows="3" autoresize class="w-full"
           /></UFormField>

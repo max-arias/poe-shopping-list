@@ -6,3 +6,9 @@
 - 2026-08-04 — Adding the first public route exposed hard-coded one-page assumptions across separate static validators (output routes and internal/external link allowlists). Centralize the allowed public routes and trusted external resources so a route addition is validated in one pass rather than by repeated checker failures.
 - 2026-08-06 — The Impeccable detector was invoked twice from `apps/web` with repo-root-relative target paths, yielding a clean exit with only inaccessible-path warnings. Add a wrapper or validation guard that rejects unmatched targets, and run repository-scoped detector commands from the repository root.
 - 2026-08-07 — DaisyUI 5 utility-layer rules can override bespoke rules placed in Tailwind’s `components` layer even when the bespoke selector is more specific. A dropdown placement fix failed twice because `.dropdown { position: relative }` won over component-layer positioning. For DaisyUI overrides, prefer Tailwind utilities on the element or an explicit `@layer utilities` override, and verify computed styles in the browser rather than relying on source selectors.
+
+## 26-09-04 13:40 — tool_error
+
+Symptom: two completed specialist tasks remained `running (unconfirmed)` because the task runner calls an unavailable `client.session.status`; both cancellation and revive returned the same abort failure.
+Workaround: inspect the terminal result and working tree, then dispatch a narrowly scoped replacement task once the retained session cannot be revived.
+Suggested fix: make completed child sessions terminal even when live-status lookup fails, and let task revival bypass that stale status.

@@ -16,6 +16,7 @@ declare module 'vue' {
     ExportSheet: typeof import('./src/components/mine/ExportSheet.vue')['default']
     ImportSheet: typeof import('./src/components/mine/ImportSheet.vue')['default']
     ItemRow: typeof import('./src/components/mine/ItemRow.vue')['default']
+    ListAppearancePicker: typeof import('./src/components/mine/ListAppearancePicker.vue')['default']
     MineTab: typeof import('./src/components/mine/MineTab.vue')['default']
     OverviewMarkdown: typeof import('./src/components/mine/OverviewMarkdown.vue')['default']
     Pill: typeof import('./src/components/shared/Pill.vue')['default']

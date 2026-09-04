@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { poeListIconOptions } from "../assets/poe/list-icons";
 import { useUiStore } from "../stores/ui";
 import ExportSheet from "./mine/ExportSheet.vue";
 import ImportSheet from "./mine/ImportSheet.vue";
@@ -12,7 +13,7 @@ const ui = useUiStore();
 <template>
   <UApp>
     <div class="relative flex h-full flex-col overflow-hidden bg-bg font-sans text-ink">
-      <MineTab />
+      <MineTab :list-icons="poeListIconOptions" />
 
       <!-- Overlays -->
       <SettingsPopover v-if="ui.settingsOpen" key="settings-popover" />

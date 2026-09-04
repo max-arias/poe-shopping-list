@@ -4,6 +4,7 @@ import { storage } from "wxt/utils/storage";
 import { STORAGE } from "@/types/storage";
 import { useUiStore } from "../stores/ui";
 import * as ops from "../domain/drafts";
+import type { DraftAppearance } from "../domain/drafts";
 
 const draftsItem = storage.defineItem<Draft[]>(STORAGE.drafts, { fallback: [] });
 const drafts = ref<Draft[]>([]);
@@ -60,10 +61,10 @@ export function useDraftList() {
   async function saveDraft(update: (current: Draft[]) => Draft[]) {
     await enqueueWrite((current) => ({ drafts: update(current) }));
   }
-  async function createDraft(title: string, overview?: string) {
+  async function createDraft(title: string, overview?: string, appearance: DraftAppearance = {}) {
     const trimmedTitle = title.trim();
     if (!trimmedTitle) throw new Error("Draft title must not be empty");
-    const created: Draft = {
+    const base: Draft = {
       id: crypto.randomUUID(),
       title: trimmedTitle,
       ...(overview?.trim() ? { overview: overview.trim() } : {}),
@@ -71,6 +72,7 @@ export function useDraftList() {
       items: [],
       groups: [],
     };
+    const created = ops.updateAppearance(base, appearance);
     await enqueueWrite((current) => ({ drafts: [...current, created] }));
     return created;
   }
@@ -87,6 +89,19 @@ export function useDraftList() {
           ? { drafts: ops.replaceDraft(current, ops.updateOverview(target, overview)) }
           : { drafts: current, result: false };
       })) ?? true
+    );
+  }
+  async function updateDraftAppearance(draftId: string, appearance: DraftAppearance) {
+    return (
+      (await enqueueWrite((current) => {
+        const target = current.find((value) => value.id === draftId);
+        return target
+          ? {
+              drafts: ops.replaceDraft(current, ops.updateAppearance(target, appearance)),
+              result: true,
+            }
+          : { drafts: current, result: false };
+      })) ?? false
     );
   }
   async function reorderDraftItems(draftId: string, groupId: string, ids: string[]) {
@@ -317,6 +332,7 @@ export function useDraftList() {
     createDraft,
     addDraft,
     updateDraftOverview,
+    updateDraftAppearance,
     reorderDraftItems,
     reorderRootDraftItems,
     createGroup,

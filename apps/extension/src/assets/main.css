@@ -239,6 +239,25 @@
     color: var(--poe-ink);
   }
 
+  .list-title-icon {
+    display: block;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    align-self: center;
+    object-fit: contain;
+  }
+
+  .list-title-color {
+    display: block;
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    align-self: center;
+    border-radius: 50%;
+    background: var(--list-marker-color);
+  }
+
   .list-title-meta {
     display: flex;
     flex: 0 0 auto;
@@ -302,6 +321,105 @@
   .notes-saving-status {
     color: var(--poe-accent-ink-strong);
     white-space: nowrap;
+  }
+
+  .list-appearance-picker {
+    min-width: 0;
+  }
+
+  .list-appearance-grid {
+    display: grid;
+    max-height: 188px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+    overflow-y: auto;
+    padding: 1px;
+    scrollbar-width: thin;
+  }
+
+  .list-appearance-cell {
+    display: grid;
+    aspect-ratio: 1;
+    min-width: 0;
+    place-items: center;
+    border: 1px solid var(--poe-stroke-soft);
+    border-radius: 2px;
+    background: var(--poe-block);
+    color: var(--poe-ink-muted);
+    transition:
+      border-color 120ms ease,
+      background-color 120ms ease,
+      color 120ms ease,
+      transform 120ms ease;
+  }
+
+  .list-appearance-cell:hover,
+  .list-appearance-cell:focus-visible {
+    border-color: var(--poe-accent);
+    color: var(--poe-ink);
+    outline: none;
+  }
+
+  .list-appearance-cell:active {
+    transform: scale(0.96);
+  }
+
+  .list-appearance-cell.is-selected {
+    border-color: var(--poe-accent);
+    background: var(--poe-accent-soft);
+    box-shadow: 0 0 0 1px var(--poe-accent);
+  }
+
+  .list-appearance-cell img,
+  .list-icon-cell img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .list-color-cell > span {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--list-color);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--list-color) 75%, white 25%);
+  }
+
+  .list-custom-color-cell > span {
+    background: conic-gradient(from 30deg, #d9785f, #e5a83b, #75a878, #7098d1, #b889d6, #d9785f);
+  }
+
+  .list-custom-color-cell.is-selected > span {
+    background: var(--list-color);
+  }
+
+  .list-custom-color-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .list-appearance-clear-cell {
+    grid-template-rows: auto auto;
+    gap: 1px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .list-appearance-clear-cell > span:first-child {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .list-appearance-clear-cell > span:last-child {
+    line-height: 1;
+  }
+
+  .list-icon-cell {
+    padding: 5px;
   }
 
   .item-row {

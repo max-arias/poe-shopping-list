@@ -1,0 +1,1 @@
+import"./modulepreload-polyfill-wMinxHhO.js";document.querySelectorAll(`.panel-tools button`).forEach(e=>{e.addEventListener(`click`,()=>{let t=e.closest(`.panel`);t&&(e.textContent?.includes(`Collapse`)?t.querySelectorAll(`.list-entry`).forEach(e=>{e.open=!1}):t.querySelectorAll(`.list-entry`).forEach(e=>{e.open=!0}))})});
