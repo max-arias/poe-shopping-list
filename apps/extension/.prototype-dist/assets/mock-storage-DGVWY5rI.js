@@ -1,1 +1,0 @@
-var e=new Map,t=new Map,n={defineItem(n,r){return{async getValue(){return e.has(n)?e.get(n):r.fallback},async setValue(r){e.set(n,r),t.get(n)?.forEach(e=>e(r))},watch(e){let r=t.get(n)??new Set;return r.add(e),t.set(n,r),()=>r.delete(e)}}},async getItem(t){return e.get(t)??null},async setItem(t,n){e.set(t,n)},async removeItem(t){e.delete(t)}};export{n as t};

@@ -14,7 +14,6 @@ export default defineConfig(async () => {
       rollupOptions: {
         input: {
           prototype: fileURLToPath(new URL("./index.html", import.meta.url)),
-          directions: fileURLToPath(new URL("./directions.html", import.meta.url)),
         },
       },
     },
