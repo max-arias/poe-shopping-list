@@ -42,14 +42,14 @@ for (const file of htmlFiles) {
     const isOfficialTradeSearch = value.startsWith("https://www.pathofexile.com/trade/search/");
     const isPermittedCuratedExternalUrl = permittedCuratedExternalUrls.includes(value);
     const isPermittedAttributionUrl = permittedAttributionUrls.includes(value);
-    const isShareableJsonDataUrl = value.startsWith("data:application/json;charset=utf-8,");
+    const isShareableCodeDataUrl = value.startsWith("data:text/plain;charset=utf-8,");
     if (
       !isGoogleFontPreconnect &&
       !isGoogleFontStylesheet &&
       !isOfficialTradeSearch &&
       !isPermittedCuratedExternalUrl &&
       !isPermittedAttributionUrl &&
-      !isShareableJsonDataUrl
+      !isShareableCodeDataUrl
     ) {
       throw new Error(`${file}: unexpected external link ${value}`);
     }

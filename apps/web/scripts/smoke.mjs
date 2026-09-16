@@ -36,11 +36,8 @@ async function check(path, expectedStatus) {
 
 const root = await check("/", 200);
 const html = await root.text();
-if (
-  !html.includes("Published archive") ||
-  (!html.includes("No published lists yet.") && !html.includes("manual-entry"))
-) {
-  throw new Error("/: expected Catalog content or the truthful empty Catalog state.");
+if (!html.includes("No published lists yet.") && !html.includes("manual-entry")) {
+  throw new Error("/: expected Published List cards or the truthful empty Catalog state.");
 }
 const fetched = new Map([["index.html", Buffer.from(html)]]);
 for (const entry of entries) {

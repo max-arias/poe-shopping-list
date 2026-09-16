@@ -50,12 +50,12 @@ const sectionLabel = (section: NormalizedSection, index: number) => section.titl
     <span role="heading" aria-level="4">{list.title}</span>
     </summary>
     <div class="list-actions-inline" aria-label={`${list.title} export actions`}>
-      <a href={`data:application/json;charset=utf-8,${encodeURIComponent(exportText)}`} download={`${list.title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list"}-shareable-list-v1.json`} data-download aria-label={`Download ${list.title} as JSON`}>
+      <a href={`data:text/plain;charset=utf-8,${encodeURIComponent(exportText)}`} download={`${list.title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list"}-shareable-list-v1.txt`} data-download aria-label={`Download ${list.title} as a share code`}>
         <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
           <path d="M12 3v12m-5-5 5 5 5-5M5 21h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </a>
-      <button type="button" data-copy aria-label={`Copy ${list.title} as JSON`}>
+      <button type="button" data-copy aria-label={`Copy ${list.title} as a share code`}>
         <span class="copy-icon-stack" aria-hidden="true">
           <span class="copy-icon copy-icon--default">
             <svg viewBox="0 0 24 24" width="16" height="16" focusable="false">

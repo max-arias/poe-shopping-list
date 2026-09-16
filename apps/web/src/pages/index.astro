@@ -74,7 +74,7 @@ const canonicalUrl = "/";
       const getExportText = (card: HTMLElement) => {
         const token = card.dataset.export;
         if (!token?.startsWith("psl1.")) {
-          report("JSON export unavailable. Reload the page and try again.");
+          report("Share code unavailable. Reload the page and try again.");
           return null;
         }
         return `${token}\n`;
@@ -86,20 +86,20 @@ const canonicalUrl = "/";
           event.preventDefault();
           const exportText = getExportText(card);
           if (!exportText) return;
-          const blob = new Blob([exportText], { type: "application/json" });
+          const blob = new Blob([exportText], { type: "text/plain" });
           const link = document.createElement("a");
           link.href = URL.createObjectURL(blob);
-          link.download = `${safeTitle}-shareable-list-v1.json`;
+          link.download = `${safeTitle}-shareable-list-v1.txt`;
           link.click();
           URL.revokeObjectURL(link.href);
-          report(`JSON downloaded for ${titleText}.`);
+          report(`Share code downloaded for ${titleText}.`);
         });
         const copyButton = card.querySelector<HTMLButtonElement>("[data-copy]");
         let copyResetTimer: number | undefined;
         const resetCopyState = () => {
           if (copyResetTimer) window.clearTimeout(copyResetTimer);
           delete copyButton?.dataset.copySuccess;
-          copyButton?.setAttribute("aria-label", `Copy ${titleText} as JSON`);
+          copyButton?.setAttribute("aria-label", `Copy ${titleText} as a share code`);
         };
         copyButton?.addEventListener("click", async () => {
           resetCopyState();
@@ -108,11 +108,11 @@ const canonicalUrl = "/";
           try {
             await navigator.clipboard.writeText(exportText);
             copyButton!.dataset.copySuccess = "true";
-            copyButton!.setAttribute("aria-label", `Copied ${titleText} as JSON`);
+            copyButton!.setAttribute("aria-label", `Copied ${titleText}'s share code`);
             copyResetTimer = window.setTimeout(resetCopyState, 1200);
-            report(`JSON copied for ${titleText}.`);
+            report(`Share code copied for ${titleText}.`);
           } catch {
-            report("Copy was blocked. Download the JSON instead.");
+            report("Copy was blocked. Download the share code instead.");
           }
         });
       });

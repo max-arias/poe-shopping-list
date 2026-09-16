@@ -144,7 +144,7 @@ function listActions(draft: (typeof drafts.value)[number]) {
     [
       { label: "Rename list", onSelect: () => openRename(draft) },
       {
-        label: "Export JSON",
+        label: "Export share code",
         onSelect: () => {
           ui.openExportSheet();
           ui.openDetail(draft.id);
