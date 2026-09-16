@@ -6,6 +6,24 @@ generated samples/placeholders.
 The Editorial Team chooses the initial topics; an empty Catalog is valid until
 that work is approved.
 
+## How to propose content
+
+A content pull request is the only intake path:
+
+- **Published List changes** — open a pull request that authors the list file
+  under `apps/web/src/content/lists/` yourself, using
+  [`.github/PULL_REQUEST_TEMPLATE.md`](../../.github/PULL_REQUEST_TEMPLATE.md).
+  There is no issue form, no web editor, and no path where someone else authors
+  the file from a free-text proposal.
+- **Taxonomy additions** — propose the new Category or Tag inside a content PR,
+  or raise it as an issue. The Editorial Team decides, implements it in
+  `apps/web/src/domain/taxonomy.ts`, and only then can a content PR reference it.
+- **Defects in a published list** — raise an issue, or open a content PR that
+  fixes the list. Use a reviewed revert PR rather than a migration or hidden seed
+  mechanism.
+
+Code changes follow normal code review and are not a content-proposal surface.
+
 ## Content contract
 
 Each Published List has:
@@ -27,8 +45,9 @@ enforces.
 
 ## Review process
 
-1. Open a focused content PR using newly authored content and canonical
-   references.
+1. Open a focused content PR using the
+   [content pull-request template](../../.github/PULL_REQUEST_TEMPLATE.md),
+   newly authored content, and canonical references.
 2. Run the local checks in [setup](./setup.md).
 3. Manually open and review **every Trade URL** at review time. Record the
    reviewer, UTC date, and result in the PR or its release evidence; automated

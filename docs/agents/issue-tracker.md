@@ -13,7 +13,7 @@ Issues and PRDs for `max-arias/poe-shopping-list` live as GitHub issues. Use the
 
 ## Pull requests and contribution policy
 
-External pull requests proposing curated public List content are an accepted contribution path. They require maintainer review and automated checks before acceptance.
+External pull requests proposing curated public List content are an accepted contribution path, and the only content intake path; use `.github/PULL_REQUEST_TEMPLATE.md` and see `docs/public-site/contributing.md`. They require maintainer review and automated checks before acceptance.
 
 Code PRs are not an issue-triage request surface and follow normal code review.
 
