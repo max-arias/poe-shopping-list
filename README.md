@@ -158,6 +158,35 @@ permissions are limited to `https://www.pathofexile.com/trade/*` and
 `https://pathofexile.com/trade/*`; no other site has a content script or host
 permission.
 
+**Bundled stat dictionary.** `public/stat-index.json` is an offline snapshot of
+Path of Exile's trade stat dictionary: 15,496 entries across 13 categories, each
+mapping a trade stat id to its mod-text template with numbers normalized to `#`
+(`explicit.stat_3299347043` → `+# to maximum Life`,
+`pseudo.pseudo_total_cold_resistance` → `+#% total to Cold Resistance`, and so
+on). It is the lookup a mod-matching flow needs to turn parsed item text
+(`+87 to maximum Life`) into trade query filters, and it is bundled so that
+mapping works without a live request.
+
+No current runtime code reads it — the pricing flow that did was removed in the
+v1 reset — but it is retained as the dictionary for any restored mod-matching
+feature, and `public/` assets are copied verbatim into every extension build.
+Data snapshot: 2026-05-09 (`cab022f`; `fefd51f` only reformatted it).
+
+Refresh it from the live trade API:
+
+```sh
+curl -s -H 'User-Agent: poe-shopping-list-dev' \
+  https://www.pathofexile.com/api/trade/data/stats \
+  | jq '{categories: (.result | map({key: .id, value: [.entries[] | {id, text}]}) | from_entries)}' \
+  > apps/extension/public/stat-index.json
+vp fmt
+```
+
+The live response carries a `type` field per entry and a `mercenary` category
+that this snapshot predates; the transform drops `type` and keeps the id/text
+pairs the matcher consumes. Category membership and entry text change with each
+league, so re-capture rather than hand-editing.
+
 ### Portable contract (`packages/shareable-list`)
 
 The strict, versioned schema is the only portable format:
