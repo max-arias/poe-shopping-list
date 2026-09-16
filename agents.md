@@ -1,8 +1,12 @@
 # Agent Instructions — PoE Shopping List
 
+Verified against `main` at `059c446`.
+
 ## Communication Between Extension Surfaces
 
-The service worker (background) is the **central hub** — content scripts and sidepanel never communicate directly. This avoids lifecycle mismatches (content scripts die on navigation, sidepanel may be closed).
+The service worker (background) is the **central hub** — content scripts and the
+side panel never communicate directly. This avoids lifecycle mismatches (content
+scripts die on navigation, the side panel may be closed).
 
 ```
 Content Script  ←──→  Service Worker  ←──→  Side Panel
@@ -11,66 +15,72 @@ Content Script  ←──→  Service Worker  ←──→  Side Panel
                        WXT Storage
 ```
 
-### Channel naming convention (`src/utils/messages.ts`)
+### Protocol (`src/utils/messages.ts`)
 
-| Prefix           | Direction                                           | Example                                                                      |
-| ---------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `cs*`            | Content Script → Service Worker                     | `csCaptureStatus`, `csPurchaseHistoryAdd`, `csSaveSearch`, `csOpenSidepanel` |
-| `cs*` (handlers) | Service Worker → Content Script (via tab targeting) | `csCaptureRead`, `csAutoCaptureRead`, `csSearchBarGet`                       |
-| `sp*`            | Side Panel → Service Worker (relayed to CS)         | `spCaptureRead`, `spAutoCaptureRead`, `spSearchBarGet`                       |
-| (broadcast)      | Service Worker → all extension pages                | `captureStatusChanged`                                                       |
+The whole protocol is two messages. Both return the same payload.
+
+| Message           | Direction                                      | Payload                                    |
+| ----------------- | ---------------------------------------------- | ------------------------------------------ |
+| `csTradePageInfo` | Service worker → content script (tab-targeted) | `{ supported, url, itemName }`             |
+| `spTradePageInfo` | Side panel → service worker → content script   | the relayed `{ supported, url, itemName }` |
+
+There are no broadcast channels. When the active tab or its content script is
+unavailable, the background returns `{ supported: false, url: "", itemName: "" }`
+rather than throwing.
 
 ### When to use messaging (`@webext-core/messaging`)
 
-- **Request/response** between sidepanel and content script (e.g., `spCaptureRead` → SW relays → `csCaptureRead`)
-- **Fire-and-forget events** from content script to SW (e.g., `csCaptureStatus`, `csPurchaseHistoryAdd`)
-- **SW broadcasts** to sidepanel (e.g., `captureStatusChanged`) — always `.catch(() => {})` since sidepanel may be closed
+- **Request/response** when the side panel needs live page state from the active
+  tab: `sendMessage("spTradePageInfo")` → background relays `csTradePageInfo`.
+- Extend the `ProtocolMap` in `src/utils/messages.ts` before adding a new
+  message; never call the raw `browser.runtime.sendMessage` for extension
+  traffic.
 
-### When to use `wxt/storage` (`chrome.storage.local`)
+### When to use `wxt/utils/storage` (`browser.storage.local`)
 
-- Persisting data that must survive across sessions (drafts, settings, purchase history)
-- Initial load/hydration of state in composables
-- **Cross-context state sync** — the SW writes purchase history to storage; the sidepanel picks it up via `storage.watch()` with no message listener needed
+- Persisting Drafts and settings across sessions (`storage.defineItem`).
+- Hydrating composables (`useDraftList`, `useSettings`) on first use.
+- Cross-context sync via `storage.watch()` — no message listener needed.
 
-### Pattern: Sidepanel requests data from content script
-
-1. Sidepanel calls `sendMessage("spCaptureRead")` (goes to SW)
-2. SW handler finds the active tab and relays: `sendMessage("csCaptureRead", undefined, tabId)`
-3. Content script handler returns the capture data
-4. SW returns the result back to the sidepanel
-
-### Pattern: Content script sends event to sidepanel
-
-1. Content script calls `sendMessage("csPurchaseHistoryAdd", item)` (goes to SW)
-2. SW persists the item to `chrome.storage.local`
-3. Sidepanel's `usePurchaseHistory` composable picks up the change via `storage.watch()`
-
-### Pattern: Content script triggers sidepanel action
-
-1. Content script calls `sendMessage("csSaveSearch")` or `sendMessage("csOpenSidepanel")`
-2. SW opens the sidepanel via `chrome.sidePanel.open()` and/or writes a trigger to storage
-3. Sidepanel watches the storage key and reacts
+`resetLegacyStorage()` in `types/storage.ts` runs once from the background and
+removes pre-reset keys; no obsolete shape is migrated. Draft and settings shapes
+are strict Zod schemas, so unknown local data is dropped rather than repaired.
 
 ### Key rules
 
-1. **Never send messages directly from CS to SP** — always route through the SW
-2. **Swallow errors on broadcasts**: `sendMessage("captureStatusChanged", data).catch(() => {})` — the sidepanel may not be open
-3. **Use `storage.watch()`** for continuous state sync rather than polling or repeated messages
-4. **Tab targeting**: when SW relays to a specific content script, use `sendMessage("csCaptureRead", undefined, tabId)`
-5. **No raw `chrome.runtime.sendMessage`** — use the typed `sendMessage`/`onMessage` from `src/utils/messages.ts`
-
-See `src/utils/messages.ts` for the typed `ProtocolMap` and `src/entrypoints/background.ts` for the SW relay handlers.
+1. **Never send messages directly between the content script and the side
+   panel** — always route through the background.
+2. **Tab targeting lives in the background**: `sendMessage("csTradePageInfo", undefined, tabId)`.
+3. **Use the typed `sendMessage`/`onMessage`** from `src/utils/messages.ts`.
+4. **Keep domain math out of components**: pure Draft operations belong in
+   `src/domain/drafts.ts`; composables only persist their results.
 
 ## Tech Stack
 
-- WXT 0.20, Vue 3 (Composition API + `<script setup>`), Pinia, Tailwind v4, Zod
-- Build: use `vp run ext`, `vp run ext:build`, `vp run ext:check` from the repo root, or `wxt` directly inside `apps/extension`; do not run plain `vp build` because it does not build this project correctly
-- E2E: Playwright (`vp run e2e` from root)
+- WXT 0.21, Vue 3 (Composition API + `<script setup>`), Pinia, Nuxt UI 4,
+  Tailwind v4, Zod.
+- Catalog: Astro 5 with static output; content lives in
+  `apps/web/src/content/lists/`.
+- Build from the repo root: `vp run ext` (dev), `vp run ext:typecheck`,
+  `vp run ext:check`, `vp run ext:build`, `vp run ext:zip`, and the `web:*`
+  equivalents. Do not run plain `vp build` for the extension.
+
+## Validation
+
+The repository intentionally has no automated test suite. Do not add test files,
+test runners or dependencies, or test CI unless the maintainer explicitly asks.
+Validate with type checking, format/lint, production builds, the catalog
+validation commands in `docs/public-site/setup.md`, and manual review in a
+supported browser.
 
 ## Key Conventions
 
-- All types use Zod schemas with inferred TypeScript types
-- Storage keys defined in `types/storage.ts`
-- Design tokens in `styles/tokens.css` (PoE gold/dark theme)
-- Components organized by feature: `mine/`, `history/`, `detail/`, `settings/`, `shared/`
-- This project is unreleased: prefer clean forward-only changes over backward-compat layers or migration code unless explicitly requested
+- All types are Zod schemas with inferred TypeScript types.
+- Storage keys are defined once in `types/storage.ts`.
+- Design tokens live in `src/styles/tokens.css` (Trade Bench, dark-only); Nuxt UI
+  primary/neutral ramps are mapped to those tokens in `src/assets/main.css`.
+- Components are organized by area: `mine/`, `settings/`, `shared/`.
+- The Shareable List contract and its `psl1.` transport live in
+  `packages/shareable-list` and are the only portable format.
+- This project is unreleased: prefer clean forward-only changes over
+  backward-compatibility layers or migration code unless explicitly requested.

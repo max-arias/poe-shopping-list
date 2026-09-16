@@ -21,9 +21,9 @@ Each Published List has:
 
 Do not add price, cache, query, account, completion, source, or author-supplied
 `lastReviewed` data. Publication review derives review metadata from the
-repository process. Preserve item order. Taxonomy values must resolve against
-the repository's canonical taxonomy source; until that source is populated,
-there is intentionally nothing to reference.
+repository process. Preserve item order. Taxonomy values must resolve against the
+canonical list in `apps/web/src/domain/taxonomy.ts`, which `content:validate`
+enforces.
 
 ## Review process
 

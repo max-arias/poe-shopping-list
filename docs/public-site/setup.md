@@ -43,14 +43,25 @@ For a local manual check after a successful build:
 corepack pnpm --dir apps/web preview
 ```
 
-The repository includes authored Published Lists, including RF Essentials.
-Review that normal catalog manually; there is no fixture catalog or separate
-browser build to maintain.
+The repository authors three Published Lists — `cws-chieftain`,
+`manyshot-mercenary`, and `rf-essentials` — plus a craft notes route. Review the
+normal catalog manually; there is no fixture catalog or separate browser build.
 
-## CI and artifact behavior
+The same checks are available through the root workspace scripts as
+`vp run web:sync`, `vp run web:check`, `vp run web:content:validate`,
+`vp run web:build`, `vp run web:output:check`, and `vp run web:links:check`.
 
-The publication workflow packages exactly one verified production artifact named
-`public-site-production-<commit SHA>` containing `dist.tar.gz`,
-`dist.tar.gz.sha256`, and `content-manifest.txt`. Deployment downloads, verifies,
-and extracts that artifact without rebuilding it. The manifest is the sorted
-SHA-256/size inventory of every built file.
+## Deployment (manual) and artifact behavior
+
+There is no CI workflow: the one that validated, packaged, and promoted a
+production artifact was removed in `5db5b7a`. Deploy from `apps/web` with
+`corepack pnpm --dir apps/web deploy` (Wrangler static assets) after a successful
+local validation run; `corepack pnpm --dir apps/web deploy:preview` uploads a
+preview version instead.
+
+`smoke.mjs` is the only remaining artifact-aware script: it verifies a deployed
+site against a verified manifest and requires `PUBLIC_SITE_URL` (canonical HTTPS
+origin root) plus `CONTENT_MANIFEST_PATH`. The manifest, packaging, and
+deployment-record scripts were deleted with the workflow, so a restored promotion
+path must rebuild that capability. Re-establishing it is a launch prerequisite,
+not current behavior.

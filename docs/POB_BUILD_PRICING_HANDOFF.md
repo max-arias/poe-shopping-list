@@ -1,6 +1,12 @@
 # PoB Build Pricing Handoff
 
-Last updated: 2026-05-09
+> **Superseded — do not implement.** This handoff (2026-05-09) describes the
+> build-pricing flow removed by the v1 reset (`0e6ba30`). Pricing, price
+> capture, background trade tabs, and build-code importing are explicitly out of
+> scope in [`docs/EXTENSION_REDESIGN.md`](EXTENSION_REDESIGN.md) and absent from
+> the current extension. Kept only as a historical record.
+>
+> Last updated: 2026-05-09
 
 ## Goal
 

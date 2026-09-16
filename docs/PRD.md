@@ -25,21 +25,21 @@ With a supported Path of Exile Trade search active, select **Register Current Tr
 
 ### Share a List
 
-1. Export a List as strict Shareable List v1 JSON.
-2. Share or paste the JSON through the import flow.
+1. Export a List as the canonical `psl1.` share code for strict Shareable List v1.
+2. Send that share code, or paste a received one into the Import sheet.
 3. A successful import creates an independent Personal Draft with new local IDs and all items incomplete.
 
 ## Shareable List v1 contract
 
-Required top-level fields: `format: "poe-shopping-list"`, `version: 1`, non-empty `title`, and `items`. Optional top-level field: `overview`.
+Required top-level fields: `format: "poe-shopping-list"`, `version: 1`, non-empty `title`, and non-empty `groups`. Optional top-level field: `overview`. Each group holds an optional `title` and its `items`.
 
-Each item requires a non-empty `title` and HTTP(S) `tradeUrl`. Optional item fields are `variant` and `note`. The object is strict: unknown fields, unsupported versions, malformed JSON, invalid URLs, and invalid field values are rejected rather than converted. The portable data contains no completion state, IDs, timestamps, account data, or synchronization metadata.
+Each item requires a non-empty `title` and HTTP(S) `tradeUrl`. Optional item fields are `variant` and `note`. The object is strict: unknown fields, unsupported versions, malformed payloads, invalid URLs, and invalid field values are rejected rather than converted. The portable data contains no completion state, IDs, timestamps, account data, or synchronization metadata. The canonical transport is a gzip/base64url share code prefixed with `psl1.`; see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Local state and reset
 
 Completion is local draft state and is not included in exports. Imported Lists are independent copies; changes do not flow back to the source.
 
-The v1 reset discards obsolete local state and format assumptions. Storage is limited to the current draft, settings, and UI-position keys; old data shapes are not accepted or restored.
+The v1 reset discards obsolete local state and format assumptions. Storage is limited to `local:drafts:v1`, `local:settings:v2`, and the `local:reset:v1` marker; the obsolete keys listed in [ARCHITECTURE.md](./ARCHITECTURE.md) are deleted rather than read.
 
 ## Scope exclusions
 
@@ -47,7 +47,9 @@ The extension does not provide accounts, server persistence, cloud sync, collabo
 
 ## Acceptance status
 
-The current source contains the v1 schemas, strict JSON import/export, local draft completion, accordion workflow, narrowed trade-page permissions, and the explicit registration modal. The registration runtime signal and its save path remain incomplete in the current implementation.
+The current source contains the v1 schemas, strict share-code import/export, local draft completion, the accordion workflow, narrowed trade-page permissions, and the registration modal wired to the active trade page through the background hub.
+
+The extension has not been released: `apps/extension/package.json` is `0.0.1` while the manifest is `0.1.0`, the Firefox target has not been validated, and no store metadata exists. See [STATUS.md](./STATUS.md).
 
 ## Validation
 

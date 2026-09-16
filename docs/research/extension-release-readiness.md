@@ -2,6 +2,26 @@
 
 Decision record, updated 2026-07-30. This note is implementation guidance, not a store submission.
 
+## Verification against `main` (2026-09-16, `059c446`)
+
+Status of the claims this record makes about the tree:
+
+- **Still true.** The version mismatch is unresolved: `apps/extension/package.json` is
+  `0.0.1` while `apps/extension/wxt.config.ts` sets manifest `0.1.0`.
+  `apps/extension/wxt.config.ts` still hard-codes Chrome `sidePanel`/`side_panel` and the two
+  Trade host patterns. No store metadata, privacy policy, release checklist, archive assertion,
+  or publish workflow is tracked, and no store release has been submitted. The product is still
+  local-only with no account, sync, or analytics.
+- **Stale.** The `.github/workflows/e2e.yml` referenced below no longer exists — `.github`
+  contains no tracked files at all, and the public-site workflow was also removed (`5db5b7a`).
+  There is no test suite by policy, so the E2E assertions below describe intent, not current
+  state. The claim that the Register Current Trade runtime signal and save path are incomplete is
+  no longer true: `components/mine/SaveModal.vue` reads the active trade page through the
+  background hub and saves a confirmed, editable title. `entrypoints/sidepanel.html` is now a
+  12-line shell that loads `sidepanel/main.ts`.
+- **Unchanged scope.** The Firefox gate, packaging/artifact, versioning, signing, and store
+  metadata requirements below remain the open release work.
+
 ## 1. Scope and decision
 
 - **In scope:** Chrome Web Store (CWS) and Firefox Add-ons (AMO) releases.

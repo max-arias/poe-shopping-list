@@ -1,6 +1,7 @@
 # Extension Redesign Decision Record
 
-**Status:** Approved direction; implementation-ready, no implementation included
+**Status:** Approved direction, since implemented. Shipped behavior is documented in
+[ARCHITECTURE.md](./ARCHITECTURE.md); the contract section below is partly superseded.
 **Scope:** Personal Shopping Companion browser extension
 **Decision sources:** [Wayfinder map #9](https://github.com/max-arias/poe-shopping-list/issues/9), [issue #10](https://github.com/max-arias/poe-shopping-list/issues/10), and [issue #11](https://github.com/max-arias/poe-shopping-list/issues/11)
 **Visual reference:** [approved extension side-panel reference](design/extension-side-panel.html)
@@ -33,6 +34,15 @@ Every imported List becomes an independent editable local copy. There is no remo
 When the active tab is a supported Path of Exile Trade search page, **Register Current Trade** captures the current trade URL for the expanded List. Before saving, it presents the captured URL and a List Item title field. The user must confirm or edit the title, then explicitly save. The action is not an automatic or silent capture.
 
 ## Shareable List contract
+
+> **Partly superseded by the shipped contract.** The implementation now uses a
+> groups-only schema whose only transport is the canonical `psl1.`
+> gzip/base64url share code, not pasted JSON. Authoring may still be flat
+> (`items`) or grouped, but the portable contract is always `groups`, with no
+> top-level `items` field. See [ARCHITECTURE.md](./ARCHITECTURE.md). Every other
+> rule in this section — strictness, rejection of invalid input, independent
+> copies, incomplete imports, and the exclusions list — is implemented as
+> written.
 
 There is exactly one portable format: a strict, versioned **Shareable List JSON** contract. The same contract is used for public imports and person-to-person sharing; there are no separate export formats or legacy fallbacks.
 
