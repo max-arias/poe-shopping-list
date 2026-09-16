@@ -1,9 +1,9 @@
 # Content pull request
 
 <!-- Content PRs are the only intake path for Published List changes. There is
-no issue form and no contributor web editor. See docs/public-site/contributing.md.
-If this PR is a code change rather than catalog content, delete this body and
-follow normal code review. -->
+no issue form and no contributor web editor. See README.md ("Contributing
+Published Lists"). If this PR is a code change rather than catalog content,
+delete this body and follow normal code review. -->
 
 ## What changes
 
@@ -31,7 +31,7 @@ checks in links:check do not replace this review. -->
 - [ ] The list uses `items` or `groups`, never both, and source order is intentional
 - [ ] No price, cache, query, account, completion, source, or author-supplied `lastReviewed` data
 - [ ] No generated sample, seed, fixture, or placeholder content
-- [ ] Local checks in `docs/public-site/setup.md` pass
+- [ ] The catalog checks in `README.md` ("Development") pass
 - [ ] The PR contains no extension, workflow, dependency, or build changes
 
 ## Reviewer notes
