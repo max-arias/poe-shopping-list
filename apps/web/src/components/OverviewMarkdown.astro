@@ -3,9 +3,21 @@ import { renderOverviewMarkdown } from "./overview-markdown";
 
 interface Props {
   value: string;
+  id?: string;
 }
 
-const { value } = Astro.props;
+const { value, id } = Astro.props;
 ---
 
-<div class="list-overview prose prose-sm" set:html={renderOverviewMarkdown(value)}></div>
+{/* A fixed-height scroll region, not a clipped box: the card's actions then sit
+    on the same line across the board without hiding any of the curator's text.
+    `tabindex` keeps the scroll region reachable without a pointer, and page
+    script marks a region that actually overflows so the last line fades instead
+    of ending mid-sentence with no explanation. */}
+<div
+  id={id}
+  data-overview
+  tabindex="0"
+  class="h-full overflow-y-auto overflow-x-hidden overscroll-contain pe-1 text-overview text-field-muted [overflow-wrap:anywhere] [scrollbar-width:thin] data-[scrollable=true]:[mask-image:linear-gradient(to_bottom,black_calc(100%_-_1rem),transparent)] data-[scrollable=true]:[-webkit-mask-image:linear-gradient(to_bottom,black_calc(100%_-_1rem),transparent)] [&_p]:m-0 [&_p+p]:mt-2 [&_a]:text-field-ink"
+  set:html={renderOverviewMarkdown(value)}
+></div>

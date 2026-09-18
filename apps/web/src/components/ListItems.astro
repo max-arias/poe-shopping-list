@@ -1,0 +1,38 @@
+---
+import type { PublishedItem } from "../domain/schemas";
+import ListItem from "./ListItem.astro";
+
+interface Props {
+  items: PublishedItem[];
+  label: string;
+}
+
+// Five rows keep a card scannable beside two others; a section long enough to
+// need folding states the rest behind a disclosure instead of dropping them.
+const VISIBLE_ITEMS = 5;
+const COLLAPSE_THRESHOLD = 8;
+
+const { items, label } = Astro.props;
+const visibleItems = items.length > COLLAPSE_THRESHOLD ? items.slice(0, VISIBLE_ITEMS) : items;
+const overflowItems = items.slice(visibleItems.length);
+const toggleLabel = "text-base font-semibold text-field-ink underline decoration-field-ink/45 underline-offset-[3px] hover:decoration-current";
+---
+
+<ol class="list-none" aria-label={`${label} items`}>
+  {visibleItems.map((item) => <ListItem item={item} />)}
+</ol>
+
+{overflowItems.length > 0 && <details class="group/list-more list-more flex flex-col border-t border-field-line">
+  {/* `flex-col` with the summary ordered after the disclosed list keeps this
+      toggle below every item in both states — it is the last row of the group,
+      never a row in the middle of it — while the disclosure stays native. A
+      browser that does not treat the disclosed content as a flex item falls
+      back to the toggle sitting above the hidden rows. */}
+  <summary class="order-1 flex min-h-11 cursor-pointer list-none select-none items-center justify-center py-2.5 [&::-webkit-details-marker]:hidden">
+    <span class:list={[toggleLabel, "group-open/list-more:hidden"]}>Show more items</span>
+    <span class:list={[toggleLabel, "hidden group-open/list-more:inline"]}>Show fewer items</span>
+  </summary>
+  <ol class="list-none" start={visibleItems.length + 1} aria-label={`${label} items, continued`}>
+    {overflowItems.map((item) => <ListItem item={item} />)}
+  </ol>
+</details>}

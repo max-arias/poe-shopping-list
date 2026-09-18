@@ -2,11 +2,14 @@
 import { getCollection } from "astro:content";
 import { relative, resolve } from "node:path";
 import PublishedListCard from "../components/PublishedListCard.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SkipLink from "../components/SkipLink.astro";
 import { encodeShareableList } from "@poe-sl/shareable-list";
 import { serializeShareableList } from "../domain/serialize";
 import { gitLastReviewed } from "../domain/last-reviewed";
 import { validateContentDirectory, validatePublishedList } from "../domain/validate-content";
-import "../styles/catalog.css";
+import "../styles/theme.css";
 
 const entries = (await getCollection("lists")).sort((a, b) => a.data.title.localeCompare(b.data.title));
 const projectRoot = process.cwd();
@@ -28,10 +31,11 @@ const publishedEntries = import.meta.env.DEV
     })();
 // Keep the canonical route host-relative because no production hostname is configured yet.
 const canonicalUrl = "/";
+const emptyStateClass = "mx-auto w-full max-w-[34rem] rounded-field border border-field-line bg-field-surface px-5.5 py-7 two:max-w-none";
 ---
 
 <!doctype html>
-<html lang="en" data-theme="lofi">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -41,26 +45,48 @@ const canonicalUrl = "/";
     <link rel="canonical" href={canonicalUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" />
   </head>
-  <body class="font-sans">
-    <header class="site-header">
-      <nav class="site-nav site-nav--split" aria-label="Primary navigation">
-        <a href="/">Shopping lists</a>
-        <a href="/crafts/">Craft notes</a>
-      </nav>
-    </header>
+  <body>
+    <SkipLink href="#list-index" label="Skip to published lists" />
+    <SiteHeader active="lists" />
 
-    <main class="catalog-main">
-      <a class="skip-link" href="#list-index">Skip to shopping lists</a>
-      {entries.length > 0 ? <div id="list-index" aria-label="Published lists">
-        {publishedEntries.map(({ entry, lastReviewed }) => <PublishedListCard id={entry.id} list={entry.data} exportToken={encodeShareableList(serializeShareableList(entry.data))} lastReviewed={lastReviewed} />)}
-      </div> : <section class="empty-archive" aria-labelledby="empty-archive-title">
-        <h3 id="empty-archive-title">No published lists yet.</h3>
-        <p>Check back after the next archive update.</p>
+    <main class="site-shell pt-6.5">
+      <h1 class="sr-only">Curated Path of Exile shopping lists</h1>
+      <p
+        id="catalog-result"
+        class="mb-4 text-sm text-field-muted empty:hidden"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"></p>
+
+      {entries.length > 0 ? <>
+        <div
+          id="list-index"
+          class="mx-auto grid w-full max-w-[34rem] grid-cols-1 items-start gap-4 two:max-w-none two:grid-cols-2 three:grid-cols-3"
+          tabindex="-1">
+          {publishedEntries.map(({ entry, lastReviewed }) => <PublishedListCard id={entry.id} list={entry.data} exportToken={encodeShareableList(serializeShareableList(entry.data))} lastReviewed={lastReviewed} />)}
+        </div>
+        <section id="catalog-empty" class={emptyStateClass} hidden>
+          <h2 class="text-section font-semibold text-balance text-field-ink">Nothing matches that search.</h2>
+          <p class="mt-2 max-w-[46ch] text-note text-pretty text-field-muted">Try a shorter term, a category, or a league.</p>
+          <button class="action-button mt-4" type="button" data-clear-search>Clear search</button>
+        </section>
+      </> : <section class={emptyStateClass}>
+        <h2 class="text-section font-semibold text-balance text-field-ink">No published lists yet.</h2>
+        <p class="mt-2 max-w-[46ch] text-note text-pretty text-field-muted">Check back after the next archive update.</p>
       </section>}
-      <p id="action-feedback" class="action-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+
+      <p
+        id="action-feedback"
+        class="fixed right-[max(var(--board-gutter),env(safe-area-inset-right))] bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-5 max-w-[min(360px,88vw)] rounded-field border border-field-line-strong bg-field-surface px-3.5 py-2.5 text-meta text-field-ink"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        hidden></p>
     </main>
+
+    <SiteFooter />
 
     <script>
       const feedback = document.querySelector<HTMLElement>("#action-feedback")!;
@@ -69,7 +95,9 @@ const canonicalUrl = "/";
         if (feedbackTimer) window.clearTimeout(feedbackTimer);
         feedback.textContent = message;
         feedback.hidden = false;
-        feedbackTimer = window.setTimeout(() => { feedback.hidden = true; }, 4500);
+        feedbackTimer = window.setTimeout(() => {
+          feedback.hidden = true;
+        }, 4500);
       };
       const getExportText = (card: HTMLElement) => {
         const token = card.dataset.export;
@@ -79,8 +107,10 @@ const canonicalUrl = "/";
         }
         return `${token}\n`;
       };
-      document.querySelectorAll<HTMLElement>(".manual-entry").forEach((card) => {
-        const titleText = card.querySelector<HTMLElement>(".list-title [role='heading']")?.textContent?.trim() || "Published List";
+
+      const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-list-card]"));
+      cards.forEach((card) => {
+        const titleText = card.querySelector<HTMLElement>("[data-card-title]")?.textContent?.trim() || "Published List";
         const safeTitle = titleText.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list";
         card.querySelector("[data-download]")?.addEventListener("click", (event) => {
           event.preventDefault();
@@ -95,20 +125,25 @@ const canonicalUrl = "/";
           report(`Share code downloaded for ${titleText}.`);
         });
         const copyButton = card.querySelector<HTMLButtonElement>("[data-copy]");
+        if (!copyButton) return;
+        const copyLabel = copyButton.querySelector<HTMLElement>("[data-copy-label]");
+        const copyName = copyButton.getAttribute("aria-label") ?? "Copy share code";
         let copyResetTimer: number | undefined;
         const resetCopyState = () => {
           if (copyResetTimer) window.clearTimeout(copyResetTimer);
-          delete copyButton?.dataset.copySuccess;
-          copyButton?.setAttribute("aria-label", `Copy ${titleText} as a share code`);
+          delete copyButton.dataset.copySuccess;
+          copyButton.setAttribute("aria-label", copyName);
+          if (copyLabel) copyLabel.textContent = "Copy";
         };
-        copyButton?.addEventListener("click", async () => {
+        copyButton.addEventListener("click", async () => {
           resetCopyState();
           const exportText = getExportText(card);
           if (!exportText) return;
           try {
             await navigator.clipboard.writeText(exportText);
-            copyButton!.dataset.copySuccess = "true";
-            copyButton!.setAttribute("aria-label", `Copied ${titleText}'s share code`);
+            copyButton.dataset.copySuccess = "true";
+            copyButton.setAttribute("aria-label", `Copied ${titleText}'s share code`);
+            if (copyLabel) copyLabel.textContent = "Copied";
             copyResetTimer = window.setTimeout(resetCopyState, 1200);
             report(`Share code copied for ${titleText}.`);
           } catch {
@@ -117,6 +152,55 @@ const canonicalUrl = "/";
         });
       });
 
+      // A description that does not fit its reserved three lines gets a fading
+      // last line, so the cut reads as "there is more" rather than as broken
+      // text. Styling only: the region scrolls either way.
+      document.querySelectorAll<HTMLElement>("[data-overview]").forEach((region) => {
+        if (region.scrollHeight > region.clientHeight + 1) region.dataset.scrollable = "true";
+      });
+
+      const searchInput = document.querySelector<HTMLInputElement>("#site-search-input");
+      const resultLine = document.querySelector<HTMLElement>("#catalog-result");
+      const emptyState = document.querySelector<HTMLElement>("#catalog-empty");
+      const normalize = (value: string) => value.toLowerCase().replace(/\s+/g, " ").trim();
+      // Cards are matched on everything they render plus the slugs the card
+      // shows as readable labels, so a category or league slug still finds them.
+      const haystacks = cards.map((card) => normalize(`${card.dataset.search ?? ""} ${card.textContent ?? ""}`));
+
+      const applySearch = (rawQuery: string, updateUrl: boolean) => {
+        const query = rawQuery.trim();
+        const terms = normalize(query).split(" ").filter(Boolean);
+        let matches = 0;
+        cards.forEach((card, index) => {
+          const haystack = haystacks[index] ?? "";
+          // `every` is true for an empty term list, which is the unfiltered board.
+          const isMatch = terms.every((term) => haystack.includes(term));
+          card.hidden = !isMatch;
+          if (isMatch) matches += 1;
+        });
+        if (resultLine) {
+          resultLine.textContent =
+            terms.length === 0 ? "" : matches === 1 ? `1 list matches “${query}”.` : `${matches} lists match “${query}”.`;
+        }
+        if (emptyState) emptyState.hidden = terms.length === 0 || matches > 0;
+        if (updateUrl) {
+          const url = new URL(window.location.href);
+          if (terms.length === 0) url.searchParams.delete("q");
+          else url.searchParams.set("q", query);
+          window.history.replaceState(null, "", url);
+        }
+      };
+
+      const initialQuery = new URL(window.location.href).searchParams.get("q") ?? "";
+      if (searchInput && initialQuery) searchInput.value = initialQuery;
+      if (initialQuery) applySearch(initialQuery, false);
+      searchInput?.addEventListener("input", () => applySearch(searchInput.value, true));
+      document.querySelector("[data-clear-search]")?.addEventListener("click", () => {
+        if (!searchInput) return;
+        searchInput.value = "";
+        applySearch("", true);
+        searchInput.focus();
+      });
     </script>
-</body>
+  </body>
 </html>

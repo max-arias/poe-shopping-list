@@ -1,5 +1,7 @@
 ---
 import type { PublishedItem, PublishedList } from "../domain/schemas";
+import Chevron from "./Chevron.astro";
+import ListItems from "./ListItems.astro";
 import OverviewMarkdown from "./OverviewMarkdown.astro";
 
 interface Props {
@@ -21,88 +23,105 @@ interface NormalizedSection {
   items: PublishedItem[];
 }
 
-const { id, list, exportToken } = Astro.props;
+const { id, list, exportToken, lastReviewed } = Astro.props;
 const exportText = `${exportToken}\n`;
+const downloadName = `${list.title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list"}-shareable-list-v1.txt`;
 
 // Published content may arrive as either ordered sections or a flat item list.
-// Keeping this boundary here lets the renderer stay simple while old flat lists
-// continue to have the same appearance.
-const rawSections: RawSection[] | undefined = "groups" in list ? list.groups as RawSection[] : undefined;
+// Keeping this boundary here lets the renderer stay simple while flat lists
+// render as one untitled section.
+const rawSections: RawSection[] | undefined = "groups" in list ? (list.groups as RawSection[]) : undefined;
 const flatItems = "items" in list ? list.items : [];
 
 const sections: NormalizedSection[] = rawSections
   ? rawSections
       .map((section) => ({
-        title: typeof section.title === "string" ? section.title : typeof section.name === "string" ? section.name : typeof section.label === "string" ? section.label : "",
-        items: Array.isArray(section.items) ? section.items as PublishedItem[] : [],
+        title:
+          typeof section.title === "string"
+            ? section.title
+            : typeof section.name === "string"
+              ? section.name
+              : typeof section.label === "string"
+                ? section.label
+                : "",
+        items: Array.isArray(section.items) ? (section.items as PublishedItem[]) : [],
       }))
       .filter((section) => section.items.length > 0)
   : [{ title: "", items: flatItems }];
 
 const hasMultipleSections = sections.length > 1;
 const sectionLabel = (section: NormalizedSection, index: number) => section.title || `Section ${index + 1}`;
+const readableCategory = list.category
+  .split("-")
+  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+  .join(" ");
+const applicability = list.applicability.evergreen === true ? "Evergreen" : `${list.applicability.league} league`;
+const reviewed = lastReviewed?.slice(0, 10);
+const metaLine = [readableCategory, applicability, reviewed && `Reviewed ${reviewed}`].filter(Boolean).join(" · ");
+// Category, tag, and league slugs are searchable even where the card renders
+// their readable labels instead.
+const searchTerms = [list.title, list.category, ...list.tags, list.applicability.league ?? "evergreen"].join(" ");
+const overviewId = `${id}-overview`;
 ---
 
-<article id={`list-${id}`} class="manual-entry" data-export={exportToken}>
-  <details class="collapse collapse-arrow" open>
-    <summary class="list-title collapse-title">
-    <span class="list-number" aria-hidden="true">—</span>
-    <span role="heading" aria-level="4">{list.title}</span>
-    </summary>
-    <div class="list-actions-inline" aria-label={`${list.title} export actions`}>
-      <a href={`data:text/plain;charset=utf-8,${encodeURIComponent(exportText)}`} download={`${list.title.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "published-list"}-shareable-list-v1.txt`} data-download aria-label={`Download ${list.title} as a share code`}>
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
-          <path d="M12 3v12m-5-5 5 5 5-5M5 21h14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </a>
-      <button type="button" data-copy aria-label={`Copy ${list.title} as a share code`}>
-        <span class="copy-icon-stack" aria-hidden="true">
-          <span class="copy-icon copy-icon--default">
-            <svg viewBox="0 0 24 24" width="16" height="16" focusable="false">
-              <rect x="9" y="9" width="10" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.5" />
-              <path d="M15 9V6a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
-          </span>
-          <span class="copy-icon copy-icon--success">
-            <svg viewBox="0 0 24 24" width="16" height="16" focusable="false">
-              <path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </span>
-        </span>
-      </button>
-    </div>
-    <div class="collapse-content">
-  {list.overview && <OverviewMarkdown value={list.overview} />}
-
-  <div class="groups" aria-label={`${list.title} groups`}>
-    {sections.map((section, sectionIndex) => (hasMultipleSections || section.title) ? <details class="list-group collapse collapse-arrow" open={sectionIndex === 0}>
-      <summary class="group-heading collapse-title">
-        <span class="group-number" aria-hidden="true">{String(sectionIndex + 1).padStart(2, "0")}</span>
-        <span role="heading" aria-level="5">{sectionLabel(section, sectionIndex)}</span>
-      </summary>
-      <div class="collapse-content">
-        <ol class="items" aria-label={`${section.title || list.title} items`}>
-          {section.items.map((item, itemIndex) => <li>
-            <span class="item-number" aria-hidden="true">{String(itemIndex + 1).padStart(2, "0")}</span>
-            <span class="item-copy">
-              <a class="item-title" href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="visually-hidden"> on Path of Exile Trade</span></a>
-              {item.variant && <span class="variant">{item.variant}</span>}
-            </span>
-          </li>)}
-        </ol>
-      </div>
-    </details> : <section class="list-group">
-      <ol class="items" aria-label={`${section.title || list.title} items`}>
-        {section.items.map((item, itemIndex) => <li>
-          <span class="item-number" aria-hidden="true">{String(itemIndex + 1).padStart(2, "0")}</span>
-          <span class="item-copy">
-            <a class="item-title" href={item.tradeUrl} target="_blank" rel="noopener noreferrer">{item.title}<span class="visually-hidden"> on Path of Exile Trade</span></a>
-            {item.variant && <span class="variant">{item.variant}</span>}
-          </span>
-        </li>)}
-      </ol>
-    </section>)}
+<article
+  id={`list-${id}`}
+  data-list-card
+  class="flex min-w-0 flex-col rounded-field border border-field-line bg-field-surface p-5.5 [overflow-anchor:none]"
+  data-export={exportToken}
+  data-search={searchTerms}
+>
+  <h2 data-card-title class="text-title font-bold text-balance text-field-ink [overflow-wrap:anywhere]">{list.title}</h2>
+  <p class="mt-2 text-meta text-field-faint">{metaLine}</p>
+  {/* Three lines of description, then it scrolls: the reserved height keeps the
+      action row on one line across the board, descriptions and all. */}
+  <div class="mt-3 h-18">
+    {list.overview && <OverviewMarkdown id={overviewId} value={list.overview} />}
   </div>
-    </div>
-  </details>
+
+  <div class="mt-4 grid grid-cols-2 gap-2.5">
+    <a
+      class="action-button"
+      href={`data:text/plain;charset=utf-8,${encodeURIComponent(exportText)}`}
+      download={downloadName}
+      data-download
+      aria-label={`Download ${list.title} as a share code`}
+    >
+      <svg class="size-4.5 shrink-0" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 3v11m-4.5-4.5L12 14l4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <span>Download</span>
+    </a>
+    <button
+      class="group/copy action-button"
+      type="button"
+      data-copy
+      aria-label={`Copy ${list.title} as a share code`}
+    >
+      <span class="grid size-4.5" aria-hidden="true">
+        <span class="col-start-1 row-start-1 grid place-items-center transition group-data-[copy-success=true]/copy:scale-[0.72] group-data-[copy-success=true]/copy:opacity-0">
+          <svg class="size-4.5" viewBox="0 0 24 24" focusable="false">
+            <rect x="9" y="9" width="10" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <path d="M15 9V6a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="col-start-1 row-start-1 grid scale-[0.72] place-items-center opacity-0 transition group-data-[copy-success=true]/copy:scale-100 group-data-[copy-success=true]/copy:opacity-100">
+          <svg class="size-4.5" viewBox="0 0 24 24" focusable="false">
+            <path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </span>
+      <span data-copy-label>Copy</span>
+    </button>
+  </div>
+
+  <div class="mt-5 border-t border-field-line">
+    {sections.map((section, sectionIndex) => (hasMultipleSections || section.title) ? <details class="group/section border-t border-field-line first:border-t-0" open={sectionIndex === 0}>
+      <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 transition-colors group-open/section:pb-1 [&::-webkit-details-marker]:hidden">
+        <h3 class="min-w-0 text-section font-semibold text-balance text-field-ink [overflow-wrap:anywhere]">{sectionLabel(section, sectionIndex)}</h3>
+        <Chevron class="group-open/section:rotate-180 group-hover/section:text-field-ink group-active/section:text-field-ink" />
+      </summary>
+      <ListItems items={section.items} label={section.title || list.title} />
+    </details> : <ListItems items={section.items} label={list.title} />)}
+  </div>
 </article>

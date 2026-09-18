@@ -1,0 +1,18 @@
+---
+import type { PublishedItem } from "../domain/schemas";
+
+interface Props {
+  item: PublishedItem;
+}
+
+const { item } = Astro.props;
+---
+
+<li class="border-t border-field-line py-2.5 first:border-t-0">
+  <a
+    class="text-item text-field-ink decoration-field-line-strong underline underline-offset-[3px] [overflow-wrap:anywhere] hover:decoration-current"
+    href={item.tradeUrl}
+    target="_blank"
+    rel="noopener noreferrer">{item.title}<span class="sr-only"> on Path of Exile Trade</span></a>
+  {item.variant && <span class="mt-[3px] block text-note text-field-muted [overflow-wrap:anywhere]">{item.variant}</span>}
+</li>

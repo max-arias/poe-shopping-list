@@ -8,7 +8,7 @@ and every import creates an independent local copy whose items start incomplete.
 | ----------------- | ------------------------- | ---------------------------------------------------------------------- | --------------------------------------------- |
 | Browser extension | `apps/extension`          | WXT (Chrome MV3 side panel), Vue 3, Pinia, Nuxt UI 4, Tailwind v4, Zod | Create, edit, use, and complete Lists locally |
 | Portable contract | `packages/shareable-list` | Zod schema plus the `psl1.` gzip/base64url transport                   | The one strict v1 format both surfaces use    |
-| Static catalog    | `apps/web`                | Astro 5 static output, Tailwind v4 (daisyUI `lofi`), Zod               | Published List Catalog and craft notes        |
+| Static catalog    | `apps/web`                | Astro 5 static output, Tailwind v4, Zod                                | Published List Catalog and craft notes        |
 
 ## Product
 
@@ -255,11 +255,16 @@ message and keeps the pasted text so the user can correct it.
   array.
 - `src/domain/last-reviewed.ts` derives each list's `lastReviewed` from its last
   Git commit; production builds fail when a list has no review record.
-- `src/pages/index.astro` renders the Catalog in title order with per-list
-  Download and Copy share-code actions plus an explicit empty state;
-  `src/pages/crafts.astro` is the authored craft notes route (Divine Life Flask,
-  Large Elemental Cluster Jewel) with a Copy regex helper. Neither route has
-  search, filtering, or per-list detail pages yet.
+- `src/pages/index.astro` renders the Catalog in title order as the card board
+  with per-list Download and Copy share-code actions, a header search field that
+  filters the board live, and explicit empty states for a filtered-out board and
+  an empty Catalog; `src/pages/crafts.astro` is the authored craft notes route
+  (Divine Life Flask, Large Elemental Cluster Jewel) with a Copy regex helper.
+  Neither route has per-list detail pages yet. The shared chrome lives in
+  `src/components/SiteHeader.astro` and `SiteFooter.astro`; `PublishedListCard`
+  renders one Published List, `ListItems`/`ListItem` render its Trade rows, and
+  the search filters on everything a card renders plus the Category, Tag, and
+  league slugs, keeping the query in the `?q=` URL state.
 - `astro.config.ts` registers a build hook that validates the content directory
   before the build runs.
 - `wrangler.jsonc` declares asset-first Cloudflare Workers Static Assets
@@ -274,19 +279,39 @@ palette with `#e5a83b` as the accent); `src/assets/main.css` maps the Nuxt UI
 primary/neutral ramps onto those tokens. The panel is dark-only, compact, and
 dense — information density is a feature.
 
-**Catalog — League Noticeboard.** A frank, experienced field reference: white
-surfaces, sparse ruled annotations, asymmetric whitespace, hairline rules, and no
-shadows, gradients, glass, or floating cards. Structure comes from typography and
-rules. `src/styles/theme.css` holds the type scale and maps the daisyUI `lofi`
-theme onto `--field-*` semantic variables; `catalog.css` and `crafts.css` use
-those variables (`--field-paper`, `--field-soft`, `--field-line`, `--field-ink`,
-`--field-action`, `--field-muted`, `--field-faint`). Outfit (with Noto Sans /
-system sans fallback) carries prose and headings; a monospace stack carries
-numbers, regex, and metadata. Official Trade and sourced actions use the action
-color, practical annotations and real warnings get their own semantic colors, and
-color is never atmospheric decoration. The catalog uses a 940px measure with 4vw
-gutters, the craft route 800px; catalog entries stack at 700px and below, crafts
-collapse to one column at 560px and below. Focus is always visible, and
+**Catalog — League Noticeboard.** A frank, experienced field reference pinned to
+a board of cards: published lists sit as white cards on a faint cool ground, one
+per column, reading as a ruled ledger rather than a funnel. Structure comes from
+typography, hairline rules, and a single ink — no shadows, gradients, glass,
+badges, or accent color. `src/styles/theme.css` is the whole system as Tailwind
+v4 CSS-first config: `@theme` declares the palette (`--color-field-paper`,
+`--color-field-surface`, `--color-field-soft`, `--color-field-line`,
+`--color-field-line-strong`, `--color-field-ink`, `--color-field-action`,
+`--color-field-muted`, `--color-field-faint`), the type steps (`--text-title`,
+`--text-section`, `--text-item`, `--text-overview`, `--text-note`,
+`--text-meta`), `--radius-field`, the board geometry, and the `two` (760px) and
+`three` (1120px) breakpoints; markup styles itself with the generated utilities
+(`text-title`, `border-field-line`, `rounded-field`, `two:grid-cols-2`).
+Hand-written CSS is limited to the base layer, the two multi-property utilities
+`site-shell` and `action-button`, and the states utilities cannot express.
+`crafts.css` keeps the craft notes' authored-document styling. Schibsted Grotesk
+(with system sans fallback) carries prose, headings, and controls; a monospace
+stack carries numbers, regex, and metadata.
+
+The shell is exactly three columns wide — `--container-board` is derived from
+one 440px column plus its gaps and gutters (1416px at desktop), so the board
+never stretches wider and stays centered; cards run three-up above 1120px,
+two-up above 760px, and one column below, capped at 34rem so a single card never
+spans a tablet. Every card reserves three lines for the curator's description and
+scrolls anything longer inside that fixed region — vertical only, with the last
+line fading so the cut reads as "there is more" — which keeps the Download/Copy
+row on the same line across the board without hiding any text and without a
+control to toggle; the region carries `tabindex="0"` so it can be scrolled from
+the keyboard. Cards opt out of scroll anchoring (`overflow-anchor: none`), so
+expanding or collapsing a section never shifts the page under the pointer, and
+the overflow row is a disclosure — label plus chevron, no underline — rather than
+anything that reads as a link. Focus is always visible, disclosures are native
+`details`/`summary` so state works without script, and
 `prefers-reduced-motion: reduce` removes smooth scrolling and shortens
 transitions — motion never reveals instructions or copies a Trade query. Meet
 WCAG 2.2 AA as the baseline.
@@ -363,10 +388,11 @@ permissions, or a new import protocol for it.
 and titled groups with drag reorder and cross-group moves, per-item local
 completion, the accordion side panel, strict share-code import/export, Register
 Current Trade through the background hub with title confirmation, trade-page-only
-panel scope, and the `openItemsInNewTab` setting. Catalog: the Catalog route with
-Download and Copy share codes, the `/crafts/` route, the content contract and
-taxonomy validation, build/route/link/output checks, and three published lists
-(`cws-chieftain`, `manyshot-mercenary`, `rf-essentials`).
+panel scope, and the `openItemsInNewTab` setting. Catalog: the card-board
+Catalog route with Download and Copy share codes and header search over the
+board, the `/crafts/` route, the content contract and taxonomy validation,
+build/route/link/output checks, and three published lists (`cws-chieftain`,
+`manyshot-mercenary`, `rf-essentials`).
 
 Not implemented:
 
@@ -375,7 +401,8 @@ Not implemented:
   store metadata, privacy policy, or packaging evidence. Firefox needs
   `import.meta.env.FIREFOX` handling for `browser.sidebarAction` because the
   Chrome `chrome.sidePanel` runtime calls are not abstracted by WXT.
-- Catalog search, filtering, and URL filter state.
+- Catalog detail pages, filtering facets beyond the header search, and per-list
+  review history beyond the card's `Reviewed` date.
 - Better Trading export import (issues #25–#27), mercenary archetype coverage
   beyond the single Manyshot list (#24), and contributor issue-form intake
   (#17–#21).

@@ -1,0 +1,28 @@
+---
+interface Props {
+  /** Rotation variant for the owning `group-open/…` disclosure group. */
+  class?: string;
+}
+
+// Decorative disclosure marker. It carries no state of its own: the owning
+// `<details>` is a named group and the caller passes the `group-open/…`
+// rotation, so the marker always states the current state without script.
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={["transition", className]}
+  viewBox="0 0 24 24"
+  width="18"
+  height="18"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path
+    d="m6 9 6 6 6-6"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+    stroke-linejoin="round"></path>
+</svg>
