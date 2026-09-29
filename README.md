@@ -403,8 +403,8 @@ Not implemented:
   Chrome `chrome.sidePanel` runtime calls are not abstracted by WXT.
 - Catalog detail pages, filtering facets beyond the header search, and per-list
   review history beyond the card's `Reviewed` date.
-- Better Trading export import (issues #25–#27), mercenary archetype coverage
-  beyond the single Manyshot list (#24), and contributor issue-form intake
+- Better Trading export import (PSL-25 to PSL-27), mercenary archetype coverage
+  beyond the single Manyshot list (PSL-24), and contributor issue-form intake
   (#17–#21).
 
 Deployment is manual: `corepack pnpm --dir apps/web deploy` after a successful
@@ -430,5 +430,5 @@ poe-shopping-list/
 └── package.json             # Root workspace
 ```
 
-Issues are tracked in GitHub Issues for `max-arias/poe-shopping-list`; see
-[`AGENTS.md`](AGENTS.md) for triage labels and tracker conventions.
+Tickets are tracked on an Obsidian board, not GitHub Issues; see
+[`AGENTS.md`](AGENTS.md) for the tracker conventions.

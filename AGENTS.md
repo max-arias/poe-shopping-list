@@ -30,54 +30,23 @@ feedback and preserve the agreed visual intent through follow-up work.
 
 ## Issue tracker
 
-Issues live as GitHub issues for `max-arias/poe-shopping-list`. Use the `gh` CLI:
+Tickets live in the Obsidian vault, not GitHub Issues:
 
-- **Create**: `gh issue create --repo max-arias/poe-shopping-list --title "..." --body "..."` (heredoc for multi-line bodies).
-- **Read**: `gh issue view <number> --repo max-arias/poe-shopping-list --comments`.
-- **List**: `gh issue list --repo max-arias/poe-shopping-list --state open --json number,title,body,labels --jq '[.[] | {number, title, body, labels: [.labels[].name]}]'`.
-- **Comment**: `gh issue comment <number> --repo max-arias/poe-shopping-list --body "..."`.
-- **Labels**: `gh issue edit <number> --repo max-arias/poe-shopping-list --add-label "..."` / `--remove-label "..."`.
-- **Close**: `gh issue close <number> --repo max-arias/poe-shopping-list --comment "..."`.
+- Board: `/mnt/c/Users/max/Documents/Obsidian Vault/poe-shopping-list/Board.md`.
+- Tickets: `/mnt/c/Users/max/Documents/Obsidian Vault/poe-shopping-list/tickets/PSL-<n>.md`.
 
-When a skill says "publish to the issue tracker", create an issue there; when it
-says "fetch the relevant ticket", run `gh issue view <number>`.
+Read `/mnt/c/Users/max/Documents/Obsidian Vault/Ticket System.md` for the format
+and operations (create, read, list, comment, claim, resolve, frontier), triage
+labels, and how `/wayfinder` maps, children and blockers work.
+
+GitHub Issues are no longer used. Don't create issues with `gh`. When a skill
+says "publish to the issue tracker", create a PSL ticket; when it says "fetch
+the relevant ticket", read the PSL ticket note.
 
 External pull requests proposing curated public List content are an accepted
 contribution path and the only content intake path; use
 `.github/PULL_REQUEST_TEMPLATE.md` and the README's contributing section. Code
-PRs are not an issue-triage surface and follow normal code review.
-
-### Triage labels
-
-| Role               | Label             | Meaning                                  |
-| ------------------ | ----------------- | ---------------------------------------- |
-| Needs triage       | `needs-triage`    | Maintainer needs to evaluate this issue  |
-| Needs information  | `needs-info`      | Waiting on reporter for more information |
-| Ready for an agent | `ready-for-agent` | Fully specified, ready for an AFK agent  |
-| Ready for a human  | `ready-for-human` | Requires human implementation            |
-| Will not action    | `wontfix`         | Will not be actioned                     |
-
-### Wayfinding
-
-Used by `/wayfinder`. The **map** is a single issue labelled `wayfinder:map`
-holding the Notes / Decisions-so-far / Fog body.
-
-- **Child tickets** are sub-issues of the map (fallback: a task list in the map
-  body plus `Part of #<map>` at the top of the child), labelled
-  `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, or
-  `wayfinder:task`. Assign each claimed ticket to the driving dev.
-- **Blocking** uses GitHub native issue dependencies:
-  `gh api --method POST repos/max-arias/poe-shopping-list/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-db-id>`,
-  where `<blocker-db-id>` is the blocker's numeric database id
-  (`gh api repos/max-arias/poe-shopping-list/issues/<n> --jq .id`), not the
-  `#number` or `node_id`. Fallback: a `Blocked by: #<n>` line at the top of the
-  child body. A ticket is unblocked when every blocker is closed.
-- **Frontier**: the map's open children, dropping any with an open blocker
-  (`issue_dependencies_summary.blocked_by > 0`) or an assignee. The first in map
-  order wins.
-- **Claim**: `gh issue edit <n> --repo max-arias/poe-shopping-list --add-assignee @me`.
-- **Resolve**: comment the answer, close the issue, then append a context
-  pointer to the map's Decisions-so-far.
+PRs are not a ticket-triage surface and follow normal code review.
 
 ## Vocabulary
 
